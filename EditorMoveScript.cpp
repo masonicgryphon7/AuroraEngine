@@ -59,6 +59,8 @@ void EditorMoveScript::update()
 
 	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow))
 		direction = DirectX::XMVectorAdd(gameObject->transform.getRight(), direction);
+	if (Input.GetKey(KeyCode::Escape))
+		exit(-1);
 
 	direction = DirectX::XMVector3Normalize(direction);
 

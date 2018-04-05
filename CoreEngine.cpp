@@ -161,8 +161,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* cube = scene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		assetManager.addTexture("Assets/brickwork.jpg");
+		assetManager.addTexture("Assets/NormalBrick.png");
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
-		assetManager.getMaterial(0)->setTexture(assetManager.getTexture(0)->getTexture());
+		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
+		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
 		assetManager.addMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(assetManager.getMesh(0));
 		cube->addComponent(assetManager.getMaterial(0));
