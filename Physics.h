@@ -1,12 +1,13 @@
 #pragma once
 #include "PRIMITIVE_GEOMETRY.h"
 #include"Scene.h"
+#define EPSILON 0.0001
 
 static class Physics
 {
 public:
 	Physics();
-	//Physics(Scene* scene);
+	Physics(Scene* scene);
 
 	~Physics();
 
@@ -14,7 +15,7 @@ public:
 
 private:
 	Scene* scene;
-
+	float obbTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigin, OOBB o);
 
 }Physics;
 

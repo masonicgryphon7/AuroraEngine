@@ -3,6 +3,7 @@
 
 
 AssetManager::AssetManager()
+
 {}
 
 AssetManager::AssetManager(ID3D11Device * device, ID3D11DeviceContext * devContext)
