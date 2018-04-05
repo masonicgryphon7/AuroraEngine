@@ -1,10 +1,11 @@
 #include "EditorMoveScript.h"
 #include "GameObject.h"
 #include "Console.h"
+#include "AssetManager.h"
 
 EditorMoveScript::EditorMoveScript() :Component(-1, "Editor Move Script")
 {
-	speed = 0.01;
+	speed = 7.5f;
 	direction = DirectX::XMVectorSet(0, 0, 0, 0);
 
 	pitch = 0;
@@ -85,6 +86,9 @@ void EditorMoveScript::update()
 
 	if (Input.GetKey(KeyCode::RightMouse))
 	{
+		//AssetManager.getTexture("Assets/brickwork.jpg");
+
+		//ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
 
@@ -105,11 +109,8 @@ void EditorMoveScript::update()
 		gameObject->transform.setForward(DirectX::XMVector3Transform(gameObject->transform.getForward(), rotation));
 		gameObject->transform.setRight(DirectX::XMVector3Transform(gameObject->transform.getRight(), rotation));
 		//gameObject->transform.setUp(DirectX::XMVector3Transform(gameObject->transform.getUp(), rotation));
-
-
-
-
 	}
+
 	// Left button is down
 	xoffset = (float)xpos - lastX;
 	yoffset = (float)ypos - lastY;

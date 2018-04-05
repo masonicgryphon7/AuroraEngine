@@ -18,6 +18,7 @@ public:
 	void addMesh(std::string filePath);
 	void addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader);
 
+	Texture* getTexture(const std::string &path);
 	Texture* getTexture(int index);
 	Material* getMaterial(int index);
 	Mesh* getMesh(int index);

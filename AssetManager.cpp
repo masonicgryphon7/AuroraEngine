@@ -1,9 +1,9 @@
 #include "AssetManager.h"
 #include "Console.h"
+#include <algorithm>
 
 
 AssetManager::AssetManager()
-
 {}
 
 AssetManager::AssetManager(ID3D11Device * device, ID3D11DeviceContext * devContext)
@@ -116,6 +116,30 @@ void AssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std::
 	}
 
 	shaderPrograms.push_back(new ShaderProgram(devContext, device, descArr, vertexShader, hullShader, domainShader, geometryShader, pixelShader, computeShader));
+}
+
+Texture * AssetManager::getTexture(const std::string & path)
+{
+	bool hasFound = false;
+	Texture* tex = nullptr;
+
+	for (auto& t : textures)
+	{
+		if (t->getPath() == path)
+		{
+			Console.success("Found texture at, returning its value from ", path);
+			hasFound = true;
+			tex = t;
+		}
+	}
+
+	if (!hasFound)
+	{
+		tex = new Texture(device, devContext, path);
+		textures.push_back(tex);
+	}
+
+	return tex;
 }
 
 Texture * AssetManager::getTexture(int index)

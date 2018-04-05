@@ -43,7 +43,7 @@ void cTime::tick()
 
 float cTime::getDeltaTime()
 {
-	return deltaTime;
+	return (deltaTime / 1000);
 }
 
 float cTime::getCurrentTime()

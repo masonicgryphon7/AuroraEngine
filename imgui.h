@@ -117,6 +117,13 @@ struct ImVec2
     ImVec2() { x = y = 0.0f; }
     ImVec2(float _x, float _y) { x = _x; y = _y; }
     float  operator[] (size_t idx) const { IM_ASSERT(idx <= 1); return (&x)[idx]; }    // We very rarely use this [] operator, the assert overhead is fine.
+	bool operator== (ImVec2 v)
+	{
+		if (x == v.x && x == v.y)
+			return true;
+		else
+			return false;
+	}
 #ifdef IM_VEC2_CLASS_EXTRA          // Define constructor and implicit cast operators in imconfig.h to convert back<>forth from your math types and ImVec2.
     IM_VEC2_CLASS_EXTRA
 #endif
@@ -1055,6 +1062,7 @@ struct ImGuiIO
     float       MouseWheel;                     // Mouse wheel: 1 unit scrolls about 5 lines text. 
     float       MouseWheelH;                    // Mouse wheel (Horizontal). Most users don't have a mouse with an horizontal wheel, may not be filled by all back-ends.
     bool        MouseDrawCursor;                // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor).
+	bool		SetCustomMouseTexture;			// Custom me made
     bool        KeyCtrl;                        // Keyboard modifier pressed: Control
     bool        KeyShift;                       // Keyboard modifier pressed: Shift
     bool        KeyAlt;                         // Keyboard modifier pressed: Alt
@@ -1067,6 +1075,8 @@ struct ImGuiIO
     IMGUI_API void AddInputCharacter(ImWchar c);                        // Add new character into InputCharacters[]
     IMGUI_API void AddInputCharactersUTF8(const char* utf8_chars);      // Add new characters into InputCharacters[] from an UTF-8 string
     inline void    ClearInputCharacters() { InputCharacters[0] = 0; }   // Clear the text input buffer manually
+
+	IMGUI_API void SetCursorTexture(int texture, ImVec2 m_size = ImVec2(0, 0));
 
     //------------------------------------------------------------------
     // Output - Retrieve after calling NewFrame()

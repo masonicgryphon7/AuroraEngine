@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
-#include "GameObject.h"
+#include "Transform.h"
 
 enum class PRIMITIVE_GEOMETRY
 {
@@ -24,7 +24,7 @@ struct Ray {
 struct RaycastHit {
 	DirectX::XMVECTOR point;
 	float distance;
-	GameObject* gameObject;
+	Transform* transform;
 };
 
 struct VERTEX_POS3UV2T3B3N3 {

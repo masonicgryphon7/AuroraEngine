@@ -40,13 +40,13 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 	if (hitObject) {
 		hit.distance = lastT;
 		hit.point = DirectX::XMVectorAdd(DirectX::XMVectorScale(ray.direction, lastT), ray.origin);
-		hit.gameObject = scene->getSceneObjects()[objIndex];
+		hit.transform = &scene->getSceneObjects()[objIndex]->transform;
 	}
 	else
 	{
 		hit.distance = -1;
 		hit.point =DirectX::XMVectorSet(0,0,0,0);
-		hit.gameObject = nullptr;
+		hit.transform = nullptr;
 	}
 
 

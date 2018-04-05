@@ -2,6 +2,7 @@
 #include "GUI.h"
 #include "GUI_Viewport.h"
 #include "GUI_MenuBar.h"
+#include "GUI_Console.h"
 #include "Console.h"
 #include "imgui_dock.h"
 
@@ -77,11 +78,14 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 		ImGui_ImplDX11_Init(wndHandle, gDevice, gDeviceContext);
+		io.MouseDrawCursor = true;
+		io.SetCustomMouseTexture = false;
 
 		// Setup style
 		ImGui::StyleColorsDark();
 		SetGuiStyle();
 
+		ImGui::ResetToStandard();
 		ImGui::InitDock();
 
 
@@ -143,7 +147,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		renderManager->CreateRenderTarget(WIDTH, HEIGHT);
 
 		InputHandler inputHandler = InputHandler(wndHandle); // this has memory leak
-		AssetManager assetManager = AssetManager(gDevice, gDeviceContext); // this has memory leak
+		assetManager = AssetManager(gDevice, gDeviceContext); // this has memory leak
 		assetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
@@ -166,6 +170,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		std::vector<std::unique_ptr<GUI>> m_gui;
 
 		m_gui.emplace_back(make_unique<GUI_Viewport>());
+		m_gui.emplace_back(make_unique<GUI_Console>());
 		//m_gui.emplace_back(make_unique<GUI_MenuBar>());
 
 		for (auto& gui : m_gui)
@@ -252,6 +257,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 								if (ImGui::BeginDock("Project"))
 								{
 									ImGui::Text("All Project Files Shit Here");
+									//ImGui::ShowDemoWindow();
 								}
 								ImGui::EndDock();
 
@@ -656,6 +662,10 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		lpMMI->ptMinTrackSize.y = HEIGHT;
 	}
 	break;
+
+	case WM_SETCURSOR:
+		ShowCursor(message);
+		break;
 	}
 
 

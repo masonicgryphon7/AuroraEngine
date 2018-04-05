@@ -7,6 +7,7 @@ Texture::Texture()
 
 Texture::Texture(ID3D11Device * device, ID3D11DeviceContext * devContext, std::string filePath)
 {
+	this->pathToTexture = filePath;
 	createTextureData(device, devContext, filePath);
 }
 
