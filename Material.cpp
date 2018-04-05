@@ -15,16 +15,21 @@ Material::Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram * shaderPr
 Material::~Material()
 {}
 
-void Material::setTexture(ID3D11ShaderResourceView *textureview)
+void Material::setAlbedo(ID3D11ShaderResourceView *albedo)
 {
-	this->textureview = textureview;
+	this->albedo = albedo;
+}
 
+void Material::setNormal(ID3D11ShaderResourceView * normal)
+{
+	this->normal = normal;
 }
 
 void Material::bindMaterial()
 {
 	shaderProgram->ActivateShader();
-	gDeviceContext->PSSetShaderResources(0, 1, &textureview);
+	gDeviceContext->PSSetShaderResources(0, 1, &albedo);
+	gDeviceContext->PSSetShaderResources(1, 1, &normal);
 }
 
 

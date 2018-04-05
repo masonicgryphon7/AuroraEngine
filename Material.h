@@ -9,11 +9,13 @@ public:
 	Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram* shaderProgram);
 	~Material();
 
-	void setTexture(ID3D11ShaderResourceView *textureview);
+	void setAlbedo(ID3D11ShaderResourceView *albedo);
+	void setNormal(ID3D11ShaderResourceView *normal);
 	void bindMaterial();
 
 private:
-	ID3D11ShaderResourceView * textureview = nullptr;
+	ID3D11ShaderResourceView * albedo = nullptr;
+	ID3D11ShaderResourceView * normal = nullptr;
 	ShaderProgram* shaderProgram = nullptr;
 	ID3D11DeviceContext* gDeviceContext = nullptr;
 };
