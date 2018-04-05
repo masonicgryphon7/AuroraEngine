@@ -1,0 +1,134 @@
+#include "InputHandler.h"
+#include "Console.h"
+
+InputHandler::InputHandler()
+{}
+
+
+InputHandler::InputHandler(HWND wndHandle)
+{
+	wnd = FindWindow(L"dSXOv9vbM1MIm5kAf4yjjw", 0); //set encrypted Aurora
+	//keyboard = new DirectX::Keyboard();
+	mouse = new DirectX::Mouse();
+	mouse->SetWindow(wndHandle);
+}
+
+InputHandler::~InputHandler()
+{
+	delete mouse;
+}
+
+void InputHandler::updateInput()
+{
+	for (unsigned int k = 0U; k < 256U; ++k)
+	{
+		previousKeys[k] = detectKey(k);
+	}
+
+	/*kb = keyboard->GetState();
+	kbTracker.Update(kb);*/
+
+	mouseState = mouse->GetState();
+}
+
+bool InputHandler::GetKey(KeyCode key)
+{
+	//return keyStates[(int)key] == KeyState::Held;
+	return (GetAsyncKeyState((unsigned int)key) & (1 << (sizeof(SHORT) * 8 - 1)));
+}
+
+bool InputHandler::GetKeyDown(KeyCode key)
+{
+	//return keyStates[(int)key] == KeyState::Down;
+
+	int intKey = (unsigned int)key;
+
+	bool previousState = previousKeys[intKey];
+
+	previousKeys[intKey] = GetKey(key);
+
+	return (previousKeys[intKey] && !previousState);
+}
+
+bool InputHandler::GetKeyUp(KeyCode key)
+{
+	//return keyStates[(int)key] == KeyState::Up;
+
+	int intKey = (unsigned int)key;
+
+	bool previousState = previousKeys[intKey];
+
+	previousKeys[intKey] = GetKey(key);
+
+	return (!previousKeys[intKey] && previousState);
+}
+
+/// <summary>
+///  <para> Gets the position of the entire screen </para>
+/// </summary>
+POINT InputHandler::GetMouseCoordinates()
+{
+	POINT point;
+	GetCursorPos(&point);
+	return point;
+}
+
+/// <summary>
+///  <para> Gets the position of the engine screen </para>
+/// </summary>
+POINT InputHandler::GetAbsoluteMouseCoordinates()
+{
+	if (wnd == NULL)
+		wnd = FindWindow(L"dSXOv9vbM1MIm5kAf4yjjw", 0);
+
+	POINT point;
+	GetCursorPos(&point);
+	ScreenToClient(wnd, &point);
+
+	Vector2 screen = GetEngineWindowResolution();
+
+	if (point.x < 0)
+		point.x = 0;
+	else if (point.x > screen.x)
+		point.x = screen.x;
+
+	if (point.y < 0)
+		point.y = 0;
+	else if (point.y > screen.y)
+		point.y = screen.y;
+
+	return point;
+}
+
+Vector2 InputHandler::GetDesktopResolution()
+{
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+	return Vector2(desktop.right, desktop.bottom);
+}
+
+Vector2 InputHandler::GetEngineWindowResolution()
+{
+	if (wnd == NULL)
+		wnd = FindWindow(L"dSXOv9vbM1MIm5kAf4yjjw", 0);
+
+	RECT rect;
+
+	int width = 0, height = 0;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		width = rect.right - rect.left;
+		height = rect.bottom - rect.top;
+
+		width -= 16;
+		height -= 39;
+	}
+	return Vector2(width, height);
+}
+
+bool InputHandler::detectKey(int key)
+{
+	return (GetAsyncKeyState(key) & (1 << (sizeof(SHORT) * 8 - 1)));
+}

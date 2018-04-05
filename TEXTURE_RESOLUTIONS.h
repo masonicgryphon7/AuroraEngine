@@ -1,0 +1,5 @@
+#pragma once
+enum class TEXTURE_RESOLUTIONS
+{
+	R256x256, R512x512, R1024x1024, R2048x2048
+};

@@ -1,0 +1,6 @@
+#pragma once
+
+enum class INPUT_ELEMENT_DESCRIPTION
+{
+	INPUT_ELEMENT_POS3UV2T3B3N3,
+};

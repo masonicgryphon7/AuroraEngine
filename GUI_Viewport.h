@@ -1,0 +1,15 @@
+#pragma once
+
+#include "GUI.h"
+
+class GUI_Viewport : public GUI
+{
+public:
+	GUI_Viewport();
+
+	void Start(CoreEngine* engine) override;
+	void Update() override;
+
+private:
+	void ShowEngineView();
+};
