@@ -14,6 +14,7 @@ public:
 	~EditorMoveScript();
 
 	void update();
+
 	private:
 		//Time * time;
 		//InputHandler* inputHandler;

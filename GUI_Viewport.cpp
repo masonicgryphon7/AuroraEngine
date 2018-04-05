@@ -77,6 +77,24 @@ void GUI_Viewport::ShowEngineView()
 	//if (Input.GetKeyUp(KeyCode::LeftMouse))
 	//	isHolding = 0;
 
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	if (Input.GetKey(KeyCode::RightMouse))
+		isHolding = true;
+
+	if (Input.GetKeyUp(KeyCode::RightMouse))
+		isHolding = false;
+
+	if (isHolding)
+	{
+		io.SetCustomMouseTexture = true;
+		io.SetCursorTexture((int)m_engine->assetManager.getTexture("Assets/brickwork.jpg")->getTexture(), ImVec2(100, 10));
+	}
+	else
+		io.SetCustomMouseTexture = false;
+
+
+
 	///FIVE HOLY LINES
 	renderManager->SetRenderTarget(m_engine->m_depthStencilView);
 	renderManager->ClearRenderTarget(m_engine->m_depthStencilView);

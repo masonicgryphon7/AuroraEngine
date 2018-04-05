@@ -14,6 +14,5 @@ public:
 	void setMesh(Mesh* in_setMesh) { mesh = in_setMesh; };
 
 private:
-	Mesh* mesh=nullptr;
+	Mesh * mesh = nullptr;
 };
-

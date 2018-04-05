@@ -14,9 +14,11 @@ public:
 
 	void createTextureData(ID3D11Device * device, ID3D11DeviceContext * devContext, std::string filePath);
 
-	ID3D11ShaderResourceView * getTexture() { return textureView; };
+	ID3D11ShaderResourceView * getTexture() { return textureView; }
+	const std::string getPath()  const { return pathToTexture; }
 private:
 	ID3D11ShaderResourceView * textureView = nullptr;
+	std::string pathToTexture;
 
 };
 

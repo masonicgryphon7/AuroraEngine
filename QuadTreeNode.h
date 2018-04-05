@@ -11,14 +11,12 @@ public:
 	QuadTreeNode();
 	~QuadTreeNode();
 
-	void updateTree(std::vector<GameObject*> gameObjects);
+	void addGameObjectToTree(GameObject* gameObject);
 
 private:
 	std::vector<QuadTreeNode*> children;
 	std::vector<GameObject*> gameObjects;
 	OOBB OOBoundingBox;
 
-	void createChildren(int depth, std::vector<GameObject*> gameObjects);
-	void createOOBB(std::vector<GameObject*> gameObjects);
 };
 
