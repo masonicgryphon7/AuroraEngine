@@ -33,49 +33,49 @@ void GUI_Viewport::ShowEngineView()
 	float width = ImGui::GetWindowContentRegionWidth();
 	float height = ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y - 30;
 
-	//Console.print("XPos: ", ImGui::GetWindowPos().x);
-	//Console.print("YPos: ", ImGui::GetWindowPos().y);
+	////Console.print("XPos: ", ImGui::GetWindowPos().x);
+	////Console.print("YPos: ", ImGui::GetWindowPos().y);
 
-	ImVec2 gPos = ImGui::GetWindowPos();
-	ImVec2 gSize = ImGui::GetWindowSize();
+	//ImVec2 gPos = ImGui::GetWindowPos();
+	//ImVec2 gSize = ImGui::GetWindowSize();
 
-	if (gPos.y < 25) // can't go on top
-	{
-		if (Input.GetKey(KeyCode::LeftMouse))
-		{
-			if (isHolding != 1)
-				previous = Input.GetMouseCoordinates();
+	//if (gPos.y < 25) // can't go on top
+	//{
+	//	if (Input.GetKey(KeyCode::LeftMouse))
+	//	{
+	//		if (isHolding != 1)
+	//			previous = Input.GetMouseCoordinates();
 
-			isHolding = 1;
-		}
-		//SetCursorPos(Input.GetMouseCoordinates().x, previous.y + 3);
-		ImGui::SetWindowPos(ImVec2(gPos.x, 25));
-	}
-	else if (gPos.y + gSize.y > screen.y) // can't go below
-	{
-		if (Input.GetKey(KeyCode::LeftMouse))
-		{
-			if (isHolding != -1)
-				previous = Input.GetMouseCoordinates();
+	//		isHolding = 1;
+	//	}
+	//	//SetCursorPos(Input.GetMouseCoordinates().x, previous.y + 3);
+	//	ImGui::SetWindowPos(ImVec2(gPos.x, 25));
+	//}
+	//else if (gPos.y + gSize.y > screen.y) // can't go below
+	//{
+	//	if (Input.GetKey(KeyCode::LeftMouse))
+	//	{
+	//		if (isHolding != -1)
+	//			previous = Input.GetMouseCoordinates();
 
-			isHolding = -1;
-		}
-		//SetCursorPos(Input.GetMouseCoordinates().x, previous.y - 3);
-		ImGui::SetWindowPos(ImVec2(gPos.x, 0));
-	}
+	//		isHolding = -1;
+	//	}
+	//	//SetCursorPos(Input.GetMouseCoordinates().x, previous.y - 3);
+	//	ImGui::SetWindowPos(ImVec2(gPos.x, 0));
+	//}
 
-	if (gSize.y > screen.y - 35)
-	{
-		ImGui::SetWindowSize(ImVec2(gSize.x, screen.y - 35));
-	}
+	//if (gSize.y > screen.y - 35)
+	//{
+	//	ImGui::SetWindowSize(ImVec2(gSize.x, screen.y - 35));
+	//}
 
-	std::string result = "Window: Vector2(" + std::to_string(screen.x) + ", " + std::to_string(screen.y) + ")\n" +
-		"Pos: Vector2(" + std::to_string(gPos.x + gSize.x) + ", " + std::to_string(gPos.y + gSize.y) + ")\n";
+	//std::string result = "Window: Vector2(" + std::to_string(screen.x) + ", " + std::to_string(screen.y) + ")\n" +
+	//	"Pos: Vector2(" + std::to_string(gPos.x + gSize.x) + ", " + std::to_string(gPos.y + gSize.y) + ")\n";
 
-	Console.print(result);
+	//Console.print(result);
 
-	if (Input.GetKeyUp(KeyCode::LeftMouse))
-		isHolding = 0;
+	//if (Input.GetKeyUp(KeyCode::LeftMouse))
+	//	isHolding = 0;
 
 	///FIVE HOLY LINES
 	renderManager->SetRenderTarget(m_engine->m_depthStencilView);

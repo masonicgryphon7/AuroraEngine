@@ -132,6 +132,11 @@ public:
 		std::cout << t; add(u...);
 	}
 
+	inline void forcePrint(const std::string txt)
+	{
+		std::cout << txt << std::endl;
+	}
+
 
 private:
 	enum LastOutput

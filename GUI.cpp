@@ -17,10 +17,10 @@ void GUI::Begin()
 {
 	ImGui::SetNextWindowSize(ImVec2(m_xMin, m_yMin), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSizeConstraints(ImVec2(m_xMin, m_yMin), ImVec2(m_xMax, m_yMax));
-	ImGui::Begin(m_title.c_str(), &m_isVisible, m_windowFlags);
+	ImGui::BeginDock(m_title.c_str());
 }
 
 void GUI::End()
 {
-	ImGui::End();
+	ImGui::EndDock();
 }

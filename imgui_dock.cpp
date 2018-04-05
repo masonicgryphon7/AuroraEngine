@@ -1,12 +1,14 @@
 // based on https://github.com/nem0/LumixEngine/blob/master/external/imgui/imgui_dock.inl
+// modified from https://bitbucket.org/duangle/liminal/src/tip/src/liminal/imgui_dock.cpp
 
 #include "imgui.h"
 #define IMGUI_DEFINE_PLACEMENT_NEW
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
 #include "imgui_dock.h"
-//#include "engine/fs/os_file.h"
-//#include <lua.hpp>
+
+// for string comparasion(could be replaced)
+#include <string>
 
 using namespace ImGui;
 
@@ -322,7 +324,7 @@ struct DockContext
 			else
 			{
 				cursor = ImGuiMouseCursor_ResizeNS;
-				SetCursorScreenPos(ImVec2(dock.pos.x, dock.pos.y + size0.y));
+				SetCursorScreenPos(ImVec2(dock.pos.x, dock.pos.y + size0.y - 3));
 				InvisibleButton("split", ImVec2(dock.size.x, 3));
 				if (dock.status == Status_Dragged) dsize.y = io.MouseDelta.y;
 				dsize.y = -ImMin(-dsize.y, dock.children[0]->size.y - min_size0.y);
@@ -379,7 +381,7 @@ struct DockContext
 	}
 
 
-	Dock* getDockAt(const ImVec2& pos) const
+	Dock* getDockAt() const
 	{
 		for (int i = 0; i < m_docks.size(); ++i)
 		{
@@ -492,7 +494,7 @@ struct DockContext
 
 	void handleDrag(Dock& dock)
 	{
-		Dock* dest_dock = getDockAt(GetIO().MousePos);
+		Dock* dest_dock = getDockAt();
 
 		Begin("##Overlay",
 			NULL,
@@ -729,9 +731,8 @@ struct DockContext
 					pos + ImVec2(size.x + 10, size.y),
 					pos + ImVec2(size.x + 15, size.y),
 					10);
-				draw_list->PathFillConvex(hovered ? color_hovered : (dock_tab->active ? color_active : color));
-				/*draw_list->PathFill(
-					hovered ? color_hovered : (dock_tab->active ? color_active : color));*/
+				draw_list->PathFillConvex(
+					hovered ? color_hovered : (dock_tab->active ? color_active : color));
 				draw_list->AddText(pos + ImVec2(0, 1), text_color, dock_tab->label, text_end);
 
 				dock_tab = dock_tab->next_tab;
@@ -800,17 +801,41 @@ struct DockContext
 		else if (dock_slot == ImGuiDockSlot_Tab)
 		{
 			Dock* tmp = dest;
-			while (tmp->next_tab)
-			{
-				tmp = tmp->next_tab;
-			}
+			while (tmp->next_tab)	tmp = tmp->next_tab;
 
-			tmp->next_tab = &dock;
-			dock.prev_tab = tmp;
-			dock.size = tmp->size;
-			dock.pos = tmp->pos;
-			dock.parent = dest->parent;
-			dock.status = Status_Docked;
+			auto inLinkList = [](const Dock* linkList, const Dock* checkNode)
+			{
+				bool isLinkNode = (linkList == checkNode);
+
+				const Dock* temp = linkList;
+				while (!isLinkNode  && temp->prev_tab)
+				{
+					temp = temp->prev_tab;
+
+					isLinkNode = (temp == checkNode);
+				}
+
+				temp = linkList;
+
+				while (!isLinkNode && temp->next_tab)
+				{
+					temp = temp->next_tab;
+
+					isLinkNode = (temp == checkNode);
+				}
+
+				return isLinkNode;
+			};
+
+			if (!inLinkList(dest, &dock))
+			{
+				tmp->next_tab = &dock;
+				dock.prev_tab = tmp;
+				dock.size = tmp->size;
+				dock.pos = tmp->pos;
+				dock.parent = dest->parent;
+				dock.status = Status_Docked;
+			}
 		}
 		else if (dock_slot == ImGuiDockSlot_None)
 		{
@@ -862,14 +887,6 @@ struct DockContext
 		ImVec2 requested_size = size;
 		root->setPosSize(pos, ImMax(min_size, requested_size));
 	}
-
-
-	void setDockActive()
-	{
-		IM_ASSERT(m_current);
-		if (m_current) m_current->setActive();
-	}
-
 
 	static ImGuiDockSlot getSlotFromLocationCode(char code)
 	{
@@ -979,14 +996,14 @@ struct DockContext
 				opened,
 				dock.size,
 				-1.0f,
-				ImGuiWindowFlags_NoCollapse | extra_flags);
+				ImGuiWindowFlags_NoCollapse /*| ImGuiWindowFlags_ShowBorders*/ | extra_flags); // ImGuiWindowFlags_ShowBorders not used in new version of ImGui
 			m_end_action = EndAction_End;
 			dock.pos = GetWindowPos();
 			dock.size = GetWindowSize();
 
 			ImGuiContext& g = *GImGui;
 
-			if (g.ActiveId == GetCurrentWindow()->MoveId && g.IO.MouseDown[0])
+			if (g.ActiveId == GetCurrentWindow()->GetID("#MOVE") && g.IO.MouseDown[0])
 			{
 				m_drag_offset = GetMousePos() - dock.pos;
 				doUndock(dock);
@@ -1075,211 +1092,344 @@ struct DockContext
 		}
 		End();
 	}
-
-	int getDockIndex(Dock* dock)
-	{
-		if (!dock) return -1;
-
-		for (int i = 0; i < m_docks.size(); ++i)
-		{
-			if (dock == m_docks[i]) return i;
-		}
-
-		IM_ASSERT(false);
-		return -1;
-	}
-
-	/*
-	void save(Lumix::FS::OsFile& file)
-	{
-	file << "docks = {\n";
-	for (int i = 0; i < m_docks.size(); ++i)
-	{
-	Dock& dock = *m_docks[i];
-	file << "dock" << (Lumix::uint64)&dock << " = {\n";
-	file << "index = " << i << ",\n";
-	file << "label = \"" << dock.label << "\",\n";
-	file << "x = " << (int)dock.pos.x << ",\n";
-	file << "y = " << (int)dock.pos.y << ",\n";
-	file << "location = \"" << dock.location << "\",\n";
-	file << "size_x = " << (int)dock.size.x << ",\n";
-	file << "size_y = " << (int)dock.size.y << ",\n";
-	file << "status = " << (int)dock.status << ",\n";
-	file << "active = " << (int)dock.active << ",\n";
-	file << "opened = " << (int)dock.opened << ",\n";
-	file << "prev = " << (int)getDockIndex(dock.prev_tab) << ",\n";
-	file << "next = " << (int)getDockIndex(dock.next_tab) << ",\n";
-	file << "child0 = " << (int)getDockIndex(dock.children[0]) << ",\n";
-	file << "child1 = " << (int)getDockIndex(dock.children[1]) << ",\n";
-	file << "parent = " << (int)getDockIndex(dock.parent) << "\n";
-	if (i < m_docks.size() - 1)
-	file << "},\n";
-	else
-	file << "}\n";
-	}
-	file << "}\n";
-	}
-	*/
-
-	/*
-	Dock* getDockByIndex(lua_Integer idx) { return (idx < 0) ? nullptr : m_docks[(int)idx]; }
-
-	void load(lua_State* L)
-	{
-	for (int i = 0; i < m_docks.size(); ++i)
-	{
-	m_docks[i]->~Dock();
-	MemFree(m_docks[i]);
-	}
-	m_docks.clear();
-
-	if (lua_getglobal(L, "docks") == LUA_TTABLE)
-	{
-	lua_pushnil(L);
-	while (lua_next(L, -2) != 0)
-	{
-	Dock* new_dock = (Dock*)MemAlloc(sizeof(Dock));
-	m_docks.push_back(IM_PLACEMENT_NEW(new_dock) Dock());
-	lua_pop(L, 1);
-	}
-	}
-	lua_pop(L, 1);
-
-	if (lua_getglobal(L, "docks") == LUA_TTABLE)
-	{
-	lua_pushnil(L);
-	while (lua_next(L, -2) != 0)
-	{
-	if (lua_istable(L, -1))
-	{
-	int idx = 0;
-	if (lua_getfield(L, -1, "index") == LUA_TNUMBER)
-	idx = (int)lua_tointeger(L, -1);
-	Dock& dock = *m_docks[idx];
-	dock.last_frame = 0;
-	dock.invalid_frames = 0;
-	lua_pop(L, 1);
-
-	if (lua_getfield(L, -1, "label") == LUA_TSTRING)
-	{
-	dock.label = ImStrdup(lua_tostring(L, -1));
-	dock.id = ImHash(dock.label, 0);
-	}
-	lua_pop(L, 1);
-
-	if (lua_getfield(L, -1, "x") == LUA_TNUMBER)
-	dock.pos.x = (float)lua_tonumber(L, -1);
-	if (lua_getfield(L, -2, "y") == LUA_TNUMBER)
-	dock.pos.y = (float)lua_tonumber(L, -1);
-	if (lua_getfield(L, -3, "size_x") == LUA_TNUMBER)
-	dock.size.x = (float)lua_tonumber(L, -1);
-	if (lua_getfield(L, -4, "size_y") == LUA_TNUMBER)
-	dock.size.y = (float)lua_tonumber(L, -1);
-	if (lua_getfield(L, -5, "active") == LUA_TNUMBER)
-	dock.active = lua_tointeger(L, -1) != 0;
-	if (lua_getfield(L, -6, "opened") == LUA_TNUMBER)
-	dock.opened = lua_tointeger(L, -1) != 0;
-	if (lua_getfield(L, -7, "location") == LUA_TSTRING)
-	strcpy(dock.location, lua_tostring(L, -1));
-	if (lua_getfield(L, -8, "status") == LUA_TNUMBER)
-	{
-	dock.status = (Status_)lua_tointeger(L, -1);
-	}
-	lua_pop(L, 8);
-
-	if (lua_getfield(L, -1, "prev") == LUA_TNUMBER)
-	{
-	dock.prev_tab = getDockByIndex(lua_tointeger(L, -1));
-	}
-	if (lua_getfield(L, -2, "next") == LUA_TNUMBER)
-	{
-	dock.next_tab = getDockByIndex(lua_tointeger(L, -1));
-	}
-	if (lua_getfield(L, -3, "child0") == LUA_TNUMBER)
-	{
-	dock.children[0] = getDockByIndex(lua_tointeger(L, -1));
-	}
-	if (lua_getfield(L, -4, "child1") == LUA_TNUMBER)
-	{
-	dock.children[1] = getDockByIndex(lua_tointeger(L, -1));
-	}
-	if (lua_getfield(L, -5, "parent") == LUA_TNUMBER)
-	{
-	dock.parent = getDockByIndex(lua_tointeger(L, -1));
-	}
-	lua_pop(L, 5);
-	}
-	lua_pop(L, 1);
-	}
-	}
-	lua_pop(L, 1);
-	}
-	*/
 };
 
+// --------------------------------------Wrap Function------------------------------------------
+#include <map>
+#include <string>
 
-static DockContext g_dock;
+static std::map<std::string, DockContext> g_docklist;
+static const char* cur_dock_panel = nullptr;
 
-
-void ShutdownDock()
+int getDockIndex(const DockContext& context, DockContext::Dock* dock)
 {
-	for (int i = 0; i < g_dock.m_docks.size(); ++i)
+	if (!dock) return -1;
+
+	for (int i = 0; i < context.m_docks.size(); ++i)
 	{
-		g_dock.m_docks[i]->~Dock();
-		MemFree(g_dock.m_docks[i]);
+		if (dock == context.m_docks[i])
+			return i;
 	}
-	g_dock.m_docks.clear();
+
+	IM_ASSERT(false);
+	return -1;
 }
 
-void SetNextDock(ImGuiDockSlot slot)
+DockContext::Dock* getDockByIndex(const DockContext& context, int idx)
 {
-	g_dock.m_next_dock_slot = slot;
+	if (idx >= 0 && idx < context.m_docks.size())
+	{
+		return context.m_docks[idx];
+	}
+
+	return nullptr;
 }
 
-void BeginDockWorkspace()
+struct readHelper
 {
+	DockContext* context = nullptr;
+	DockContext::Dock* dock = nullptr;
+};
+static readHelper rhelper;
+
+static void* readOpen(ImGuiContext* ctx, ImGuiSettingsHandler* handler, const char* name)
+{
+	static std::string context_panel = "";
+
+	rhelper.context = nullptr;
+	rhelper.dock = nullptr;
+
+	std::string tag(name);
+
+	if (tag.substr(0, 6) == "panel:")
+	{
+		context_panel = tag.substr(6);
+	}
+	// specific size of docks
+	else if (tag.substr(0, 5) == "Size:")
+	{
+		DockContext& context = g_docklist[context_panel.c_str()];
+
+		std::string size = tag.substr(5);
+		int dockSize = atoi(size.c_str());
+
+		for (int i = 0; i < dockSize; i++)
+		{
+			DockContext::Dock* new_dock = (DockContext::Dock*) MemAlloc(sizeof(DockContext::Dock));
+			context.m_docks.push_back(IM_PLACEMENT_NEW(new_dock) DockContext::Dock());
+		}
+
+		return (void*)NULL;
+	}
+	// specific index of dock
+	else if (tag.substr(0, 5) == "Dock:")
+	{
+		if (g_docklist.find(context_panel.c_str()) != g_docklist.end())
+		{
+			DockContext& context = g_docklist[context_panel.c_str()];
+
+			std::string indexStr = tag.substr(5);
+			int index = atoi(indexStr.c_str());
+			if (index >= 0 && index < (int)context.m_docks.size())
+			{
+				rhelper.dock = context.m_docks[index];
+				rhelper.context = &context;
+			}
+		}
+	}
+
+	return (void*)&rhelper;
+}
+
+static void readLine(ImGuiContext* ctx, ImGuiSettingsHandler* handler, void* entry, const char* line_start)
+{
+	readHelper* userdata = (readHelper*)entry;
+
+	if (userdata)
+	{
+		int active, opened, status;
+		int x, y, size_x, size_y;
+		int prev, next, child0, child1, parent;
+		char label[64], location[64];
+
+		if (sscanf(line_start, "label=%[^\n^\r]", label) == 1)
+		{
+			userdata->dock->label = ImStrdup(label);
+			userdata->dock->id = ImHash(userdata->dock->label, 0);
+		}
+		else if (sscanf(line_start, "x=%d", &x) == 1)
+		{
+			userdata->dock->pos.x = (float)x;
+		}
+		else if (sscanf(line_start, "y=%d", &y) == 1)
+		{
+			userdata->dock->pos.y = (float)y;
+		}
+		else if (sscanf(line_start, "size_x=%d", &size_x) == 1)
+		{
+			userdata->dock->size.x = (float)size_x;
+		}
+		else if (sscanf(line_start, "size_y=%d", &size_y) == 1)
+		{
+			userdata->dock->size.y = (float)size_y;
+		}
+		else if (sscanf(line_start, "active=%d", &active) == 1)
+		{
+			userdata->dock->active = (bool)active;
+		}
+		else if (sscanf(line_start, "opened=%d", &opened) == 1)
+		{
+			userdata->dock->opened = (bool)opened;
+		}
+		else if (sscanf(line_start, "location=%[^\n^\r]", location) == 1)
+		{
+			strcpy(userdata->dock->location, location);
+		}
+		else if (sscanf(line_start, "status=%d", &status) == 1)
+		{
+			userdata->dock->status = (DockContext::Status_) status;
+		}
+		else if (sscanf(line_start, "prev=%d", &prev) == 1)
+		{
+			userdata->dock->prev_tab = getDockByIndex(*(userdata->context), prev);
+		}
+		else if (sscanf(line_start, "next=%d", &next) == 1)
+		{
+			userdata->dock->next_tab = getDockByIndex(*(userdata->context), next);
+		}
+		else if (sscanf(line_start, "child0=%d", &child0) == 1)
+		{
+			userdata->dock->children[0] = getDockByIndex(*(userdata->context), child0);
+		}
+		else if (sscanf(line_start, "child1=%d", &child1) == 1)
+		{
+			userdata->dock->children[1] = getDockByIndex(*(userdata->context), child1);
+		}
+		else if (sscanf(line_start, "parent=%d", &parent) == 1)
+		{
+			userdata->dock->parent = getDockByIndex(*(userdata->context), parent);
+		}
+	}
+}
+
+static void writeAll(ImGuiContext* ctx, ImGuiSettingsHandler* handler, ImGuiTextBuffer* buf)
+{
+	int totalDockNum = 0;
+	for (const auto& iter : g_docklist)
+	{
+		const DockContext& context = iter.second;
+		totalDockNum += context.m_docks.size();
+	}
+
+	// Write a buffer
+	buf->reserve(buf->size() + totalDockNum * sizeof(DockContext::Dock) + 32 * (totalDockNum + (int)g_docklist.size() * 2));
+
+	// output size
+	for (const auto& iter : g_docklist)
+	{
+		const DockContext& context = iter.second;
+
+		buf->appendf("[%s][panel:%s]\n", handler->TypeName, iter.first.c_str());
+		buf->appendf("[%s][Size:%d]\n", handler->TypeName, (int)context.m_docks.size());
+
+		for (int i = 0, docksize = context.m_docks.size(); i < docksize; i++)
+		{
+			const DockContext::Dock* d = context.m_docks[i];
+
+			// some docks invisible but do exist
+			buf->appendf("[%s][Dock:%d]\n", handler->TypeName, i);
+			buf->appendf("label=%s\n", d->label);
+			buf->appendf("x=%d\n", (int)d->pos.x);
+			buf->appendf("y=%d\n", (int)d->pos.y);
+			buf->appendf("size_x=%d\n", (int)d->size.x);
+			buf->appendf("size_y=%d\n", (int)d->size.y);
+			buf->appendf("active=%d\n", (int)d->active);
+			buf->appendf("opened=%d\n", (int)d->opened);
+			buf->appendf("location=%s\n", d->location);
+			buf->appendf("status=%d\n", (int)d->status);
+			buf->appendf("prev=%d\n", (int)getDockIndex(context, d->prev_tab));
+			buf->appendf("next=%d\n", (int)getDockIndex(context, d->next_tab));
+			buf->appendf("child0=%d\n", (int)getDockIndex(context, d->children[0]));
+			buf->appendf("child1=%d\n", (int)getDockIndex(context, d->children[1]));
+			buf->appendf("parent=%d\n", (int)getDockIndex(context, d->parent));
+		}
+	}
+}
+
+
+// ----------------------------------------------API-------------------------------------------------
+void ImGui::ShutdownDock()
+{
+	for (auto& iter : g_docklist)
+	{
+		DockContext& context = iter.second;
+
+		for (int k = 0, dock_count = (int)context.m_docks.size(); k < dock_count; k++)
+		{
+			context.m_docks[k]->~Dock();
+			MemFree(context.m_docks[k]);
+			context.m_docks[k] = nullptr;
+		}
+	}
+	g_docklist.clear();
+}
+
+void ImGui::SetNextDock(const char* panel, ImGuiDockSlot slot)
+{
+	if (panel && g_docklist.find(panel) != g_docklist.end())
+	{
+		g_docklist[panel].m_next_dock_slot = slot;
+	}
+}
+
+bool ImGui::BeginDockspace()
+{
+	ImGuiContext& g = *GImGui;
+	cur_dock_panel = g.CurrentWindow->Name;
+
+	IM_ASSERT(cur_dock_panel);
+
+	if (!cur_dock_panel)	return false;
+
 	ImGuiWindowFlags flags = ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar;
-	BeginChild("###workspace", ImVec2(0, 0), false, flags);
-	g_dock.m_workspace_pos = GetWindowPos();
-	g_dock.m_workspace_size = GetWindowSize();
+	char child_name[1024];
+	sprintf(child_name, "##%s", cur_dock_panel);
+	bool result = BeginChild(child_name, ImVec2(0, 0), false, flags);
+
+	DockContext& dock = g_docklist[cur_dock_panel];
+	dock.m_workspace_pos = GetWindowPos();
+	dock.m_workspace_size = GetWindowSize();
+
+	return result;
 }
 
-void EndDockWorkspace()
+IMGUI_API void ImGui::EndDockspace()
 {
 	EndChild();
+
+	cur_dock_panel = nullptr;
 }
 
-void SetDockActive()
+bool ImGui::BeginDock(const char* label, bool* opened, ImGuiWindowFlags extra_flags)
 {
-	g_dock.setDockActive();
+	IM_ASSERT(cur_dock_panel);
+
+	if (!cur_dock_panel)	return false;
+
+	if (g_docklist.find(cur_dock_panel) != g_docklist.end())
+	{
+		DockContext& context = g_docklist[cur_dock_panel];
+
+		char new_label[128];
+		sprintf_s(new_label, "%s##%s", label, cur_dock_panel);
+
+		return context.begin(new_label, opened, extra_flags);
+	}
+
+	return false;
 }
 
+#include "Console.h"
 
-bool BeginDock(const char* label, bool* opened, ImGuiWindowFlags extra_flags)
+void ImGui::EndDock()
 {
-	return g_dock.begin(label, opened, extra_flags);
+	IM_ASSERT(cur_dock_panel);
+
+	if (!cur_dock_panel)	return;
+
+	if (g_docklist.find(cur_dock_panel) != g_docklist.end())
+	{
+		DockContext& context = g_docklist[cur_dock_panel];
+		context.end();
+	}
 }
 
-
-void EndDock()
+void ImGui::DockDebugWindow(const char* dock_panel)
 {
-	g_dock.end();
+	if (dock_panel && g_docklist.find(dock_panel) != g_docklist.end())
+	{
+		DockContext& context = g_docklist[dock_panel];
+		context.debugWindow();
+	}
 }
 
-void DockDebugWindow()
+void ImGui::InitDock()
 {
-	g_dock.debugWindow();
+	ImGuiContext& g = *GImGui;
+	ImGuiSettingsHandler ini_handler;
+	ini_handler.TypeName = "Dock";
+	ini_handler.TypeHash = ImHash("Dock", 0, 0);
+	ini_handler.ReadOpenFn = readOpen;
+	ini_handler.ReadLineFn = readLine;
+	ini_handler.WriteAllFn = writeAll;
+	g.SettingsHandlers.push_front(ini_handler);
 }
 
-/*
-void igSaveDock(Lumix::FS::OsFile& file)
+#include <iostream>
+#include <fstream>
+#include "Console.h"
+
+void ImGui::ResetToStandard()
 {
-g_dock.save(file);
-}
+	std::ifstream standard_r;
+	standard_r.open("Assets/dock_standard.aur", std::ios::out | std::ios::app);
+	std::string line, result;
+	if (standard_r.is_open())
+	{
+		while (getline(standard_r, line))
+		{
+			result += line + '\n';
+			//Console.print(line);
+		}
+		standard_r.close();
+	}
 
+	std::ofstream standard_w("imgui.ini");
+	if (standard_w.is_open())
+	{
+		standard_w << result;
+		standard_w.close();
+	}
 
-void igLoadDock(lua_State* L)
-{
-g_dock.load(L);
+	Console.error(result);
 }
-*/

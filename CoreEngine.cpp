@@ -82,6 +82,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		ImGui::StyleColorsDark();
 		SetGuiStyle();
 
+		ImGui::InitDock();
+
 
 		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 			{
@@ -164,13 +166,16 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		std::vector<std::unique_ptr<GUI>> m_gui;
 
 		m_gui.emplace_back(make_unique<GUI_Viewport>());
-		m_gui.emplace_back(make_unique<GUI_MenuBar>());
+		//m_gui.emplace_back(make_unique<GUI_MenuBar>());
 
 		for (auto& gui : m_gui)
 			gui->Start(this);
 
 		float oldTime = clock();
 		float deltaTime = 0;
+
+		float timer = 0.0f;
+		bool ToRestart = false;
 
 		while (WM_QUIT != msg.message)
 		{
@@ -189,21 +194,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				ImGui_ImplDX11_NewFrame();
 
-				//ImGui::SetNextWindowSize(ImVec2(500, 83), ImGuiCond_Always);
-				//ImGui::Begin("Progress Bar Test", &m, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
-				//ImGui::SetWindowFocus();
-
-				//// Progress	
-				//ImGui::PushItemWidth(500 - ImGui::GetStyle().WindowPadding.x * 2.0f);
-				//ImGui::ProgressBar(30.0f, ImVec2(0.0f, 0.0f));
-				//ImGui::Text("30%");
-				//ImGui::PopItemWidth();
-
-				//// Window end
-				//ImGui::End();
-
 				scene.update();
-	
+
 				objectsToRender = scene.getObjectsToRender(camera);
 				//the FIVE holy lines were here before
 
@@ -213,40 +205,77 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				//ImGui::ShowMetricsWindow();
 
+				if (Input.GetKeyDown(KeyCode::Y))
+				{
+					ToRestart = true;
+					ImGui::InitDock();
+					ImGui::ResetToStandard();
+					timer = 5.0f;
+				}
+
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 				bool m = true, n = true;
 
 				//renderManager.BeginFrame(); // START RENDERING
 				{
-					//if (ImGui::BeginDock("Docks", &m))
-					//{
-					//	ImGui::Print(); // print docking information
-					//	ImGui::Text("Meme");
-					//}
-					//ImGui::EndDock();
-					//if (ImGui::BeginDock("Docks2", &n))
-					//{
-					//	ImGui::Print(); // print docking information
-					//	ImGui::ShowStyleEditor();
-					//}
-					//ImGui::EndDock();
-					for (auto& gui : m_gui)
+
+					Vector2 engSize = Input.GetEngineWindowResolution();
+					ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
+					ImGui::SetNextWindowSize(ImVec2(engSize.x + 2, engSize.y + 2), ImGuiSetCond_Always);
+					ImGui::Begin("Aurora Engine", &m, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 					{
-						if (gui->GetIsWindow())
-							gui->Begin();
+						ImGui::BeginDockspace();
+						{
+							if (timer > 0.0f)
+							{
+								ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
+								ImGui::SetNextWindowSize(ImVec2(engSize.x + 2, engSize.y + 2), ImGuiSetCond_Always);
+								ImGui::Begin("Aurora");
+								ImGui::Text("Please Restart");
+								ImGui::End();
+								timer -= Time.getDeltaTime() / 1000;
+							}
+							else
+							{
+								if (ImGui::BeginDock("Inspector"))
+								{
+									ImGui::Text("All Inspector Shit Here");
+								}
+								ImGui::EndDock();
 
-						gui->Update();
+								if (ImGui::BeginDock("Hierarchy"))
+								{
+									ImGui::Text("All Hierarchy Shit Here");
+								}
+								ImGui::EndDock();
 
-						if (gui->GetIsWindow())
-							gui->End();
+								if (ImGui::BeginDock("Project"))
+								{
+									ImGui::Text("All Project Files Shit Here");
+								}
+								ImGui::EndDock();
+
+								for (auto& gui : m_gui)
+								{
+									if (gui->GetIsWindow())
+										gui->Begin();
+
+									gui->Update();
+
+									if (gui->GetIsWindow())
+										gui->End();
+								}
+							}
+						}
+						ImGui::EndDockspace();
 					}
-
-					//Console.print("Window: ", Input.GetEngineWindowResolution().x);
+					ImGui::End();
 
 					ImGui::Render();
 					ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 					gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
 				}
+
 				renderManager->EndFrame(); // END RENDERING
 				ImGui::EndFrame();
 
@@ -256,6 +285,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 		}
 
+		ImGui::ShutdownDock();
 		ImGui_ImplDX11_Shutdown();
 		ImGui::DestroyContext();
 
@@ -274,6 +304,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//delete cube;
 		delete mainCamera;
 		//delete camera;
+
+		if (ToRestart)
+			ImGui::ResetToStandard();
 
 		m_gui.clear();
 		m_gui.shrink_to_fit();
@@ -415,8 +448,6 @@ void CoreEngine::SetGuiStyle()
 	io.Fonts->AddFontFromFileTTF("Assets/Fonts/LiberationSans-Regular.ttf", fontSize);
 }
 
-
-
 void CoreEngine::SetViewport(int x, int y)
 {
 	D3D11_VIEWPORT vp;
@@ -496,7 +527,6 @@ void CoreEngine::OnResize()
 	Console.success("New Window Size: ", str);*/
 }
 
-
 HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 {
 	WNDCLASSEX wc = { 0 };
@@ -558,6 +588,38 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+
+	case WM_CREATE:
+	{
+		HMENU hMenubar = CreateMenu();
+		HMENU hFile = CreateMenu();
+		HMENU hEdit = CreateMenu();
+		HMENU hAssets = CreateMenu();
+		HMENU hGameObject = CreateMenu();
+		HMENU hComponent = CreateMenu();
+		HMENU hWindow = CreateMenu();
+		HMENU hHelp = CreateMenu();
+
+		//Creates menus
+		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hFile, L"&File");
+		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Edit");
+		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Assets");
+		AppendMenu(hMenubar, MF_POPUP, NULL, L"&GameObject");
+		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Component");
+		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Window");
+		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Help");
+
+		AppendMenu(hFile, MF_STRING, NULL, L"New Scene");
+		AppendMenu(hFile, MF_STRING, NULL, L"Open Scene");
+		AppendMenu(hFile, MF_SEPARATOR, NULL, L"Separator");
+		AppendMenu(hFile, MF_STRING, NULL, L"Save Scene");
+		AppendMenu(hFile, MF_STRING, NULL, L"Save Scene as...");
+
+
+
+		SetMenu(hWnd, hMenubar);
+	}
+	break;
 
 	case WM_INPUT:
 	case WM_MOUSEMOVE:

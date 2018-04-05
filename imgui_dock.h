@@ -1,16 +1,10 @@
 // based on https://github.com/nem0/LumixEngine/blob/master/external/imgui/imgui_dock.h
+// modified from https://bitbucket.org/duangle/liminal/src/tip/src/liminal/imgui_dock.h
 
 #pragma once
 
-//namespace Lumix { namespace FS { class OsFile; } }
-//struct lua_State;
-
-#ifdef __cplusplus
-extern "C" {
-#else
-typedef struct ImVec2 ImVec2;
+// Forward declarations
 typedef int ImGuiWindowFlags;
-#endif
 
 typedef enum ImGuiDockSlot
 {
@@ -24,17 +18,17 @@ typedef enum ImGuiDockSlot
 	ImGuiDockSlot_None
 } ImGuiDockSlot;
 
-extern void BeginDockWorkspace();
-extern void EndDockWorkspace();
-extern void ShutdownDock();
-extern void SetNextDock(ImGuiDockSlot slot);
-extern bool BeginDock(const char* label, bool* opened, ImGuiWindowFlags extra_flags);
-extern void EndDock();
-extern void SetDockActive();
-extern void DockDebugWindow();
-//void SaveDock(Lumix::FS::OsFile& file);
-//void LoadDock(lua_State* L);
+namespace ImGui
+{
 
-#ifdef __cplusplus
-}
-#endif
+	IMGUI_API bool BeginDockspace();
+	IMGUI_API void EndDockspace();
+	IMGUI_API void ShutdownDock();
+	IMGUI_API void SetNextDock(const char* dock_panel, ImGuiDockSlot slot);
+	IMGUI_API bool BeginDock(const char* label, bool* opened = NULL, ImGuiWindowFlags extra_flags = 0);
+	IMGUI_API void EndDock();
+	IMGUI_API void DockDebugWindow(const char* dock_panel);
+	IMGUI_API void InitDock();
+	IMGUI_API void ResetToStandard();
+
+};
