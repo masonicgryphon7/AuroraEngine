@@ -3,6 +3,7 @@
 #include "GUI_Viewport.h"
 #include "GUI_MenuBar.h"
 #include "GUI_Console.h"
+#include "GUI_Hierarchy.h"
 #include "Console.h"
 #include "imgui_dock.h"
 
@@ -171,6 +172,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		m_gui.emplace_back(make_unique<GUI_Viewport>());
 		m_gui.emplace_back(make_unique<GUI_Console>());
+		m_gui.emplace_back(make_unique<GUI_Hierarchy>());
 		//m_gui.emplace_back(make_unique<GUI_MenuBar>());
 
 		for (auto& gui : m_gui)
@@ -248,11 +250,11 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 								}
 								ImGui::EndDock();
 
-								if (ImGui::BeginDock("Hierarchy"))
+								/*if (ImGui::BeginDock("Hierarchy"))
 								{
 									ImGui::Text("All Hierarchy Shit Here");
 								}
-								ImGui::EndDock();
+								ImGui::EndDock();*/
 
 								if (ImGui::BeginDock("Project"))
 								{

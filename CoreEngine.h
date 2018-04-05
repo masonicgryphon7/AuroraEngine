@@ -84,7 +84,6 @@ private:
 	//cTime engineTime;
 
 	//AssetManager assetManager;
-	Scene scene;
 	//MaterialLib materialLibrary;
 	//TextureLib textureLibrary;
 	//MeshLib meshLibrary;
@@ -117,6 +116,7 @@ public:
 
 	std::vector<GameObject*>objectsToRender;
 
+	Scene scene;
 	GameObject* camera;
 	AssetManager assetManager;
 	RenderManager *renderManager;
