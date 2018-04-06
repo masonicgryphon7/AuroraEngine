@@ -161,6 +161,9 @@
     <ClInclude Include="GUI_Hierarchy.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="EditorSceneSelectionScript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreEngine.cpp">
@@ -258,6 +261,9 @@
     </ClCompile>
     <ClCompile Include="GUI_Hierarchy.cpp">
       <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorSceneSelectionScript.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

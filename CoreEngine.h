@@ -18,6 +18,7 @@
 #include "ShaderProgram.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "EditorSceneSelectionScript.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"
 //#include "MeshLib.h"
@@ -116,7 +117,6 @@ public:
 
 	std::vector<GameObject*>objectsToRender;
 
-	Scene scene;
 	GameObject* camera;
 	AssetManager assetManager;
 	RenderManager *renderManager;

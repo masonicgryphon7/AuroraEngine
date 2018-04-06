@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include <DirectXMath.h>
+#include "PRIMITIVE_GEOMETRY.h"
 
 class Camera : public Component
 {
@@ -14,6 +15,8 @@ public:
 	void update();
 	DirectX::XMMATRIX calculateViewMatrix(DirectX::XMVECTOR position, DirectX::XMVECTOR forwardVector, DirectX::XMVECTOR upVector);
 	DirectX::XMMATRIX calculatePerspectiveMatrix();
+	Ray calculateScreenPointToRay(DirectX::XMVECTOR postion);
+	
 	int height;
 	int width;
 	float FOV;

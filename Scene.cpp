@@ -44,14 +44,20 @@ std::vector<GameObject*> Scene::getSceneObjects() {
 	return sceneObjects;
 }
 
+int Scene::getSceneObjectsCount()
+{
+	return sceneObjects.size();
+}
+
 
 
 void Scene::update()
 {
-	for (int i = 0; i < sceneObjects.size() - 1; i++)
-		for (int j = 0; j < sceneObjects[j]->components.size() - 1; j++)
+	for (int i = 0; i < sceneObjects.size(); i++) {
+		for (int j = 0; j < sceneObjects[i]->components.size(); j++) {
 			sceneObjects[i]->components[j]->update();
-
+		}
+	}
 }
 
 

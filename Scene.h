@@ -5,7 +5,7 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 
-class Scene
+static class Scene
 {
 public:
 	Scene();
@@ -16,6 +16,8 @@ public:
 	GameObject* getGameObjectAt(int index);
 	std::vector<GameObject*> getObjectsToRender(GameObject* camera);
 	std::vector<GameObject*> getSceneObjects();
+	int getSceneObjectsCount();
+
 	void update();
 
 
@@ -27,5 +29,5 @@ private:
 	int planeAABBIntersect(OOBB otherOBB, DirectX::XMVECTOR otherPosition, DirectX::XMVECTOR frustumPlane);
 	std::vector<GameObject*> frustumCull(GameObject * camera);
 
-};
+}gScene;
 

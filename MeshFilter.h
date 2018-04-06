@@ -13,6 +13,7 @@ public:
 	Mesh* getMesh() { return mesh; };
 	void setMesh(Mesh* in_setMesh) { mesh = in_setMesh; };
 
+	void update();
 private:
 	Mesh * mesh = nullptr;
 };

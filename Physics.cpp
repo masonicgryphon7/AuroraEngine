@@ -6,10 +6,7 @@ Physics::Physics()
 {
 }
 
-Physics::Physics(Scene * scene)
-{
-	this->scene = scene;
-}
+
 
 
 Physics::~Physics()
@@ -24,9 +21,9 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 
 
 	// OBBs
-	for (int i = 0; i < scene->getSceneObjects().size(); i++)
+	for (int i = 0; i < gScene.getSceneObjectsCount(); i++)
 	{
-		OOBB obb = scene->getSceneObjects()[i]->OOBoundingBox;
+		OOBB obb = gScene.getSceneObjects()[i]->OOBoundingBox;
 		// IMPLEMENT HERE.
 		// TEST OBB, UPDATE lastT, objIndex and objType if necessary.
 		float t = obbTest(ray.direction, ray.origin, obb);
@@ -40,7 +37,7 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 	if (hitObject) {
 		hit.distance = lastT;
 		hit.point = DirectX::XMVectorAdd(DirectX::XMVectorScale(ray.direction, lastT), ray.origin);
-		hit.transform = &scene->getSceneObjects()[objIndex]->transform;
+		hit.transform = &gScene.getSceneObjects()[objIndex]->transform;
 	}
 	else
 	{

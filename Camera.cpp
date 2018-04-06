@@ -1,6 +1,6 @@
 #include "Camera.h"
 #include "Console.h"
-
+#include "GameObject.h"
 
 Camera::Camera()
 {
@@ -49,4 +49,21 @@ DirectX::XMMATRIX Camera::calculatePerspectiveMatrix()
 		0, 0, -nearZ * farZ / (farZ - nearZ), 0);*/
 
 	return DirectX::XMMatrixPerspectiveFovLH(FOV, aspectRatio, nearZ, farZ);
+}
+
+Ray Camera::calculateScreenPointToRay(DirectX::XMVECTOR postion)
+{
+	Ray ray;
+	ray.origin = gameObject->transform.getPosition();
+	
+	//inverse matrix
+	DirectX::XMMATRIX ndcToWorld = DirectX::XMMatrixMultiply(calculateViewMatrix(gameObject->transform.getPosition(), gameObject->transform.getForward(), gameObject->transform.getUp()), calculatePerspectiveMatrix());
+	ndcToWorld = DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(ndcToWorld), ndcToWorld);
+
+	//input position to ndc
+	DirectX::XMVECTOR rayDir = DirectX::XMVectorSwizzle(postion, (1.0f / (float)width), (1.0f / (float)height), 1.0f, 0.0f);
+	rayDir = DirectX::XMVector3Transform(rayDir, ndcToWorld);
+
+	ray.direction = rayDir;
+	return ray;
 }

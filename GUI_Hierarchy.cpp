@@ -20,7 +20,7 @@ void GUI_Hierarchy::ShowHierarchy()
 {
 	if (ImGui::TreeNodeEx("Root", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		for (const auto& gObject : m_engine->scene.getSceneObjects())
+		for (const auto& gObject : gScene.getSceneObjects())
 		{
 			AddToTree(gObject);
 		}

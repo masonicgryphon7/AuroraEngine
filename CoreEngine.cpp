@@ -153,13 +153,15 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
-		camera = scene.createEmptyGameObject();
-		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
-		camera->addComponent(editorMoveScript);
+		camera = gScene.createEmptyGameObject();
 		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
 		camera->addComponent(mainCamera);
+		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
+		camera->addComponent(editorSceneSelectionScript);
 
-		GameObject* cube = scene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
+		camera->addComponent(editorMoveScript);
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		assetManager.addTexture("Assets/brickwork.jpg");
 		assetManager.addTexture("Assets/NormalBrick.png");
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
@@ -203,9 +205,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				ImGui_ImplDX11_NewFrame();
 
-				scene.update();
+				gScene.update();
 
-				objectsToRender = scene.getObjectsToRender(camera);
+ 				objectsToRender = gScene.getObjectsToRender(camera);
 				//the FIVE holy lines were here before
 
 				//gDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);

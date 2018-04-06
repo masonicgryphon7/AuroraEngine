@@ -17,3 +17,7 @@ MeshFilter::~MeshFilter()
 {
 }
 
+void MeshFilter::update()
+{
+}
+
