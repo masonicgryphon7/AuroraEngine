@@ -65,8 +65,8 @@ Ray Camera::calculateScreenPointToRay(DirectX::XMVECTOR postion)
 	DirectX::XMVECTOR mouse = DirectX::XMVectorMultiply(postion, DirectX::XMVectorSet(1.0f/width, 1.0f/height,1.0f,1.0f));
 	
 	//map to -1 1
-	mouse = DirectX::XMVectorMultiply(mouse, DirectX::XMVectorSet(2.0f, 2.0f, 0.0f, 0.0f));
-	mouse = DirectX::XMVectorSubtract(mouse, DirectX::XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f));
+	mouse = DirectX::XMVectorMultiply(mouse, DirectX::XMVectorSet(2.0f, -2.0f, 0.0f, 0.0f));
+	mouse = DirectX::XMVectorSubtract(mouse, DirectX::XMVectorSet(1.0f, -1.0f, 0.0f, -1.0f));
 
 	DirectX::XMVECTOR nearV = mouse;
 	DirectX::XMVECTOR farV = DirectX::XMVectorAdd(mouse, DirectX::XMVectorSet(0.0f,0.0f,1.0f,0.0f));

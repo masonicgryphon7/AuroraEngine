@@ -40,6 +40,8 @@ public:
 	DirectX::XMMATRIX calculateWorldMatrix();
 	void uniformWorldMatrix(unsigned int othershaderProgram);
 
+	//inline GameObject* getshared() { return shared}
+
 	template <class T>
 	T* getComponent() {
 		for (int i = 0; i < components.size(); i++)

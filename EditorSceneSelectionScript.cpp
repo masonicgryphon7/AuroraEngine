@@ -23,7 +23,7 @@ void EditorSceneSelectionScript::update()
 	{
 		RaycastHit hit;
 		
-		Ray ray = editorCamera->calculateScreenPointToRay(DirectX::XMVectorSet(ImGui::GetMousePos().x, ImGui::GetMousePos().y, 0, 0));
+		Ray ray = editorCamera->calculateScreenPointToRay(DirectX::XMVectorSet(Input.GetAbsoluteMouseCoordinates().x, Input.GetAbsoluteMouseCoordinates().y, 0, 0));
 		gPhysics.Raycast(ray, hit);
 
 		//hit.transform->setPosition(DirectX::XMVectorSet(0, 10, 0, 0));

@@ -208,14 +208,17 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				gScene.update();
 
- 				objectsToRender = gScene.getObjectsToRender(camera);
+				objectsToRender = gScene.getObjectsToRender(camera);
 				//the FIVE holy lines were here before
 
 				//gDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
 
-				//ImGui::ShowTestWindow();
 
 				//ImGui::ShowMetricsWindow();
+
+			std:string pri = "Vector2(" + std::to_string(ImGui::GetMousePos().x) + ", " + std::to_string(ImGui::GetMousePos().y) + ")";
+
+				Console.print(pri);
 
 				if (Input.GetKeyDown(KeyCode::Y))
 				{
@@ -251,6 +254,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 							{
 								if (ImGui::BeginDock("Inspector"))
 								{
+									//ImGui::ShowTestWindow();
 									ImGui::Text("All Inspector Shit Here");
 								}
 								ImGui::EndDock();

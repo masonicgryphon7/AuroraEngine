@@ -25,7 +25,8 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 	{
 		OOBB obb = gScene.getSceneObjects()[i]->OOBoundingBox;
 		if (obb.isActive == true) {
-			
+			obb.centre = DirectX::XMVectorAdd(obb.centre, gScene.getSceneObjects()[i]->transform.getPosition());
+
 			float t = obbTest(ray.direction, ray.origin, obb);
 			if (t>EPSILON && (t<lastT || lastT<EPSILON)) {
 				lastT = t;
