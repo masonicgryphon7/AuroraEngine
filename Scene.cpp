@@ -1,5 +1,5 @@
 #include "Scene.h"
-
+std::vector<GameObject*> Scene::sceneObjects;
 
 
 Scene::Scene()

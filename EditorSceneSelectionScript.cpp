@@ -1,5 +1,6 @@
 #include "EditorSceneSelectionScript.h"
 #include "Console.h"
+#include "imgui.h"
 
 
 EditorSceneSelectionScript::EditorSceneSelectionScript():Component(-1, "Editor Scene Selection Script")
@@ -18,20 +19,20 @@ EditorSceneSelectionScript::~EditorSceneSelectionScript()
 void EditorSceneSelectionScript::update()
 {
 
-	if (Input.GetKey(KeyCode::LeftMouse))
+	if (Input.GetKeyDown(KeyCode::LeftMouse))
 	{
 		RaycastHit hit;
 		
-		Ray ray = editorCamera->calculateScreenPointToRay(DirectX::XMVectorSet(Input.GetAbsoluteMouseCoordinates().x, Input.GetAbsoluteMouseCoordinates().y, 0, 0));
+		Ray ray = editorCamera->calculateScreenPointToRay(DirectX::XMVectorSet(ImGui::GetMousePos().x, ImGui::GetMousePos().y, 0, 0));
 		gPhysics.Raycast(ray, hit);
 
 		//hit.transform->setPosition(DirectX::XMVectorSet(0, 10, 0, 0));
 		if (hit.transform != nullptr) {
-			hit.transform->setPosition(DirectX::XMVectorSet(0,10,0,0));
+			gameObject->name = "Hit obj";
 		}
 		else
 		{
-			gameObject->transform.setPosition(DirectX::XMVectorSet(0, 0, 0, 0));
+			gameObject->name = "Missed obj";
 			//Console.warning("ray" + Input.GetMouseCoordinates().x+ Input.GetMouseCoordinates().y);
 		}
 	}

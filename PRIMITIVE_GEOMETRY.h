@@ -9,6 +9,7 @@ enum class PRIMITIVE_GEOMETRY
 };
 
 struct OOBB {
+	bool isActive;
 	DirectX::XMVECTOR centre;
 	DirectX::XMVECTOR x_hx;
 	DirectX::XMVECTOR y_hy;

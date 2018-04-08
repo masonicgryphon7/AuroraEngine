@@ -23,7 +23,7 @@ public:
 
 
 private:
-	std::vector<GameObject*>sceneObjects;
+	static std::vector<GameObject*>sceneObjects;
 	std::vector<QuadTreeNode*> root;
 
 	int planeAABBIntersect(OOBB otherOBB, DirectX::XMVECTOR otherPosition, DirectX::XMVECTOR frustumPlane);

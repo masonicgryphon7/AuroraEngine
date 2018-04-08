@@ -24,13 +24,15 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 	for (int i = 0; i < gScene.getSceneObjectsCount(); i++)
 	{
 		OOBB obb = gScene.getSceneObjects()[i]->OOBoundingBox;
-		// IMPLEMENT HERE.
-		// TEST OBB, UPDATE lastT, objIndex and objType if necessary.
-		float t = obbTest(ray.direction, ray.origin, obb);
-		if (t>EPSILON && (t<lastT || lastT<EPSILON)) {
-			lastT = t;
-			objIndex = i;
-			hitObject = true;
+		if (obb.isActive == true) {
+			
+			float t = obbTest(ray.direction, ray.origin, obb);
+			if (t>EPSILON && (t<lastT || lastT<EPSILON)) {
+				lastT = t;
+				objIndex = i;
+				hitObject = true;
+
+			}
 		}
 	}
 

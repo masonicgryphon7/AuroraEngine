@@ -154,6 +154,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
 		camera = gScene.createEmptyGameObject();
+		camera->OOBoundingBox.isActive = false;
 		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
 		camera->addComponent(mainCamera);
 		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
