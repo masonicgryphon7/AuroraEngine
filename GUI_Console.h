@@ -11,4 +11,6 @@ public:
 
 private:
 	void ShowFrame();
+	void ClearLogs();
+	//void AddLogPacket(LogPacket packet);
 };

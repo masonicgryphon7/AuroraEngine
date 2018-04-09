@@ -173,7 +173,7 @@ void RenderManager::BeginFrame()
 	//gDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	////gDeviceContext->PSSetShaderResources(0, 1, &m_shaderResourceView);
 
-	gDeviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+	//gDeviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 	gDeviceContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	gDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);

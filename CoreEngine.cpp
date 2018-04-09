@@ -7,6 +7,8 @@
 #include "Console.h"
 #include "imgui_dock.h"
 
+#include "Debug.h"
+
 #include <crtdbg.h>
 
 #pragma comment(lib, "dxgi.lib")
@@ -57,7 +59,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 	MSG msg = { 0 };
-	HWND wndHandle = InitWindow(hInstance); //1. Skapa fönster
+	HWND wndHandle = InitWindow(hInstance); //1. Skapa fï¿½nster
 
 	this->wnd = wndHandle;
 
@@ -65,7 +67,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	{
 		CreateDirect3DContext(wndHandle);
 
-		SetViewport(); //3. Sätt viewport
+		SetViewport(); //3. Sï¿½tt viewport
 
 		CreateTriangleData(); //5. Definiera triangelvertiser, 6. Skapa vertex buffer, 7. Skapa input layout
 
@@ -241,6 +243,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 					{
 						ImGui::BeginDockspace();
 						{
+
+							Debug.LogWarning("Mouse Position: Vector2(", ImGui::GetMousePos().x, ", ", ImGui::GetMousePos().y, ");");
+
+							if (Input.GetKeyDown(KeyCode::G))
+								ImGui::ForceSave();
+
 							if (timer > 0.0f)
 							{
 								ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
