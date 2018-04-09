@@ -32,14 +32,14 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 	for (int i = 0; i < objectsToRender.size(); i++)
 	{
 
-		objectsToRender[0]->materialComponent->bindMaterial();
-		objectsToRender[0]->meshFilterComponent->getMesh()->bindMesh();
+		objectsToRender[i]->materialComponent->bindMaterial();
+		objectsToRender[i]->meshFilterComponent->getMesh()->bindMesh();
 
 
 		//Fill matrixbuffer
 		D3D11_MAPPED_SUBRESOURCE dataPtr;
 		gDeviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &dataPtr);
-		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(objectsToRender[0]->calculateWorldMatrix()));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(objectsToRender[i]->calculateWorldMatrix()));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
 		DirectX::XMStoreFloat4(&matrixBufferData.cameraDirection, cameraObject->transform.getForward());
@@ -50,7 +50,7 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 
 		// issue a draw call of 3 vertices (similar to OpenGL)
 
-		gDeviceContext->Draw(objectsToRender[0]->meshFilterComponent->getMesh()->getVertexCount(), 0);
+		gDeviceContext->Draw(objectsToRender[i]->meshFilterComponent->getMesh()->getVertexCount(), 0);
 
 	}
 }
@@ -186,5 +186,5 @@ void RenderManager::EndFrame()
 	// VSYNC_1_FRAME == vsync (1frame) { 60FPS }
 	// VSYNC_2_FRAME == vsync (2frame) { 30FPS }
 
-	gSwapChain->Present(VSYNC_1_FRAME, 0);
+	gSwapChain->Present(NO_VSYNC, 0);
 }

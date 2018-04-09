@@ -18,6 +18,7 @@
 #include "ShaderProgram.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "TerrainGenerator.h"
 #include "EditorSceneSelectionScript.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"

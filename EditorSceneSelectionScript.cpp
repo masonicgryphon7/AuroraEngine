@@ -1,5 +1,5 @@
 #include "EditorSceneSelectionScript.h"
-#include "Console.h"
+#include "Debug.h"
 #include "imgui.h"
 
 
@@ -29,6 +29,8 @@ void EditorSceneSelectionScript::update()
 		//hit.transform->setPosition(DirectX::XMVectorSet(0, 10, 0, 0));
 		if (hit.transform != nullptr) {
 			gameObject->name = "Hit obj";
+			DirectX::XMVECTOR test = DirectX::XMVectorScale(ray.direction, hit.distance);
+			Debug.Log("Hit", DirectX::XMVectorGetX(test),",", DirectX::XMVectorGetY(test),",", DirectX::XMVectorGetZ(test));
 		}
 		else
 		{

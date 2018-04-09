@@ -31,7 +31,7 @@ public:
     MeshFilter *meshFilterComponent;
 	//Light *lightComponent;
 	OOBB OOBoundingBox;
-
+	
     void updateMaterialAndMeshFilterPointers();
     void updateHasLight();
 	void addComponent(Component* otherComponent);

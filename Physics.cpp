@@ -57,8 +57,8 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 float Physics::obbTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigin, OOBB o)
 {
 	// IMPLEMENT HERE
-	float tMin = -10000000;
-	float tMax = 10000000;
+	float tMin = -INFINITE;
+	float tMax = INFINITE;
 	DirectX::XMVECTOR distanceToOBB =DirectX::XMVectorSubtract(o.centre, rayOrigin);
 	DirectX::XMVECTOR sides[3];
 	sides[0] = o.x_hx;

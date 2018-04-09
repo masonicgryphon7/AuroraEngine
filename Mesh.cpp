@@ -3,6 +3,13 @@
 Mesh::Mesh()
 {}
 
+Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext)
+{
+	vertexCount = 0;
+	gDeviceContext = devContext;
+	CreateTerrainMeshData(vertCountData, TerrainInfoVector, device, devContext);
+}
+
 Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext)
 {
 	vertexCount = 0;
@@ -226,6 +233,42 @@ void Mesh::bindMesh()
 	// specify which vertex buffer to use next.
 	gDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 
+}
+
+
+HRESULT Mesh::CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext)
+{
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData;
+	HRESULT result;
+
+	//ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+
+	memset(&vertexBufferDesc, 0, sizeof(vertexBufferDesc));
+
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(VERTEX_POS3UV2T3B3N3) * vertCountData;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+
+	// Give the subresource structure a pointer to the vertex data.
+	vertexData.pSysMem = TerrainInfoVector->data();
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+
+	// Now create the vertex buffer.
+	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &vertexBuffer);
+
+	if (FAILED(result))
+	{
+		return result;
+	}
+
+	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
+	vertexCount = TerrainInfoVector->size();
 }
 
 int Mesh::getVertexCount()

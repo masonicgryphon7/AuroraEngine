@@ -26,12 +26,12 @@ class Mesh
 {
 public:
 	Mesh();
+	Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> *TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext);
 	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext);
 	~Mesh();
 
-	void CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11DeviceContext * devContext);
-	void bindMesh();
 	int getVertexCount();
+	void bindMesh();
 private:
 	int vertexCount;
 	UINT32 vertexSize;
@@ -39,6 +39,8 @@ private:
 	ID3D11DeviceContext* gDeviceContext = nullptr;
 
 
+	HRESULT CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device *device, ID3D11DeviceContext *devContext);
+	void CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11DeviceContext * devContext);
 	DirectX::XMFLOAT3 subtract(DirectX::XMFLOAT3 A, DirectX::XMFLOAT3 B);
 	DirectX::XMFLOAT2 subtract(DirectX::XMFLOAT2 A, DirectX::XMFLOAT2 B);
 };

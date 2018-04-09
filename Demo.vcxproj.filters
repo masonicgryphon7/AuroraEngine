@@ -164,6 +164,9 @@
     <ClInclude Include="EditorSceneSelectionScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreEngine.cpp">
@@ -263,6 +266,9 @@
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="EditorSceneSelectionScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

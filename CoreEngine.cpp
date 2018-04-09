@@ -175,6 +175,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(assetManager.getMaterial(0));
 		cube->addComponent(meshFilter);
 
+		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100);
+		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
+		MeshFilter* meshFilterTerrain = new MeshFilter(assetManager.getMesh(1));
+		terrain->addComponent(assetManager.getMaterial(0));
+		terrain->addComponent(meshFilterTerrain);
+
 		std::vector<std::unique_ptr<GUI>> m_gui;
 
 		m_gui.emplace_back(make_unique<GUI_Viewport>());
@@ -244,7 +251,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 						ImGui::BeginDockspace();
 						{
 
-							Debug.LogWarning("Mouse Position: Vector2(", ImGui::GetMousePos().x, ", ", ImGui::GetMousePos().y, ");");
+							//Debug.LogWarning("Mouse Position: Vector2(", ImGui::GetMousePos().x, ", ", ImGui::GetMousePos().y, ");");
 
 							if (Input.GetKeyDown(KeyCode::G))
 								ImGui::ForceSave();
@@ -325,10 +332,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		delete renderManager;
 		delete meshFilter;
 		delete editorMoveScript;
-		//delete meshFilter;
-		//delete cube;
+		delete editorSceneSelectionScript;
 		delete mainCamera;
-		//delete camera;
+		delete terrainGenerator;
 
 		if (ToRestart)
 			ImGui::ResetToStandard();
