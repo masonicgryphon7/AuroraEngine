@@ -38,6 +38,9 @@ void GUI_Console::ShowFrame()
 	ImGui::SameLine();
 
 	logFilters.Draw("Filter", -100.0f);
+
+	ImGui::Text("CPU: %.3f ms\t FPS: %.1f", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
 	ImGui::Separator();
 
 	ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
