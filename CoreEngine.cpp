@@ -287,6 +287,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 								if (ImGui::BeginDock("Project"))
 								{
+									ImGui::ShowTestWindow();
+
 									ImGui::Text("All Project Files Shit Here");
 									//ImGui::ShowDemoWindow();
 								}
@@ -340,6 +342,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		delete editorSceneSelectionScript;
 		delete mainCamera;
 		delete terrainGenerator;
+		delete meshFilterTerrain;
+		gScene.~Scene();
 
 		if (ToRestart)
 			ImGui::ResetToStandard();

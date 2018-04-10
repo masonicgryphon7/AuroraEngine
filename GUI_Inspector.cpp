@@ -46,10 +46,20 @@ void GUI_Inspector::ShowFrame()
 	ImGui::PopItemWidth();
 }
 
+int isDragging = 0;
+float timer = 0.0f;
+
 void GUI_Inspector::ShowTransformView()
 {
 	//Debug.Log("Name: ", Scene::selectedGameObject->name);
 
+	if (timer >= 0.1f)
+	{
+		timer = 0.0f;
+		ImGui::ResetMouseDragDelta(0);
+	}
+	else
+		timer += Time.getDeltaTime();
 
 	char transPosX[255];
 	char transPosY[255];
@@ -74,14 +84,79 @@ void GUI_Inspector::ShowTransformView()
 
 		// Position
 		ImGui::Text("Position");
+
 		ImGui::SameLine(posX); ImGui::Text("X");
+		if (ImGui::IsItemHovered() || isDragging == 1)
+		{
+			if (isDragging != 2 && isDragging != 3)
+			{
+				if (ImGui::IsMouseDown(0))
+					isDragging = 1;
+
+				ImGui::BeginTooltip();
+				ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+				ImGui::TextUnformatted("Drag To Increase or Decrease X");
+
+				strncpy(transPosX, std::to_string(DirectX::XMVectorGetX(pos) + ImGui::GetMouseDragDelta(0, 0.0f).x / 1000).c_str(), sizeof(transPosX));
+				transPosX[sizeof(transPosX) - 1] = 0;
+
+				ImGui::PopTextWrapPos();
+				ImGui::EndTooltip();
+			}
+		}
 		ImGui::SameLine(); ImGui::InputText("##TransPosX", transPosX, 255, inputTextFlags);
+
+
 		ImGui::SameLine(); ImGui::Text("Y");
+		if (ImGui::IsItemHovered() || isDragging == 2)
+		{
+			if (isDragging != 1 && isDragging != 3)
+			{
+				if (ImGui::IsMouseDown(0))
+					isDragging = 2;
+
+				ImGui::BeginTooltip();
+				ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+				ImGui::TextUnformatted("Drag To Increase or Decrease Y");
+
+				strncpy(transPosY, std::to_string(DirectX::XMVectorGetY(pos) + ImGui::GetMouseDragDelta(0, 0.0f).x / 1000).c_str(), sizeof(transPosY));
+				transPosY[sizeof(transPosY) - 1] = 0;
+
+				ImGui::PopTextWrapPos();
+				ImGui::EndTooltip();
+			}
+		}
 		ImGui::SameLine(); ImGui::InputText("##TransPosY", transPosY, 255, inputTextFlags);
+
+
 		ImGui::SameLine(); ImGui::Text("Z");
+		if (ImGui::IsItemHovered() || isDragging == 3)
+		{
+			if (isDragging != 1 && isDragging != 2)
+			{
+				if (ImGui::IsMouseDown(0))
+					isDragging = 3;
+
+				ImGui::BeginTooltip();
+				ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+				ImGui::TextUnformatted("Drag To Increase or Decrease Z");
+
+				strncpy(transPosZ, std::to_string(DirectX::XMVectorGetZ(pos) + ImGui::GetMouseDragDelta(0, 0.0f).x / 1000).c_str(), sizeof(transPosZ));
+				transPosZ[sizeof(transPosZ) - 1] = 0;
+
+				ImGui::PopTextWrapPos();
+				ImGui::EndTooltip();
+			}
+		}
 		ImGui::SameLine(); ImGui::InputText("##TransPosZ", transPosZ, 255, inputTextFlags);
 	}
 	COMPONENT_END;
+
+	if (!ImGui::IsMouseDown(0))
+	{
+		timer = 0.0f;
+		isDragging = 0;
+	}
 
 	// Check if we made changes...
 	position = Vector3((float)atof(&transPosX[0]), (float)atof(&transPosY[0]), (float)atof(&transPosZ[0]));
