@@ -25,11 +25,17 @@ void Material::setNormal(ID3D11ShaderResourceView * normal)
 	this->normal = normal;
 }
 
+void Material::setPbr(ID3D11ShaderResourceView * pbr)
+{
+	this->pbr = pbr;
+}
+
 void Material::bindMaterial()
 {
 	shaderProgram->ActivateShader();
 	gDeviceContext->PSSetShaderResources(0, 1, &albedo);
 	gDeviceContext->PSSetShaderResources(1, 1, &normal);
+	gDeviceContext->PSSetShaderResources(2, 1, &pbr);
 }
 
 void Material::update()
