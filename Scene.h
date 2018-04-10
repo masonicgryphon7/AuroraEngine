@@ -20,7 +20,7 @@ public:
 
 	void update();
 
-
+	static GameObject* selectedGameObject;
 
 private:
 	static std::vector<GameObject*>sceneObjects;

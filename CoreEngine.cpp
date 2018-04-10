@@ -4,6 +4,7 @@
 #include "GUI_MenuBar.h"
 #include "GUI_Console.h"
 #include "GUI_Hierarchy.h"
+#include "GUI_Inspector.h"
 #include "Console.h"
 #include "imgui_dock.h"
 
@@ -157,6 +158,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		camera = gScene.createEmptyGameObject();
 		camera->OOBoundingBox.isActive = false;
+		camera->name = "Editor Camera";
 		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
 		camera->addComponent(mainCamera);
 		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
@@ -174,8 +176,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilter = new MeshFilter(assetManager.getMesh(0));
 		cube->addComponent(assetManager.getMaterial(0));
 		cube->addComponent(meshFilter);
+		cube->name = "Cube";
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		terrain->name = "Terrain";
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100);
 		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(assetManager.getMesh(1));
@@ -187,6 +191,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		m_gui.emplace_back(make_unique<GUI_Viewport>());
 		m_gui.emplace_back(make_unique<GUI_Console>());
 		m_gui.emplace_back(make_unique<GUI_Hierarchy>());
+		m_gui.emplace_back(make_unique<GUI_Inspector>());
 		//m_gui.emplace_back(make_unique<GUI_MenuBar>());
 
 		for (auto& gui : m_gui)
@@ -267,12 +272,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 							}
 							else
 							{
-								if (ImGui::BeginDock("Inspector"))
-								{
-									//ImGui::ShowTestWindow();
-									ImGui::Text("All Inspector Shit Here");
-								}
-								ImGui::EndDock();
+								//if (ImGui::BeginDock("Inspector"))
+								//{
+								//	//ImGui::ShowTestWindow();
+								//	ImGui::Text("All Inspector Shit Here");
+								//}
+								//ImGui::EndDock();
 
 								/*if (ImGui::BeginDock("Hierarchy"))
 								{

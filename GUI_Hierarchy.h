@@ -14,4 +14,9 @@ private:
 	void ShowHierarchy();
 
 	void AddToTree(GameObject* g);
+	void HandleClickedObject();
+
+private:
+	GameObject * hoveredGameObject;
+
 };

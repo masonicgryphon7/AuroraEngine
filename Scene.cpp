@@ -1,6 +1,6 @@
 #include "Scene.h"
 std::vector<GameObject*> Scene::sceneObjects;
-
+GameObject* Scene::selectedGameObject;
 
 Scene::Scene()
 {
