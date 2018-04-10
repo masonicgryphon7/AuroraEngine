@@ -246,8 +246,7 @@ void GUI_Inspector::ShowTransformView()
 	}
 	else
 	{
-		DirectX::XMVECTOR temp = DirectX::XMVectorSet(rotation.x, rotation.y, rotation.z, DirectX::XMVectorGetW(Scene::selectedGameObject->transform.getRotation()));
-		Scene::selectedGameObject->transform.setRotation(temp);
+		Scene::selectedGameObject->transform.setRotation(rotation.asXMVECTOR());
 	}
 }
 

@@ -25,7 +25,7 @@ GameObject::GameObject(DirectX::XMVECTOR(otherPosition))
 	isRenderable = false;
 	hasLight = false;
 	transform.setPosition(otherPosition);
-	transform.setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
+	transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
 	transform.gameObject = this;
 
 	//OOBB

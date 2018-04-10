@@ -21,7 +21,7 @@ public:
 
 	DirectX::XMVECTOR getRotation() { return rotation; };
 	DirectX::XMVECTOR getRotationEuler();
-	void setRotation(const DirectX::XMVECTOR in_setRotation) { rotation = DirectX::XMQuaternionRotationRollPitchYawFromVector(in_setRotation); };
+	void setRotation(const DirectX::XMVECTOR in_setRotation);
 
 	DirectX::XMVECTOR getScale() { return scale; };
 	void setScale(const DirectX::XMVECTOR in_setScale) { scale = in_setScale; };
