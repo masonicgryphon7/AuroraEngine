@@ -5,6 +5,12 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 
+struct PLANE
+{
+	DirectX::XMFLOAT3 normal;
+	float distance;
+};
+
 static class Scene
 {
 public:
@@ -25,7 +31,7 @@ public:
 private:
 	static std::vector<GameObject*>sceneObjects;
 	std::vector<QuadTreeNode*> root;
-
+	int frustumCheck(OOBB otherOBB, DirectX::XMVECTOR otherPosition, PLANE *planes);
 	int planeAABBIntersect(OOBB otherOBB, DirectX::XMVECTOR otherPosition, DirectX::XMVECTOR frustumPlane);
 	std::vector<GameObject*> frustumCull(GameObject * camera);
 
