@@ -23,6 +23,7 @@ struct VS_OUT
 	float3 Normal : NORMAL;
 	float4 worldPosition : Position;
 	float4 cameraDirection : cameraDirection;
+	float3x3 TBNMatrix : TBNMATRIX;
 };
 //-----------------------------------------------------------------------------------------
 // VertexShader: VSScene
@@ -31,7 +32,6 @@ VS_OUT VS_main(VS_IN input)
 {
 	VS_OUT output = (VS_OUT)0;
 
-	//output.Position = float4(input.Tangent + input.Bitangent + input.Normal, 1);
 	output.Position = float4(input.Position, 1);
 	output.Position = mul(output.Position, world);
 	output.worldPosition = output.Position;
@@ -40,6 +40,10 @@ VS_OUT VS_main(VS_IN input)
 	output.Uv = input.Uv;
 	output.Normal = input.Normal;
 	output.cameraDirection = cameraDirection;
+
+	float3 Tcomponent = normalize(input.Tangent - dot(input.Tangent, input.Normal) * input.Normal);
+	float3 Bcomponent = input.Bitangent;
+	output.TBNMatrix = float3x3(Tcomponent, Bcomponent, input.Normal);
 
 	return output;
 }
