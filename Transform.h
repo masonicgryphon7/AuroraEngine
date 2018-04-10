@@ -3,6 +3,8 @@
 #include <iostream>
 #include <DirectXMath.h>
 
+#define PI 3.14159265359
+
 class Transform :public Component
 {
 public:
@@ -16,9 +18,10 @@ public:
 
 	DirectX::XMVECTOR getPosition() { return position; };
 	void setPosition(const DirectX::XMVECTOR in_setPosition) { position = in_setPosition; };
-	
+
 	DirectX::XMVECTOR getRotation() { return rotation; };
-	void setRotation(const DirectX::XMVECTOR in_setRotation) { rotation = in_setRotation; };
+	DirectX::XMVECTOR getRotationEuler();
+	void setRotation(const DirectX::XMVECTOR in_setRotation) { rotation = DirectX::XMQuaternionRotationRollPitchYawFromVector(in_setRotation); };
 
 	DirectX::XMVECTOR getScale() { return scale; };
 	void setScale(const DirectX::XMVECTOR in_setScale) { scale = in_setScale; };
@@ -42,6 +45,8 @@ private:
 	DirectX::XMVECTOR forward;
 	DirectX::XMVECTOR up;
 	DirectX::XMVECTOR right;
+
+	void MatrixToEuler(float *outX, float *outY, float *outZ, DirectX::XMMATRIX rotMatrix);
 
 };
 

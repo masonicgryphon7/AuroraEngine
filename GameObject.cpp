@@ -25,6 +25,7 @@ GameObject::GameObject(DirectX::XMVECTOR(otherPosition))
 	isRenderable = false;
 	hasLight = false;
 	transform.setPosition(otherPosition);
+	transform.setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
 	transform.gameObject = this;
 
 	//OOBB
@@ -146,9 +147,10 @@ DirectX::XMMATRIX GameObject::calculateWorldMatrix()
 	DirectX::XMVECTOR pos = transform.getPosition();
 
 	DirectX::XMMATRIX world_matrix = DirectX::XMMatrixTranslation(DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
+	DirectX::XMMATRIX rotation_matrix = DirectX::XMMatrixRotationQuaternion(transform.getRotation());//DirectX::XMMatrixTranslation(DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
 	//world_matrix = glm::rotate(world_matrix, glm::radians(dT), DirectX::XMFLOAT#(0.0f, 1.0f, 0.0f));
-
-	return world_matrix;
+	
+	return DirectX::XMMatrixMultiply(rotation_matrix, world_matrix);
 }
 
 

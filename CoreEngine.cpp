@@ -200,7 +200,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		float oldTime = clock();
 		float deltaTime = 0;
 
-		float timer = 0.0f;
+		float timer = 0.0f, lel = 0.0f;
 		bool ToRestart = false;
 
 		while (WM_QUIT != msg.message)
@@ -242,6 +242,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 					timer = 5.0f;
 				}
 
+			/*	lel += Time.getDeltaTime();
+				Debug.Log(lel);
+				cube->transform.setRotation(Vector3(lel, 0, 0).asXMVECTOR());
+*/
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 				bool m = true, n = true;
 
@@ -287,7 +291,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 								if (ImGui::BeginDock("Project"))
 								{
-									ImGui::ShowTestWindow();
+									//ImGui::ShowTestWindow();
 
 									ImGui::Text("All Project Files Shit Here");
 									//ImGui::ShowDemoWindow();
