@@ -1,6 +1,6 @@
 #include "Camera.h"
 #include "Console.h"
-
+#include "GameObject.h"
 
 Camera::Camera()
 {
@@ -49,4 +49,33 @@ DirectX::XMMATRIX Camera::calculatePerspectiveMatrix()
 		0, 0, -nearZ * farZ / (farZ - nearZ), 0);*/
 
 	return DirectX::XMMatrixPerspectiveFovLH(FOV, aspectRatio, nearZ, farZ);
+}
+
+Ray Camera::calculateScreenPointToRay(DirectX::XMVECTOR postion)
+{
+	Ray ray;
+	ray.origin = gameObject->transform.getPosition();
+	
+	//inverse matrix
+	DirectX::XMMATRIX ndcToWorld = DirectX::XMMatrixMultiply(calculateViewMatrix(gameObject->transform.getPosition(), gameObject->transform.getForward(), gameObject->transform.getUp()), calculatePerspectiveMatrix());
+	ndcToWorld = DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(ndcToWorld), ndcToWorld);
+	
+	//input position to ndc
+	//normalize to 0-1
+	DirectX::XMVECTOR mouse = DirectX::XMVectorMultiply(postion, DirectX::XMVectorSet(1.0f/width, 1.0f/height,1.0f,1.0f));
+	
+	//map to -1 1
+	mouse = DirectX::XMVectorMultiply(mouse, DirectX::XMVectorSet(2.0f, -2.0f, 0.0f, 0.0f));
+	mouse = DirectX::XMVectorSubtract(mouse, DirectX::XMVectorSet(1.0f, -1.0f, 0.0f, -1.0f));
+
+	DirectX::XMVECTOR nearV = mouse;
+	DirectX::XMVECTOR farV = DirectX::XMVectorAdd(mouse, DirectX::XMVectorSet(0.0f,0.0f,1.0f,0.0f));
+
+
+	nearV = DirectX::XMVector3TransformCoord(nearV, ndcToWorld);
+	farV = DirectX::XMVector3TransformCoord(farV, ndcToWorld);
+
+	mouse = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(farV,nearV));
+	ray.direction = mouse;
+	return ray;
 }

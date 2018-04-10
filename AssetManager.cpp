@@ -54,6 +54,12 @@ void AssetManager::addMesh(std::string filePath)
 
 }
 
+
+void AssetManager::addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector)
+{
+	meshes.push_back(new Mesh(vertCountData, TerrainInfoVector, device, devContext));
+}
+
 void AssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader)
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> descArr;

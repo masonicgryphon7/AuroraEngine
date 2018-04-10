@@ -18,6 +18,8 @@
 #include "ShaderProgram.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "TerrainGenerator.h"
+#include "EditorSceneSelectionScript.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"
 //#include "MeshLib.h"
@@ -84,7 +86,6 @@ private:
 	//cTime engineTime;
 
 	//AssetManager assetManager;
-	Scene scene;
 	//MaterialLib materialLibrary;
 	//TextureLib textureLibrary;
 	//MeshLib meshLibrary;

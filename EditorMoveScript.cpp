@@ -20,31 +20,13 @@ EditorMoveScript::EditorMoveScript() :Component(-1, "Editor Move Script")
 	sensitivity = 0.002f;
 }
 
-//EditorMoveScript::EditorMoveScript(Time *time, InputHandler* input) :Component(-1, "Editor Move Script")
-//{
-//	this->time = time;
-//	this->inputHandler = input;
-//
-//	speed = 0.01;
-//	direction = DirectX::XMVectorSet(0, 0, 0, 0);
-//
-//	pitch = 0;
-//	yaw = 0;
-//	firstMouse = true;
-//	lastX = 400;
-//	lastY = 300;
-//	xpos = 0;
-//	ypos = 0;
-//	xoffset = 0;
-//	yoffset = 0;
-//	sensitivity = 0.002f;
-//}
 
 EditorMoveScript::~EditorMoveScript()
 {}
 
 void EditorMoveScript::update()
 {
+
 	distance = speed * Time.getDeltaTime();//time->getDeltaTime();
 	direction = DirectX::XMVectorSet(0, 0, 0, 0);
 

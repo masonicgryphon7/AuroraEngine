@@ -30,5 +30,6 @@ namespace ImGui
 	IMGUI_API void DockDebugWindow(const char* dock_panel);
 	IMGUI_API void InitDock();
 	IMGUI_API void ResetToStandard();
+	IMGUI_API void ForceSave();
 
 };

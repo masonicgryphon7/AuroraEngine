@@ -31,7 +31,7 @@ public:
     MeshFilter *meshFilterComponent;
 	//Light *lightComponent;
 	OOBB OOBoundingBox;
-
+	
     void updateMaterialAndMeshFilterPointers();
     void updateHasLight();
 	void addComponent(Component* otherComponent);
@@ -39,6 +39,8 @@ public:
     const bool getIsRenderable();
 	DirectX::XMMATRIX calculateWorldMatrix();
 	void uniformWorldMatrix(unsigned int othershaderProgram);
+
+	//inline GameObject* getshared() { return shared}
 
 	template <class T>
 	T* getComponent() {

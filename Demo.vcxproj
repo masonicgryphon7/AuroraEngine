@@ -153,9 +153,12 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Editor.h" />
     <ClInclude Include="EditorMoveScript.h" />
+    <ClInclude Include="EditorSceneSelectionScript.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUI_Console.h" />
+    <ClInclude Include="GUI_Hierarchy.h" />
+    <ClInclude Include="GUI_Inspector.h" />
     <ClInclude Include="GUI_MenuBar.h" />
     <ClInclude Include="GUI_Viewport.h" />
     <ClInclude Include="ILogger.h" />
@@ -181,11 +184,13 @@
     <ClInclude Include="stb_rect_pack.h" />
     <ClInclude Include="stb_textedit.h" />
     <ClInclude Include="stb_truetype.h" />
+    <ClInclude Include="TerrainGenerator.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TEXTURE_RESOLUTIONS.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vector3.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -196,9 +201,12 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Editor.cpp" />
     <ClCompile Include="EditorMoveScript.cpp" />
+    <ClCompile Include="EditorSceneSelectionScript.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUI_Console.cpp" />
+    <ClCompile Include="GUI_Hierarchy.cpp" />
+    <ClCompile Include="GUI_Inspector.cpp" />
     <ClCompile Include="GUI_MenuBar.cpp" />
     <ClCompile Include="GUI_Viewport.cpp" />
     <ClCompile Include="imgui.cpp" />
@@ -216,10 +224,12 @@
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="TerrainGenerator.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vector2.cpp" />
+    <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

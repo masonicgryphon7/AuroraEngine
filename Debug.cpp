@@ -1,5 +1,3 @@
 #include "Debug.h"
 
-void cDebug::SetLogger(const std::weak_ptr<ILogger>& logger)
-{
-}
+std::vector<LogPackage> cDebug::m_logger;

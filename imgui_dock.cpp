@@ -1433,3 +1433,73 @@ void ImGui::ResetToStandard()
 
 	Console.error(result);
 }
+
+void ImGui::ForceSave()
+{
+	ImGuiSettingsHandler h;
+	h.TypeName = "Dock";
+	h.TypeHash = ImHash("Dock", 0, 0);
+
+	std::ofstream standard_w("imgui.ini");
+
+	if (standard_w.is_open())
+	{
+		//standard_w << result;
+		for (const auto& iter : g_docklist)
+		{
+			const DockContext& context = iter.second;
+
+			standard_w << "[" << h.TypeName << +"][panel:" << iter.first.c_str() << "]\n";
+			standard_w << "[" << h.TypeName << +"][Size:" << (int)context.m_docks.size() << "]\n";
+
+			//buf->appendf("[%s][panel:%s]\n", h.TypeName, iter.first.c_str());
+			//buf->appendf("[%s][Size:%d]\n", h.TypeName, (int)context.m_docks.size());
+
+			for (int i = 0, docksize = context.m_docks.size(); i < docksize; i++)
+			{
+				const DockContext::Dock* d = nullptr;
+
+				try
+				{
+					d = context.m_docks[i];
+				}
+				catch (const std::exception&)
+				{
+				}
+
+				//if (d == nullptr || d->id == 0) continue;
+
+				try
+				{
+					std::string str = "";
+					if (d->label)
+						str = d->label;
+					else
+						str = "";
+
+					// some docks invisible but do exist
+					standard_w << "[" << h.TypeName << "][Dock:" << i << "]\n";
+					standard_w << "label=" << str << "\n";
+					standard_w << "x=" << (int)d->pos.x << "\n";
+					standard_w << "y=" << (int)d->pos.y << "\n";
+					standard_w << "size_x=" << (int)d->size.x << "\n";
+					standard_w << "size_y=" << (int)d->size.y << "\n";
+					standard_w << "active=" << (int)d->active << "\n";
+					standard_w << "opened=" << (int)d->opened << "\n";
+					standard_w << "location=" << d->location << "\n";
+					standard_w << "status=" << (int)d->status << "\n";
+					standard_w << "prev=" << (int)getDockIndex(context, d->prev_tab) << "\n";
+					standard_w << "next=" << (int)getDockIndex(context, d->next_tab) << "\n";
+					standard_w << "child0=" << (int)getDockIndex(context, d->children[0]) << "\n";
+					standard_w << "child1=" << (int)getDockIndex(context, d->children[1]) << "\n";
+					standard_w << "parent=" << (int)getDockIndex(context, d->parent) << "\n";
+				}
+				catch (const std::exception&)
+				{
+				}
+
+			}
+		}
+		standard_w.close();
+	}
+}

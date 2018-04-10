@@ -38,4 +38,8 @@ void Material::bindMaterial()
 	gDeviceContext->PSSetShaderResources(2, 1, &pbr);
 }
 
+void Material::update()
+{
+}
+
 

@@ -1,6 +1,6 @@
 #include "Scene.h"
-
-
+std::vector<GameObject*> Scene::sceneObjects;
+GameObject* Scene::selectedGameObject;
 
 Scene::Scene()
 {
@@ -44,14 +44,20 @@ std::vector<GameObject*> Scene::getSceneObjects() {
 	return sceneObjects;
 }
 
+int Scene::getSceneObjectsCount()
+{
+	return sceneObjects.size();
+}
+
 
 
 void Scene::update()
 {
-	for (int i = 0; i < sceneObjects.size() - 1; i++)
-		for (int j = 0; j < sceneObjects[j]->components.size() - 1; j++)
+	for (int i = 0; i < sceneObjects.size(); i++) {
+		for (int j = 0; j < sceneObjects[i]->components.size(); j++) {
 			sceneObjects[i]->components[j]->update();
-
+		}
+	}
 }
 
 
@@ -60,11 +66,7 @@ std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 	std::vector<GameObject*> objectsToRender;
 
 	//Create planes
-	struct PLANE
-	{
-		DirectX::XMFLOAT3 normal;
-		float distance;
-	};
+
 
 	PLANE planes[6];
 
@@ -122,34 +124,44 @@ std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 	//2 intersecting
 	for (int i = 0; i < sceneObjects.size(); i++) {
 		if (sceneObjects[i]->getIsRenderable()) {
-			int result = 0;
-
-			int intersecting = 0;
-			for (int j = 0; j<6; j++) {
-				int result = planeAABBIntersect(sceneObjects[i]->OOBoundingBox, sceneObjects[i]->transform.getPosition(), DirectX::XMVectorSet(planes[j].normal.x, planes[j].normal.y, planes[j].normal.z, planes[j].distance));
-				if (result == 0) {
-					result = 0;
-				}
-				else if (result == 2) {
-					intersecting = 1;
-				}
-
-			}
-			if (intersecting == 1) {
-				result = 2;
-			}
-			else {
-				result = 1;
-			}
+			int cullingResult = frustumCheck(sceneObjects[i]->OOBoundingBox, sceneObjects[i]->transform.getPosition(), planes);
 
 
-			if (result > 0) {
+			sceneObjects[i]->name = std::to_string(cullingResult);
+			
+			if (cullingResult > 0) {
 				objectsToRender.push_back(sceneObjects[i]);
 			}
 		}
 	}
 
 	return objectsToRender;
+}
+
+
+
+int Scene::frustumCheck(OOBB otherOBB, DirectX::XMVECTOR otherPosition, PLANE *planes)
+{
+
+	int intersecting = 0;
+	for (int j = 0; j<6; j++) {
+		int result = planeAABBIntersect(otherOBB, otherPosition, DirectX::XMVectorSet(planes[j].normal.x, planes[j].normal.y, planes[j].normal.z, planes[j].distance));
+		if (result == 0) {
+			return 0;
+			break;
+		}
+
+		else if (result == 2) {
+			intersecting = 1;
+		}
+
+	}
+	if (intersecting == 1) {
+		return 2;
+	}
+	else {
+		return 1;
+	}
 }
 
 int Scene::planeAABBIntersect(OOBB otherOBB, DirectX::XMVECTOR otherPosition, DirectX::XMVECTOR frustumPlane)

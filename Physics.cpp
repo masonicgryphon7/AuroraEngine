@@ -6,10 +6,7 @@ Physics::Physics()
 {
 }
 
-Physics::Physics(Scene * scene)
-{
-	this->scene = scene;
-}
+
 
 
 Physics::~Physics()
@@ -24,23 +21,26 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 
 
 	// OBBs
-	for (int i = 0; i < scene->getSceneObjects().size(); i++)
+	for (int i = 0; i < gScene.getSceneObjectsCount(); i++)
 	{
-		OOBB obb = scene->getSceneObjects()[i]->OOBoundingBox;
-		// IMPLEMENT HERE.
-		// TEST OBB, UPDATE lastT, objIndex and objType if necessary.
-		float t = obbTest(ray.direction, ray.origin, obb);
-		if (t>EPSILON && (t<lastT || lastT<EPSILON)) {
-			lastT = t;
-			objIndex = i;
-			hitObject = true;
+		OOBB obb = gScene.getSceneObjects()[i]->OOBoundingBox;
+		if (obb.isActive == true) {
+			obb.centre = DirectX::XMVectorAdd(obb.centre, gScene.getSceneObjects()[i]->transform.getPosition());
+
+			float t = obbTest(ray.direction, ray.origin, obb);
+			if (t>EPSILON && (t<lastT || lastT<EPSILON)) {
+				lastT = t;
+				objIndex = i;
+				hitObject = true;
+
+			}
 		}
 	}
 
 	if (hitObject) {
 		hit.distance = lastT;
 		hit.point = DirectX::XMVectorAdd(DirectX::XMVectorScale(ray.direction, lastT), ray.origin);
-		hit.transform = &scene->getSceneObjects()[objIndex]->transform;
+		hit.transform = &gScene.getSceneObjects()[objIndex]->transform;
 	}
 	else
 	{
@@ -57,8 +57,8 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 float Physics::obbTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigin, OOBB o)
 {
 	// IMPLEMENT HERE
-	float tMin = -10000000;
-	float tMax = 10000000;
+	float tMin = -INFINITE;
+	float tMax = INFINITE;
 	DirectX::XMVECTOR distanceToOBB =DirectX::XMVectorSubtract(o.centre, rayOrigin);
 	DirectX::XMVECTOR sides[3];
 	sides[0] = o.x_hx;

@@ -14,6 +14,7 @@ public:
 	void setPbr(ID3D11ShaderResourceView *pbr);
 	void bindMaterial();
 
+	void update();
 private:
 	ID3D11ShaderResourceView * albedo = nullptr;
 	ID3D11ShaderResourceView * normal = nullptr;

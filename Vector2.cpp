@@ -19,5 +19,5 @@ bool Vector2::operator!=(const Vector2 & vec2) const
 const std::string Vector2::toString() const
 {
 	std::string result = "Vector2(" + std::to_string(x) + ", " + std::to_string(y) + ")";
-	return std::string();
+	return result;
 }

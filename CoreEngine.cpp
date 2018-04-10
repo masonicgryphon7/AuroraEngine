@@ -3,8 +3,12 @@
 #include "GUI_Viewport.h"
 #include "GUI_MenuBar.h"
 #include "GUI_Console.h"
+#include "GUI_Hierarchy.h"
+#include "GUI_Inspector.h"
 #include "Console.h"
 #include "imgui_dock.h"
+
+#include "Debug.h"
 
 #include <crtdbg.h>
 
@@ -56,7 +60,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 	MSG msg = { 0 };
-	HWND wndHandle = InitWindow(hInstance); //1. Skapa fönster
+	HWND wndHandle = InitWindow(hInstance); //1. Skapa fï¿½nster
 
 	this->wnd = wndHandle;
 
@@ -64,7 +68,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	{
 		CreateDirect3DContext(wndHandle);
 
-		SetViewport(); //3. Sätt viewport
+		SetViewport(); //3. Sï¿½tt viewport
 
 		CreateTriangleData(); //5. Definiera triangelvertiser, 6. Skapa vertex buffer, 7. Skapa input layout
 
@@ -152,29 +156,42 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
-		camera = scene.createEmptyGameObject();
-		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
-		camera->addComponent(editorMoveScript);
+		camera = gScene.createEmptyGameObject();
+		camera->OOBoundingBox.isActive = false;
+		camera->name = "Editor Camera";
 		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
 		camera->addComponent(mainCamera);
+		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
+		camera->addComponent(editorSceneSelectionScript);
 
-		GameObject* cube = scene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
-		assetManager.addTexture("Assets/com(1).png");
-		assetManager.addTexture("Assets/com(2).png");
-		assetManager.addTexture("Assets/com(3).png");
+		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
+		camera->addComponent(editorMoveScript);
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		assetManager.addTexture("Assets/brickwork.jpg");
+		assetManager.addTexture("Assets/NormalBrick.png");
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
 		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
-		assetManager.getMaterial(0)->setPbr(assetManager.getTexture(2)->getTexture());
-		assetManager.addMesh("Assets/temp.obj");
+		assetManager.addMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(assetManager.getMesh(0));
 		cube->addComponent(assetManager.getMaterial(0));
 		cube->addComponent(meshFilter);
+		cube->name = "Cube";
+
+		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		terrain->name = "Terrain";
+		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100);
+		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
+		MeshFilter* meshFilterTerrain = new MeshFilter(assetManager.getMesh(1));
+		terrain->addComponent(assetManager.getMaterial(0));
+		terrain->addComponent(meshFilterTerrain);
 
 		std::vector<std::unique_ptr<GUI>> m_gui;
 
 		m_gui.emplace_back(make_unique<GUI_Viewport>());
 		m_gui.emplace_back(make_unique<GUI_Console>());
+		m_gui.emplace_back(make_unique<GUI_Hierarchy>());
+		m_gui.emplace_back(make_unique<GUI_Inspector>());
 		//m_gui.emplace_back(make_unique<GUI_MenuBar>());
 
 		for (auto& gui : m_gui)
@@ -203,16 +220,19 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				ImGui_ImplDX11_NewFrame();
 
-				scene.update();
+				gScene.update();
 
-				objectsToRender = scene.getObjectsToRender(camera);
+				objectsToRender = gScene.getObjectsToRender(camera);
 				//the FIVE holy lines were here before
 
 				//gDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
 
-				//ImGui::ShowTestWindow();
 
 				//ImGui::ShowMetricsWindow();
+
+			std:string pri = "Vector2(" + std::to_string(ImGui::GetMousePos().x) + ", " + std::to_string(ImGui::GetMousePos().y) + ")";
+
+				Console.print(pri);
 
 				if (Input.GetKeyDown(KeyCode::Y))
 				{
@@ -235,6 +255,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 					{
 						ImGui::BeginDockspace();
 						{
+
+							//Debug.LogWarning("Mouse Position: Vector2(", ImGui::GetMousePos().x, ", ", ImGui::GetMousePos().y, ");");
+
+							if (Input.GetKeyDown(KeyCode::G))
+								ImGui::ForceSave();
+
 							if (timer > 0.0f)
 							{
 								ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
@@ -246,20 +272,23 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 							}
 							else
 							{
-								if (ImGui::BeginDock("Inspector"))
-								{
-									ImGui::Text("All Inspector Shit Here");
-								}
-								ImGui::EndDock();
+								//if (ImGui::BeginDock("Inspector"))
+								//{
+								//	//ImGui::ShowTestWindow();
+								//	ImGui::Text("All Inspector Shit Here");
+								//}
+								//ImGui::EndDock();
 
-								if (ImGui::BeginDock("Hierarchy"))
+								/*if (ImGui::BeginDock("Hierarchy"))
 								{
 									ImGui::Text("All Hierarchy Shit Here");
 								}
-								ImGui::EndDock();
+								ImGui::EndDock();*/
 
 								if (ImGui::BeginDock("Project"))
 								{
+									ImGui::ShowTestWindow();
+
 									ImGui::Text("All Project Files Shit Here");
 									//ImGui::ShowDemoWindow();
 								}
@@ -310,10 +339,11 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		delete renderManager;
 		delete meshFilter;
 		delete editorMoveScript;
-		//delete meshFilter;
-		//delete cube;
+		delete editorSceneSelectionScript;
 		delete mainCamera;
-		//delete camera;
+		delete terrainGenerator;
+		delete meshFilterTerrain;
+		gScene.~Scene();
 
 		if (ToRestart)
 			ImGui::ResetToStandard();

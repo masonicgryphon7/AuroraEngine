@@ -5,7 +5,13 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 
-class Scene
+struct PLANE
+{
+	DirectX::XMFLOAT3 normal;
+	float distance;
+};
+
+static class Scene
 {
 public:
 	Scene();
@@ -16,16 +22,18 @@ public:
 	GameObject* getGameObjectAt(int index);
 	std::vector<GameObject*> getObjectsToRender(GameObject* camera);
 	std::vector<GameObject*> getSceneObjects();
+	int getSceneObjectsCount();
+
 	void update();
 
-
+	static GameObject* selectedGameObject;
 
 private:
-	std::vector<GameObject*>sceneObjects;
+	static std::vector<GameObject*>sceneObjects;
 	std::vector<QuadTreeNode*> root;
-
+	int frustumCheck(OOBB otherOBB, DirectX::XMVECTOR otherPosition, PLANE *planes);
 	int planeAABBIntersect(OOBB otherOBB, DirectX::XMVECTOR otherPosition, DirectX::XMVECTOR frustumPlane);
 	std::vector<GameObject*> frustumCull(GameObject * camera);
 
-};
+}gScene;
 

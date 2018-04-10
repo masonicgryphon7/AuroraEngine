@@ -1,7 +1,7 @@
 #include "GUI_Viewport.h"
 #include "imgui.h"
 #include "imgui_dock.h"
-#include "Console.h"
+#include "Debug.h"
 
 using namespace std;
 
@@ -23,7 +23,8 @@ void GUI_Viewport::Update()
 }
 
 int isHolding = 0;
-POINT previous;
+
+Vector2 currentFramePos;
 
 void GUI_Viewport::ShowEngineView()
 {
@@ -32,50 +33,6 @@ void GUI_Viewport::ShowEngineView()
 
 	float width = ImGui::GetWindowContentRegionWidth();
 	float height = ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y - 30;
-
-	////Console.print("XPos: ", ImGui::GetWindowPos().x);
-	////Console.print("YPos: ", ImGui::GetWindowPos().y);
-
-	//ImVec2 gPos = ImGui::GetWindowPos();
-	//ImVec2 gSize = ImGui::GetWindowSize();
-
-	//if (gPos.y < 25) // can't go on top
-	//{
-	//	if (Input.GetKey(KeyCode::LeftMouse))
-	//	{
-	//		if (isHolding != 1)
-	//			previous = Input.GetMouseCoordinates();
-
-	//		isHolding = 1;
-	//	}
-	//	//SetCursorPos(Input.GetMouseCoordinates().x, previous.y + 3);
-	//	ImGui::SetWindowPos(ImVec2(gPos.x, 25));
-	//}
-	//else if (gPos.y + gSize.y > screen.y) // can't go below
-	//{
-	//	if (Input.GetKey(KeyCode::LeftMouse))
-	//	{
-	//		if (isHolding != -1)
-	//			previous = Input.GetMouseCoordinates();
-
-	//		isHolding = -1;
-	//	}
-	//	//SetCursorPos(Input.GetMouseCoordinates().x, previous.y - 3);
-	//	ImGui::SetWindowPos(ImVec2(gPos.x, 0));
-	//}
-
-	//if (gSize.y > screen.y - 35)
-	//{
-	//	ImGui::SetWindowSize(ImVec2(gSize.x, screen.y - 35));
-	//}
-
-	//std::string result = "Window: Vector2(" + std::to_string(screen.x) + ", " + std::to_string(screen.y) + ")\n" +
-	//	"Pos: Vector2(" + std::to_string(gPos.x + gSize.x) + ", " + std::to_string(gPos.y + gSize.y) + ")\n";
-
-	//Console.print(result);
-
-	//if (Input.GetKeyUp(KeyCode::LeftMouse))
-	//	isHolding = 0;
 
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
@@ -88,12 +45,10 @@ void GUI_Viewport::ShowEngineView()
 	if (isHolding)
 	{
 		io.SetCustomMouseTexture = true;
-		io.SetCursorTexture((int)m_engine->assetManager.getTexture("Assets/brickwork.jpg")->getTexture(), ImVec2(100, 10));
+		io.SetCursorTexture((int)m_engine->assetManager.getTexture("Assets/Editor/Eye-Orbit.png")->getTexture(), ImVec2(30, 50));
 	}
 	else
 		io.SetCustomMouseTexture = false;
-
-
 
 	///FIVE HOLY LINES
 	renderManager->SetRenderTarget(m_engine->m_depthStencilView);
@@ -105,13 +60,14 @@ void GUI_Viewport::ShowEngineView()
 
 
 	m_engine->SetViewport(screen.x / 2, screen.y / 2);//(WIDTH / 2, HEIGHT / 2);
+	Vector2 cursorPos = Vector2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y);
+	Vector2 windowPos = Vector2(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+	currentFramePos = Vector2((cursorPos.x + windowPos.x), (cursorPos.y + windowPos.y));
 	renderManager->ForwardRender(m_engine->camera, m_engine->objectsToRender);
 	m_engine->gDeviceContext->OMSetRenderTargets(1, &m_engine->gBackbufferRTV, m_engine->m_depthStencilView);
 	m_engine->SetViewport();
 
-	/*bool m = true;
-	if (BeginDock("Docker", &m, ImGuiWindowFlags_NoCollapse))
-	{*/
+
 	ImGui::Image(
 		renderManager->m_shaderResourceView,
 		ImVec2(width, height),
@@ -121,5 +77,22 @@ void GUI_Viewport::ShowEngineView()
 		ImColor(50, 127, 166, 255)
 	);
 
-	//}EndDock();
+	DoMousePick();
+}
+
+void GUI_Viewport::DoMousePick()
+{
+	if (!ImGui::IsMouseHoveringWindow() || !ImGui::IsMouseClicked(0)) //Replaced from Input.GetKeyDown(KeyCode::LeftMouse)... maybe it detected better? who the hell knows haha
+		return;
+
+	Vector2 mousePosRelative = Vector2(ImGui::GetMousePos().x - currentFramePos.x, ImGui::GetMousePos().y - currentFramePos.y);
+	RaycastHit hit;
+
+	Ray ray = m_engine->camera->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(mousePosRelative.x, mousePosRelative.y, 0, 0));
+	gPhysics.Raycast(ray, hit);
+
+	if (hit.transform != nullptr)
+		Scene::selectedGameObject = hit.transform->gameObject;
+	else
+		Scene::selectedGameObject = nullptr;
 }
