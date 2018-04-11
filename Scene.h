@@ -5,6 +5,21 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 #include "json.hpp"
+#include "Vector3.h"
+
+struct JsonSceneWriter
+{
+	std::string name;
+	Vector3 position;
+	Vector3 rotation;
+
+	JsonSceneWriter(const std::string s, Vector3 p, Vector3 r)
+	{
+		name = s;
+		position = p;
+		rotation = r;
+	}
+};
 
 struct PLANE
 {

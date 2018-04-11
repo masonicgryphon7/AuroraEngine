@@ -63,12 +63,108 @@ void Scene::update()
 void Scene::SaveScene()
 {
 	using json = nlohmann::json;
+
+
+	std::vector<json> jason;
+
+	for (size_t i = 0; i < getSceneObjectsCount(); i++)
+	{
+		json j;
+		GameObject* temp = getSceneObjects().at(i);
+		JsonSceneWriter write = JsonSceneWriter(temp->name, Vector3(temp->transform.getPosition()), Vector3(temp->transform.getRotation()));
+		j["name"] = write.name;
+		j["position"] = write.position.toString();
+		j["rotation"] = write.rotation.toString();
+
+		for (size_t k = 0; k < temp->components.size(); ++k)
+		{
+			std::string compName = temp->components.at(k)->assetName;
+
+			if (compName == "Camera")
+			{
+				Camera *c = temp->getComponent<Camera>();
+				j["FOV"] = c->FOV;
+				j["Near_Z"] = c->nearZ;
+				j["Far_Z"] = c->farZ;
+				j["AssetName"] = c->assetName;
+			}
+			else if (compName == "Material")
+			{
+				Material* m = temp->getComponent<Material>();
+			}
+		}
+
+		jason.push_back(j);
+	}
+
+	json end = {
+		{
+			"Scene-Name",
+			{
+				jason
+			}
+		}
+
+	};
+
+	std::ofstream o("scene.aur");
+	o << std::setw(4) << end << std::endl;
 }
 
 void Scene::LoadScene()
 {
-}
+	//ProgressReport::Get().Reset(g_progress_Scene);
+	//ProgressReport::Get().SetStatus(g_progress_Scene, "Saving scene...");
+	//Stopwatch timer;
 
+	//// Add scene file extension to the filepath if it's missing
+	//string filePath = filePathIn;
+	//if (FileSystem::GetExtensionFromFilePath(filePath) != SCENE_EXTENSION)
+	//{
+	//	filePath += SCENE_EXTENSION;
+	//}
+
+	//// Save any in-memory changes done to resources while running.
+	//m_context->GetSubsystem<ResourceManager>()->SaveResourcesToFiles();
+
+	//// Create a prefab file
+	//auto file = make_unique<FileStream>(filePath, FileStreamMode_Write);
+	//if (!file->IsOpen())
+	//	return false;
+
+	//// Save currently loaded resource paths
+	//vector<string> filePaths;
+	//m_context->GetSubsystem<ResourceManager>()->GetResourceFilePaths(filePaths);
+	//file->Write(filePaths);
+
+	////= Save GameObjects ============================
+	//// Only save root GameObjects as they will also save their descendants
+	//vector<weak_ptr<GameObject>> rootGameObjects = GetRootGameObjects();
+
+	//// 1st - GameObject count
+	//int rootGameObjectCount = (int)rootGameObjects.size();
+	//file->Write(rootGameObjectCount);
+
+	//// 2nd - GameObject IDs
+	//for (const auto& root : rootGameObjects)
+	//{
+	//	file->Write(root.lock()->GetID());
+	//}
+
+	//// 3rd - GameObjects
+	//for (const auto& root : rootGameObjects)
+	//{
+	//	root.lock()->Serialize(file.get());
+	//}
+	////==============================================
+
+	//LOG_INFO("Scene: Saving took " + to_string((int)timer.GetElapsedTimeMs()) + " ms");
+	//FIRE_EVENT(EVENT_SCENE_SAVED);
+
+	//ProgressReport::Get().SetIsLoading(g_progress_Scene, false);
+
+	//return true;
+}
 
 std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 {
@@ -137,7 +233,7 @@ std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 
 
 			sceneObjects[i]->name = std::to_string(cullingResult);
-			
+
 			if (cullingResult > 0) {
 				objectsToRender.push_back(sceneObjects[i]);
 			}
@@ -147,13 +243,19 @@ std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 	return objectsToRender;
 }
 
-
+template <typename T> T convert_to(const std::string &str)
+{
+	std::istringstream ss(str);
+	T num;
+	ss >> num;
+	return num;
+}
 
 int Scene::frustumCheck(OOBB otherOBB, DirectX::XMVECTOR otherPosition, PLANE *planes)
 {
 
 	int intersecting = 0;
-	for (int j = 0; j<6; j++) {
+	for (int j = 0; j < 6; j++) {
 		int result = planeAABBIntersect(otherOBB, otherPosition, DirectX::XMVectorSet(planes[j].normal.x, planes[j].normal.y, planes[j].normal.z, planes[j].distance));
 		if (result == 0) {
 			return 0;
