@@ -39,33 +39,20 @@ void Transform::updateRotationInEuler()
 {
 }
 
-DirectX::XMVECTOR Transform::getRotationEuler()
+DirectX::XMVECTOR Transform::getRotationQuaternion()
 {
-	float x = 0.0f, y = 0.0f, z = 0.0f;
-	
-	MatrixToEuler(&x, &y, &z, DirectX::XMMatrixRotationQuaternion(rotation));
-	x *= 180 / PI;
-	y *= 180 / PI;
-	z *= 180 / PI;
+	return DirectX::XMQuaternionRotationRollPitchYawFromVector(rotation);
+}
 
-	return DirectX::XMVectorSet(x, y, z, 0.0f);
+DirectX::XMVECTOR Transform::getRotation()
+{
+	return DirectX::XMVectorScale(rotation, 180/PI); 
 	
 }
 
 void Transform::setRotation(const DirectX::XMVECTOR in_setRotation)
 {
-		DirectX::XMVECTOR rad = DirectX::XMVectorScale(in_setRotation, PI / 180.0f);
-		rotation = DirectX::XMQuaternionRotationRollPitchYawFromVector(rad);
+	rotation = DirectX::XMVectorScale(in_setRotation, PI/180.0);
 }
-
-void Transform::MatrixToEuler(float * outX, float * outY, float * outZ, DirectX::XMMATRIX rotMatrix)
-{
-	DirectX::XMFLOAT3X3 matrix;
-	DirectX::XMStoreFloat3x3(&matrix, rotMatrix);
-	*outX = atan2(matrix._32, matrix._33);
-	*outY = -atan2(-matrix._31, sqrt(pow(matrix._32,2)+pow(matrix._32,2)));
-	*outZ = atan2(matrix._21,matrix._11);
-
 
 	
-}

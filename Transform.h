@@ -19,8 +19,8 @@ public:
 	DirectX::XMVECTOR getPosition() { return position; };
 	void setPosition(const DirectX::XMVECTOR in_setPosition) { position = in_setPosition; };
 
-	DirectX::XMVECTOR getRotation() { return rotation; };
-	DirectX::XMVECTOR getRotationEuler();
+	DirectX::XMVECTOR getRotation();
+	DirectX::XMVECTOR getRotationQuaternion();
 	void setRotation(const DirectX::XMVECTOR in_setRotation);
 
 	DirectX::XMVECTOR getScale() { return scale; };
@@ -46,7 +46,6 @@ private:
 	DirectX::XMVECTOR up;
 	DirectX::XMVECTOR right;
 
-	void MatrixToEuler(float *outX, float *outY, float *outZ, DirectX::XMMATRIX rotMatrix);
 
 };
 

@@ -70,7 +70,7 @@ void GUI_Inspector::ShowTransformView()
 	char transRotZ[255];
 
 	DirectX::XMVECTOR pos = Scene::selectedGameObject->transform.getPosition();
-	DirectX::XMVECTOR rot = Scene::selectedGameObject->transform.getRotationEuler();
+	DirectX::XMVECTOR rot = Scene::selectedGameObject->transform.getRotation();
 	Vector3 position = Vector3(pos);
 	Vector3 rotation = Vector3(rot);
 
@@ -232,7 +232,7 @@ void GUI_Inspector::ShowTransformView()
 	rotation = Vector3((float)atof(&transRotX[0]), (float)atof(&transRotY[0]), (float)atof(&transRotZ[0]));
 
 	Vector3 actualPos = Vector3(Scene::selectedGameObject->transform.getPosition());
-	Vector3 actualRot = Vector3(Scene::selectedGameObject->transform.getRotationEuler());
+	Vector3 actualRot = Vector3(Scene::selectedGameObject->transform.getRotation());
 
 
 	if (position != actualPos) {
