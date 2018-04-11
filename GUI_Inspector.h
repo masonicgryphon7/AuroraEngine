@@ -13,7 +13,10 @@ private:
 	void ShowFrame();
 
 protected:
+	void SetComponents();
+
 	void ShowTransformView();
+	void ShowCameraView();
 
 	void ShowAddComponent();
 	void ShowPopupAddComponent();

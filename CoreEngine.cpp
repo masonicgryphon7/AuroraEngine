@@ -330,6 +330,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 		}
 
+		gScene.SaveScene();
+
 		ImGui::ShutdownDock();
 		ImGui_ImplDX11_Shutdown();
 		ImGui::DestroyContext();
