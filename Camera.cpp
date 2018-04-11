@@ -26,10 +26,10 @@ void Camera::update()
 }
 
 
-DirectX::XMMATRIX Camera::calculateViewMatrix(DirectX::XMVECTOR position, DirectX::XMVECTOR forwardVector, DirectX::XMVECTOR upVector)
+DirectX::XMMATRIX Camera::calculateViewMatrix()
 {
 
-	return DirectX::XMMatrixLookToLH(position, forwardVector, upVector);
+	return DirectX::XMMatrixLookToLH(gameObject->transform.getPosition(), gameObject->transform.getForward(), gameObject->transform.getUp());
 }
 
 DirectX::XMMATRIX Camera::calculatePerspectiveMatrix()
@@ -57,7 +57,7 @@ Ray Camera::calculateScreenPointToRay(DirectX::XMVECTOR postion)
 	ray.origin = gameObject->transform.getPosition();
 	
 	//inverse matrix
-	DirectX::XMMATRIX ndcToWorld = DirectX::XMMatrixMultiply(calculateViewMatrix(gameObject->transform.getPosition(), gameObject->transform.getForward(), gameObject->transform.getUp()), calculatePerspectiveMatrix());
+	DirectX::XMMATRIX ndcToWorld = DirectX::XMMatrixMultiply(calculateViewMatrix(), calculatePerspectiveMatrix());
 	ndcToWorld = DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(ndcToWorld), ndcToWorld);
 	
 	//input position to ndc

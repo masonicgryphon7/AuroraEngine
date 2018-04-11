@@ -3,7 +3,7 @@ struct VS_OUT
 {
 	float4 Position : SV_POSITION;
 	float2 Uv : UV;
-	float4 worldPosition : POSITION;
+	float4 worldPosition : WPOSITION;
 	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
 };
@@ -63,8 +63,9 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float roughness = AORoughMet.y;
 	float ao = AORoughMet.x;//met_Roug_Ao.z;
 
-	float3 V = normalize(input.cameraPosition - input.worldPosition);
-	
+	float3 V = normalize( input.worldPosition);
+	//float3 V = normalize(input.cameraPosition - input.worldPosition);
+
 	//light value
 	float3 lightDirection = normalize(float3(1, 3, 1));
 	float3 lightColor = float3(1, 1, 1);

@@ -24,7 +24,7 @@ RenderManager::~RenderManager()
 
 void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObject*> objectsToRender)
 {
-	DirectX::XMMATRIX viewMatrix = cameraObject->getComponent<Camera>()->calculateViewMatrix(cameraObject->transform.getPosition(), cameraObject->transform.getForward(), cameraObject->transform.getUp());
+	DirectX::XMMATRIX viewMatrix = cameraObject->getComponent<Camera>()->calculateViewMatrix();
 	DirectX::XMMATRIX perspectiveMatrix = cameraObject->getComponent<Camera>()->calculatePerspectiveMatrix();
 
 

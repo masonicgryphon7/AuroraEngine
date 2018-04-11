@@ -13,7 +13,7 @@ public:
 	~Camera();
 
 	void update();
-	DirectX::XMMATRIX calculateViewMatrix(DirectX::XMVECTOR position, DirectX::XMVECTOR forwardVector, DirectX::XMVECTOR upVector);
+	DirectX::XMMATRIX calculateViewMatrix();
 	DirectX::XMMATRIX calculatePerspectiveMatrix();
 	Ray calculateScreenPointToRay(DirectX::XMVECTOR postion);
 	

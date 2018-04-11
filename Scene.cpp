@@ -175,7 +175,7 @@ std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 
 	PLANE planes[6];
 
-	DirectX::XMMATRIX matrix = DirectX::XMMatrixMultiply(camera->getComponent<Camera>()->calculateViewMatrix(camera->transform.getPosition(), camera->transform.getForward(), camera->transform.getUp()), camera->getComponent<Camera>()->calculatePerspectiveMatrix());
+	DirectX::XMMATRIX matrix = DirectX::XMMatrixMultiply(camera->getComponent<Camera>()->calculateViewMatrix(), camera->getComponent<Camera>()->calculatePerspectiveMatrix());
 	DirectX::XMFLOAT4X4 m;
 	DirectX::XMStoreFloat4x4(&m, matrix);
 
