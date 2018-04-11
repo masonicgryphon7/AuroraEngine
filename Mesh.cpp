@@ -188,7 +188,7 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 		DirectX::XMFLOAT3 tan = subtract(dVec1, dVec2);
 		tan.x = tan.x*someFloat;
 		tan.y = tan.y*someFloat;
-		tan.y = tan.z*someFloat;
+		tan.z = tan.z*someFloat;
 
 
 		//tangent
