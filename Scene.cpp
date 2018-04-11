@@ -60,6 +60,15 @@ void Scene::update()
 	}
 }
 
+void Scene::SaveScene()
+{
+	using json = nlohmann::json;
+}
+
+void Scene::LoadScene()
+{
+}
+
 
 std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 {

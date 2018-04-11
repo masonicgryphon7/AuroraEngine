@@ -4,6 +4,7 @@
 #include "QuadTreeNode.h"
 #include <DirectXMath.h>
 #include "Camera.h"
+#include "json.hpp"
 
 struct PLANE
 {
@@ -25,6 +26,11 @@ public:
 	int getSceneObjectsCount();
 
 	void update();
+
+	// SAVE_LOAD
+	void SaveScene();
+	void LoadScene();
+
 
 	static GameObject* selectedGameObject;
 

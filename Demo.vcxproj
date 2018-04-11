@@ -169,6 +169,7 @@
     <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="INPUT_ELEMENT_DESCRIPTION.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="KeyCode.h" />
     <ClInclude Include="LIGHT_TYPES.h" />
     <ClInclude Include="Material.h" />
