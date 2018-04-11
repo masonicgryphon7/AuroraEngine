@@ -167,12 +167,14 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
-		assetManager.addTexture("Assets/brickwork.jpg");
-		assetManager.addTexture("Assets/NormalBrick.png");
+		assetManager.addTexture("Assets/eyy (1).png");
+		assetManager.addTexture("Assets/kud.png");
+		assetManager.addTexture("Assets/eyy (3).png");
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
 		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
-		assetManager.addMesh("Assets/Cube.obj");
+		assetManager.getMaterial(0)->setPbr(assetManager.getTexture(2)->getTexture());
+		assetManager.addMesh("Assets/cubetri.obj");
 		MeshFilter* meshFilter = new MeshFilter(assetManager.getMesh(0));
 		cube->addComponent(assetManager.getMaterial(0));
 		cube->addComponent(meshFilter);

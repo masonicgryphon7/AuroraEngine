@@ -57,7 +57,7 @@ float3 fresnelSchlick(float cosTheta, float3 F0)
 float4 PS_main(VS_OUT input) : SV_Target
 {
 	float3 color = /*float3 (0.7f, 0.0f, 0.0f);*/ Diffuse.Sample(sampAni, input.Uv).xyz;
-	float3 normal = normalize(NormalTexture.Sample(sampAni, input.Uv).xyz * 2.0f - 1.0f);
+	float3 normal = normalize(mul((2.0f * NormalTexture.Sample(sampAni, input.Uv).xyz - 1.0f), input.TBNMatrix));
 	float3 met_Roug_Ao = PBRTexture.Sample(sampAni, input.Uv).xyz;
 	float metallic = 0.0f;//met_Roug_Ao.x;
 	float roughness = 1.0f - met_Roug_Ao.y;
@@ -67,8 +67,8 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float specularPower = 5;
 
 	/*diff*/
-	float3 lightDirection = normalize(mul(input.TBNMatrix, float3(1, 2, 1)));
-	float3 camDirection = normalize(mul(input.TBNMatrix, input.cameraDirection.xyz));
+	float3 lightDirection = normalize(float3(1, 2, 1));
+	float3 camDirection = normalize(input.cameraDirection.xyz);
 	lightDirection = normalize(lightDirection);
 	float diffuseValue = saturate(dot(normal, lightDirection));
 
@@ -82,47 +82,30 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float3 specular = specularIntensity * specularPower;
 
 	
-
-	float3 N = normalize(normal);
-	float3 V = normalize(mul(input.TBNMatrix, -input.cameraDirection.xyz));
-
-	float3 L = normalize(mul(input.TBNMatrix, float3(1, 2, 1)));
-	float3 H = normalize(lightDirection - camDirection);
-
 	//pbr
 	float3 f0 = float3(0.04f, 0.04f, 0.04f);
 	f0 = lerp(f0, color, metallic);
 	
-	float NDF = distributionGGX(N, H, roughness);
-	float G = geometrySmith(N, V, L, roughness);
-	float3 F = fresnelSchlick(clamp(dot(H, V), 0.0f, 1.0f), f0);
-
+	/*float NDF = distributionGGX(normal, halfV, roughness);
+	float G = geometrySmith(normal, -camDirection, lightDirection, roughness);
+	
 	float3 nominator = NDF * G * F;
-	float denominator = 4 * max(dot(N, V), 0.0f) * max(dot(N, L), 0.0f);
-	float3 spec = nominator / max(denominator, 0.001f);
-
-	float3 kS = F;
-
+	float denominator = 4 * max(dot(normal, -camDirection), 0.0f) * max(dot(normal, lightDirection), 0.0f);
+	float3 spec = nominator / max(denominator, 0.001f);*/
+	float3 kS = fresnelSchlick(clamp(dot(halfV, -camDirection), 0.0f, 1.0f), f0);
 	float3 kD = float3(1.0f, 1.0f, 1.0f) - kS;
-
 	kD *= 1.0f - metallic;
 
-	float normDotLight = max(dot(N, L), 0.0f);
-
-	float3 lo = (kD + specular) * normDotLight;
-
+	float normDotLight = max(dot(normal, lightDirection), 0.0f);
+	float3 lo = (kD * color + specular) * normDotLight;
 	float3 amb = color * ao * float3(1, 1, 1);
-
-	//color *= diffuseValue + specular + float3(0.2f,0.2f,0.2f);
-
 	float3 finalColor = amb * lo;
 
 	finalColor = finalColor / (finalColor + float3(1.0f, 1.0f, 1.0f));
+	finalColor = pow(finalColor, float3(1.0f, 1.0f, 1.0f));
 
-	//finalColor = pow(finalColor, float3(1.0f, 1.0f, 1.0f));
-
+	color *= diffuseValue + specular;
 	//color *= diffuseValue + float3(0.2f, 0.2f, 0.2f) + specular;
-	color *= ((kD + pi + specular + float3(0.2f, 0.2f, 0.2f))* normDotLight);
-		 
-	return float4(finalColor, 1.0f);
-};
+	//finalColor.x * 2.1f, finalColor.y * 2.0f, finalColor.z * 2.1f
+	return float4(color, 1.0f);
+}

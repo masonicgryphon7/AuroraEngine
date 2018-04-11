@@ -34,16 +34,16 @@ VS_OUT VS_main(VS_IN input)
 
 	output.Position = float4(input.Position, 1);
 	output.Position = mul(output.Position, world);
-	output.worldPosition = output.Position;
+	output.worldPosition = mul(output.Position, world);
 	output.Position = mul(output.Position, view);
 	output.Position = mul(output.Position, projection);
 	output.Uv = input.Uv;
 	output.Normal = input.Normal;
 	output.cameraDirection = cameraDirection;
 
-	float3 Tcomponent = normalize(input.Tangent - dot(input.Tangent, input.Normal) * input.Normal);
-	float3 Bcomponent = input.Bitangent;
-	output.TBNMatrix = float3x3(Tcomponent, Bcomponent, input.Normal);
+
+	//mul( world, mul(float3x3(input.Tangent, input.Bitangent, input.Normal), view));
+	output.TBNMatrix = float3x3(input.Tangent, input.Bitangent, input.Normal);
 
 	return output;
 }
