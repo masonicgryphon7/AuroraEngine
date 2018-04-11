@@ -25,9 +25,9 @@ void Material::setNormal(ID3D11ShaderResourceView * normal)
 	this->normal = normal;
 }
 
-void Material::setPbr(ID3D11ShaderResourceView * pbr)
+void Material::setAORoughMet(ID3D11ShaderResourceView * AORoughMet)
 {
-	this->pbr = pbr;
+	this->AORoughMet = AORoughMet;
 }
 
 void Material::bindMaterial()
@@ -35,7 +35,7 @@ void Material::bindMaterial()
 	shaderProgram->ActivateShader();
 	gDeviceContext->PSSetShaderResources(0, 1, &albedo);
 	gDeviceContext->PSSetShaderResources(1, 1, &normal);
-	gDeviceContext->PSSetShaderResources(2, 1, &pbr);
+	gDeviceContext->PSSetShaderResources(2, 1, &AORoughMet);
 }
 
 void Material::update()

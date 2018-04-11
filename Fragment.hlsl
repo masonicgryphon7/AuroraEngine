@@ -3,7 +3,6 @@ struct VS_OUT
 {
 	float4 Position : SV_POSITION;
 	float2 Uv : UV;
-	float3 Normal : NORMAL;
 	float4 worldPosition : POSITION;
 	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
@@ -11,7 +10,7 @@ struct VS_OUT
 
 Texture2D Diffuse:register(t0);
 Texture2D NormalTexture:register(t1);
-Texture2D PBRTexture:register(t2);
+Texture2D AORoughMetTexture:register(t2);
 SamplerState sampAni;
 
 float distributionGGX(float3 normal, float3 halfV, float roughness)
@@ -24,7 +23,7 @@ float distributionGGX(float3 normal, float3 halfV, float roughness)
 	float denom = (normDotHalfV_2 * (a2 - 1.0f) + 1.0f);
 	denom = pi * denom * denom;
 
-	return a2 / max(denom, 0.0001f);
+	return a2 / denom;
 }
 
 float geometrySchlickGGX(float normDotView, float roughness)
@@ -59,10 +58,10 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float3 N = NormalTexture.Sample(sampAni, input.Uv).xyz;
 	N = N * 2.0 - 1.0;
 	N =	normalize(mul(N,input.TBNMatrix));
-	float3 met_Roug_Ao = PBRTexture.Sample(sampAni, input.Uv).xyz;
-	float metallic = 0.0f;//met_Roug_Ao.x;
-	float roughness = 1.0f;
-	float ao = 1.0f;//met_Roug_Ao.z;
+	float3 AORoughMet = AORoughMetTexture.Sample(sampAni, input.Uv).xyz;
+	float metallic = AORoughMet.z;//met_Roug_Ao.x;
+	float roughness = AORoughMet.y;
+	float ao = AORoughMet.x;//met_Roug_Ao.z;
 
 	float3 V = normalize(input.cameraPosition - input.worldPosition);
 	
@@ -76,11 +75,11 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 	float NDF = distributionGGX(N, H, roughness);
 	float G = geometrySmith(N, V, lightDirection, roughness);
-	float3 F = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), f0);
+	float3 F = fresnelSchlick(max(dot(H, V), 0.0), f0);
 	
 	float3 nominator = NDF * G * F;
-	float denominator = 4 * max(dot(N, V), 0.0f) * max(dot(N, lightDirection), 0.0f);
-	float3 spec = nominator / max(denominator, 0.001f);
+	float denominator = 4 * max(dot(N, V), 0.0f) * max(dot(N, lightDirection), 0.0f)+ 0.001f;
+	float3 spec = nominator / denominator;
 
 	float3 kS = F;
 	float3 kD = float3(1.0f, 1.0f, 1.0f) - kS;

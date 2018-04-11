@@ -11,14 +11,14 @@ public:
 
 	void setAlbedo(ID3D11ShaderResourceView *albedo);
 	void setNormal(ID3D11ShaderResourceView *normal);
-	void setPbr(ID3D11ShaderResourceView *pbr);
+	void setAORoughMet(ID3D11ShaderResourceView *AORoughMet);
 	void bindMaterial();
 
 	void update();
 private:
 	ID3D11ShaderResourceView * albedo = nullptr;
 	ID3D11ShaderResourceView * normal = nullptr;
-	ID3D11ShaderResourceView * pbr = nullptr;
+	ID3D11ShaderResourceView * AORoughMet = nullptr;
 	ShaderProgram* shaderProgram = nullptr;
 	ID3D11DeviceContext* gDeviceContext = nullptr;
 };
