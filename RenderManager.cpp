@@ -42,7 +42,7 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(objectsToRender[i]->calculateWorldMatrix()));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
-		DirectX::XMStoreFloat4(&matrixBufferData.cameraDirection, cameraObject->transform.getForward());
+		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
 		memcpy(dataPtr.pData, &matrixBufferData, sizeof(MatrixBufferStruct));
 		gDeviceContext->Unmap(matrixBuffer, 0);
 		gDeviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);

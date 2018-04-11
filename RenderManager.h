@@ -14,7 +14,7 @@ struct MatrixBufferStruct
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMFLOAT4X4 view;
 	DirectX::XMFLOAT4X4 projection;
-	DirectX::XMFLOAT4 cameraDirection;
+	DirectX::XMFLOAT4 cameraPosition;
 };
 
 class RenderManager

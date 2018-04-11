@@ -13,7 +13,7 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix world;
 	matrix view;
 	matrix projection;
-	float4 cameraDirection;
+	float4 cameraPosition;
 };
 
 struct VS_OUT
@@ -21,8 +21,8 @@ struct VS_OUT
 	float4 Position : SV_POSITION;
 	float2 Uv : UV;
 	float3 Normal : NORMAL;
-	float4 worldPosition : Position;
-	float4 cameraDirection : cameraDirection;
+	float4 worldPosition : POSITION;
+	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
 };
 //-----------------------------------------------------------------------------------------
@@ -34,16 +34,16 @@ VS_OUT VS_main(VS_IN input)
 
 	output.Position = float4(input.Position, 1);
 	output.Position = mul(output.Position, world);
-	output.worldPosition = mul(output.Position, world);
+	output.worldPosition = output.Position;
 	output.Position = mul(output.Position, view);
 	output.Position = mul(output.Position, projection);
 	output.Uv = input.Uv;
-	output.Normal = input.Normal;
-	output.cameraDirection = cameraDirection;
+	output.Normal = mul(input.Normal, world);
+	output.cameraPosition = cameraPosition;
 
 
 	//mul( world, mul(float3x3(input.Tangent, input.Bitangent, input.Normal), view));
-	output.TBNMatrix = float3x3(input.Tangent, input.Bitangent, input.Normal);
+	output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), world);
 
 	return output;
 }
