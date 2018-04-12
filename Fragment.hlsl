@@ -54,7 +54,7 @@ float3 fresnelSchlick(float cosTheta, float3 F0)
 
 float4 PS_main(VS_OUT input) : SV_Target
 {
-	float3 albedo = /*float3 (0.7f, 0.0f, 0.0f);*/ Diffuse.Sample(sampAni, input.Uv).xyz;
+	float3 albedo = pow(Diffuse.Sample(sampAni, input.Uv).xyz, float3(2.2,2.2,2.2));
 	float3 N = NormalTexture.Sample(sampAni, input.Uv).xyz;
 	N = N * 2.0 - 1.0;
 	N =	normalize(mul(N,input.TBNMatrix));
@@ -63,8 +63,8 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float roughness = AORoughMet.y;
 	float ao = AORoughMet.x;//met_Roug_Ao.z;
 
-	float3 V = normalize( input.worldPosition);
-	//float3 V = normalize(input.cameraPosition - input.worldPosition);
+	//float3 V = normalize( input.worldPosition);
+	float3 V = normalize(input.cameraPosition.xyz- input.worldPosition.xyz);
 
 	//light value
 	float3 lightDirection = normalize(float3(1, 3, 1));
