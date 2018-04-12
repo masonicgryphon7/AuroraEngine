@@ -157,6 +157,8 @@ void TerrainGenerator::loadRandomTerrainHeights()
 	{
 		for (int indexZ = 0; indexZ < (grid_Column - 1); indexZ++)
 		{
+
+
 			TriangleArr.push_back(RealVertArr[indexX + 1][indexZ]);
 			TriangleArr.push_back(RealVertArr[indexX + 1][indexZ + 1]);
 			TriangleArr.push_back(RealVertArr[indexX][indexZ]);

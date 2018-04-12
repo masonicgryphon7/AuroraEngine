@@ -153,6 +153,11 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 		vertex3.uv = texCoords[faces[i].vt3 - 1];
 
 
+		vertexPositions.push_back(DirectX::XMLoadFloat3(&vertex1.position));
+		vertexPositions.push_back(DirectX::XMLoadFloat3(&vertex2.position));
+		vertexPositions.push_back(DirectX::XMLoadFloat3(&vertex3.position));
+
+
 		vertex.push_back(vertex1);
 		vertex.push_back(vertex2);
 		vertex.push_back(vertex3);
@@ -238,6 +243,10 @@ void Mesh::bindMesh()
 
 HRESULT Mesh::CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext)
 {
+	for (int i = 0; i < TerrainInfoVector[0].size(); i++)
+	{
+		vertexPositions.push_back(DirectX::XMLoadFloat3(&TerrainInfoVector[0][i].position));
+	}
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData;
 	HRESULT result;
