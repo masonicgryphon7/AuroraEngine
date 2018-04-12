@@ -247,6 +247,7 @@ HRESULT Mesh::CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV
 	for (int i = 0; i < TerrainInfoVector[0].size(); i++)
 	{
 		vertexPositions.push_back(DirectX::XMLoadFloat3(&TerrainInfoVector[0][i].position));
+		int gg = 0;
 	}
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData;

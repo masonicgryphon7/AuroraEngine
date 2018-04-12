@@ -1,7 +1,7 @@
 #pragma once
 #include "PRIMITIVE_GEOMETRY.h"
 #include"Scene.h"
-#define EPSILON 0.0001
+#define EPSILON 0.00001
 
 static class Physics
 {

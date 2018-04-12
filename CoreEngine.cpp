@@ -182,6 +182,11 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
+		terrain->OOBoundingBox.centre = DirectX::XMVectorSet(50, 0, 50, 0);
+		terrain->OOBoundingBox.x_hx = DirectX::XMVectorSet(1, 0, 0, 50);
+		terrain->OOBoundingBox.y_hy = DirectX::XMVectorSet(0, 1, 0, 1);
+		terrain->OOBoundingBox.z_hz = DirectX::XMVectorSet(0, 0, 1, 50);
+
 		terrain->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100,"Assets/BmpMAPTEST100x1002.bmp" );
 		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);

@@ -91,8 +91,10 @@ void GUI_Viewport::DoMousePick()
 	Ray ray = m_engine->camera->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(mousePosRelative.x, mousePosRelative.y, 0, 0));
 	gPhysics.Raycast(ray, hit);
 
-	if (hit.transform != nullptr)
+	if (hit.transform != nullptr) {
 		Scene::selectedGameObject = hit.transform->gameObject;
-	else
+		DirectX::XMVECTOR test = DirectX::XMVectorAdd(m_engine->camera->transform.getPosition(),DirectX::XMVectorScale(ray.direction, hit.distance));
+		Debug.Log("Hit", DirectX::XMVectorGetX(test),",", DirectX::XMVectorGetY(test),",", DirectX::XMVectorGetZ(test));	
+	}else
 		Scene::selectedGameObject = nullptr;
 }

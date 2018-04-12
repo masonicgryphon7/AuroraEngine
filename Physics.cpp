@@ -1,5 +1,5 @@
 #include "Physics.h"
-
+#include "Debug.h"
 
 
 Physics::Physics()
@@ -31,9 +31,11 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 
 			float t = obbTest(ray.direction, ray.origin, obb);
 			if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
+				
 
 				//Detail
 				if (gScene.getSceneObjects()[i]->detailedRaycast == true) {
+					Debug.Log("Detailed");
 					float t = triangleTest(ray.direction, ray.origin, gScene.getSceneObjects()[i]->transform.getPosition(), gScene.getSceneObjects()[i]->getComponent<MeshFilter>()->getMesh()->getVertexPositions());
 
 					if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
@@ -142,12 +144,13 @@ float Physics::triangleTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigi
 		DirectX::XMVECTOR e2 = DirectX::XMVectorSubtract(vertexPositions[0][i + 2], vertexPositions[0][i]);
 
 		//make possible for rotation?????????????????
-		DirectX::XMVECTOR s = DirectX::XMVectorSubtract(rayOrigin, DirectX::XMVectorAdd(gameObjectPosition, vertexPositions[0][i]));
-		float denominator = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), e1, e2, DirectX::XMVectorSet(0, 0, 0, 0))));
+		DirectX::XMVECTOR s = DirectX::XMVectorSubtract(rayOrigin,  DirectX::XMVectorAdd(gameObjectPosition, vertexPositions[0][i]));
+		DirectX::XMMATRIX matrix = DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), e1, e2, DirectX::XMVectorSet(0, 0, 0, 1));
+		float denominator = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(matrix));
 		if (denominator > EPSILON) {
-			float det1 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(s, e1, e2, DirectX::XMVectorSet(0, 0, 0, 0))));
-			float det2 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), s, e2, DirectX::XMVectorSet(0, 0, 0, 0))));
-			float det3 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), e1, s, DirectX::XMVectorSet(0, 0, 0, 0))));
+			float det1 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(s, e1, e2, DirectX::XMVectorSet(0, 0, 0, 1))));
+			float det2 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), s, e2, DirectX::XMVectorSet(0, 0, 0, 1))));
+			float det3 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), e1, s, DirectX::XMVectorSet(0, 0, 0, 1))));
 			DirectX::XMVECTOR tuv = DirectX::XMVectorSet(det1, det2, det3, 0);
 			tuv = DirectX::XMVectorScale(tuv, (1 / denominator));
 			float w = 1 - DirectX::XMVectorGetY(tuv) - DirectX::XMVectorGetZ(tuv);
@@ -162,7 +165,7 @@ float Physics::triangleTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigi
 
 		}
 
-		return lastT;
 
 	}
+		return lastT;
 }
