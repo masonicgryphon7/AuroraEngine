@@ -174,7 +174,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
 		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
 		assetManager.getMaterial(0)->setAORoughMet(assetManager.getTexture(2)->getTexture());
-		assetManager.addMesh("Assets/STSP.obj");
+		assetManager.addMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(assetManager.getMesh(0));
 		cube->addComponent(assetManager.getMaterial(0));
 		cube->addComponent(meshFilter);

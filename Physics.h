@@ -14,6 +14,8 @@ public:
 
 private:
 	float obbTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigin, OOBB o);
+	float triangleTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigin, Mesh* tri);
+
 
 }gPhysics;
 
