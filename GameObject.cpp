@@ -16,6 +16,8 @@ GameObject::GameObject()
 	OOBoundingBox.y_hy =DirectX::XMVectorSet(0, 1, 0, 0.5);
 	OOBoundingBox.z_hz =DirectX::XMVectorSet(0, 0, 1, 0.5);
 
+	detailedRaycast = false;
+
 }
 
 GameObject::GameObject(DirectX::XMVECTOR(otherPosition))
@@ -34,6 +36,8 @@ GameObject::GameObject(DirectX::XMVECTOR(otherPosition))
 	OOBoundingBox.x_hx =DirectX::XMVectorSet(1, 0, 0, 0.5);
 	OOBoundingBox.y_hy =DirectX::XMVectorSet(0, 1, 0, 0.5);
 	OOBoundingBox.z_hz =DirectX::XMVectorSet(0, 0, 1, 0.5);
+
+	detailedRaycast = false;
 
 }
 

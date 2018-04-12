@@ -20,21 +20,39 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 	int objIndex = -1;
 
 
-	// OBBs
+	//
 	for (int i = 0; i < gScene.getSceneObjectsCount(); i++)
 	{
+		
+		//OBB
 		OOBB obb = gScene.getSceneObjects()[i]->OOBoundingBox;
 		if (obb.isActive == true) {
 			obb.centre = DirectX::XMVectorAdd(obb.centre, gScene.getSceneObjects()[i]->transform.getPosition());
 
 			float t = obbTest(ray.direction, ray.origin, obb);
-			if (t>EPSILON && (t<lastT || lastT<EPSILON)) {
-				lastT = t;
-				objIndex = i;
-				hitObject = true;
+			if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
+
+				//Detail
+				if (gScene.getSceneObjects()[i]->detailedRaycast == true) {
+					float t = triangleTest(ray.direction, ray.origin, gScene.getSceneObjects()[i]->transform.getPosition(), gScene.getSceneObjects()[i]->getComponent<MeshFilter>()->getMesh()->getVertexPositions());
+
+					if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
+						lastT = t;
+						objIndex = i;
+						hitObject = true;
+					}
+				}
+				else {
+					lastT = t;
+					objIndex = i;
+					hitObject = true;
+
+				}
 
 			}
 		}
+		
+
 	}
 
 	if (hitObject) {
@@ -109,4 +127,42 @@ float Physics::obbTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigin, OO
 
 
 
-};
+}
+float Physics::triangleTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigin, DirectX::XMVECTOR gameObjectPosition, std::vector<DirectX::XMVECTOR>* vertexPositions)
+{
+
+	float lastT = -1;
+
+	for (int i = 0; i < vertexPositions->size(); i = i + 3)
+	{
+
+		// IMPLEMENT HERE
+		float t = -1;
+		DirectX::XMVECTOR e1 = DirectX::XMVectorSubtract(vertexPositions[0][i + 1], vertexPositions[0][i]);
+		DirectX::XMVECTOR e2 = DirectX::XMVectorSubtract(vertexPositions[0][i + 2], vertexPositions[0][i]);
+
+		//make possible for rotation?????????????????
+		DirectX::XMVECTOR s = DirectX::XMVectorSubtract(rayOrigin, DirectX::XMVectorAdd(gameObjectPosition, vertexPositions[0][i]));
+		float denominator = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), e1, e2, DirectX::XMVectorSet(0, 0, 0, 0))));
+		if (denominator > EPSILON) {
+			float det1 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(s, e1, e2, DirectX::XMVectorSet(0, 0, 0, 0))));
+			float det2 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), s, e2, DirectX::XMVectorSet(0, 0, 0, 0))));
+			float det3 = DirectX::XMVectorGetW(DirectX::XMMatrixDeterminant(DirectX::XMMATRIX(DirectX::XMVectorScale(rayDir, -1), e1, s, DirectX::XMVectorSet(0, 0, 0, 0))));
+			DirectX::XMVECTOR tuv = DirectX::XMVectorSet(det1, det2, det3, 0);
+			tuv = DirectX::XMVectorScale(tuv, (1 / denominator));
+			float w = 1 - DirectX::XMVectorGetY(tuv) - DirectX::XMVectorGetZ(tuv);
+
+			if (DirectX::XMVectorGetY(tuv) >= EPSILON && DirectX::XMVectorGetY(tuv) <= 1 && DirectX::XMVectorGetZ(tuv) >= EPSILON && DirectX::XMVectorGetZ(tuv) <= 1 && w >= EPSILON && w <= 1) {
+				t = DirectX::XMVectorGetX(tuv);
+			}
+		}
+
+		if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
+			lastT = t;
+
+		}
+
+		return lastT;
+
+	}
+}

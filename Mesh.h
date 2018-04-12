@@ -30,6 +30,7 @@ public:
 	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext);
 	~Mesh();
 
+	std::vector<DirectX::XMVECTOR>* getVertexPositions() { return &vertexPositions; };
 	int getVertexCount();
 	void bindMesh();
 private:
