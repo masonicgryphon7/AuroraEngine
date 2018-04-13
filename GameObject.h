@@ -30,7 +30,6 @@ public:
     Material *materialComponent;
     MeshFilter *meshFilterComponent;
 	//Light *lightComponent;
-	OOBB OOBoundingBox;
 	bool detailedRaycast;
 	
     void updateMaterialAndMeshFilterPointers();

@@ -14,7 +14,9 @@ struct OOBB {
 	DirectX::XMVECTOR x_hx;
 	DirectX::XMVECTOR y_hy;
 	DirectX::XMVECTOR z_hz;
-	
+
+	DirectX::XMVECTOR corners[8];
+
 };
 
 struct Ray {

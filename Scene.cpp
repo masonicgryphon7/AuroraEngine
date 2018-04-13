@@ -35,9 +35,9 @@ GameObject * Scene::getGameObjectAt(int index)
 	return sceneObjects.at(index);
 }
 
-std::vector<GameObject*> Scene::getObjectsToRender(GameObject * camera)
+std::vector<GameObject*> Scene::getFrustumCulledResult()
 {
-	return frustumCull(camera);
+	return frustumCulledResult;
 }
 
 std::vector<GameObject*> Scene::getSceneObjects() {
@@ -229,10 +229,10 @@ std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 	//2 intersecting
 	for (int i = 0; i < sceneObjects.size(); i++) {
 		if (sceneObjects[i]->getIsRenderable()) {
-			int cullingResult = frustumCheck(sceneObjects[i]->OOBoundingBox, sceneObjects[i]->transform.getPosition(), planes);
+			int cullingResult = frustumCheck(sceneObjects[i]->getComponent<MeshFilter>()->getBoundingBox(), sceneObjects[i]->transform.getPosition(), planes);
 
-
-			sceneObjects[i]->name = std::to_string(cullingResult);
+			//print culling result
+			//sceneObjects[i]->name = std::to_string(cullingResult);
 
 			if (cullingResult > 0) {
 				objectsToRender.push_back(sceneObjects[i]);
@@ -240,6 +240,7 @@ std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 		}
 	}
 
+	frustumCulledResult = objectsToRender;
 	return objectsToRender;
 }
 
@@ -277,144 +278,12 @@ int Scene::frustumCheck(OOBB otherOBB, DirectX::XMVECTOR otherPosition, PLANE *p
 
 int Scene::planeAABBIntersect(OOBB otherOBB, DirectX::XMVECTOR otherPosition, DirectX::XMVECTOR frustumPlane)
 {
-	DirectX::XMVECTOR corners[8];
-
-	corners[0] =
-		DirectX::XMVectorAdd(
-			DirectX::XMVectorAdd(
-				DirectX::XMVectorAdd(
-					DirectX::XMVectorScale(
-						otherOBB.x_hx,
-						DirectX::XMVectorGetW(otherOBB.x_hx)),
-					DirectX::XMVectorScale(
-						otherOBB.y_hy,
-						DirectX::XMVectorGetW(otherOBB.y_hy))),
-				DirectX::XMVectorScale(
-					otherOBB.z_hz,
-					DirectX::XMVectorGetW(otherOBB.z_hz))),
-			DirectX::XMVectorAdd(
-				otherOBB.centre,
-				otherPosition));
-
-	corners[1] =
-		DirectX::XMVectorAdd(
-			DirectX::XMVectorAdd(
-				DirectX::XMVectorAdd(
-					DirectX::XMVectorScale(
-						otherOBB.x_hx,
-						-1.0f*DirectX::XMVectorGetW(otherOBB.x_hx)),
-					DirectX::XMVectorScale(
-						otherOBB.y_hy,
-						-1.0f*DirectX::XMVectorGetW(otherOBB.y_hy))),
-				DirectX::XMVectorScale(
-					otherOBB.z_hz,
-					-1.0f*DirectX::XMVectorGetW(otherOBB.z_hz))),
-			DirectX::XMVectorAdd(
-				otherOBB.centre,
-				otherPosition));
-	corners[2] =
-		DirectX::XMVectorAdd(
-			DirectX::XMVectorAdd(
-				DirectX::XMVectorAdd(
-					DirectX::XMVectorScale(
-						otherOBB.x_hx,
-						DirectX::XMVectorGetW(otherOBB.x_hx)),
-					DirectX::XMVectorScale(
-						otherOBB.y_hy,
-						DirectX::XMVectorGetW(otherOBB.y_hy))),
-				DirectX::XMVectorScale(
-					otherOBB.z_hz,
-					-1.0f*DirectX::XMVectorGetW(otherOBB.z_hz))),
-			DirectX::XMVectorAdd(
-				otherOBB.centre,
-				otherPosition));
-	corners[3] =
-		DirectX::XMVectorAdd(
-			DirectX::XMVectorAdd(
-				DirectX::XMVectorAdd(
-					DirectX::XMVectorScale(
-						otherOBB.x_hx,
-						-1.0f*DirectX::XMVectorGetW(otherOBB.x_hx)),
-					DirectX::XMVectorScale(
-						otherOBB.y_hy,
-						-1.0f*DirectX::XMVectorGetW(otherOBB.y_hy))),
-				DirectX::XMVectorScale(
-					otherOBB.z_hz,
-					DirectX::XMVectorGetW(otherOBB.z_hz))),
-			DirectX::XMVectorAdd(
-				otherOBB.centre,
-				otherPosition));
-	corners[4] =
-		DirectX::XMVectorAdd(
-			DirectX::XMVectorAdd(
-				DirectX::XMVectorAdd(
-					DirectX::XMVectorScale(
-						otherOBB.x_hx,
-						-1.0f*DirectX::XMVectorGetW(otherOBB.x_hx)),
-					DirectX::XMVectorScale(
-						otherOBB.y_hy,
-						DirectX::XMVectorGetW(otherOBB.y_hy))),
-				DirectX::XMVectorScale(
-					otherOBB.z_hz,
-					DirectX::XMVectorGetW(otherOBB.z_hz))),
-			DirectX::XMVectorAdd(
-				otherOBB.centre,
-				otherPosition));
-	corners[5] =
-		DirectX::XMVectorAdd(
-			DirectX::XMVectorAdd(
-				DirectX::XMVectorAdd(
-					DirectX::XMVectorScale(
-						otherOBB.x_hx,
-						DirectX::XMVectorGetW(otherOBB.x_hx)),
-					DirectX::XMVectorScale(
-						otherOBB.y_hy,
-						-1.0f*DirectX::XMVectorGetW(otherOBB.y_hy))),
-				DirectX::XMVectorScale(
-					otherOBB.z_hz,
-					-1.0f*DirectX::XMVectorGetW(otherOBB.z_hz))),
-			DirectX::XMVectorAdd(
-				otherOBB.centre,
-				otherPosition));
-	corners[6] =
-		DirectX::XMVectorAdd(
-			DirectX::XMVectorAdd(
-				DirectX::XMVectorAdd(
-					DirectX::XMVectorScale(
-						otherOBB.x_hx,
-						-1.0f*DirectX::XMVectorGetW(otherOBB.x_hx)),
-					DirectX::XMVectorScale(
-						otherOBB.y_hy,
-						DirectX::XMVectorGetW(otherOBB.y_hy))),
-				DirectX::XMVectorScale(
-					otherOBB.z_hz,
-					-1.0f*DirectX::XMVectorGetW(otherOBB.z_hz))),
-			DirectX::XMVectorAdd(
-				otherOBB.centre,
-				otherPosition));
-	corners[7] =
-		DirectX::XMVectorAdd(
-			DirectX::XMVectorAdd(
-				DirectX::XMVectorAdd(
-					DirectX::XMVectorScale(
-						otherOBB.x_hx,
-						DirectX::XMVectorGetW(otherOBB.x_hx)),
-					DirectX::XMVectorScale(
-						otherOBB.y_hy,
-						-1.0f*DirectX::XMVectorGetW(otherOBB.y_hy))),
-				DirectX::XMVectorScale(
-					otherOBB.z_hz,
-					DirectX::XMVectorGetW(otherOBB.z_hz))),
-			DirectX::XMVectorAdd(
-				otherOBB.centre,
-				otherPosition));
-
 
 	DirectX::XMVECTOR diagonals[4];
-	diagonals[0] = DirectX::XMVectorSubtract(corners[0], corners[1]);
-	diagonals[1] = DirectX::XMVectorSubtract(corners[2], corners[3]);
-	diagonals[2] = DirectX::XMVectorSubtract(corners[4], corners[5]);
-	diagonals[3] = DirectX::XMVectorSubtract(corners[6], corners[7]);
+	diagonals[0] = DirectX::XMVectorSubtract(otherOBB.corners[0], otherOBB.corners[1]);
+	diagonals[1] = DirectX::XMVectorSubtract(otherOBB.corners[2], otherOBB.corners[3]);
+	diagonals[2] = DirectX::XMVectorSubtract(otherOBB.corners[4], otherOBB.corners[5]);
+	diagonals[3] = DirectX::XMVectorSubtract(otherOBB.corners[6], otherOBB.corners[7]);
 
 	float lengthV = 0;
 	for (int i = 0; i < 4; i++) {

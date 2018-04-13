@@ -11,11 +11,12 @@ public:
 	~MeshFilter();
 
 	Mesh* getMesh() { return mesh; };
-	void setMesh(Mesh* in_setMesh) { mesh = in_setMesh; };
-
+	void setMesh(Mesh* in_setMesh);
+	OOBB getBoundingBox() { return boundingBox; };
 
 	void update();
 private:
+	OOBB boundingBox;
 	Mesh * mesh = nullptr;
 	std::vector<DirectX::XMVECTOR>* vertexPositions;
 

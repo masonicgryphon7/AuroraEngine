@@ -157,7 +157,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
 		camera = gScene.createEmptyGameObject();
-		camera->OOBoundingBox.isActive = false;
 		camera->name = "Editor Camera";
 		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
 		camera->addComponent(mainCamera);
@@ -182,11 +181,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
-		terrain->OOBoundingBox.centre = DirectX::XMVectorSet(50, 0, 50, 0);
-		terrain->OOBoundingBox.x_hx = DirectX::XMVectorSet(1, 0, 0, 50);
-		terrain->OOBoundingBox.y_hy = DirectX::XMVectorSet(0, 1, 0, 1);
-		terrain->OOBoundingBox.z_hz = DirectX::XMVectorSet(0, 0, 1, 50);
-
 		terrain->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100,"Assets/BmpMAPTEST100x1002.bmp" );
 		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
@@ -228,9 +222,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				ImGui_ImplDX11_NewFrame();
 
+				objectsToRender = gScene.frustumCull(camera);
 				gScene.update();
 
-				objectsToRender = gScene.getObjectsToRender(camera);
 				//the FIVE holy lines were here before
 
 				//gDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);

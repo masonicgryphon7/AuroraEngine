@@ -13,4 +13,6 @@ public:
 private:
 	void ShowEngineView();
 	void DoMousePick();
+
+	Vector2 mousePosRelative;
 };

@@ -11,6 +11,7 @@ public:
 	~Physics();
 
 	bool Raycast(Ray ray, RaycastHit& hit);
+	std::vector<GameObject*> ScreenSelection(DirectX::XMVECTOR startXYendXY, GameObject* camera);
 
 private:
 	float obbTest(DirectX::XMVECTOR rayDir, DirectX::XMVECTOR rayOrigin, OOBB o);
