@@ -165,6 +165,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
+		ClickToMove* clickToMove = new ClickToMove(mainCamera);
+		camera->addComponent(clickToMove);
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		assetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		assetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
