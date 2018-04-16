@@ -30,6 +30,7 @@ public:
 	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext);
 	~Mesh();
 
+	std::vector<DirectX::XMVECTOR>* getVertexPositions() { return &vertexPositions; };
 	int getVertexCount();
 	void bindMesh();
 private:
@@ -37,7 +38,7 @@ private:
 	UINT32 vertexSize;
 	ID3D11Buffer *vertexBuffer;
 	ID3D11DeviceContext* gDeviceContext = nullptr;
-
+	std::vector<DirectX::XMVECTOR> vertexPositions;
 
 	HRESULT CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device *device, ID3D11DeviceContext *devContext);
 	void CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11DeviceContext * devContext);

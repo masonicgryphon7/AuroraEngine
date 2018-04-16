@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <d3d11.h>
+#include <iostream>
+#include <fstream>
 
 class TerrainGenerator
 {
@@ -17,22 +19,35 @@ class TerrainGenerator
 
 private:
 
-	int grid_Row, grid_Column/*, vertCount*/;
+	struct HeightMapAttributes
+	{
+		int Width_Columns;
+		int Height_Row;
+		std::vector<std::vector<DirectX::XMFLOAT3>> VertInfo;
+	};
 
-
-	//VertexType Variable; An variable that contains info about vertices.
+	int grid_Row, grid_Column;
+	bool HeightMapLoaded = false, HeightmapWithinBoundsOfGrid = false;
+	std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> RealVertArr;
 
 public:
 	std::vector<VERTEX_POS3UV2T3B3N3> TriangleArr;
-	std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> RealVertArr;
+	HeightMapAttributes HeightMapVariables;
 	int vertCount;
 
 	TerrainGenerator();
 	TerrainGenerator(int grid_RowPr, int grid_ColumnPr);
+	TerrainGenerator(int grid_RowPr, int grid_ColumnPr, char* HeightMapFileName);
 	~TerrainGenerator();
+
+	void LoadHeightMapToAttributes(char* HeightMapFileName);
+	void createTerrainPatches();
+
 
 	int getVertCount() {return vertCount;};
 	void loadRandomTerrainHeights();
+	DirectX::XMFLOAT3 subtract(DirectX::XMFLOAT3 A, DirectX::XMFLOAT3 B);
+	DirectX::XMFLOAT2 subtract(DirectX::XMFLOAT2 A, DirectX::XMFLOAT2 B);
 
 };
 #endif

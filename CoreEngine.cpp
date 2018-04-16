@@ -157,7 +157,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
 		camera = gScene.createEmptyGameObject();
-		camera->OOBoundingBox.isActive = false;
 		camera->name = "Editor Camera";
 		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
 		camera->addComponent(mainCamera);
@@ -166,6 +165,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
+		ClickToMove* clickToMove = new ClickToMove(mainCamera);
+		camera->addComponent(clickToMove);
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		assetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		assetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
@@ -174,7 +175,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
 		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
 		assetManager.getMaterial(0)->setAORoughMet(assetManager.getTexture(2)->getTexture());
-		assetManager.addMesh("Assets/STSP.obj");
+		assetManager.addMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(assetManager.getMesh(0));
 		cube->addComponent(assetManager.getMaterial(0));
 		cube->addComponent(meshFilter);
@@ -182,7 +183,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
-		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100);
+		terrain->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100,"Assets/BmpMAPTEST100x1002.bmp" );
 		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(assetManager.getMesh(1));
 		terrain->addComponent(assetManager.getMaterial(0));
@@ -222,9 +224,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				ImGui_ImplDX11_NewFrame();
 
+				objectsToRender = gScene.frustumCull(camera);
 				gScene.update();
 
-				objectsToRender = gScene.getObjectsToRender(camera);
 				//the FIVE holy lines were here before
 
 				//gDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
