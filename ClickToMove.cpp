@@ -50,6 +50,7 @@ void ClickToMove::update()
 			DirectX::XMVECTOR hitPos = DirectX::XMVectorAdd( gameObject->transform.getPosition(), DirectX::XMVectorScale(ray.direction, hit.distance));
 			Debug.Log("moving to", DirectX::XMVectorGetX(hitPos),",", DirectX::XMVectorGetY(hitPos),",", DirectX::XMVectorGetZ(hitPos));
 			DirectX::XMStoreFloat3(&goalPos, hitPos);
+			lerpValue = 0;
 
 		}
 		else
@@ -60,7 +61,7 @@ void ClickToMove::update()
 	}
 
 	if (current.x!=goalPos.x && current.y != goalPos.y &&current.z != goalPos.z) {
-		lerpValue += Time.getDeltaTime();
+		lerpValue += Time.getDeltaTime()/100;
 		DirectX::XMVECTOR goal = DirectX::XMVectorSet(goalPos.x, goalPos.y, goalPos.z, 0);
 		gameObject->transform.setPosition( DirectX::XMVectorLerp(gameObject->transform.getPosition(),goal,lerpValue));
 	}

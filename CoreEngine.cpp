@@ -162,8 +162,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		camera->addComponent(mainCamera);
 		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
 		camera->addComponent(editorSceneSelectionScript);
-		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
-		camera->addComponent(editorMoveScript);
+		//EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
+		//camera->addComponent(editorMoveScript);
+		PlayerScript* playerScript = new PlayerScript();
+		camera->addComponent(playerScript);
 
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		ClickToMove* clickToMove = new ClickToMove(mainCamera);

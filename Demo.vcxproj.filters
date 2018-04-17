@@ -179,6 +179,9 @@
     <ClInclude Include="ClickToMove.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerScript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreEngine.cpp">
@@ -290,6 +293,9 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="ClickToMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerScript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
