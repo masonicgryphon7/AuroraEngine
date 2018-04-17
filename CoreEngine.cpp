@@ -179,6 +179,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(assetManager.getMaterial(0));
 		cube->addComponent(meshFilter);
 		cube->name = "Cube";
+		
+	
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
@@ -187,6 +189,15 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilterTerrain = new MeshFilter(assetManager.getMesh(1));
 		terrain->addComponent(assetManager.getMaterial(0));
 		terrain->addComponent(meshFilterTerrain);
+
+		assetManager.addMeshFromBinary("Assets/pSuperShape1_Mesh.bin");
+
+		GameObject* YoObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
+		MeshFilter* yomeshFilter = new MeshFilter(assetManager.getMesh(2));
+		YoObject->addComponent(assetManager.getMaterial(0));
+		YoObject->addComponent(yomeshFilter);
+		
+
 
 		std::vector<std::unique_ptr<GUI>> m_gui;
 
