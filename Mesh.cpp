@@ -341,9 +341,13 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 
 	for (int i = 0; i < myMesh.mesh_nrOfVertices; i++)
 	{
+
+		
+
 		vertex.position.x = myMesh.mesh_vertices[i].vertex_position[0];
 		vertex.position.y = myMesh.mesh_vertices[i].vertex_position[1];
 		vertex.position.z = myMesh.mesh_vertices[i].vertex_position[2];
+		vertexPositions.push_back(DirectX::XMVectorSet(vertex.position.x, vertex.position.y, vertex.position.z,0));
 			  
 		vertex.normal.x = myMesh.mesh_vertices[i].vertex_normal[0];
 		vertex.normal.y = myMesh.mesh_vertices[i].vertex_normal[1];
