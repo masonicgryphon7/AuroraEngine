@@ -157,16 +157,17 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
 		camera = gScene.createEmptyGameObject();
-		camera->OOBoundingBox.isActive = false;
 		camera->name = "Editor Camera";
 		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
 		camera->addComponent(mainCamera);
 		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
 		camera->addComponent(editorSceneSelectionScript);
-
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
+
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		ClickToMove* clickToMove = new ClickToMove(mainCamera);
+		cube->addComponent(clickToMove);
 		assetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		assetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		assetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
@@ -184,6 +185,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
+		terrain->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100,"Assets/BmpMAPTEST100x1002.bmp" );
 		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(assetManager.getMesh(1));
@@ -233,9 +235,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				ImGui_ImplDX11_NewFrame();
 
+				objectsToRender = gScene.frustumCull(camera);
 				gScene.update();
 
-				objectsToRender = gScene.getObjectsToRender(camera);
 				//the FIVE holy lines were here before
 
 				//gDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
@@ -362,6 +364,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		delete mainCamera;
 		delete terrainGenerator;
 		delete meshFilterTerrain;
+		delete clickToMove;
 		gScene.~Scene();
 
 		if (ToRestart)

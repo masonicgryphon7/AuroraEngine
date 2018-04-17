@@ -36,9 +36,10 @@ public:
 	GameObject* createEmptyGameObject();
 	GameObject* createEmptyGameObject(DirectX::XMVECTOR position);
 	GameObject* getGameObjectAt(int index);
-	std::vector<GameObject*> getObjectsToRender(GameObject* camera);
+	std::vector<GameObject*> getFrustumCulledResult();
 	std::vector<GameObject*> getSceneObjects();
 	int getSceneObjectsCount();
+	std::vector<GameObject*> frustumCull(GameObject * camera);
 
 	void update();
 
@@ -50,11 +51,11 @@ public:
 	static GameObject* selectedGameObject;
 
 private:
+	std::vector<GameObject*> frustumCulledResult;
 	static std::vector<GameObject*>sceneObjects;
 	std::vector<QuadTreeNode*> root;
 	int frustumCheck(OOBB otherOBB, DirectX::XMVECTOR otherPosition, PLANE *planes);
 	int planeAABBIntersect(OOBB otherOBB, DirectX::XMVECTOR otherPosition, DirectX::XMVECTOR frustumPlane);
-	std::vector<GameObject*> frustumCull(GameObject * camera);
 
 }gScene;
 

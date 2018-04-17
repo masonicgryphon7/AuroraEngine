@@ -85,14 +85,19 @@ void GUI_Viewport::DoMousePick()
 	if (!ImGui::IsMouseHoveringWindow() || !ImGui::IsMouseClicked(0)) //Replaced from Input.GetKeyDown(KeyCode::LeftMouse)... maybe it detected better? who the hell knows haha
 		return;
 
-	Vector2 mousePosRelative = Vector2(ImGui::GetMousePos().x - currentFramePos.x, ImGui::GetMousePos().y - currentFramePos.y);
+	mousePosRelative = Vector2(ImGui::GetMousePos().x - currentFramePos.x, ImGui::GetMousePos().y - currentFramePos.y);
 	RaycastHit hit;
+
+
+	//unity har en deadzone för drag selection och att man raycastar eller selectar inte först man releasar mus. börja uppdatera mousePosRelative on mousedown och räkna ut if utanför deadzone så selection i physics else mousepick
 
 	Ray ray = m_engine->camera->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(mousePosRelative.x, mousePosRelative.y, 0, 0));
 	gPhysics.Raycast(ray, hit);
 
-	if (hit.transform != nullptr)
+	if (hit.transform != nullptr) {
 		Scene::selectedGameObject = hit.transform->gameObject;
-	else
+		DirectX::XMVECTOR test = DirectX::XMVectorAdd(m_engine->camera->transform.getPosition(),DirectX::XMVectorScale(ray.direction, hit.distance));
+		Debug.Log("Hit", DirectX::XMVectorGetX(test),",", DirectX::XMVectorGetY(test),",", DirectX::XMVectorGetZ(test));	
+	}else
 		Scene::selectedGameObject = nullptr;
 }

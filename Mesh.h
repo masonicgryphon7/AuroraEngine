@@ -34,6 +34,7 @@ public:
 	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary);
 	~Mesh();
 
+	std::vector<DirectX::XMVECTOR>* getVertexPositions() { return &vertexPositions; };
 	int getVertexCount();
 	void bindMesh();
 	void createMeshFromBinary(std::string fileName, ID3D11Device * device);
