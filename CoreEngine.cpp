@@ -162,12 +162,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		camera->addComponent(mainCamera);
 		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
 		camera->addComponent(editorSceneSelectionScript);
-
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
-		ClickToMove* clickToMove = new ClickToMove(mainCamera);
-		camera->addComponent(clickToMove);
+
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		ClickToMove* clickToMove = new ClickToMove(mainCamera);
+		cube->addComponent(clickToMove);
 		assetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		assetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		assetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
@@ -353,6 +353,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		delete mainCamera;
 		delete terrainGenerator;
 		delete meshFilterTerrain;
+		delete clickToMove;
 		gScene.~Scene();
 
 		if (ToRestart)

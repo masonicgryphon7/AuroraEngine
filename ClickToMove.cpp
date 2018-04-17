@@ -20,7 +20,7 @@ ClickToMove::ClickToMove(Camera * editorCamera)
 	lerpValue = 0;
 
 	DirectX::XMFLOAT3 current;
-	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
+	DirectX::XMStoreFloat3(&current, DirectX::XMVectorSet(0,0,0,0));
 
 	goalPos = current;
 
