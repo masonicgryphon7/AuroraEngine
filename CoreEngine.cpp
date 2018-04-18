@@ -201,7 +201,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
-		/*GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
@@ -214,6 +214,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(AssetManager.getMaterial(0));
 		cube->addComponent(meshFilter);
 		cube->name = "Cube";
+		ClickToMove* clickToMove = new ClickToMove(mainCamera);
+		cube->addComponent(clickToMove);
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
@@ -222,20 +224,20 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(1));
 		terrain->addComponent(AssetManager.getMaterial(0));
-		terrain->addComponent(meshFilterTerrain);*/
+		terrain->addComponent(meshFilterTerrain);
 
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		AssetManager.addMaterial(AssetManager.getShaderProgram(0));
-		AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
-		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
-		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
+		//AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
+		//AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
+		//AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+		//AssetManager.addMaterial(AssetManager.getShaderProgram(0));
+		//AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
+		//AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
+		//AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
 
 		AssetManager.addMeshFromBinary("Assets/pSuperShape1_Mesh.bin");
 
 		GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
-		MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
+		MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(2));
 		YoObject->addComponent(AssetManager.getMaterial(0));
 		YoObject->addComponent(yomeshFilter);
 
