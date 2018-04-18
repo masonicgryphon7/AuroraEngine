@@ -59,7 +59,7 @@ void GUI_Viewport::ShowEngineView()
 	//this->aspectRatio = (float)width / (float)height;
 
 
-	m_engine->SetViewport(screen.x / 2, screen.y / 2);//(WIDTH / 2, HEIGHT / 2);
+	m_engine->SetViewport(screen.x, screen.y);//(WIDTH / 2, HEIGHT / 2);
 	Vector2 cursorPos = Vector2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y);
 	Vector2 windowPos = Vector2(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 	currentFramePos = Vector2((cursorPos.x + windowPos.x), (cursorPos.y + windowPos.y));

@@ -7,12 +7,12 @@
                 "Far_Z": 100.0,
                 "Near_Z": 0.009999999776482582,
                 "name": "Editor Camera",
-                "position": "Vector3(-23.013056, -0.145425, -12.060856)",
+                "position": "Vector3(0.691715, 0.093678, -23.645216)",
                 "rotation": "Vector3(0.000000, 0.000000, 0.000000)"
             },
             {
-                "name": "Hit obj",
-                "position": "Vector3(39.437122, 8.608455, -0.395682)",
+                "name": "Missed obj",
+                "position": "Vector3(26.339386, 1.342534, -31.643768)",
                 "rotation": "Vector3(0.000000, 0.000000, 0.000000)"
             },
             {

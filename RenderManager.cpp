@@ -112,8 +112,8 @@ void RenderManager::CreateRenderTarget(int width, int height)
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 
 	// TEXTURE
-	textureDesc.Width = width / 2;
-	textureDesc.Height = height / 2;
+	textureDesc.Width = width;
+	textureDesc.Height = height;
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
