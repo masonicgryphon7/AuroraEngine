@@ -15,7 +15,7 @@
 #include"DirectXTK-master\Inc\Model.h"
 #include <fstream>
 
-#include <formatImporter.h>
+#include "formatImporter.h"
 #pragma comment(lib, "myLibrary.lib")
 
 struct OBJFace
