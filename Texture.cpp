@@ -13,7 +13,9 @@ Texture::Texture(ID3D11Device * device, ID3D11DeviceContext * devContext, std::s
 
 
 Texture::~Texture()
-{}
+{
+	textureView->Release();
+}
 
 void Texture::createTextureData(ID3D11Device * device, ID3D11DeviceContext * devContext, std::string filePath)
 {

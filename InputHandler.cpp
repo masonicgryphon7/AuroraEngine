@@ -100,6 +100,11 @@ POINT InputHandler::GetAbsoluteMouseCoordinates()
 	return point;
 }
 
+Vector2 InputHandler::GetMousePosition()
+{
+	return Vector2(GetAbsoluteMouseCoordinates().x - currentFramePos.x, GetAbsoluteMouseCoordinates().y - currentFramePos.y);
+}
+
 Vector2 InputHandler::GetDesktopResolution()
 {
 	RECT desktop;
@@ -126,6 +131,13 @@ Vector2 InputHandler::GetEngineWindowResolution()
 		height -= 39;
 	}
 	return Vector2(width, height);
+}
+
+void InputHandler::InternalSetMouseViewport()
+{
+	Vector2 cursorPos = Vector2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y);
+	Vector2 windowPos = Vector2(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+	currentFramePos = Vector2((cursorPos.x + windowPos.x), (cursorPos.y + windowPos.y));
 }
 
 bool InputHandler::detectKey(int key)

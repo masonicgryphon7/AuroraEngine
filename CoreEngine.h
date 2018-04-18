@@ -119,7 +119,7 @@ public:
 	std::vector<GameObject*>objectsToRender;
 
 	GameObject* camera;
-	AssetManager assetManager;
+	cAssetManager assetManager;
 	RenderManager *renderManager;
 
 	void SetViewport(int x = WIDTH, int y = HEIGHT);
