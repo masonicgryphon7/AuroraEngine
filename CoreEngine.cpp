@@ -238,8 +238,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.getMaterial(1)->setNormal(assetManager.getTexture(4)->getTexture());
 		assetManager.getMaterial(1)->setAORoughMet(assetManager.getTexture(5)->getTexture());
 		assetManager.getMaterial(1)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
-			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
-			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
+		assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+		assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
 
 		AssetManager.addMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(0));
@@ -257,7 +257,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
 		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(1));
-		terrain->addComponent(AssetManager.getMaterial(0));
+		terrain->addComponent(AssetManager.getMaterial(1));
 		terrain->addComponent(meshFilterTerrain);
 
 
