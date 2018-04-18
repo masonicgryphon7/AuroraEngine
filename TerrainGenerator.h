@@ -45,6 +45,9 @@ public:
 
 
 	int getVertCount() {return vertCount;};
+	int getGrid_Row() { return grid_Row; };
+	int getGrid_Column() { return grid_Column; };
+
 	void loadRandomTerrainHeights();
 	DirectX::XMFLOAT3 subtract(DirectX::XMFLOAT3 A, DirectX::XMFLOAT3 B);
 	DirectX::XMFLOAT2 subtract(DirectX::XMFLOAT2 A, DirectX::XMFLOAT2 B);

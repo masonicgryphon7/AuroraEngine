@@ -129,7 +129,6 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 	}
 
-
 	N = N * 2.0f - 1.0f;
 	N = normalize(mul(N, input.TBNMatrix));
 
