@@ -70,7 +70,7 @@ CoreEngine::~CoreEngine()
 	/*gBackbufferRTV->Release();
 	gSwapChain->Release();
 	gDevice->Release();*/
-	
+
 	//m_alphaEnableBlendState->Release();
 	//m_alphaDisabledBlendState->Release();
 	////m_rasterizerState->Release();
@@ -184,7 +184,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		renderManager->CreateRenderTarget(WIDTH, HEIGHT);
 
 		InputHandler inputHandler = InputHandler(wndHandle); // this has memory leak
-		
+
 		AssetManager.Start(gDevice, gDeviceContext);
 
 		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
@@ -202,13 +202,45 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		AssetManager.addMaterial(AssetManager.getShaderProgram(0));
-		AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
-		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
-		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
+
+		//Terrain Texture.
+		assetManager.addTexture("Assets/rutTextur.png");
+		assetManager.addTexture("Assets/rutNormal.png");
+		assetManager.addTexture("Assets/rutAoMetalRough.png");
+
+		assetManager.addTexture("Assets/stenTextur.png");
+		assetManager.addTexture("Assets/stenNormal.png");
+		assetManager.addTexture("Assets/stenAoMetalRough.png");
+
+		assetManager.addTexture("Assets/tygTextur.png");
+		assetManager.addTexture("Assets/tygNormal.png");
+		assetManager.addTexture("Assets/tygAoMetalRough.png");
+
+		assetManager.addTexture("Assets/ID_MAP.png");
+		assetManager.addTexture("Assets/vitTextur.png");
+		assetManager.addTexture("Assets/vitNormal.png");
+		assetManager.addTexture("Assets/vitAoMetalRough.png");
+		//----------------
+
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
+		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
+		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
+		assetManager.getMaterial(0)->setAORoughMet(assetManager.getTexture(2)->getTexture());
+		assetManager.getMaterial(0)->setIsTerrain(false);
+
+		assetManager.getMaterial(1)->setIsTerrain(true);
+		assetManager.getMaterial(1)->setAlbedo(assetManager.getTexture(3)->getTexture());
+		assetManager.getMaterial(1)->setNormal(assetManager.getTexture(4)->getTexture());
+		assetManager.getMaterial(1)->setAORoughMet(assetManager.getTexture(5)->getTexture());
+		assetManager.getMaterial(1)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
+			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
+
 		AssetManager.addMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(0));
 		cube->addComponent(AssetManager.getMaterial(0));
@@ -216,6 +248,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->name = "Cube";
 		ClickToMove* clickToMove = new ClickToMove(mainCamera);
 		cube->addComponent(clickToMove);
+
+
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
@@ -226,13 +260,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain->addComponent(AssetManager.getMaterial(0));
 		terrain->addComponent(meshFilterTerrain);
 
-		//AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-		//AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
-		//AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		//AssetManager.addMaterial(AssetManager.getShaderProgram(0));
-		//AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
-		//AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
-		//AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
 
 		AssetManager.addMeshFromBinary("Assets/pSuperShape1_Mesh.bin");
 
@@ -567,7 +594,7 @@ void CoreEngine::OnResize()
 	Vector2 ns = Input.GetEngineWindowResolution();
 
 	//if (firstThing != 0)
-		//CreateDirect3DContext(wnd);
+	//CreateDirect3DContext(wnd);
 
 	//firstThing = 1;
 
@@ -908,10 +935,10 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 	SetViewport();
 
 	/*if (!CreateDepthStencilState(m_depthStencilStateEnabled, true, true))
-		Console.error("ERROR on DEPTH-ENABLED");
+	Console.error("ERROR on DEPTH-ENABLED");
 
 	if (!CreateDepthStencilState(m_depthStencilStateDisabled, false, false))
-		Console.error("ERROR on DEPTH-DISABLED");*/
+	Console.error("ERROR on DEPTH-DISABLED");*/
 
 	Console.print("Is it still resizing?   ", hasResized);
 
