@@ -257,7 +257,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
 		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(1));
-		terrain->addComponent(AssetManager.getMaterial(0));
+		terrain->addComponent(AssetManager.getMaterial(1));
 		terrain->addComponent(meshFilterTerrain);
 
 
