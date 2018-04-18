@@ -27,6 +27,13 @@ Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * de
 	this->meshName = meshName.substr(0, meshName.find(".", 0));
 }
 
+Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary)
+{
+	gDeviceContext = devContext;
+	createMeshFromBinary(filePath, device);
+	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
+}
+
 Mesh::~Mesh()
 {
 	vertexBuffer->Release();
@@ -208,7 +215,7 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 		tan.y = tan.y*someFloat;
 		tan.z = tan.z*someFloat;
 
-
+		
 		//tangent
 		DirectX::XMVECTOR tangent = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&tan));
 		DirectX::XMStoreFloat3(&vertex[i].tangent, tangent);
@@ -222,8 +229,15 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 
 
 	}
-
+	
 	//Create vertex buffer
+
+	//VERTEX_POS3UV2T3B3N3 *vertex;
+
+	//std::vector<VERTEX_POS3UV2T3B3N3*> vertex;
+
+	//vertex[i].position.pushback.positionfromfile;
+
 
 	D3D11_BUFFER_DESC vertexBufferDesc;
 
@@ -334,4 +348,62 @@ DirectX::XMFLOAT2 Mesh::subtract(DirectX::XMFLOAT2 A, DirectX::XMFLOAT2 B)
 
 
 	return tempVec;
+}
+
+void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
+{
+	//std::vector<DirectX::XMFLOAT3> positions;
+	//std::vector<DirectX::XMFLOAT2> texCoords;
+	//std::vector<DirectX::XMFLOAT3> normals;
+	
+	MyLibrary::MeshFromFile myMesh;
+	VERTEX_POS3UV2T3B3N3 vertex;
+	std::vector<VERTEX_POS3UV2T3B3N3> vertices;
+	myMesh = myLoader.readMeshFile(fileName);
+
+	for (int i = 0; i < myMesh.mesh_nrOfVertices; i++)
+	{
+
+		
+
+		vertex.position.x = myMesh.mesh_vertices[i].vertex_position[0];
+		vertex.position.y = myMesh.mesh_vertices[i].vertex_position[1];
+		vertex.position.z = myMesh.mesh_vertices[i].vertex_position[2];
+		vertexPositions.push_back(DirectX::XMVectorSet(vertex.position.x, vertex.position.y, vertex.position.z,0));
+			  
+		vertex.normal.x = myMesh.mesh_vertices[i].vertex_normal[0];
+		vertex.normal.y = myMesh.mesh_vertices[i].vertex_normal[1];
+		vertex.normal.z = myMesh.mesh_vertices[i].vertex_normal[2];
+			  
+		vertex.uv.x = myMesh.mesh_vertices[i].vertex_UVCoord[0];
+		vertex.uv.y = myMesh.mesh_vertices[i].vertex_UVCoord[1];
+			  
+		vertex.tangent.x = myMesh.mesh_vertices[i].vertex_tangent[0];
+		vertex.tangent.y = myMesh.mesh_vertices[i].vertex_tangent[1];
+		vertex.tangent.z = myMesh.mesh_vertices[i].vertex_tangent[2];
+			  
+		vertex.bitangent.x = myMesh.mesh_vertices[i].vertex_biTangent[0];
+		vertex.bitangent.y = myMesh.mesh_vertices[i].vertex_biTangent[1];
+		vertex.bitangent.z = myMesh.mesh_vertices[i].vertex_biTangent[2];
+
+		vertices.push_back(vertex);
+	}
+
+	D3D11_BUFFER_DESC vertexBufferDesc;
+
+	memset(&vertexBufferDesc, 0, sizeof(vertexBufferDesc));
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	vertexBufferDesc.ByteWidth = sizeof(vertices[0])  * vertices.size();
+	D3D11_SUBRESOURCE_DATA vertexdata;
+	ZeroMemory(&vertexdata, sizeof(D3D11_SUBRESOURCE_DATA));
+
+	vertexdata.pSysMem = vertices.data();
+	vertexdata.SysMemPitch = 0;
+	vertexdata.SysMemSlicePitch = 0;
+
+	device->CreateBuffer(&vertexBufferDesc, &vertexdata, &vertexBuffer);
+	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
+	vertexCount = vertices.size();
 }

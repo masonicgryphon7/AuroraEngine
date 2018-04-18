@@ -13,6 +13,7 @@ Texture2D NormalTexture:register(t1);
 Texture2D AORoughMetTexture:register(t2);
 SamplerState sampAni;
 
+
 float distributionGGX(float3 normal, float3 halfV, float roughness)
 {
 	float a = roughness * roughness;
@@ -54,17 +55,17 @@ float3 fresnelSchlick(float cosTheta, float3 F0)
 
 float4 PS_main(VS_OUT input) : SV_Target
 {
-	float3 albedo = pow(Diffuse.Sample(sampAni, input.Uv).xyz, float3(2.2,2.2,2.2));
+	float3 albedo = pow(Diffuse.Sample(sampAni, input.Uv).xyz, float3(2.2f,2.2f,2.2f));
 	float3 N = NormalTexture.Sample(sampAni, input.Uv).xyz;
 	N = N * 2.0 - 1.0;
 	N =	normalize(mul(N,input.TBNMatrix));
 	float3 AORoughMet = AORoughMetTexture.Sample(sampAni, input.Uv).xyz;
-	float metallic = AORoughMet.z;//met_Roug_Ao.x;
+	float metallic = AORoughMet.z;
 	float roughness = AORoughMet.y;
-	float ao = AORoughMet.x;//met_Roug_Ao.z;
+	float ao = AORoughMet.x;
 
 	//float3 V = normalize( input.worldPosition);
-	float3 V = normalize(input.cameraPosition.xyz- input.worldPosition.xyz);
+	float3 V = normalize(input.cameraPosition.xyz - input.worldPosition.xyz);
 
 	//light value
 	float3 lightDirection = normalize(float3(1, 3, 1));
