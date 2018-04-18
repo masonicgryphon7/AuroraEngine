@@ -232,12 +232,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
 		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
 
-		AssetManager.addMeshFromBinary("Assets/Cool_Cube_Mesh.bin");
+		//AssetManager.addMeshFromBinary("Assets/Cool_Cube_Mesh.bin");
 
-		GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
-		MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
-		YoObject->addComponent(AssetManager.getMaterial(0));
-		YoObject->addComponent(yomeshFilter);
+		//GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
+		//MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
+		//YoObject->addComponent(AssetManager.getMaterial(0));
+		//YoObject->addComponent(yomeshFilter);
 
 		std::vector<std::unique_ptr<GUI>> m_gui;
 
