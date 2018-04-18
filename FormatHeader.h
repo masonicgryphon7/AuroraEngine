@@ -7,9 +7,9 @@ namespace MyLibrary
 {
 	struct Vertex
 	{
-		 double vertex_position[3];
-		 double vertex_UVCoord[2];
-		 double vertex_normal[3];
+		 float vertex_position[3];
+		 float vertex_UVCoord[2];
+		 float vertex_normal[3];
 	};
 	struct Transform {
 		float transform_position[4];
