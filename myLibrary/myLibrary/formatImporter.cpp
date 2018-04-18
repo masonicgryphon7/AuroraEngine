@@ -41,17 +41,17 @@ namespace MyLibrary
 			for (int i = 0; i < meshname.mesh_nrOfVertices; i++)
 			{
 				//std::cout << vertices[i].vertex_position[0] << ", " << vertices[i].vertex_position[1] << ", " << vertices[i].vertex_position[2] << std::endl;
-				meshToReturn.mesh_vertices[i].vertex_position[0] = (float)vertices[i].vertex_position[0];
-				meshToReturn.mesh_vertices[i].vertex_position[1] = (float)vertices[i].vertex_position[1];
-				meshToReturn.mesh_vertices[i].vertex_position[2] = (float)vertices[i].vertex_position[2];
+				meshToReturn.mesh_vertices[i].vertex_position[0] = vertices[i].vertex_position[0];
+				meshToReturn.mesh_vertices[i].vertex_position[1] = vertices[i].vertex_position[1];
+				meshToReturn.mesh_vertices[i].vertex_position[2] = vertices[i].vertex_position[2];
 
-				meshToReturn.mesh_vertices[i].vertex_UVCoord[0] = (float)vertices[i].vertex_UVCoord[0];
-				meshToReturn.mesh_vertices[i].vertex_UVCoord[1] = (float)vertices[i].vertex_UVCoord[1];
+				meshToReturn.mesh_vertices[i].vertex_UVCoord[0] = vertices[i].vertex_UVCoord[0];
+				meshToReturn.mesh_vertices[i].vertex_UVCoord[1] = vertices[i].vertex_UVCoord[1];
 
-				meshToReturn.mesh_vertices[i].vertex_normal[0] = (float)vertices[i].vertex_normal[0];
-				meshToReturn.mesh_vertices[i].vertex_normal[1] = (float)vertices[i].vertex_normal[1];
-				meshToReturn.mesh_vertices[i].vertex_normal[2] = (float)vertices[i].vertex_normal[2];
-			}
+				meshToReturn.mesh_vertices[i].vertex_normal[0] =vertices[i].vertex_normal[0];
+				meshToReturn.mesh_vertices[i].vertex_normal[1] =vertices[i].vertex_normal[1];
+				meshToReturn.mesh_vertices[i].vertex_normal[2] =vertices[i].vertex_normal[2];
+			}															 
 			
 
 			for (int i = 0; i < MAX_FILENAME; i++)

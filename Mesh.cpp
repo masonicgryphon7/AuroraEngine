@@ -363,9 +363,6 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 
 	for (int i = 0; i < myMesh.mesh_nrOfVertices; i++)
 	{
-
-		
-
 		vertex.position.x = myMesh.mesh_vertices[i].vertex_position[0];
 		vertex.position.y = myMesh.mesh_vertices[i].vertex_position[1];
 		vertex.position.z = myMesh.mesh_vertices[i].vertex_position[2];

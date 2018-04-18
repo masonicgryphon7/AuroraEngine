@@ -130,6 +130,11 @@ void cAssetManager::addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>
 	meshes.push_back(new Mesh(vertCountData, TerrainInfoVector, device, devContext));
 }
 
+void cAssetManager::addMeshFromBinary(std::string filePath)
+{
+	meshes.push_back(new Mesh(filePath, device, devContext, true));
+}
+
 Mesh * cAssetManager::AddMesh(const std::string & filePath)
 {
 	Mesh* temp = nullptr;

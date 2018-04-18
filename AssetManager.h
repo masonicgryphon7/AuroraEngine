@@ -21,6 +21,7 @@ public:
 	void addMesh(std::string filePath);
 	void addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector);
 	Mesh* AddMesh(const std::string& filePath);
+	void addMeshFromBinary(std::string filePath);
 	void addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader);
 
 	void Start(ID3D11Device * device, ID3D11DeviceContext * devContext);
