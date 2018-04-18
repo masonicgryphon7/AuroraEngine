@@ -70,7 +70,7 @@ CoreEngine::~CoreEngine()
 	/*gBackbufferRTV->Release();
 	gSwapChain->Release();
 	gDevice->Release();*/
-	
+
 	//m_alphaEnableBlendState->Release();
 	//m_alphaDisabledBlendState->Release();
 	////m_rasterizerState->Release();
@@ -184,7 +184,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		renderManager->CreateRenderTarget(WIDTH, HEIGHT);
 
 		InputHandler inputHandler = InputHandler(wndHandle); // this has memory leak
-		
+
 		AssetManager.Start(gDevice, gDeviceContext);
 
 		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
@@ -201,20 +201,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
-		/*GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		AssetManager.addMaterial(AssetManager.getShaderProgram(0));
-		AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
-		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
-		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
-		AssetManager.addMesh("Assets/Cube.obj");
-		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(0));
-		cube->addComponent(AssetManager.getMaterial(0));
-		cube->addComponent(meshFilter);
-		cube->name = "Cube";
-		*/
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
@@ -254,8 +241,15 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
 			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
 
+		AssetManager.addMesh("Assets/Cube.obj");
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(0));
+		cube->addComponent(AssetManager.getMaterial(0));
+		cube->addComponent(meshFilter);
+		cube->name = "Cube";
+		ClickToMove* clickToMove = new ClickToMove(mainCamera);
+		cube->addComponent(clickToMove);
 
-		AssetManager.addMeshFromBinary("Assets/pSuperShape1_Mesh.bin");
+
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
@@ -263,11 +257,14 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
 		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(1));
-		terrain->addComponent(AssetManager.getMaterial(1));
+		terrain->addComponent(AssetManager.getMaterial(0));
 		terrain->addComponent(meshFilterTerrain);
 
+
+		AssetManager.addMeshFromBinary("Assets/pSuperShape1_Mesh.bin");
+
 		GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
-		MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
+		MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(2));
 		YoObject->addComponent(AssetManager.getMaterial(0));
 		YoObject->addComponent(yomeshFilter);
 
@@ -597,7 +594,7 @@ void CoreEngine::OnResize()
 	Vector2 ns = Input.GetEngineWindowResolution();
 
 	//if (firstThing != 0)
-		//CreateDirect3DContext(wnd);
+	//CreateDirect3DContext(wnd);
 
 	//firstThing = 1;
 
@@ -938,10 +935,10 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 	SetViewport();
 
 	/*if (!CreateDepthStencilState(m_depthStencilStateEnabled, true, true))
-		Console.error("ERROR on DEPTH-ENABLED");
+	Console.error("ERROR on DEPTH-ENABLED");
 
 	if (!CreateDepthStencilState(m_depthStencilStateDisabled, false, false))
-		Console.error("ERROR on DEPTH-DISABLED");*/
+	Console.error("ERROR on DEPTH-DISABLED");*/
 
 	Console.print("Is it still resizing?   ", hasResized);
 
