@@ -1,5 +1,6 @@
 #include "Scene.h"
 
+std::vector<GameObject*> Scene::frustumCulledResult;
 std::vector<GameObject*> Scene::sceneObjects;
 GameObject* Scene::selectedGameObject;
 
