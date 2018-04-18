@@ -12,6 +12,9 @@ public:
 private:
 	void ShowFrame();
 
+	void ToImGuizmo(float* dest, float src[4][4]);
+	void FromImGuizmo(DirectX::XMMATRIX& dest, float* src);
+
 protected:
 	void SetComponents();
 

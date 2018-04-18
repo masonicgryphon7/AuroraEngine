@@ -47,8 +47,15 @@ void GUI_Hierarchy::AddToTree(GameObject * g)
 
 void GUI_Hierarchy::HandleClickedObject()
 {
-	if (ImGui::IsMouseClicked(0) && hoveredGameObject != nullptr)
+	if (hoveredGameObject == nullptr) return;
+
+	if (ImGui::IsMouseClicked(0))
 		Scene::selectedGameObject = (hoveredGameObject);
+
+	if (ImGui::IsMouseClicked(1))
+	{
+		// handle context menu
+	}
 
 	/*if ((ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1)) && !hoveredGameObject)
 		Scene::selectedGameObject = nullptr;*/

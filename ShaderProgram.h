@@ -26,6 +26,7 @@ public:
 private:
 	HRESULT CreateShaderData(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader);
 	ID3D11DeviceContext* gDeviceContext = nullptr;
+
 	ID3D11InputLayout* gVertexLayout = nullptr;
 	ID3D11VertexShader* gVertexShader = nullptr;
 	ID3D11HullShader* gHullShader = nullptr;

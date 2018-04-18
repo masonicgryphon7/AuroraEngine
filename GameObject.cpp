@@ -2,11 +2,11 @@
 
 GameObject::GameObject()
 {
-	name = "EmptyGameObject";
-	transform=Transform();
-    isActive = true;
-    isRenderable = false;
-    hasLight = false;
+	name = "GameObject";
+	transform = Transform();
+	isActive = true;
+	isRenderable = false;
+	hasLight = false;
 	transform.gameObject = this;
 	detailedRaycast = false;
 
@@ -14,7 +14,7 @@ GameObject::GameObject()
 
 GameObject::GameObject(DirectX::XMVECTOR(otherPosition))
 {
-	name = "EmptyGameObject";
+	name = "GameObject";
 	isActive = true;
 	isRenderable = false;
 	hasLight = false;
@@ -27,68 +27,68 @@ GameObject::GameObject(DirectX::XMVECTOR(otherPosition))
 
 GameObject::GameObject(int otherAssetID)
 {
-	name = "EmptyGameObject";
+	name = "GameObject";
 	transform = Transform();
 	assetID = otherAssetID;
-    isActive = true;
-    isRenderable = false;
-    hasLight = false;
+	isActive = true;
+	isRenderable = false;
+	hasLight = false;
 
 }
 
 GameObject::~GameObject()
 {
-	
+	if (meshFilterComponent != nullptr)
+		delete meshFilterComponent;
 }
 
 void GameObject::updateMaterialAndMeshFilterPointers() {
-    bool matTest = false;
-    bool meshTest = false;
+	bool matTest = false;
+	bool meshTest = false;
 
-   for (int i = 0; i < components.size(); i++) {
-        Material* temp = getComponent<Material>();
-        if (temp != nullptr) {
-            materialComponent = temp;
-            matTest = true;
+	for (int i = 0; i < components.size(); i++) {
+		Material* temp = getComponent<Material>();
+		if (temp != nullptr) {
+			materialComponent = temp;
+			matTest = true;
 
-        }
-    }
+		}
+	}
 
-    for (int i = 0; i < components.size(); i++) {
-        MeshFilter* temp = getComponent<MeshFilter>();
-        if (temp != nullptr) {
-            meshFilterComponent = temp;
-            meshTest = true;
+	for (int i = 0; i < components.size(); i++) {
+		MeshFilter* temp = getComponent<MeshFilter>();
+		if (temp != nullptr) {
+			meshFilterComponent = temp;
+			meshTest = true;
 
-        }
-    }
+		}
+	}
 
-    if (meshTest==true && matTest==true) {
-        isRenderable = true;
-    } else {
-        isRenderable = false;
-    }
+	if (meshTest == true && matTest == true)
+		isRenderable = true;
+	else
+		isRenderable = false;
 }
 
 void GameObject::updateHasLight() {
-    bool foundLight = false;
+	bool foundLight = false;
 
-   // for (int i = 0; i < components.size(); i++) {
-   //    
-   //     Light* temp = getComponent<Light>();
-   //     if (temp != nullptr) {
-   //         foundLight = true;
-			//lightComponent = temp;
+	// for (int i = 0; i < components.size(); i++) {
+	//    
+	//     Light* temp = getComponent<Light>();
+	//     if (temp != nullptr) {
+	//         foundLight = true;
+			 //lightComponent = temp;
 
-   //     }
-   // }
+	//     }
+	// }
 
-   //
-   // if (foundLight == true) {
-   //     hasLight = true;
-   // } else {
-   //     hasLight = false;
-   // }
+	//
+	// if (foundLight == true) {
+	//     hasLight = true;
+	// } else {
+	//     hasLight = false;
+	// }
 }
 
 void GameObject::addComponent(Component* otherComponent)
@@ -103,11 +103,11 @@ void GameObject::addComponent(Component* otherComponent)
 	}
 	//add if not
 	if (index == -1) {
-        otherComponent->gameObject = this;
+		otherComponent->gameObject = this;
 		components.push_back(otherComponent);
 	}
-    updateMaterialAndMeshFilterPointers();
-    updateHasLight();
+	updateMaterialAndMeshFilterPointers();
+	updateHasLight();
 }
 
 void GameObject::deleteComponent(Component* otherComponent)
@@ -123,11 +123,11 @@ void GameObject::deleteComponent(Component* otherComponent)
 	if (index != -1) {
 		components.erase(components.begin() + index);
 	}
-    updateMaterialAndMeshFilterPointers();
+	updateMaterialAndMeshFilterPointers();
 }
 
 const bool GameObject::getIsRenderable() {
-    return isRenderable;
+	return isRenderable;
 }
 
 DirectX::XMMATRIX GameObject::calculateWorldMatrix()
@@ -137,7 +137,7 @@ DirectX::XMMATRIX GameObject::calculateWorldMatrix()
 	DirectX::XMMATRIX world_matrix = DirectX::XMMatrixTranslation(DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
 	DirectX::XMMATRIX rotation_matrix = DirectX::XMMatrixRotationQuaternion(transform.getRotationQuaternion());//DirectX::XMMatrixTranslation(DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
 	//world_matrix = glm::rotate(world_matrix, glm::radians(dT), DirectX::XMFLOAT#(0.0f, 1.0f, 0.0f));
-	
+
 	return DirectX::XMMatrixMultiply(rotation_matrix, world_matrix);
 }
 

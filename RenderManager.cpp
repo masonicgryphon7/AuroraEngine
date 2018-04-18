@@ -1,6 +1,10 @@
 #include "RenderManager.h"
 #include "Console.h"
+#include "ImGuizmo.h"
+#include "InputHandler.h"
 
+void Frustum(float left, float right, float bottom, float top, float znear, float zfar, float *m16);
+void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar, float *m16);
 
 RenderManager::RenderManager()
 {}
@@ -20,6 +24,8 @@ RenderManager::~RenderManager()
 {
 	m_renderTargetTexture->Release();
 	m_shaderResourceView->Release();
+	matrixBuffer->Release();
+	m_renderTargetView->Release();
 }
 
 void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObject*> objectsToRender)
@@ -53,7 +59,46 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 		gDeviceContext->Draw(objectsToRender[i]->meshFilterComponent->getMesh()->getVertexCount(), 0);
 
 	}
+
+	/*ImGuizmo::BeginFrame();
+	ImGuizmo::SetDrawlist();*/
+	//ImGuizmo::DrawCube(cameraView, cameraProjection, objectMatrix);
 }
+
+void Frustum(float left, float right, float bottom, float top, float znear, float zfar, float *m16)
+{
+	float temp, temp2, temp3, temp4;
+	temp = 2.0f * znear;
+	temp2 = right - left;
+	temp3 = top - bottom;
+	temp4 = zfar - znear;
+	m16[0] = temp / temp2;
+	m16[1] = 0.0;
+	m16[2] = 0.0;
+	m16[3] = 0.0;
+	m16[4] = 0.0;
+	m16[5] = temp / temp3;
+	m16[6] = 0.0;
+	m16[7] = 0.0;
+	m16[8] = (right + left) / temp2;
+	m16[9] = (top + bottom) / temp3;
+	m16[10] = (-zfar - znear) / temp4;
+	m16[11] = -1.0f;
+	m16[12] = 0.0;
+	m16[13] = 0.0;
+	m16[14] = (-temp * zfar) / temp4;
+	m16[15] = 0.0;
+}
+
+void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar, float *m16)
+{
+	float ymax, xmax;
+	ymax = znear * tanf(fovyInDegrees * 3.141592f / 180.0f);
+	xmax = ymax * aspectRatio;
+	Frustum(-xmax, xmax, -ymax, ymax, znear, zfar, m16);
+}
+
+
 
 void RenderManager::UpdateStuff(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * gBackbufferRTV, IDXGISwapChain * swapChain, ID3D11DepthStencilView * depth)
 {
@@ -143,7 +188,7 @@ void RenderManager::CreateRenderTarget(int width, int height)
 
 	gDevice->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
 
-	Console.success("Passed");
+	//Console.success("Passed");
 }
 
 void RenderManager::SetRenderTarget(ID3D11DepthStencilView * depthStencilView)
@@ -171,7 +216,7 @@ void RenderManager::BeginFrame()
 	//gDeviceContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	//gDeviceContext->ClearRenderTargetView(gBackbufferRTV, clearColor);
 	//gDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	////gDeviceContext->PSSetShaderResources(0, 1, &m_shaderResourceView);
+	gDeviceContext->PSSetShaderResources(0, 1, nullptr);
 
 	//gDeviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
@@ -186,5 +231,5 @@ void RenderManager::EndFrame()
 	// VSYNC_1_FRAME == vsync (1frame) { 60FPS }
 	// VSYNC_2_FRAME == vsync (2frame) { 30FPS }
 
-	gSwapChain->Present(NO_VSYNC, 0);
+	gSwapChain->Present(VSYNC_1_FRAME, 0);
 }

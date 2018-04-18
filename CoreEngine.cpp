@@ -7,12 +7,15 @@
 #include "GUI_Inspector.h"
 #include "Console.h"
 #include "imgui_dock.h"
+#include "ImGuizmo.h"
 
 #include "Debug.h"
 
 #include <crtdbg.h>
 
 #pragma comment(lib, "dxgi.lib")
+
+#define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
 bool CoreEngine::hasResized = false;
 
@@ -40,18 +43,46 @@ CoreEngine::~CoreEngine()
 			MessageBox(0, L"Couldn't turn off debug console!", 0, 0);
 	}
 
-	m_alphaEnableBlendState->Release();
-	m_alphaDisabledBlendState->Release();
-	//m_rasterizerState->Release();
-	m_depthStencilState->Release();
-	//m_depthStencilStateDisabled->Release();
-	//m_depthStencilStateEnabled->Release();
-	m_depthStencilBuffer->Release();
-	m_depthStencilView->Release();
+	SAFE_RELEASE(m_alphaDisabledBlendState);
+	SAFE_RELEASE(m_alphaEnableBlendState);
+	SAFE_RELEASE(m_depthStencilBuffer);
+	SAFE_RELEASE(m_depthStencilState);
+	//SAFE_RELEASE(m_depthStencilStateDisabled);
+	//SAFE_RELEASE(m_depthStencilStateEnabled);
+	SAFE_RELEASE(m_depthStencilView);
+	//SAFE_RELEASE(m_rasterizerState);
+	SAFE_RELEASE(m_rasterStateCullBack);
+	SAFE_RELEASE(m_rasterStateCullFront);
+	SAFE_RELEASE(m_rasterStateCullNone);
+	SAFE_RELEASE(gBackbufferRTV);
+	SAFE_RELEASE(gVertexBuffer);
+	SAFE_RELEASE(textureview);
+	SAFE_RELEASE(gVertexLayout);
+	SAFE_RELEASE(gSwapChain);
+
+	Input.~InputHandler();
+	AssetManager.~cAssetManager();
+	gScene.~Scene();
+	SAFE_RELEASE(gDeviceContext);
+	SAFE_RELEASE(gDevice);
+	// Cleanup
+	//gSwapChain->SetFullscreenState(FALSE, NULL);
 	/*gBackbufferRTV->Release();
-	gDevice->Release();
-	gDeviceContext->Release();
-	gSwapChain->Release();*/
+	gSwapChain->Release();
+	gDevice->Release();*/
+	
+	//m_alphaEnableBlendState->Release();
+	//m_alphaDisabledBlendState->Release();
+	////m_rasterizerState->Release();
+	//m_depthStencilState->Release();
+	////m_depthStencilStateDisabled->Release();
+	////m_depthStencilStateEnabled->Release();
+	//m_depthStencilBuffer->Release();
+	//m_depthStencilView->Release();
+	///*gBackbufferRTV->Release();
+	//gDevice->Release();
+	//gDeviceContext->Release();
+	//gSwapChain->Release();*/
 }
 
 MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -84,6 +115,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		ImGui_ImplDX11_Init(wndHandle, gDevice, gDeviceContext);
 		io.MouseDrawCursor = true;
 		io.SetCustomMouseTexture = false;
+
+		//ImGui_ImplWin32_UpdateMouseCursor();
 
 		// Setup style
 		ImGui::StyleColorsDark();
@@ -151,8 +184,11 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		renderManager->CreateRenderTarget(WIDTH, HEIGHT);
 
 		InputHandler inputHandler = InputHandler(wndHandle); // this has memory leak
-		assetManager = AssetManager(gDevice, gDeviceContext); // this has memory leak
-		assetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
+		
+		AssetManager.Start(gDevice, gDeviceContext);
+
+		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
+		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
@@ -162,46 +198,31 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		camera->addComponent(mainCamera);
 		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
 		camera->addComponent(editorSceneSelectionScript);
+
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
-		//PlayerScript* playerScript = new PlayerScript();
-		//camera->addComponent(playerScript);
-
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
-		ClickToMove* clickToMove = new ClickToMove(mainCamera);
-		cube->addComponent(clickToMove);
-		assetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-		assetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
-		assetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		assetManager.addMaterial(assetManager.getShaderProgram(0));
-		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
-		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
-		assetManager.getMaterial(0)->setAORoughMet(assetManager.getTexture(2)->getTexture());
-		assetManager.addMesh("Assets/Cube.obj");
-		MeshFilter* meshFilter = new MeshFilter(assetManager.getMesh(0));
-		cube->addComponent(assetManager.getMaterial(0));
+		/*GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+		AssetManager.addMaterial(AssetManager.getShaderProgram(0));
+		AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
+		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
+		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
+		AssetManager.addMesh("Assets/Cube.obj");
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(0));
+		cube->addComponent(AssetManager.getMaterial(0));
 		cube->addComponent(meshFilter);
 		cube->name = "Cube";
-		
-	
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
 		terrain->name = "Terrain";
 		terrain->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100,"Assets/BmpMAPTEST100x1002.bmp" );
-		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
-		MeshFilter* meshFilterTerrain = new MeshFilter(assetManager.getMesh(1));
-		terrain->addComponent(assetManager.getMaterial(0));
-		terrain->addComponent(meshFilterTerrain);
-
-		assetManager.addMeshFromBinary("Assets/pSuperShape1_Mesh.bin");
-
-		GameObject* YoObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
-		MeshFilter* yomeshFilter = new MeshFilter(assetManager.getMesh(2));
-		YoObject->addComponent(assetManager.getMaterial(0));
-		YoObject->addComponent(yomeshFilter);
-		
-
+		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
+		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
+		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(1));
+		terrain->addComponent(AssetManager.getMaterial(0));
+		terrain->addComponent(meshFilterTerrain);*/
 
 		std::vector<std::unique_ptr<GUI>> m_gui;
 
@@ -236,6 +257,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				OnResize();
 
 				ImGui_ImplDX11_NewFrame();
+				//ImGuizmo::BeginFrame();
+				//ImGuizmo::Enable(true);
+
 
 				objectsToRender = gScene.frustumCull(camera);
 				gScene.update();
@@ -247,10 +271,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				//ImGui::ShowMetricsWindow();
 
-			std:string pri = "Vector2(" + std::to_string(ImGui::GetMousePos().x) + ", " + std::to_string(ImGui::GetMousePos().y) + ")";
-
-				Console.print(pri);
-
 				if (Input.GetKeyDown(KeyCode::Y))
 				{
 					ToRestart = true;
@@ -259,21 +279,37 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 					timer = 5.0f;
 				}
 
-			/*	lel += Time.getDeltaTime();
+				if (Input.GetKeyDown(KeyCode::M))
+				{
+					gScene.CreateGameObject(AssetManager.getMesh("Cube"));
+
+					io.MouseDrawCursor = !io.MouseDrawCursor;
+					Debug.Log(AssetManager.GenerateGUIDAsString());
+				}
+
+				if (Input.GetKeyDown(KeyCode::U))
+				{
+					gScene.LoadScene();
+					/*io.MouseDrawCursor = !io.MouseDrawCursor;
+					Debug.Log(AssetManager.GenerateGUIDAsString());*/
+				}
+
+				/*	lel += Time.getDeltaTime();
 				Debug.Log(lel);
 				cube->transform.setRotation(Vector3(lel, 0, 0).asXMVECTOR());
-*/
+				*/
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 				bool m = true, n = true;
 
 				//renderManager.BeginFrame(); // START RENDERING
 				{
-
 					Vector2 engSize = Input.GetEngineWindowResolution();
 					ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
-					ImGui::SetNextWindowSize(ImVec2(engSize.x + 2, engSize.y + 2), ImGuiSetCond_Always);
+					ImGui::SetNextWindowSize(ImVec2(engSize.x, engSize.y), ImGuiSetCond_Always);
 					ImGui::Begin("Aurora Engine", &m, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 					{
+						/*ImGuizmo::BeginFrame();
+						ImGuizmo::Enable(true);*/
 						ImGui::BeginDockspace();
 						{
 
@@ -293,19 +329,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 							}
 							else
 							{
-								//if (ImGui::BeginDock("Inspector"))
-								//{
-								//	//ImGui::ShowTestWindow();
-								//	ImGui::Text("All Inspector Shit Here");
-								//}
-								//ImGui::EndDock();
-
-								/*if (ImGui::BeginDock("Hierarchy"))
-								{
-									ImGui::Text("All Hierarchy Shit Here");
-								}
-								ImGui::EndDock();*/
-
 								if (ImGui::BeginDock("Project"))
 								{
 									//ImGui::ShowTestWindow();
@@ -333,7 +356,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 					ImGui::Render();
 					ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-					gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
+
+					//gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
 				}
 
 				renderManager->EndFrame(); // END RENDERING
@@ -345,35 +369,29 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 		}
 
-		gScene.SaveScene();
 
-		ImGui::ShutdownDock();
+		m_gui.clear();
+		m_gui.shrink_to_fit();
+		//gScene.SaveScene();
 		ImGui_ImplDX11_Shutdown();
+		ImGui::ShutdownDock();
 		ImGui::DestroyContext();
 
-		// Cleanup
-		gSwapChain->SetFullscreenState(FALSE, NULL);
 
-		gBackbufferRTV->Release();
-		gSwapChain->Release();
-		gDevice->Release();
-		gDeviceContext->Release();
-		DestroyWindow(wndHandle);
-		delete renderManager;
-		delete meshFilter;
-		delete editorMoveScript;
-		delete editorSceneSelectionScript;
-		delete mainCamera;
-		delete terrainGenerator;
-		delete meshFilterTerrain;
-		delete clickToMove;
-		gScene.~Scene();
 
 		if (ToRestart)
 			ImGui::ResetToStandard();
 
-		m_gui.clear();
-		m_gui.shrink_to_fit();
+		delete renderManager;
+		//delete meshFilter;
+		delete editorMoveScript;
+		delete editorSceneSelectionScript;
+		delete mainCamera;
+		//delete terrainGenerator;
+		//delete meshFilterTerrain;
+		//gDeviceContext->Release();
+		DestroyWindow(wndHandle);
+
 
 
 	}
@@ -641,6 +659,13 @@ HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 	return handle;
 }
 
+#define ID_NEW_SCENE 1001
+#define ID_LOAD_SCENE 1002
+#define ID_SAVE_SCENE 1003
+
+#define ID_NEW_EMPTY_GAMEOBJECT 2001
+#define ID_CREATE_CUBE 2002
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -660,6 +685,7 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		HMENU hEdit = CreateMenu();
 		HMENU hAssets = CreateMenu();
 		HMENU hGameObject = CreateMenu();
+		HMENU h3DObjects = CreatePopupMenu();
 		HMENU hComponent = CreateMenu();
 		HMENU hWindow = CreateMenu();
 		HMENU hHelp = CreateMenu();
@@ -668,22 +694,53 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hFile, L"&File");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Edit");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Assets");
-		AppendMenu(hMenubar, MF_POPUP, NULL, L"&GameObject");
+		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hGameObject, L"&GameObject");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Component");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Window");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Help");
 
-		AppendMenu(hFile, MF_STRING, NULL, L"New Scene");
-		AppendMenu(hFile, MF_STRING, NULL, L"Open Scene");
+		AppendMenu(hFile, MF_STRING, ID_NEW_SCENE, L"New Scene");
+		AppendMenu(hFile, MF_STRING, ID_LOAD_SCENE, L"Open Scene");
 		AppendMenu(hFile, MF_SEPARATOR, NULL, L"Separator");
-		AppendMenu(hFile, MF_STRING, NULL, L"Save Scene");
+		AppendMenu(hFile, MF_STRING, ID_SAVE_SCENE, L"Save Scene");
 		AppendMenu(hFile, MF_STRING, NULL, L"Save Scene as...");
+
+		AppendMenu(hGameObject, MF_STRING, ID_NEW_EMPTY_GAMEOBJECT, L"Create Empty");
+		AppendMenu(hGameObject, MF_STRING | MF_POPUP, (UINT_PTR)h3DObjects, L"3D Objects");
+		AppendMenu(h3DObjects, MF_STRING, ID_CREATE_CUBE, L"Cube");
+		//AppendMenu(hGameObject, MF_SEPARATOR, NULL, L"Separator");
 
 
 
 		SetMenu(hWnd, hMenubar);
 	}
 	break;
+
+	case WM_COMMAND:
+	{
+		switch (wParam)
+		{
+		case ID_NEW_SCENE:
+			Debug.Log("New Scene");
+			break;
+
+		case ID_LOAD_SCENE:
+			gScene.LoadScene();
+			break;
+
+		case ID_SAVE_SCENE:
+			gScene.SaveScene();
+			break;
+
+		case ID_NEW_EMPTY_GAMEOBJECT:
+			gScene.CreateGameObject(Primitives::Empty);
+			break;
+
+		case ID_CREATE_CUBE:
+			gScene.CreateGameObject(AssetManager.getMesh("Cube"));
+			break;
+		}
+	}break;
 
 	case WM_INPUT:
 	case WM_MOUSEMOVE:
@@ -826,18 +883,18 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 		pBackBuffer = nullptr;
 
 		// set the render target as the back buffer
-		//gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
+		gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
 	}
 
 	//gSwapChain->SetFullscreenState(TRUE, NULL);
 
 	SetViewport();
 
-	if (!CreateDepthStencilState(m_depthStencilStateEnabled, true, true))
+	/*if (!CreateDepthStencilState(m_depthStencilStateEnabled, true, true))
 		Console.error("ERROR on DEPTH-ENABLED");
 
 	if (!CreateDepthStencilState(m_depthStencilStateDisabled, false, false))
-		Console.error("ERROR on DEPTH-DISABLED");
+		Console.error("ERROR on DEPTH-DISABLED");*/
 
 	Console.print("Is it still resizing?   ", hasResized);
 
@@ -881,7 +938,7 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 
 
 
-	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
+	//gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
 
 
 
@@ -944,11 +1001,17 @@ bool CoreEngine::CreateDepthStencilBuffer()
 
 	if (GetWindowRect(wnd, &rect))
 	{
-		width = rect.right - rect.left;
+		width = Input.GetEngineWindowResolution().x;
+		height = Input.GetEngineWindowResolution().y;
+		/*width = rect.right - rect.left;
 		height = rect.bottom - rect.top;
 
-		width -= 16;
-		height -= 39;
+		width /= 2;
+		height /= 2;
+		width -= 8;
+		height -= 20;*/
+		/*width -= 16;
+		height -= 39;*/
 	}
 
 	// Set up the description of the depth buffer.

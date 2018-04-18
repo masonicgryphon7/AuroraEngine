@@ -3,6 +3,9 @@
 #include "GUI.h"
 #include "GUI_MenuBar.h"
 #include "GUI_Viewport.h"
+#include "GUI_Console.h"
+#include "GUI_Hierarchy.h"
+#include "GUI_Inspector.h"
 
 using namespace std;
 
@@ -10,8 +13,13 @@ using namespace std;
 
 Editor::Editor()
 {
-	m_gui.emplace_back(make_unique<GUI_MenuBar>());
+	/*m_gui.emplace_back(make_unique<GUI_MenuBar>());
+	m_gui.emplace_back(make_unique<GUI_Viewport>());*/
+
 	m_gui.emplace_back(make_unique<GUI_Viewport>());
+	m_gui.emplace_back(make_unique<GUI_Console>());
+	m_gui.emplace_back(make_unique<GUI_Hierarchy>());
+	m_gui.emplace_back(make_unique<GUI_Inspector>());
 }
 
 Editor::~Editor()
@@ -36,7 +44,8 @@ void Editor::Start(HWND* w, ID3D11Device* d, ID3D11DeviceContext* dc, CoreEngine
 
 void Editor::Update()
 {
-
+	for (auto& gui : m_gui)
+		gui->Update();
 }
 
 void Editor::Draw()

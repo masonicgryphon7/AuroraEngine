@@ -77,7 +77,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)myLibrary\myLibrary\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)myLibrary\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>myLibrary.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -168,9 +168,11 @@
     <ClInclude Include="ILogger.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
+    <ClInclude Include="ImGuizmo.h" />
     <ClInclude Include="imgui_dock.h" />
     <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="imgui_internal.h" />
+    <ClInclude Include="ImSequencer.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="INPUT_ELEMENT_DESCRIPTION.h" />
     <ClInclude Include="json.hpp" />
@@ -217,10 +219,12 @@
     <ClCompile Include="GUI_MenuBar.cpp" />
     <ClCompile Include="GUI_Viewport.cpp" />
     <ClCompile Include="imgui.cpp" />
+    <ClCompile Include="ImGuizmo.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_dock.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
+    <ClCompile Include="ImSequencer.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />

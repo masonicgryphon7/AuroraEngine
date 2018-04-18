@@ -176,10 +176,10 @@
     <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ClickToMove.h">
+    <ClInclude Include="ImGuizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerScript.h">
+    <ClInclude Include="ImSequencer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -292,10 +292,10 @@
     <ClCompile Include="Vector3.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="ClickToMove.cpp">
+    <ClCompile Include="ImGuizmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerScript.cpp">
+    <ClCompile Include="ImSequencer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,5 +1,7 @@
 #include "GUI_Inspector.h"
 #include "Debug.h"
+#include "ImGuizmo.h"
+#include "IGizmo.h"
 
 #define BEGIN_COMPONENT(name)					\
 	ImGui::SameLine(25);											\
@@ -51,6 +53,24 @@ void GUI_Inspector::ShowFrame()
 	ImGui::PopItemWidth();
 }
 
+void GUI_Inspector::ToImGuizmo(float * dest, float src[4][4])
+{
+	for (auto row = 0; row < 4; row++)
+	{
+		for (auto col = 0; col < 4; col++)
+			dest[row * 4 + col] = src[row][col];
+	}
+}
+
+void GUI_Inspector::FromImGuizmo(DirectX::XMMATRIX & dest, float * src)
+{
+	/*for (auto row = 0; row < 4; row++)
+	{
+		for (auto col = 0; col < 4; col++)
+			(&dest.m00_)[col * 4 + row] = src[row * 4 + col];
+	}*/
+}
+
 int isMove = 0, isRot = 0;
 float timer = 0.0f;
 
@@ -66,8 +86,12 @@ void GUI_Inspector::SetComponents()
 		camera = nullptr;
 }
 
+//float v, p, m;
+
+
 void GUI_Inspector::ShowTransformView()
 {
+
 	//Debug.Log("Name: ", Scene::selectedGameObject->name);
 
 	if (timer >= 0.1f)

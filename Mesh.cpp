@@ -1,14 +1,16 @@
 #include "Mesh.h"
 
 Mesh::Mesh()
-{}
+{
+}
 
 Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext)
 {
 	vertexCount = 0;
 	gDeviceContext = devContext;
 	CreateTerrainMeshData(vertCountData, TerrainInfoVector, device, devContext);
-
+	this->meshName = "Terrain";
+	this->meshPath = "Terrain";
 }
 
 Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext)
@@ -16,6 +18,13 @@ Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * de
 	vertexCount = 0;
 	gDeviceContext = devContext;
 	CreateMeshData(filePath, device, devContext);
+
+	this->meshPath = filePath;
+
+	std::reverse(filePath.begin(), filePath.end());
+	this->meshName = filePath.substr(0, filePath.find("/", 0));
+	std::reverse(this->meshName.begin(), this->meshName.end());
+	this->meshName = meshName.substr(0, meshName.find(".", 0));
 }
 
 Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary)
@@ -26,7 +35,10 @@ Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * de
 }
 
 Mesh::~Mesh()
-{}
+{
+	vertexBuffer->Release();
+
+}
 
 
 void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11DeviceContext * devContext)
@@ -253,6 +265,16 @@ void Mesh::bindMesh()
 	// specify which vertex buffer to use next.
 	gDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 
+}
+
+const std::string Mesh::getMeshName() const
+{
+	return this->meshName;
+}
+
+const std::string Mesh::getMeshPath() const
+{
+	return this->meshPath;
 }
 
 

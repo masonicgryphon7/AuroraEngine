@@ -1,0 +1,27 @@
+{
+    "Scene-Name": [
+        [
+            {
+                "AssetName": "Camera",
+                "FOV": 1.2217304706573486,
+                "Far_Z": 100.0,
+                "Near_Z": 0.009999999776482582,
+                "name": "Editor Camera",
+                "position": "Vector3(0.000000, 0.000000, 0.000000)",
+                "rotation": "Vector3(0.000000, 0.000000, 0.000000)"
+            },
+            {
+                "meshPath": "Assets/Cube.obj",
+                "name": "Cube",
+                "position": "Vector3(2.000000, 0.000000, 25.000000)",
+                "rotation": "Vector3(0.000000, 0.000000, 0.000000)"
+            },
+            {
+                "meshPath": "Terrain",
+                "name": "Terrain",
+                "position": "Vector3(2.000000, 0.000000, 0.000000)",
+                "rotation": "Vector3(0.000000, 0.000000, 0.000000)"
+            }
+        ]
+    ]
+}

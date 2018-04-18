@@ -59,8 +59,8 @@ void EditorMoveScript::update()
 		firstMouse = false;
 	}
 
-	xpos = Input.GetAbsoluteMouseCoordinates().x;
-	ypos = Input.GetAbsoluteMouseCoordinates().y;
+	xpos = Input.GetMousePosition().x;//Input.GetAbsoluteMouseCoordinates().x;
+	ypos = Input.GetMousePosition().y;//Input.GetAbsoluteMouseCoordinates().y;
 
 	//Console.print("X : ", xpos);
 	//Console.print("Y : ", ypos);
