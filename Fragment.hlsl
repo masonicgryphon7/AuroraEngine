@@ -1,4 +1,6 @@
 #define pi 3.14159265359
+#define Epsilon 0.001
+
 struct VS_OUT
 {
 	float4 Position : SV_POSITION;
@@ -8,11 +10,32 @@ struct VS_OUT
 	float3x3 TBNMatrix : TBNMATRIX;
 };
 
+cbuffer MATRIX_Buffer :register (b0)
+{
+	matrix world;
+	matrix view;
+	matrix projection;
+	float4 cameraPosition;
+	bool isTerrain;
+};
+
 Texture2D Diffuse:register(t0);
 Texture2D NormalTexture:register(t1);
 Texture2D AORoughMetTexture:register(t2);
 SamplerState sampAni;
 
+Texture2D Grass : register(t3);
+Texture2D GrassNormal : register(t4);
+Texture2D GrassAORoughMetTexture : register(t5);
+
+Texture2D Mountain : register(t6);
+Texture2D MountainNormal : register(t7);
+Texture2D MountainAORoughMetTexture : register(t8);
+
+Texture2D Sand : register(t9);
+Texture2D SandNormal : register(t10);
+Texture2D SandAORoughMetTexture : register(t11);
+Texture2D ID_Map : register(t12);
 
 float distributionGGX(float3 normal, float3 halfV, float roughness)
 {
@@ -55,17 +78,63 @@ float3 fresnelSchlick(float cosTheta, float3 F0)
 
 float4 PS_main(VS_OUT input) : SV_Target
 {
-	float3 albedo = pow(Diffuse.Sample(sampAni, input.Uv).xyz, float3(2.2f,2.2f,2.2f));
+	float3 albedo = pow(Diffuse.Sample(sampAni, input.Uv).xyz, float3(2.2, 2.2, 2.2));
 	float3 N = NormalTexture.Sample(sampAni, input.Uv).xyz;
-	N = N * 2.0 - 1.0;
-	N =	normalize(mul(N,input.TBNMatrix));
 	float3 AORoughMet = AORoughMetTexture.Sample(sampAni, input.Uv).xyz;
-	float metallic = AORoughMet.z;
+	float metallic = AORoughMet.z;//met_Roug_Ao.x;
 	float roughness = AORoughMet.y;
-	float ao = AORoughMet.x;
+	float ao = AORoughMet.x;//met_Roug_Ao.z;
+							//float3 V = normalize( input.worldPosition);		
+	if (isTerrain)
+	{
+		float3 IDcolor, colorValue;
+		IDcolor = ID_Map.Sample(sampAni, input.Uv).xyz;
 
-	//float3 V = normalize( input.worldPosition);
+		colorValue.x = IDcolor.x / 1;
+		colorValue.y = IDcolor.y / 1;
+		colorValue.z = IDcolor.z / 1;
+
+		if (colorValue.x > Epsilon) //R
+		{
+			albedo = lerp(albedo, Grass.Sample(sampAni, input.Uv).xyz, colorValue.x);
+			N = lerp(N, GrassNormal.Sample(sampAni, input.Uv).xyz, colorValue.x);
+			ao = lerp(ao, GrassAORoughMetTexture.Sample(sampAni, input.Uv).x, colorValue.x);
+			metallic = lerp(metallic, GrassAORoughMetTexture.Sample(sampAni, input.Uv).y, colorValue.x);
+			roughness = lerp(roughness, GrassAORoughMetTexture.Sample(sampAni, input.Uv).z, colorValue.x);
+
+			//albedo = albedo * float3(1.0f, 0.1, 0.1f);
+		}
+
+		if (colorValue.y > Epsilon) //G
+		{
+			albedo = lerp(albedo, Mountain.Sample(sampAni, input.Uv).xyz, colorValue.y);
+			N = lerp(N, MountainNormal.Sample(sampAni, input.Uv).xyz, colorValue.y);
+			ao = lerp(ao, MountainAORoughMetTexture.Sample(sampAni, input.Uv).x, colorValue.y);
+			metallic = lerp(metallic, MountainAORoughMetTexture.Sample(sampAni, input.Uv).y, colorValue.y);
+			roughness = lerp(roughness, MountainAORoughMetTexture.Sample(sampAni, input.Uv).z, colorValue.y);
+
+			//albedo = albedo * float3(0.1f, 1.0, 0.1f);
+		}
+
+		if (colorValue.z > Epsilon) //B
+		{
+			albedo = lerp(albedo, Sand.Sample(sampAni, input.Uv).xyz, colorValue.z);
+			N = lerp(N, SandNormal.Sample(sampAni, input.Uv).xyz, colorValue.z);
+			ao = lerp(ao, SandAORoughMetTexture.Sample(sampAni, input.Uv).x, colorValue.z);
+			metallic = lerp(metallic, SandAORoughMetTexture.Sample(sampAni, input.Uv).y, colorValue.z);
+			roughness = lerp(roughness, SandAORoughMetTexture.Sample(sampAni, input.Uv).z, colorValue.z);
+
+			//albedo = albedo * float3(0.1f, 0.1, 1.0f);
+		}
+
+	}
+
+
+	N = N * 2.0f - 1.0f;
+	N = normalize(mul(N, input.TBNMatrix));
+
 	float3 V = normalize(input.cameraPosition.xyz - input.worldPosition.xyz);
+	normalize(input.cameraPosition.xyz - input.worldPosition.xyz);
 
 	//light value
 	float3 lightDirection = normalize(float3(1, 3, 1));

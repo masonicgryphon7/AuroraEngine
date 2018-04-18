@@ -45,13 +45,16 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 		//Fill matrixbuffer
 		D3D11_MAPPED_SUBRESOURCE dataPtr;
 		gDeviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &dataPtr);
+		matrixBufferData.isTerrain = objectsToRender[i]->materialComponent->isTerrain();
 		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(objectsToRender[i]->calculateWorldMatrix()));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
 		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
-		memcpy(dataPtr.pData, &matrixBufferData, sizeof(MatrixBufferStruct));
+		memcpy(dataPtr.pData, &matrixBufferData, sizeof(MatrixBufferStruct) + 12);
 		gDeviceContext->Unmap(matrixBuffer, 0);
 		gDeviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
+		gDeviceContext->PSSetConstantBuffers(0, 1, &matrixBuffer);
+
 
 
 		// issue a draw call of 3 vertices (similar to OpenGL)
@@ -114,7 +117,7 @@ void RenderManager::CreateMatrixBuffer()
 	// initialize the description of the buffer.
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	bufferDesc.ByteWidth = sizeof(MatrixBufferStruct);
+	bufferDesc.ByteWidth = sizeof(MatrixBufferStruct) + 12;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferDesc.MiscFlags = 0;

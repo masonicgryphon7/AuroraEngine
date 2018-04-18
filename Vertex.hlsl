@@ -14,6 +14,7 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix view;
 	matrix projection;
 	float4 cameraPosition;
+	bool isTerrain;
 };
 
 struct VS_OUT
