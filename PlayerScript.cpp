@@ -52,6 +52,6 @@ void PlayerScript::update()
 		firstMouse = false;
 	}
 
-	xpos = Input.GetAbsoluteMouseCoordinates().x;
-	ypos = Input.GetAbsoluteMouseCoordinates().y;
+	xpos = Input.GetMousePosition().x;
+	ypos = Input.GetMousePosition().y;
 }

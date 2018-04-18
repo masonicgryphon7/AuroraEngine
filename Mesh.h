@@ -15,6 +15,9 @@
 #include"DirectXTK-master\Inc\Model.h"
 #include <fstream>
 
+#include <formatImporter.h>
+#pragma comment(lib, "myLibrary.lib")
+
 struct OBJFace
 {
 	int v1, vt1, vn1;
@@ -28,11 +31,13 @@ public:
 	Mesh();
 	Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> *TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext);
 	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext);
+	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary);
 	~Mesh();
 
 	std::vector<DirectX::XMVECTOR>* getVertexPositions() { return &vertexPositions; };
 	int getVertexCount();
 	void bindMesh();
+	void createMeshFromBinary(std::string fileName, ID3D11Device * device);
 
 	const std::string getMeshName() const;
 	const std::string getMeshPath() const;
@@ -43,6 +48,8 @@ private:
 	ID3D11Buffer *vertexBuffer;
 	ID3D11DeviceContext* gDeviceContext = nullptr;
 	std::vector<DirectX::XMVECTOR> vertexPositions;
+
+	MyLibrary::Loadera myLoader;
 
 	std::string meshName, meshPath;
 
