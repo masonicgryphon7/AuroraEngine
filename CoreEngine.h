@@ -107,11 +107,6 @@ private:
 
 	void CreateTriangleData();
 
-	void SetGuiStyle();
-
-	int importMTLFile(std::string filepath, unsigned int shaderProgram);
-
-
 public:
 	ID3D11DeviceContext * gDeviceContext = nullptr;
 	ID3D11RenderTargetView* gBackbufferRTV = nullptr;

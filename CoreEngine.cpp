@@ -8,6 +8,7 @@
 #include "Console.h"
 #include "imgui_dock.h"
 #include "ImGuizmo.h"
+#include "Editor.h"
 
 #include "Debug.h"
 
@@ -70,7 +71,7 @@ CoreEngine::~CoreEngine()
 	/*gBackbufferRTV->Release();
 	gSwapChain->Release();
 	gDevice->Release();*/
-	
+
 	//m_alphaEnableBlendState->Release();
 	//m_alphaDisabledBlendState->Release();
 	////m_rasterizerState->Release();
@@ -117,13 +118,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		io.SetCustomMouseTexture = false;
 
 		//ImGui_ImplWin32_UpdateMouseCursor();
-
-		// Setup style
-		ImGui::StyleColorsDark();
-		SetGuiStyle();
-
-		ImGui::ResetToStandard();
-		ImGui::InitDock();
 
 
 		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
@@ -184,7 +178,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		renderManager->CreateRenderTarget(WIDTH, HEIGHT);
 
 		InputHandler inputHandler = InputHandler(wndHandle); // this has memory leak
-		
+
 		AssetManager.Start(gDevice, gDeviceContext);
 
 		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
@@ -192,38 +186,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
-		camera = gScene.createEmptyGameObject();
-		camera->name = "Editor Camera";
-		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
-		camera->addComponent(mainCamera);
-		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
-		camera->addComponent(editorSceneSelectionScript);
-
-		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
-		camera->addComponent(editorMoveScript);
-		/*GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
-		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		AssetManager.addMaterial(AssetManager.getShaderProgram(0));
-		AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
-		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
-		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
-		AssetManager.addMesh("Assets/Cube.obj");
-		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(0));
-		cube->addComponent(AssetManager.getMaterial(0));
-		cube->addComponent(meshFilter);
-		cube->name = "Cube";
-
-		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
-		terrain->name = "Terrain";
-		terrain->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
-		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
-		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(1));
-		terrain->addComponent(AssetManager.getMaterial(0));
-		terrain->addComponent(meshFilterTerrain);*/
-
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
@@ -232,29 +194,33 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
 		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
 
-		AssetManager.addMeshFromBinary("Assets/pSuperShape1_Mesh.bin");
+		//AssetManager.addMeshFromBinary("Assets/pCube1_Mesh.bin");
 
-		GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
-		MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
-		YoObject->addComponent(AssetManager.getMaterial(0));
-		YoObject->addComponent(yomeshFilter);
+		//GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
+		//MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
+		//YoObject->addComponent(AssetManager.getMaterial(0));
+		//YoObject->addComponent(yomeshFilter);
 
-		std::vector<std::unique_ptr<GUI>> m_gui;
 
-		m_gui.emplace_back(make_unique<GUI_Viewport>());
-		m_gui.emplace_back(make_unique<GUI_Console>());
-		m_gui.emplace_back(make_unique<GUI_Hierarchy>());
-		m_gui.emplace_back(make_unique<GUI_Inspector>());
-		//m_gui.emplace_back(make_unique<GUI_MenuBar>());
 
-		for (auto& gui : m_gui)
-			gui->Start(this);
 
-		float oldTime = clock();
-		float deltaTime = 0;
 
-		float timer = 0.0f, lel = 0.0f;
-		bool ToRestart = false;
+
+
+
+		// Create a Main Camera
+		Camera* cam = nullptr;
+		{
+			camera = gScene.createEmptyGameObject();
+			camera->name = "Main Camera";
+			cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
+			camera->addComponent(cam);
+		}
+
+
+		Editor* editor = nullptr;
+		editor = new Editor();
+		editor->Start(&wndHandle, gDevice, gDeviceContext, this);
 
 		while (WM_QUIT != msg.message)
 		{
@@ -265,118 +231,20 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 			else
 			{
-				//Update Clock
 				inputHandler.updateInput();
 				Time.tick();
 
 				OnResize();
 
-				ImGui_ImplDX11_NewFrame();
-				//ImGuizmo::BeginFrame();
-				//ImGuizmo::Enable(true);
-
-
 				objectsToRender = gScene.frustumCull(camera);
 				gScene.update();
 
-				//the FIVE holy lines were here before
-
-				//gDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
-
-
-				//ImGui::ShowMetricsWindow();
-
-				if (Input.GetKeyDown(KeyCode::Y))
-				{
-					ToRestart = true;
-					ImGui::InitDock();
-					ImGui::ResetToStandard();
-					timer = 5.0f;
-				}
-
-				if (Input.GetKeyDown(KeyCode::M))
-				{
-					gScene.CreateGameObject(AssetManager.getMesh("Cube"));
-
-					io.MouseDrawCursor = !io.MouseDrawCursor;
-					Debug.Log(AssetManager.GenerateGUIDAsString());
-				}
-
-				if (Input.GetKeyDown(KeyCode::U))
-				{
-					gScene.LoadScene();
-					/*io.MouseDrawCursor = !io.MouseDrawCursor;
-					Debug.Log(AssetManager.GenerateGUIDAsString());*/
-				}
-
-				/*	lel += Time.getDeltaTime();
-				Debug.Log(lel);
-				cube->transform.setRotation(Vector3(lel, 0, 0).asXMVECTOR());
-				*/
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
-				bool m = true, n = true;
 
-				//renderManager.BeginFrame(); // START RENDERING
-				{
-					Vector2 engSize = Input.GetEngineWindowResolution();
-					ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
-					ImGui::SetNextWindowSize(ImVec2(engSize.x, engSize.y), ImGuiSetCond_Always);
-					ImGui::Begin("Aurora Engine", &m, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-					{
-						/*ImGuizmo::BeginFrame();
-						ImGuizmo::Enable(true);*/
-						ImGui::BeginDockspace();
-						{
-
-							//Debug.LogWarning("Mouse Position: Vector2(", ImGui::GetMousePos().x, ", ", ImGui::GetMousePos().y, ");");
-
-							if (Input.GetKeyDown(KeyCode::G))
-								ImGui::ForceSave();
-
-							if (timer > 0.0f)
-							{
-								ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
-								ImGui::SetNextWindowSize(ImVec2(engSize.x + 2, engSize.y + 2), ImGuiSetCond_Always);
-								ImGui::Begin("Aurora");
-								ImGui::Text("Please Restart");
-								ImGui::End();
-								timer -= Time.getDeltaTime() / 1000;
-							}
-							else
-							{
-								if (ImGui::BeginDock("Project"))
-								{
-									//ImGui::ShowTestWindow();
-
-									ImGui::Text("All Project Files Shit Here");
-									//ImGui::ShowDemoWindow();
-								}
-								ImGui::EndDock();
-
-								for (auto& gui : m_gui)
-								{
-									if (gui->GetIsWindow())
-										gui->Begin();
-
-									gui->Update();
-
-									if (gui->GetIsWindow())
-										gui->End();
-								}
-							}
-						}
-						ImGui::EndDockspace();
-					}
-					ImGui::End();
-
-					ImGui::Render();
-					ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-					//gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
-				}
+				if (editor != nullptr)
+					editor->Update();
 
 				renderManager->EndFrame(); // END RENDERING
-				ImGui::EndFrame();
 
 				objectsToRender.clear();
 
@@ -384,31 +252,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 		}
 
+		if (editor != nullptr)
+			delete editor;
 
-		m_gui.clear();
-		m_gui.shrink_to_fit();
-		//gScene.SaveScene();
-		ImGui_ImplDX11_Shutdown();
-		ImGui::ShutdownDock();
-		ImGui::DestroyContext();
-
-
-
-		if (ToRestart)
-			ImGui::ResetToStandard();
-
+		delete cam;
 		delete renderManager;
-		//delete meshFilter;
-		delete editorMoveScript;
-		delete editorSceneSelectionScript;
-		delete mainCamera;
-		//delete terrainGenerator;
-		//delete meshFilterTerrain;
-		//gDeviceContext->Release();
 		DestroyWindow(wndHandle);
-
-
-
 	}
 	return msg;
 }
@@ -458,93 +307,6 @@ void CoreEngine::CreateTriangleData()
 
 }
 
-void CoreEngine::SetGuiStyle()
-{
-	ImGui::StyleColorsDark();
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	float fontSize = 15.0f;
-	float roundness = 2.0f;
-	ImVec4 white = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImVec4 text = ImVec4(0.76f, 0.77f, 0.8f, 1.0f);
-	ImVec4 black = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-	ImVec4 backgroundVeryDark = ImVec4(0.08f, 0.086f, 0.094f, 1.00f);
-	ImVec4 backgroundDark = ImVec4(0.117f, 0.121f, 0.145f, 1.00f);
-	ImVec4 backgroundMedium = ImVec4(0.26f, 0.26f, 0.27f, 1.0f);
-	ImVec4 backgroundLight = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
-	ImVec4 highlightBlue = ImVec4(0.172f, 0.239f, 0.341f, 1.0f);
-	ImVec4 highlightBlueActive = ImVec4(0.182f, 0.249f, 0.361f, 1.0f);
-	ImVec4 highlightBlueHovered = ImVec4(0.202f, 0.269f, 0.391f, 1.0f);
-	ImVec4 barBackground = ImVec4(0.078f, 0.082f, 0.09f, 1.0f);
-	ImVec4 bar = ImVec4(0.164f, 0.180f, 0.231f, 1.0f);
-	ImVec4 barHovered = ImVec4(0.411f, 0.411f, 0.411f, 1.0f);
-	ImVec4 barActive = ImVec4(0.337f, 0.337f, 0.368f, 1.0f);
-
-	// Spatial
-	style.WindowBorderSize = 1.0f;
-	style.FrameBorderSize = 1.0f;
-	//style.WindowMinSize		= ImVec2(160, 20);
-	style.FramePadding = ImVec2(5, 5);
-	style.ItemSpacing = ImVec2(6, 5);
-	//style.ItemInnerSpacing	= ImVec2(6, 4);
-	style.Alpha = 1.0f;
-	style.WindowRounding = roundness;
-	style.FrameRounding = roundness;
-	style.PopupRounding = roundness;
-	//style.IndentSpacing		= 6.0f;
-	//style.ItemInnerSpacing	= ImVec2(2, 4);
-	//style.ColumnsMinSpacing	= 50.0f;
-	//style.GrabMinSize			= 14.0f;
-	style.GrabRounding = roundness;
-	//style.ScrollbarSize		= 12.0f;
-	style.ScrollbarRounding = roundness;
-
-	// Colors
-	style.Colors[ImGuiCol_Text] = text;
-	//style.Colors[ImGuiCol_TextDisabled]			= ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
-	style.Colors[ImGuiCol_WindowBg] = backgroundDark;
-	//style.Colors[ImGuiCol_ChildBg]				= ImVec4(0.20f, 0.22f, 0.27f, 0.58f);
-	style.Colors[ImGuiCol_Border] = black;
-	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style.Colors[ImGuiCol_FrameBg] = bar;
-	style.Colors[ImGuiCol_FrameBgHovered] = highlightBlue;
-	style.Colors[ImGuiCol_FrameBgActive] = highlightBlueHovered;
-	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
-	//style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
-	style.Colors[ImGuiCol_TitleBgActive] = bar;
-	style.Colors[ImGuiCol_MenuBarBg] = backgroundVeryDark;
-	style.Colors[ImGuiCol_ScrollbarBg] = barBackground;
-	style.Colors[ImGuiCol_ScrollbarGrab] = bar;
-	style.Colors[ImGuiCol_ScrollbarGrabHovered] = barHovered;
-	style.Colors[ImGuiCol_ScrollbarGrabActive] = barActive;
-	style.Colors[ImGuiCol_CheckMark] = white;
-	style.Colors[ImGuiCol_SliderGrab] = bar;
-	style.Colors[ImGuiCol_SliderGrabActive] = barActive;
-	style.Colors[ImGuiCol_Button] = barActive;
-	style.Colors[ImGuiCol_ButtonHovered] = highlightBlue;
-	style.Colors[ImGuiCol_ButtonActive] = highlightBlueHovered;
-	style.Colors[ImGuiCol_Header] = highlightBlue; // selected items (tree, menu bar etc.)
-	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueHovered; // hovered items (tree, menu bar etc.)
-	style.Colors[ImGuiCol_HeaderActive] = highlightBlueActive;
-	style.Colors[ImGuiCol_Separator] = backgroundLight;
-	//style.Colors[ImGuiCol_SeparatorHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
-	//style.Colors[ImGuiCol_SeparatorActive]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-	style.Colors[ImGuiCol_ResizeGrip] = backgroundMedium;
-	style.Colors[ImGuiCol_ResizeGripHovered] = highlightBlue;
-	style.Colors[ImGuiCol_ResizeGripActive] = highlightBlueHovered;
-	//style.Colors[ImGuiCol_PlotLines]				= ImVec4(0.86f, 0.93f, 0.89f, 0.63f);
-	//style.Colors[ImGuiCol_PlotLinesHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-	style.Colors[ImGuiCol_PlotHistogram] = highlightBlue; // Also used for progress bar
-	style.Colors[ImGuiCol_PlotHistogramHovered] = highlightBlueHovered;
-	style.Colors[ImGuiCol_TextSelectedBg] = highlightBlue;
-	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
-	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
-	//style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.22f, 0.27f, 0.73f);
-
-	ImGuiIO& io = ImGui::GetIO();
-	io.Fonts->AddFontFromFileTTF("Assets/Fonts/LiberationSans-Regular.ttf", fontSize);
-}
-
 void CoreEngine::SetViewport(int x, int y)
 {
 	D3D11_VIEWPORT vp;
@@ -562,7 +324,17 @@ void CoreEngine::OnResize()
 	if (!hasResized)
 		return;
 
+	hasResized = false;
+
 	Vector2 ns = Input.GetEngineWindowResolution();
+	Vector2 sns = Input.GetDesktopResolution();
+
+	Debug.Log(ns.y, "\t", sns.y);
+
+	Input.GetEngineWindowResolution();
+
+	int width = Input.GetWidth();
+	int height = Input.GetHeight();
 
 	//if (firstThing != 0)
 		//CreateDirect3DContext(wnd);
@@ -578,35 +350,48 @@ void CoreEngine::OnResize()
 	m_depthStencilView->Release();
 	m_depthStencilView = nullptr;
 
-	DXGI_MODE_DESC dxgiModeDesc;
-	ZeroMemory(&dxgiModeDesc, sizeof(dxgiModeDesc));
-	dxgiModeDesc.Width = (unsigned int)ns.x;
-	dxgiModeDesc.Height = (unsigned int)ns.y;
-	dxgiModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	dxgiModeDesc.RefreshRate = DXGI_RATIONAL{ m_refreshRateNumerator, m_refreshRateDenominator };
-	dxgiModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	dxgiModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	gSwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
-	HRESULT result = gSwapChain->ResizeTarget(&dxgiModeDesc);
-	if (FAILED(result))
-		Console.error("Failed to set resize swapchain");
+	ID3D11Texture2D* pBuffer;
+	gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer);
 
-	result = gSwapChain->ResizeBuffers(1, (unsigned int)ns.x, (unsigned int)ns.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-	if (FAILED(result))
-		Console.error("Failed to set resize buffer swapchain");
+	gDevice->CreateRenderTargetView(pBuffer, NULL, &gBackbufferRTV);
 
-	ID3D11Texture2D* backBuffer = nullptr;
-	result = gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBuffer));
-	if (FAILED(result))
-		Console.error("Failed to get buffer swapchain");
+	pBuffer->Release();
 
-	result = gDevice->CreateRenderTargetView(backBuffer, nullptr, &gBackbufferRTV);
+	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
 
-	backBuffer->Release();
-	backBuffer = nullptr;
+	SetViewport(sns.x, sns.y);
 
-	if (FAILED(result))
-		Console.error("Failed to create render target view.");
+	//DXGI_MODE_DESC dxgiModeDesc;
+	//ZeroMemory(&dxgiModeDesc, sizeof(dxgiModeDesc));
+	//dxgiModeDesc.Width = (unsigned int)ns.x;
+	//dxgiModeDesc.Height = (unsigned int)ns.y;
+	//dxgiModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//dxgiModeDesc.RefreshRate = DXGI_RATIONAL{ m_refreshRateNumerator, m_refreshRateDenominator };
+	//dxgiModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	//dxgiModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+
+	//HRESULT result = gSwapChain->ResizeTarget(&dxgiModeDesc);
+	//if (FAILED(result))
+	//	Console.error("Failed to set resize swapchain");
+
+	//result = gSwapChain->ResizeBuffers(1, (unsigned int)ns.x, (unsigned int)ns.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+	//if (FAILED(result))
+	//	Console.error("Failed to set resize buffer swapchain");
+
+	//ID3D11Texture2D* backBuffer = nullptr;
+	//result = gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBuffer));
+	//if (FAILED(result))
+	//	Console.error("Failed to get buffer swapchain");
+
+	//result = gDevice->CreateRenderTargetView(backBuffer, nullptr, &gBackbufferRTV);
+
+	//backBuffer->Release();
+	//backBuffer = nullptr;
+
+	//if (FAILED(result))
+	//	Console.error("Failed to create render target view.");
 
 	CreateDepthStencilBuffer();
 	CreateDepthStencilView();
@@ -681,6 +466,9 @@ HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 #define ID_NEW_EMPTY_GAMEOBJECT 2001
 #define ID_CREATE_CUBE 2002
 
+#define ID_HELP_MEME 3001
+#define ID_WORK_AMBITIONS 3002
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -712,7 +500,7 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hGameObject, L"&GameObject");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Component");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Window");
-		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Help");
+		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hHelp, L"&Help");
 
 		AppendMenu(hFile, MF_STRING, ID_NEW_SCENE, L"New Scene");
 		AppendMenu(hFile, MF_STRING, ID_LOAD_SCENE, L"Open Scene");
@@ -725,6 +513,9 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		AppendMenu(h3DObjects, MF_STRING, ID_CREATE_CUBE, L"Cube");
 		//AppendMenu(hGameObject, MF_SEPARATOR, NULL, L"Separator");
 
+
+		AppendMenu(hHelp, MF_STRING, ID_HELP_MEME, L"Help, I need some MEMES");
+		AppendMenu(hHelp, MF_STRING, ID_WORK_AMBITIONS, L"I need some work help");
 
 
 		SetMenu(hWnd, hMenubar);
@@ -753,6 +544,14 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 		case ID_CREATE_CUBE:
 			gScene.CreateGameObject(AssetManager.getMesh("Cube"));
+			break;
+
+		case ID_HELP_MEME:
+			ShellExecute(0, 0, L"https://www.instagram.com/salad.snake/?hl=en", 0, 0, SW_SHOW);
+			break;
+
+		case ID_WORK_AMBITIONS:
+			ShellExecute(0, 0, L"https://www.youtube.com/watch?v=-6_alv0z3mw", 0, 0, SW_SHOW);
 			break;
 		}
 	}break;

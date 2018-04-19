@@ -6,9 +6,7 @@
 
 using namespace std;
 
-void ToImGuizmo(float * dest, float src[4][4]);
 void EditTransform(const float *cameraView, float *cameraProjection, float* matrix);
-
 void Gizmo(CoreEngine* m_engine, float w, float h);
 
 static RenderManager* renderManager = nullptr;
@@ -19,12 +17,13 @@ void GUI_Viewport::Start(CoreEngine* engine)
 {
 	GUI::Start(engine);
 	m_windowFlags |= ImGuiWindowFlags_NoScrollbar; // add no scrollbar to this GUI
+	bkpWindowFlags = m_windowFlags;
 	renderManager = m_engine->renderManager;
 }
 
 void GUI_Viewport::Update()
 {
-	ImGui::Separator();
+	//ImGui::Separator();
 	ShowEngineView();
 }
 
@@ -36,11 +35,12 @@ Vector2 currentFramePos;
 
 void GUI_Viewport::ShowEngineView()
 {
+	//ForcePlay();
 	ImVec2 pos = ImGui::GetCursorScreenPos();
 	Vector2 screen = Input.GetEngineWindowResolution();
 
 	float width = ImGui::GetWindowContentRegionWidth();
-	float height = ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y - 30;
+	float height = ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y - 6;
 
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
@@ -66,36 +66,40 @@ void GUI_Viewport::ShowEngineView()
 	m_engine->camera->getComponent<Camera>()->aspectRatio = (float)width / (float)height;
 	//this->aspectRatio = (float)width / (float)height;
 
+	//Debug.Log(ImGui::GetCurrentWindow()->Size.x, "    ", ImGui::GetCurrentWindow()->Size.y);
+
+	ImGuizmo::BeginFrame();
+	ImGuizmo::SetDrawlist();
 
 	m_engine->SetViewport(screen.x, screen.y);//(WIDTH / 2, HEIGHT / 2);
 
-	/*auto origin = ImGui::GetItemRectMin();
-	auto sz = ImGui::GetItemRectSize();
-	ImGuizmo::SetRect(origin.x, origin.y, sz.x, sz.y);*/
-
-	Input.InternalSetMouseViewport();
-
-	/*Vector2 cursorPos = Vector2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y);
-	Vector2 windowPos = Vector2(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-	currentFramePos = Vector2((cursorPos.x + windowPos.x), (cursorPos.y + windowPos.y));*/
-
+	Input.InternalSetMouseViewport(ImGui::GetCurrentWindow()->Size.x, ImGui::GetCurrentWindow()->Size.y);
 
 	renderManager->ForwardRender(m_engine->camera, m_engine->objectsToRender);
 	m_engine->gDeviceContext->OMSetRenderTargets(1, &m_engine->gBackbufferRTV, m_engine->m_depthStencilView);
 	m_engine->SetViewport();
 
-	//renderManager->SetRenderTarget(nullptr);
-	//Debug.Log(ImGui::GetMousePos().x, "   ", ImGui::GetMousePos().y);
+
+	ImDrawList* mDrawList = ImGui::GetWindowDrawList();
+	ImVec2 size = ImVec2(width, height);
+
+	const ImVec2 p = ImGui::GetCursorScreenPos();
+	ImGui::Dummy(size); // create space for it
+	ImVec2 a(p.x, p.y); // topLeft
+	ImVec2 c(p.x + size.x, p.y + size.y); // bottom right
+	ImVec2 b(c.x, a.y); // topRight
+	ImVec2 d(a.x, c.y); // bottomLeft // CW order
+	ImVec2 uv_a(0, 0), uv_b(0, 1), uv_c(1, 1), uv_d(1, 0);
 
 
-	//float v = 0.0f, p = 0.0f, m = 0.0f;
+	mDrawList->PushTextureID(renderManager->m_shaderResourceView);
+	mDrawList->PrimReserve(6, 4);
+	mDrawList->PrimQuadUV(d, a, b, c, uv_b, uv_a, uv_d, uv_c, 0xFFFFFFFF);
+	mDrawList->PopTextureID();
 
-	ImGuizmo::BeginFrame();
-	ImGuizmo::SetDrawlist();
+	//ImGui::Image(renderManager->m_shaderResourceView, ImVec2(width, height));
 
-	ImGui::Image(renderManager->m_shaderResourceView, ImVec2(width, height));
-
-	Gizmo(m_engine, width, height);
+	Gizmo(m_engine, width + (width / 35.f), height + (height / 7.7f));
 
 	DoMousePick();
 }
@@ -130,82 +134,32 @@ void Gizmo(CoreEngine* m_engine, float w, float h)
 			p._31, p._32, p._33, p._34,
 			p._41, p._42, p._43, p._44 };
 
-		//Perspective(27.f, Input.GetEngineWindowResolution().x / Input.GetEngineWindowResolution().y, 0.1f, 100.f, cameraProjection);
-
-		ImGuizmo::DrawCube(cameraView, cameraProjection, objectMatrix);
 		ImGuizmo::SetRect(0, 0, w, h);
 
 		EditTransform(cameraView, cameraProjection, objectMatrix);
-		//ImGui::End();
-		//ImGuizmo::Manipulate(&v._44, &p._44, ImGuizmo::OPERATION::ROTATE, ImGuizmo::MODE::WORLD, objectMatrix);
 	}
 }
 
 void EditTransform(const float *cameraView, float *cameraProjection, float* matrix)
 {
-	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
+	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
 	static bool useSnap = false;
 	static float snap[3] = { 1.f, 1.f, 1.f };
 
-	//if (ImGui::IsKeyPressed(90))
-	//	mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-	//if (ImGui::IsKeyPressed(69))
-	//	mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	//if (ImGui::IsKeyPressed(82)) // r Key
-	//	mCurrentGizmoOperation = ImGuizmo::SCALE;
-	//if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
-	//	mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-	//ImGui::SameLine();
-	//if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
-	//	mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	//ImGui::SameLine();
-	//if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
-	//	mCurrentGizmoOperation = ImGuizmo::SCALE;
-	//float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-	//ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
-	//ImGui::InputFloat3("Tr", matrixTranslation, 3);
-	//ImGui::InputFloat3("Rt", matrixRotation, 3);
-	//ImGui::InputFloat3("Sc", matrixScale, 3);
-	//ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
+	if (Input.GetKeyDown(KeyCode::E))
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	if (Input.GetKeyDown(KeyCode::R))
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	if (Input.GetKeyDown(KeyCode::T))
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
-	//if (mCurrentGizmoOperation != ImGuizmo::SCALE)
-	//{
-	//	if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
-	//		mCurrentGizmoMode = ImGuizmo::LOCAL;
-	//	ImGui::SameLine();
-	//	if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
-	//		mCurrentGizmoMode = ImGuizmo::WORLD;
-	//}
-	//if (ImGui::IsKeyPressed(83))
-	//	useSnap = !useSnap;
-	//ImGui::Checkbox("", &useSnap);
-	//ImGui::SameLine();
+	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+	ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
+	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
 
-	//switch (mCurrentGizmoOperation)
-	//{
-	//case ImGuizmo::TRANSLATE:
-	//	ImGui::InputFloat3("Snap", &snap[0]);
-	//	break;
-	//case ImGuizmo::ROTATE:
-	//	ImGui::InputFloat("Angle Snap", &snap[0]);
-	//	break;
-	//case ImGuizmo::SCALE:
-	//	ImGui::InputFloat("Scale Snap", &snap[0]);
-	//	break;
-	//}
-	ImGuiIO& io = ImGui::GetIO();
-	//ImGuizmo::SetRect(0, 0, Input.GetEngineWindowResolution().x, Input.GetEngineWindowResolution().y);
-	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL);
-}
 
-void ToImGuizmo(float * dest, float src[4][4])
-{
-	for (auto row = 0; row < 4; row++)
-	{
-		for (auto col = 0; col < 4; col++)
-			dest[row * 4 + col] = src[row][col];
-	}
+	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix, NULL, NULL);
 }
 
 void GUI_Viewport::DoMousePick()

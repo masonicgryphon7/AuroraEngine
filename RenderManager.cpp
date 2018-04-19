@@ -198,7 +198,7 @@ void RenderManager::SetRenderTarget(ID3D11DepthStencilView * depthStencilView)
 
 void RenderManager::ClearRenderTarget(ID3D11DepthStencilView * depthStencilView)
 {
-	float clearColor[] = { 0.28f, 0.28f, 0.28f, 1.0f };
+	float clearColor[] = { 1.0f, 0.28f, 0.28f, 1.0f };
 
 	gDeviceContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	gDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -208,7 +208,6 @@ void RenderManager::ClearRenderTarget(ID3D11DepthStencilView * depthStencilView)
 
 void RenderManager::BeginFrame()
 {
-	// clear the back buffer to a deep blue
 	float clearColor[] = { 0.28f, 0.28f, 0.28f, 1.0f };
 
 	//// use DeviceContext to talk to the API
@@ -231,5 +230,5 @@ void RenderManager::EndFrame()
 	// VSYNC_1_FRAME == vsync (1frame) { 60FPS }
 	// VSYNC_2_FRAME == vsync (2frame) { 30FPS }
 
-	gSwapChain->Present(VSYNC_1_FRAME, 0);
+	gSwapChain->Present(NO_VSYNC, 0);
 }
