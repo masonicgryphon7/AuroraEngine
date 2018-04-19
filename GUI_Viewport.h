@@ -14,5 +14,7 @@ private:
 	void ShowEngineView();
 	void DoMousePick();
 
+	int bkpWindowFlags;
+
 	Vector2 mousePosRelative;
 };

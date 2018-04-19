@@ -133,11 +133,17 @@ Vector2 InputHandler::GetEngineWindowResolution()
 	return Vector2(width, height);
 }
 
-void InputHandler::InternalSetMouseViewport()
+Vector2 InputHandler::GetViewportSize()
+{
+	return viewportSize;
+}
+
+void InputHandler::InternalSetMouseViewport(unsigned int x, unsigned int y)
 {
 	Vector2 cursorPos = Vector2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y);
 	Vector2 windowPos = Vector2(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 	currentFramePos = Vector2((cursorPos.x + windowPos.x), (cursorPos.y + windowPos.y));
+	viewportSize = Vector2(x, y);
 }
 
 bool InputHandler::detectKey(int key)

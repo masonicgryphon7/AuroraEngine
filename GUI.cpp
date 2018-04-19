@@ -13,6 +13,7 @@ void GUI::Start(CoreEngine* engine)
 	m_yMax = FLT_MAX; // infinite
 }
 
+
 void GUI::Begin()
 {
 	ImGui::SetNextWindowSize(ImVec2(m_xMin, m_yMin), ImGuiCond_FirstUseEver);

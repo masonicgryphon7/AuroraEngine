@@ -29,7 +29,7 @@ public:
 	Vector2 GetMousePosition();
 
 	// DON'T CALL
-	void InternalSetMouseViewport();
+	void InternalSetMouseViewport(unsigned int x, unsigned int y);
 
 	DirectX::Mouse::State GetMouseInput() { return mouseState; };
 	DirectX::Keyboard::State getKyboardInput() { return kb; };
@@ -37,11 +37,28 @@ public:
 
 	Vector2 GetDesktopResolution();
 	Vector2 GetEngineWindowResolution();
+	Vector2 GetViewportSize();
+
+	inline int GetWidth()
+	{
+		RECT rect;
+		GetClientRect(wnd, &rect);
+		return  (int)(rect.right - rect.left);
+	}
+
+	inline int GetHeight()
+	{
+		RECT rect;
+		GetClientRect(wnd, &rect);
+		return (int)(rect.bottom - rect.top);
+	}
+
 private:
 	DirectX::Keyboard* keyboard;
 	DirectX::Mouse* mouse;
 
 	Vector2 currentFramePos;
+	Vector2 viewportSize;
 
 	HWND wnd;
 

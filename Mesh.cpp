@@ -36,8 +36,11 @@ Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * de
 
 Mesh::~Mesh()
 {
-	vertexBuffer->Release();
-
+	if (vertexBuffer != nullptr)
+	{
+		vertexBuffer->Release();
+		vertexBuffer = nullptr;
+	}
 }
 
 
@@ -55,72 +58,6 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 	while (!objFile.eof())
 	{
 		objFile >> readString;
-		/*if (readString == "mtllib")
-		{
-		objFile >> readString;
-		std::ifstream mtlFile(readString);
-		while (!mtlFile.eof())
-		{
-		mtlFile >> readString;
-		if (readString == "map_Kd")
-		{
-		this->isTextured = true;
-		mtlFile >> readString;
-		wchar_t* TextureFileName = new wchar_t[readString.size() + 1];
-		HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
-		if (FAILED(hr))
-		{
-		MessageBox(0, L"HEllo coinit failed", 0, 0);
-		}
-		for (int i = 0; i < readString.size() + 1; i++)
-		{
-		TextureFileName[i] = readString[i];
-		}
-
-		hr = DirectX::CreateWICTextureFromFile(dev, devCon,
-		TextureFileName, nullptr, &textureResourceView);
-		shaderResourceViews[0] = textureResourceView;
-		delete[] TextureFileName;
-		}
-		if (readString == "bump")
-		{
-
-		mtlFile >> readString;
-
-		wchar_t* TextureFileName = new wchar_t[readString.size() + 1];
-
-		for (int i = 0; i < readString.size() + 1; i++)
-		{
-		TextureFileName[i] = readString[i];
-		}
-
-		HRESULT hr = DirectX::CreateWICTextureFromFile(dev, devCon,
-		TextureFileName, nullptr, &textureResourceView);
-		shaderResourceViews[1] = textureResourceView;
-		this->hasNormal = true;
-		delete[] TextureFileName;
-		}
-		if (readString == "Ka")
-		{
-		mtlFile >> KA.x;
-		mtlFile >> KA.y;
-		mtlFile >> KA.z;
-		}
-		if (readString == "Ks")
-		{
-		mtlFile >> KS.x;
-		mtlFile >> KS.y;
-		mtlFile >> KS.z;
-		}
-		if (readString == "Kd")
-		{
-		mtlFile >> KD.x;
-		mtlFile >> KD.y;
-		mtlFile >> KD.z;
-		}
-		}
-		mtlFile.close();
-		}*/
 		if (readString == "v")
 		{
 			DirectX::XMFLOAT3 tempvec;
@@ -215,7 +152,7 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 		tan.y = tan.y*someFloat;
 		tan.z = tan.z*someFloat;
 
-		
+
 		//tangent
 		DirectX::XMVECTOR tangent = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&tan));
 		DirectX::XMStoreFloat3(&vertex[i].tangent, tangent);
@@ -229,7 +166,7 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 
 
 	}
-	
+
 	//Create vertex buffer
 
 	//VERTEX_POS3UV2T3B3N3 *vertex;
@@ -355,7 +292,7 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 	//std::vector<DirectX::XMFLOAT3> positions;
 	//std::vector<DirectX::XMFLOAT2> texCoords;
 	//std::vector<DirectX::XMFLOAT3> normals;
-	
+
 	MyLibrary::MeshFromFile myMesh;
 	VERTEX_POS3UV2T3B3N3 vertex;
 	std::vector<VERTEX_POS3UV2T3B3N3> vertices;
@@ -366,19 +303,19 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 		vertex.position.x = myMesh.mesh_vertices[i].vertex_position[0];
 		vertex.position.y = myMesh.mesh_vertices[i].vertex_position[1];
 		vertex.position.z = myMesh.mesh_vertices[i].vertex_position[2];
-		vertexPositions.push_back(DirectX::XMVectorSet(vertex.position.x, vertex.position.y, vertex.position.z,0));
-			  
+		vertexPositions.push_back(DirectX::XMVectorSet(vertex.position.x, vertex.position.y, vertex.position.z, 0));
+
 		vertex.normal.x = myMesh.mesh_vertices[i].vertex_normal[0];
 		vertex.normal.y = myMesh.mesh_vertices[i].vertex_normal[1];
 		vertex.normal.z = myMesh.mesh_vertices[i].vertex_normal[2];
-			  
+
 		vertex.uv.x = myMesh.mesh_vertices[i].vertex_UVCoord[0];
 		vertex.uv.y = myMesh.mesh_vertices[i].vertex_UVCoord[1];
-			  
+
 		vertex.tangent.x = myMesh.mesh_vertices[i].vertex_tangent[0];
 		vertex.tangent.y = myMesh.mesh_vertices[i].vertex_tangent[1];
 		vertex.tangent.z = myMesh.mesh_vertices[i].vertex_tangent[2];
-			  
+
 		vertex.bitangent.x = myMesh.mesh_vertices[i].vertex_biTangent[0];
 		vertex.bitangent.y = myMesh.mesh_vertices[i].vertex_biTangent[1];
 		vertex.bitangent.z = myMesh.mesh_vertices[i].vertex_biTangent[2];
