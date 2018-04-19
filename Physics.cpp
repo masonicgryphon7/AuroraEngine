@@ -92,11 +92,11 @@ std::vector<GameObject*> Physics::ScreenSelection(DirectX::XMVECTOR startXYendXY
 
 	//map to -1 1
 	mouseStart = DirectX::XMVectorMultiply(mouseStart, DirectX::XMVectorSet(2.0f, -2.0f, 0.0f, 0.0f));
-	mouseStart = DirectX::XMVectorSubtract(mouseStart, DirectX::XMVectorSet(1.0f, -1.0f, 0.0f, -1.0f));
+	mouseStart = DirectX::XMVectorSubtract(mouseStart, DirectX::XMVectorSet(1.0f, -1.0f, 0.0f, 0.0f));
 
 	//map to -1 1
-	mouseEnd = DirectX::XMVectorMultiply(mouseEnd, DirectX::XMVectorSet(2.0f, -2.0f, 0.0f, 0.0f));
-	mouseEnd = DirectX::XMVectorSubtract(mouseEnd, DirectX::XMVectorSet(1.0f, -1.0f, 0.0f, -1.0f));
+	mouseEnd = DirectX::XMVectorMultiply(mouseEnd, DirectX::XMVectorSet(0.0f, 0.0f,2.0f, -2.0f));
+	mouseEnd = DirectX::XMVectorSubtract(mouseEnd, DirectX::XMVectorSet( 0.0f, 0.0f, 1.0f, -1.0f ));
 
 
 	float startX = DirectX::XMVectorGetX(mouseStart);
@@ -110,25 +110,25 @@ std::vector<GameObject*> Physics::ScreenSelection(DirectX::XMVECTOR startXYendXY
 	float maxY = max(startY, endY);
 
 
-	std::vector<GameObject*>* temp = &gScene.getFrustumCulledResult();
+	std::vector<GameObject*> temp = gScene.getFrustumCulledResult();
 	DirectX::XMVECTOR screenSpaceCorners[8];
-	DirectX::XMMATRIX viewToScreenMatrix = DirectX::XMMatrixMultiply(camera->getComponent<Camera>()->calculateViewMatrix(), camera->getComponent<Camera>()->calculateViewMatrix());
+	DirectX::XMMATRIX viewToScreenMatrix = DirectX::XMMatrixMultiply(camera->getComponent<Camera>()->calculateViewMatrix(), camera->getComponent<Camera>()->calculatePerspectiveMatrix());
 	DirectX::XMFLOAT4X4 m;
 	DirectX::XMStoreFloat4x4(&m, viewToScreenMatrix);
 	float w = m._44;
 	w = 1 / w;
 	viewToScreenMatrix = viewToScreenMatrix * DirectX::XMMatrixScaling(w, w, w);
 
-	for (int i = 0; i < temp[0].size(); i++)
+	for (int i = 0; i < temp.size(); i++)
 	{
-		if (temp[0][i]->getIsRenderable()) {
+		if (temp[i]->getIsRenderable()) {
 
-			OOBB obb = temp[0][i]->getComponent<MeshFilter>()->getBoundingBox();
+			OOBB obb = temp[i]->getComponent<MeshFilter>()->getBoundingBox();
 
 			bool include = false;
 			for (int j = 0; j < 8; j++)
 			{
-				screenSpaceCorners[j] = DirectX::XMVector3Transform(DirectX::XMVectorAdd(obb.corners[j], temp[0][i]->transform.getPosition()), viewToScreenMatrix);
+				screenSpaceCorners[j] = DirectX::XMVector3Transform(DirectX::XMVectorAdd(obb.corners[j], temp[i]->transform.getPosition()), viewToScreenMatrix);
 				float x =DirectX::XMVectorGetX(screenSpaceCorners[j]);
 				float y = DirectX::XMVectorGetY(screenSpaceCorners[j]);
 
@@ -141,7 +141,7 @@ std::vector<GameObject*> Physics::ScreenSelection(DirectX::XMVECTOR startXYendXY
 			}
 
 			if (include) {
-				selectedGameObjects.push_back(temp[0][i]);
+				selectedGameObjects.push_back(temp[i]);
 			}
 
 		}

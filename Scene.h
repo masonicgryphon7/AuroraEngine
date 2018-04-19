@@ -74,7 +74,7 @@ public:
 
 private:
 	std::vector<std::string> containedGUID; // contains all GUID's of current scene
-	std::vector<GameObject*> frustumCulledResult;
+	static std::vector<GameObject*> frustumCulledResult;
 	static std::vector<GameObject*>sceneObjects;
 	std::vector<QuadTreeNode*> root;
 	int frustumCheck(OOBB otherOBB, DirectX::XMVECTOR otherPosition, PLANE *planes);

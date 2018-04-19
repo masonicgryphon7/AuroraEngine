@@ -47,7 +47,7 @@ void ClickToMove::update()
 		//hit.transform->setPosition(DirectX::XMVectorSet(0, 10, 0, 0));
 		if (hit.transform != nullptr) {
 			gameObject->name = "Hit obj";
-			DirectX::XMVECTOR hitPos = DirectX::XMVectorAdd( gameObject->transform.getPosition(), DirectX::XMVectorScale(ray.direction, hit.distance));
+			DirectX::XMVECTOR hitPos = DirectX::XMVectorAdd( editorCamera->gameObject->transform.getPosition(), DirectX::XMVectorScale(ray.direction, hit.distance));
 			Debug.Log("moving to", DirectX::XMVectorGetX(hitPos),",", DirectX::XMVectorGetY(hitPos),",", DirectX::XMVectorGetZ(hitPos));
 			DirectX::XMStoreFloat3(&goalPos, hitPos);
 			lerpValue = 0;
