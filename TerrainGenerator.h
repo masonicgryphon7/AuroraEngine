@@ -52,5 +52,7 @@ public:
 	DirectX::XMFLOAT3 subtract(DirectX::XMFLOAT3 A, DirectX::XMFLOAT3 B);
 	DirectX::XMFLOAT2 subtract(DirectX::XMFLOAT2 A, DirectX::XMFLOAT2 B);
 
+	std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> getRealVertArr();
+
 };
 #endif

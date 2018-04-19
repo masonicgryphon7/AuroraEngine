@@ -8,6 +8,7 @@
 #include "Console.h"
 #include "imgui_dock.h"
 #include "ImGuizmo.h"
+#include "PathCreator.h"
 
 #include "Debug.h"
 
@@ -201,7 +202,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
 		camera->addComponent(editorMoveScript);
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
@@ -250,8 +251,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(clickToMove);
 
 
-
-		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 		terrain->name = "Terrain";
 		terrain->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
@@ -260,6 +260,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain->addComponent(AssetManager.getMaterial(1));
 		terrain->addComponent(meshFilterTerrain);
 
+		PathCreator.createNodes(terrainGenerator->getRealVertArr());
 
 		AssetManager.addMeshFromBinary("Assets/pSuperShape1_Mesh.bin");
 

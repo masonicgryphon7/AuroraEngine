@@ -181,6 +181,8 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshFilter.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="PathCreator.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="PRIMITIVE_GEOMETRY.h" />
@@ -197,6 +199,7 @@
     <ClInclude Include="TEXTURE_RESOLUTIONS.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Window.h" />
@@ -230,6 +233,8 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshFilter.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="PathCreator.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="QuadTreeNode.cpp" />
@@ -240,6 +245,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>

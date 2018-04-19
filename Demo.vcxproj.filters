@@ -188,6 +188,15 @@
     <ClInclude Include="PlayerScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathCreator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreEngine.cpp">
@@ -308,6 +317,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PlayerScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathCreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
