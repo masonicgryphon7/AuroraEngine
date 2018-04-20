@@ -205,7 +205,7 @@ void GUI_Viewport::DoMousePick()
 			//unity har en deadzone för drag selection och att man raycastar eller selectar inte först man releasar mus. börja uppdatera mousePosRelative on mousedown och räkna ut if utanför deadzone så selection i physics else mousepick
 			RaycastHit hit;
 
-			Ray ray = m_engine->camera->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(mousePosRelative.x, mousePosRelative.y, 0, 0));
+			Ray ray = m_engine->camera->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(Input.GetMousePosition().x, Input.GetMousePosition().y, 0, 0));
 			gPhysics.Raycast(ray, hit);
 
 			if (hit.transform != nullptr) {

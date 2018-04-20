@@ -47,17 +47,7 @@ void ClickToMove::update()
 			Debug.Log("moving to", DirectX::XMVectorGetX(hitPos),",", DirectX::XMVectorGetY(hitPos),",", DirectX::XMVectorGetZ(hitPos));
 			DirectX::XMStoreFloat3(&goalPos, hitPos);
 			lerpValue = 0;
-			//Node currentNode;
-			//Node hitPosNode;
 
-			//currentNode.position.x = current.x;
-			//currentNode.position.y = current.y;
-			//currentNode.position.z = current.z;
-			//
-			//hitPosNode.position.x = goalPos.x;
-			//hitPosNode.position.y = goalPos.y;
-			//hitPosNode.position.z = goalPos.z;
-	
 			pathNodes = PathCreator.getPath(current, goalPos);
 		}
 		else
@@ -68,7 +58,7 @@ void ClickToMove::update()
 	}
 
 	if (pathNodes.size() > 0) {
-		lerpValue += Time.getDeltaTime()/100;
+		lerpValue += Time.getDeltaTime();
 		DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(pathNodes.size()-1).position.x, pathNodes.at(pathNodes.size()-1).position.y, pathNodes.at(pathNodes.size()-1).position.z,0);
 		DirectX::XMFLOAT3 goalVec;
 		DirectX::XMStoreFloat3(&goalVec, goal);

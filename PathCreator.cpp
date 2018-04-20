@@ -62,26 +62,32 @@ void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> po
 	}
 
 
-	//fail test
-	for (int i = MIN; i < MAX - 2; i++)
-	{
-		grid[i][3].pathable = false;
-		//display[i][3] = 1;
+	////fail test
+	//for (int i = MIN; i < MAX - 2; i++)
+	//{
+	//	grid[i][3].pathable = false;
+	//	//display[i][3] = 1;
 
-	}
+	//}
 }
 
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
-	Node startNode = grid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
-	Node goalNode = grid[std::round(goalPos.x)][std::round(goalPos.z)];
+	std::vector<std::vector<Node>> tempGrid = grid;
+
+	Node startNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
+	Node goalNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
+
+	if (goalNode.pathable == false) {
+		goalNode = startNode;
+	}
 
 	std::vector<Node> resultNodes = std::vector<Node>();
 	std::vector<Node> openNodes = std::vector<Node>();
 	std::vector<Node> closedNodes = std::vector<Node>();
 	openNodes.push_back(startNode);
 	bool succes = false;
-	Node *currentNode = new Node();
+	Node currentNode = Node();
 
 	while (openNodes.size() > 0 && succes == false) {
 
@@ -98,7 +104,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 			}
 		}
 		closedNodes.push_back(openNodes.at(lowestFIndex));
-		currentNode = &closedNodes.back();
+		currentNode = closedNodes.back();
 		openNodes.erase(openNodes.begin() + lowestFIndex);
 
 		if (closedNodes.back().position == goalNode.position) {
@@ -111,19 +117,19 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 		for (int i = 0; i < 9; i++)
 		{
 			//neighbor index
-			int x = currentNode->position.x + xArr[i];
-			int z = currentNode->position.z + zArr[i];
-			//std::cout << "x" << x << " y" << y << std::endl;
+			int x = currentNode.position.x + xArr[i];
+			int z = currentNode.position.z + zArr[i];
+			//std::cout << "x" << x << " z" << z << std::endl;
 
 			bool isViableNeighbor = true;
-			if (grid[x][z].pathable == false) {
+			if (tempGrid[x][z].pathable == false) {
 				isViableNeighbor = false;
 
 			}
 
 			for (int j = 0; j < closedNodes.size(); j++)
 			{
-				if (grid[x][z].position == closedNodes[j].position) {
+				if (tempGrid[x][z].position == closedNodes[j].position) {
 					isViableNeighbor = false;
 
 				}
@@ -137,41 +143,41 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 				for (int j = 0; j < openNodes.size(); j++)
 				{
-					if (openNodes[j].position == grid[x][z].position) {
+					if (openNodes[j].position == tempGrid[x][z].position) {
 						isInOpenNodes = true;
 					}
 				}
 
 				if (isInOpenNodes == false) {
-					grid[x][z].h = manhattan(grid[x][z], goalNode);
+					tempGrid[x][z].h = manhattan(tempGrid[x][z], goalNode);
 					if (i == 0 || i == 2 || i == 5 || i == 7) {
-						grid[x][z].g = 14 + currentNode->g;
+						tempGrid[x][z].g = 14 + currentNode.g;
 					}
 					else
 					{
-						grid[x][z].g = 10 + currentNode->g;
+						tempGrid[x][z].g = 10 + currentNode.g;
 					}
-					grid[x][z].f = grid[x][z].g + grid[x][z].h;
-					grid[x][z].parentX = currentNode->position.x;
-					grid[x][z].parentZ = currentNode->position.z;
-					openNodes.push_back(grid[x][z]);
+					tempGrid[x][z].f = tempGrid[x][z].g + tempGrid[x][z].h;
+					tempGrid[x][z].parentX = currentNode.position.x;
+					tempGrid[x][z].parentZ = currentNode.position.z;
+					openNodes.push_back(tempGrid[x][z]);
 
 				}
 				else {
 					int tempG = 0;
 					if (i == 0 || i == 2 || i == 5 || i == 7) {
-						tempG = 14 + currentNode->g;
+						tempG = 14 + currentNode.g;
 					}
 					else
 					{
-						tempG = 10 + currentNode->g;
+						tempG = 10 + currentNode.g;
 					}
-					if (grid[x][z].g < tempG) {
-								
-						grid[x][z].g = tempG;
-						grid[x][z].f = tempG + grid[x][z].h;
-						grid[x][z].parentX = currentNode->position.x;
-						grid[x][z].parentZ = currentNode->position.z;
+					if (tempGrid[x][z].g < tempG) {
+
+						tempGrid[x][z].g = tempG;
+						tempGrid[x][z].f = tempG + tempGrid[x][z].h;
+						tempGrid[x][z].parentX = currentNode.position.x;
+						tempGrid[x][z].parentZ = currentNode.position.z;
 					}
 				}
 
@@ -183,12 +189,12 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	int gg = 0;
 	if (succes == true) {
 
-		while (currentNode->parentX != -999999999)
+		while (currentNode.parentX != -999999999)
 		{
 
 
-			resultNodes.push_back(*currentNode);
-			currentNode = &grid[currentNode->parentX][currentNode->parentZ];
+			resultNodes.push_back(currentNode);
+			currentNode = tempGrid[currentNode.parentX][currentNode.parentZ];
 
 
 			gg++;
@@ -206,7 +212,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 float cPathCreator::manhattan(Node first, Node second)
 {
-	float result = 10 * (abs(first.position.x - second.position.x) + abs(first.position.y - second.position.y));
+	float result = 10 * (abs(first.position.x - second.position.x) + abs(first.position.z - second.position.z));
 
 	return result;
 }
