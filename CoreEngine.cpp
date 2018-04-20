@@ -256,6 +256,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			camera->name = "Main Camera";
 			cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
 			camera->addComponent(cam);
+			//AudioListener* audioListener = new AudioListener();
+			//camera->addComponent(audioListener);
 		}
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
 		cube->name = "Cube";

@@ -38,8 +38,8 @@ GameObject::GameObject(int otherAssetID)
 
 GameObject::~GameObject()
 {
-	if (meshFilterComponent != nullptr)
-		delete meshFilterComponent;
+	//if (meshFilterComponent != nullptr)
+	//	delete meshFilterComponent;
 }
 
 void GameObject::updateMaterialAndMeshFilterPointers() {

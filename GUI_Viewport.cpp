@@ -50,13 +50,13 @@ void GUI_Viewport::ShowEngineView()
 	if (Input.GetKeyUp(KeyCode::RightMouse))
 		isHolding = false;
 
-	if (isHolding)
-	{
-		io.SetCustomMouseTexture = true;
-		io.SetCursorTexture((int)m_engine->assetManager.getTexture("Assets/Editor/Eye-Orbit.png")->getTexture(), ImVec2(30, 50));
-	}
-	else
-		io.SetCustomMouseTexture = false;
+	////if (isHolding)
+	////{
+	////	io.SetCustomMouseTexture = true;
+	////	io.SetCursorTexture((int)m_engine->assetManager.getTexture("Assets/Editor/Eye-Orbit.png")->getTexture(), ImVec2(30, 50));
+	////}
+	//else
+	//	io.SetCustomMouseTexture = false;
 
 	///FIVE HOLY LINES
 	renderManager->SetRenderTarget(m_engine->m_depthStencilView);

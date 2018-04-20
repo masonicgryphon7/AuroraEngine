@@ -23,6 +23,7 @@
 #include "ClickToMove.h"
 #include "PlayerScript.h"
 #include "PathCreator.h"
+#include "AudioListener.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"
 //#include "MeshLib.h"
