@@ -11,7 +11,7 @@ public:
 	float x, y, z;
 
 	Vec3& operator=(const Vec3 &other);
-
+	//
 private:
 };
 

@@ -81,7 +81,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	if (goalNode.pathable == false) {
 		goalNode = startNode;
 	}
-
+	//
 	std::vector<Node> resultNodes = std::vector<Node>();
 	std::vector<Node> openNodes = std::vector<Node>();
 	std::vector<Node> closedNodes = std::vector<Node>();

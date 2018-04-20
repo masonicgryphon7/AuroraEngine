@@ -19,7 +19,7 @@ static class cPathCreator
 public:
 	cPathCreator();
 	~cPathCreator();
-
+	//
 	void createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions);
 	std::vector<Node> getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos);
 

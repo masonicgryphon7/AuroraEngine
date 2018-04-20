@@ -8,7 +8,7 @@ public:
 	Node();
 
 	~Node();
-
+	//
 	int g;
 	int h;
 	int f;

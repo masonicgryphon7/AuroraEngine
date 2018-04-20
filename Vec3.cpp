@@ -13,7 +13,7 @@ Vec3::Vec3(float x, float y, float z)
 	this->y = y;
 	this->z = z;
 }
-
+//
 Vec3::~Vec3()
 {
 }
