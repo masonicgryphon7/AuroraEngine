@@ -13,7 +13,7 @@
 #include "Debug.h"
 
 #include <crtdbg.h>
-
+#include "PathCreator.h"
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
@@ -189,12 +189,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		AssetManager.addMaterial(AssetManager.getShaderProgram(0));
-		AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
-		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
-		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
-		assetManager.getMaterial(0)->setIsTerrain(false);
-
+		
 		//Terrain Texture.
 		assetManager.addTexture("Assets/rutTextur.png");
 		assetManager.addTexture("Assets/rutNormal.png");
@@ -214,16 +209,23 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addTexture("Assets/vitAoMetalRough.png");
 		//----------------
 
-		AssetManager.addMaterial(AssetManager.getShaderProgram(0));
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
+		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
+		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
+		assetManager.getMaterial(0)->setAORoughMet(assetManager.getTexture(2)->getTexture());
+		assetManager.getMaterial(0)->setIsTerrain(false);
+
 		assetManager.getMaterial(1)->setIsTerrain(true);
 		assetManager.getMaterial(1)->setAlbedo(assetManager.getTexture(3)->getTexture());
 		assetManager.getMaterial(1)->setNormal(assetManager.getTexture(4)->getTexture());
 		assetManager.getMaterial(1)->setAORoughMet(assetManager.getTexture(5)->getTexture());
 		assetManager.getMaterial(1)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
-			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
-			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
+		assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+		assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
 
-		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+
+		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 		terrain->name = "Terrain";
 		terrain->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
@@ -232,15 +234,16 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain->addComponent(AssetManager.getMaterial(1));
 		terrain->addComponent(meshFilterTerrain);
 
+		PathCreator.createNodes(terrainGenerator->getRealVertArr());
 
 		//AssetManager.addMeshFromBinary("Assets/pCube1_Mesh.bin");
+
 		//GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
 		//MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
 		//YoObject->addComponent(AssetManager.getMaterial(0));
 		//YoObject->addComponent(yomeshFilter);
 
-
-
+		PathCreator.createNodes(terrainGenerator->getRealVertArr());
 
 
 
@@ -254,6 +257,14 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
 			camera->addComponent(cam);
 		}
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
+		cube->name = "Cube";
+		AssetManager.AddMesh("Assets/Cube.obj");
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(1));
+		cube->addComponent(meshFilter);
+		cube->addComponent(AssetManager.getMaterial(0));
+		ClickToMove* clickToMove = new ClickToMove(cam);
+		cube->addComponent(clickToMove);
 
 
 		Editor* editor = nullptr;

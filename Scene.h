@@ -38,8 +38,8 @@ public:
 	GameObject* createEmptyGameObject();
 	GameObject* createEmptyGameObject(DirectX::XMVECTOR position);
 
-	void CreateGameObject(Primitives primitive, Vector3 position = Vector3(0, 0, 0), Vector3 rotation = Vector3(0, 0, 0));
-	void CreateGameObject(Mesh* mesh, Vector3 position = Vector3(0, 0, 0), Vector3 rotation = Vector3(0, 0, 0));
+	GameObject* CreateGameObject(Primitives primitive, Vector3 position = Vector3(0, 0, 0), Vector3 rotation = Vector3(0, 0, 0));
+	GameObject* CreateGameObject(Mesh* mesh, Vector3 position = Vector3(0, 0, 0), Vector3 rotation = Vector3(0, 0, 0));
 
 	GameObject* getGameObjectAt(int index);
 	std::vector<GameObject*> getFrustumCulledResult();
