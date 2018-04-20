@@ -58,16 +58,19 @@ void ClickToMove::update()
 	}
 
 	if (pathNodes.size() > 0) {
-		lerpValue += Time.getDeltaTime();
-		DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(pathNodes.size()-1).position.x, pathNodes.at(pathNodes.size()-1).position.y, pathNodes.at(pathNodes.size()-1).position.z,0);
+		lerpValue += Time.getDeltaTime()*10;
+		if (lerpValue > 1) {
+			lerpValue = 1;
+		}
+		DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z,0);
 		DirectX::XMFLOAT3 goalVec;
 		DirectX::XMStoreFloat3(&goalVec, goal);
 
 		
 		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract( goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
-			pathNodes.erase(pathNodes.begin()+ pathNodes.size()-1);
+			pathNodes.erase(pathNodes.begin());
 			//current = goalVec;
-			goal = DirectX::XMVectorSet(pathNodes.at(pathNodes.size()-1).position.x, pathNodes.at(pathNodes.size()-1).position.y, pathNodes.at(pathNodes.size()-1).position.z, 0);
+			goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 			lerpValue = 0;
 
 		}
