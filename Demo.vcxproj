@@ -59,11 +59,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Direct3D_template\DirectXTK-master\Inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)include;$(SolutionDir)Direct3D_template\DirectXTK-master\Inc;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Direct3D_template\DirectXTK-master\Src;$(SourcePath)</SourcePath>
+    <LibraryPath>$(SolutionDir)libs\Win32;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -72,13 +75,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir);$(SolutionDir)myLibrary\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>myLibrary.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenAL32.lib;alut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,6 +99,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -168,11 +172,9 @@
     <ClInclude Include="ILogger.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
-    <ClInclude Include="ImGuizmo.h" />
     <ClInclude Include="imgui_dock.h" />
     <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="imgui_internal.h" />
-    <ClInclude Include="ImSequencer.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="INPUT_ELEMENT_DESCRIPTION.h" />
     <ClInclude Include="json.hpp" />
@@ -181,16 +183,22 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshFilter.h" />
-    <ClInclude Include="Node.h" />
-    <ClInclude Include="PathCreator.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="PRIMITIVE_GEOMETRY.h" />
     <ClInclude Include="QuadTreeNode.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="SHADOW_TYPE.h" />
+    <ClInclude Include="AudioListener.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SoundEmitter.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SoundEngine.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="stb_rect_pack.h" />
     <ClInclude Include="stb_textedit.h" />
     <ClInclude Include="stb_truetype.h" />
@@ -199,7 +207,6 @@
     <ClInclude Include="TEXTURE_RESOLUTIONS.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Window.h" />
@@ -222,30 +229,33 @@
     <ClCompile Include="GUI_MenuBar.cpp" />
     <ClCompile Include="GUI_Viewport.cpp" />
     <ClCompile Include="imgui.cpp" />
-    <ClCompile Include="ImGuizmo.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_dock.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
-    <ClCompile Include="ImSequencer.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshFilter.cpp" />
-    <ClCompile Include="Node.cpp" />
-    <ClCompile Include="PathCreator.cpp" />
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="QuadTreeNode.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="AudioListener.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SoundEmitter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SoundEngine.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TerrainGenerator.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>

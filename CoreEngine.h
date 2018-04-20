@@ -33,6 +33,7 @@
 #include "MeshFilter.h"
 #include "Material.h"
 #include "EditorMoveScript.h"
+#include "PlayerMoveScript.h"
 //#include "CharacterMovement.h"
 #include "Camera.h"
 #include "Time.h"

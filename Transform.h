@@ -14,6 +14,7 @@ public:
 
 
 	void update();
+
 	void updateRotationInEuler();
 
 	DirectX::XMVECTOR getPosition() { return position; };

@@ -176,25 +176,22 @@
     <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuizmo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ImSequencer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ClickToMove.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerScript.h">
+    <ClInclude Include="AudioListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
+    <ClInclude Include="SoundEmitter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PathCreator.h">
+    <ClInclude Include="SoundEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vec3.h">
+    <ClInclude Include="PlayerMoveScript.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSelectionScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -307,25 +304,22 @@
     <ClCompile Include="Vector3.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuizmo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ImSequencer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ClickToMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerScript.cpp">
+    <ClCompile Include="AudioListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
+    <ClCompile Include="SoundEmitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PathCreator.cpp">
+    <ClCompile Include="SoundEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vec3.cpp">
+    <ClCompile Include="PlayerMoveScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerSelectionScript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

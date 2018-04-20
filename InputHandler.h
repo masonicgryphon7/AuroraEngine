@@ -58,7 +58,7 @@ private:
 	DirectX::Mouse* mouse;
 
 	Vector2 currentFramePos;
-	Vector2 viewportSize;
+	static Vector2 viewportSize;
 
 	HWND wnd;
 
@@ -74,4 +74,3 @@ private:
 	POINT GetMouseCoordinates();
 	POINT GetAbsoluteMouseCoordinates();
 } Input;
-
