@@ -238,3 +238,8 @@ DirectX::XMFLOAT2 TerrainGenerator::subtract(DirectX::XMFLOAT2 A, DirectX::XMFLO
 
 	return tempVec;
 }
+
+std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> TerrainGenerator::getRealVertArr()
+{
+	return RealVertArr;
+}

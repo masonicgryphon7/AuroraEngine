@@ -7,12 +7,16 @@
 #include "GUI_Inspector.h"
 #include "Console.h"
 #include "imgui_dock.h"
+#include "ImGuizmo.h"
+#include "Editor.h"
 
 #include "Debug.h"
 
 #include <crtdbg.h>
-
+#include "PathCreator.h"
 #pragma comment(lib, "dxgi.lib")
+
+#define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
 bool CoreEngine::hasResized = false;
 
@@ -40,18 +44,46 @@ CoreEngine::~CoreEngine()
 			MessageBox(0, L"Couldn't turn off debug console!", 0, 0);
 	}
 
-	m_alphaEnableBlendState->Release();
-	m_alphaDisabledBlendState->Release();
-	//m_rasterizerState->Release();
-	m_depthStencilState->Release();
-	//m_depthStencilStateDisabled->Release();
-	//m_depthStencilStateEnabled->Release();
-	m_depthStencilBuffer->Release();
-	m_depthStencilView->Release();
+	SAFE_RELEASE(m_alphaDisabledBlendState);
+	SAFE_RELEASE(m_alphaEnableBlendState);
+	SAFE_RELEASE(m_depthStencilBuffer);
+	SAFE_RELEASE(m_depthStencilState);
+	//SAFE_RELEASE(m_depthStencilStateDisabled);
+	//SAFE_RELEASE(m_depthStencilStateEnabled);
+	SAFE_RELEASE(m_depthStencilView);
+	//SAFE_RELEASE(m_rasterizerState);
+	SAFE_RELEASE(m_rasterStateCullBack);
+	SAFE_RELEASE(m_rasterStateCullFront);
+	SAFE_RELEASE(m_rasterStateCullNone);
+	SAFE_RELEASE(gBackbufferRTV);
+	SAFE_RELEASE(gVertexBuffer);
+	SAFE_RELEASE(textureview);
+	SAFE_RELEASE(gVertexLayout);
+	SAFE_RELEASE(gSwapChain);
+
+	Input.~InputHandler();
+	AssetManager.~cAssetManager();
+	gScene.~Scene();
+	SAFE_RELEASE(gDeviceContext);
+	SAFE_RELEASE(gDevice);
+	// Cleanup
+	//gSwapChain->SetFullscreenState(FALSE, NULL);
 	/*gBackbufferRTV->Release();
-	gDevice->Release();
-	gDeviceContext->Release();
-	gSwapChain->Release();*/
+	gSwapChain->Release();
+	gDevice->Release();*/
+
+	//m_alphaEnableBlendState->Release();
+	//m_alphaDisabledBlendState->Release();
+	////m_rasterizerState->Release();
+	//m_depthStencilState->Release();
+	////m_depthStencilStateDisabled->Release();
+	////m_depthStencilStateEnabled->Release();
+	//m_depthStencilBuffer->Release();
+	//m_depthStencilView->Release();
+	///*gBackbufferRTV->Release();
+	//gDevice->Release();
+	//gDeviceContext->Release();
+	//gSwapChain->Release();*/
 }
 
 MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -85,12 +117,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		io.MouseDrawCursor = true;
 		io.SetCustomMouseTexture = false;
 
-		// Setup style
-		ImGui::StyleColorsDark();
-		SetGuiStyle();
-
-		ImGui::ResetToStandard();
-		ImGui::InitDock();
+		//ImGui_ImplWin32_UpdateMouseCursor();
 
 
 		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
@@ -151,61 +178,98 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		renderManager->CreateRenderTarget(WIDTH, HEIGHT);
 
 		InputHandler inputHandler = InputHandler(wndHandle); // this has memory leak
-		assetManager = AssetManager(gDevice, gDeviceContext); // this has memory leak
-		assetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
+
+		AssetManager.Start(gDevice, gDeviceContext);
+
+		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
+		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
-		camera = gScene.createEmptyGameObject();
-		camera->name = "Editor Camera";
-		Camera* mainCamera = new Camera(HEIGHT, WIDTH, 70, 0.01, 100);
-		camera->addComponent(mainCamera);
-		EditorSceneSelectionScript* editorSceneSelectionScript = new EditorSceneSelectionScript(mainCamera);
-		camera->addComponent(editorSceneSelectionScript);
-		EditorMoveScript* editorMoveScript = new EditorMoveScript();//(&engineTime, &inputHandler);
-		camera->addComponent(editorMoveScript);
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+		
+		//Terrain Texture.
+		assetManager.addTexture("Assets/rutTextur.png");
+		assetManager.addTexture("Assets/rutNormal.png");
+		assetManager.addTexture("Assets/rutAoMetalRough.png");
 
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
-		ClickToMove* clickToMove = new ClickToMove(mainCamera);
-		cube->addComponent(clickToMove);
-		assetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-		assetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
-		assetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+		assetManager.addTexture("Assets/stenTextur.png");
+		assetManager.addTexture("Assets/stenNormal.png");
+		assetManager.addTexture("Assets/stenAoMetalRough.png");
+
+		assetManager.addTexture("Assets/tygTextur.png");
+		assetManager.addTexture("Assets/tygNormal.png");
+		assetManager.addTexture("Assets/tygAoMetalRough.png");
+
+		assetManager.addTexture("Assets/ID_MAP.png");
+		assetManager.addTexture("Assets/vitTextur.png");
+		assetManager.addTexture("Assets/vitNormal.png");
+		assetManager.addTexture("Assets/vitAoMetalRough.png");
+		//----------------
+
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
 		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
 		assetManager.getMaterial(0)->setAORoughMet(assetManager.getTexture(2)->getTexture());
-		assetManager.addMesh("Assets/Cube.obj");
-		MeshFilter* meshFilter = new MeshFilter(assetManager.getMesh(0));
-		cube->addComponent(assetManager.getMaterial(0));
-		cube->addComponent(meshFilter);
-		cube->name = "Cube";
+		assetManager.getMaterial(0)->setIsTerrain(false);
 
-		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		assetManager.getMaterial(1)->setIsTerrain(true);
+		assetManager.getMaterial(1)->setAlbedo(assetManager.getTexture(3)->getTexture());
+		assetManager.getMaterial(1)->setNormal(assetManager.getTexture(4)->getTexture());
+		assetManager.getMaterial(1)->setAORoughMet(assetManager.getTexture(5)->getTexture());
+		assetManager.getMaterial(1)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
+		assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+		assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
+
+
+		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 		terrain->name = "Terrain";
 		terrain->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100,"Assets/BmpMAPTEST100x1002.bmp" );
-		assetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
-		MeshFilter* meshFilterTerrain = new MeshFilter(assetManager.getMesh(1));
-		terrain->addComponent(assetManager.getMaterial(0));
+		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
+		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
+		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
+		terrain->addComponent(AssetManager.getMaterial(1));
 		terrain->addComponent(meshFilterTerrain);
 
-		std::vector<std::unique_ptr<GUI>> m_gui;
+		PathCreator.createNodes(terrainGenerator->getRealVertArr());
 
-		m_gui.emplace_back(make_unique<GUI_Viewport>());
-		m_gui.emplace_back(make_unique<GUI_Console>());
-		m_gui.emplace_back(make_unique<GUI_Hierarchy>());
-		m_gui.emplace_back(make_unique<GUI_Inspector>());
-		//m_gui.emplace_back(make_unique<GUI_MenuBar>());
+		//AssetManager.addMeshFromBinary("Assets/pCube1_Mesh.bin");
 
-		for (auto& gui : m_gui)
-			gui->Start(this);
+		//GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
+		//MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
+		//YoObject->addComponent(AssetManager.getMaterial(0));
+		//YoObject->addComponent(yomeshFilter);
 
-		float oldTime = clock();
-		float deltaTime = 0;
+		PathCreator.createNodes(terrainGenerator->getRealVertArr());
 
-		float timer = 0.0f, lel = 0.0f;
-		bool ToRestart = false;
+
+
+
+
+		// Create a Main Camera
+		Camera* cam = nullptr;
+		{
+			camera = gScene.createEmptyGameObject();
+			camera->name = "Main Camera";
+			cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
+			camera->addComponent(cam);
+		}
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
+		cube->name = "Cube";
+		AssetManager.AddMesh("Assets/Cube.obj");
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(1));
+		cube->addComponent(meshFilter);
+		cube->addComponent(AssetManager.getMaterial(0));
+		ClickToMove* clickToMove = new ClickToMove(cam);
+		cube->addComponent(clickToMove);
+
+
+		Editor* editor = nullptr;
+		editor = new Editor();
+		editor->Start(&wndHandle, gDevice, gDeviceContext, this);
 
 		while (WM_QUIT != msg.message)
 		{
@@ -216,115 +280,20 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 			else
 			{
-				//Update Clock
 				inputHandler.updateInput();
 				Time.tick();
 
 				OnResize();
 
-				ImGui_ImplDX11_NewFrame();
-
 				objectsToRender = gScene.frustumCull(camera);
 				gScene.update();
 
-				//the FIVE holy lines were here before
-
-				//gDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
-
-
-				//ImGui::ShowMetricsWindow();
-
-			std:string pri = "Vector2(" + std::to_string(ImGui::GetMousePos().x) + ", " + std::to_string(ImGui::GetMousePos().y) + ")";
-
-				Console.print(pri);
-
-				if (Input.GetKeyDown(KeyCode::Y))
-				{
-					ToRestart = true;
-					ImGui::InitDock();
-					ImGui::ResetToStandard();
-					timer = 5.0f;
-				}
-
-			/*	lel += Time.getDeltaTime();
-				Debug.Log(lel);
-				cube->transform.setRotation(Vector3(lel, 0, 0).asXMVECTOR());
-*/
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
-				bool m = true, n = true;
 
-				//renderManager.BeginFrame(); // START RENDERING
-				{
-
-					Vector2 engSize = Input.GetEngineWindowResolution();
-					ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
-					ImGui::SetNextWindowSize(ImVec2(engSize.x + 2, engSize.y + 2), ImGuiSetCond_Always);
-					ImGui::Begin("Aurora Engine", &m, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-					{
-						ImGui::BeginDockspace();
-						{
-
-							//Debug.LogWarning("Mouse Position: Vector2(", ImGui::GetMousePos().x, ", ", ImGui::GetMousePos().y, ");");
-
-							if (Input.GetKeyDown(KeyCode::G))
-								ImGui::ForceSave();
-
-							if (timer > 0.0f)
-							{
-								ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
-								ImGui::SetNextWindowSize(ImVec2(engSize.x + 2, engSize.y + 2), ImGuiSetCond_Always);
-								ImGui::Begin("Aurora");
-								ImGui::Text("Please Restart");
-								ImGui::End();
-								timer -= Time.getDeltaTime() / 1000;
-							}
-							else
-							{
-								//if (ImGui::BeginDock("Inspector"))
-								//{
-								//	//ImGui::ShowTestWindow();
-								//	ImGui::Text("All Inspector Shit Here");
-								//}
-								//ImGui::EndDock();
-
-								/*if (ImGui::BeginDock("Hierarchy"))
-								{
-									ImGui::Text("All Hierarchy Shit Here");
-								}
-								ImGui::EndDock();*/
-
-								if (ImGui::BeginDock("Project"))
-								{
-									//ImGui::ShowTestWindow();
-
-									ImGui::Text("All Project Files Shit Here");
-									//ImGui::ShowDemoWindow();
-								}
-								ImGui::EndDock();
-
-								for (auto& gui : m_gui)
-								{
-									if (gui->GetIsWindow())
-										gui->Begin();
-
-									gui->Update();
-
-									if (gui->GetIsWindow())
-										gui->End();
-								}
-							}
-						}
-						ImGui::EndDockspace();
-					}
-					ImGui::End();
-
-					ImGui::Render();
-					ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-					gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
-				}
+				if (editor != nullptr)
+					editor->Update();
 
 				renderManager->EndFrame(); // END RENDERING
-				ImGui::EndFrame();
 
 				objectsToRender.clear();
 
@@ -332,37 +301,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 		}
 
-		gScene.SaveScene();
+		if (editor != nullptr)
+			delete editor;
 
-		ImGui::ShutdownDock();
-		ImGui_ImplDX11_Shutdown();
-		ImGui::DestroyContext();
-
-		// Cleanup
-		gSwapChain->SetFullscreenState(FALSE, NULL);
-
-		gBackbufferRTV->Release();
-		gSwapChain->Release();
-		gDevice->Release();
-		gDeviceContext->Release();
-		DestroyWindow(wndHandle);
+		delete cam;
 		delete renderManager;
-		delete meshFilter;
-		delete editorMoveScript;
-		delete editorSceneSelectionScript;
-		delete mainCamera;
-		delete terrainGenerator;
-		delete meshFilterTerrain;
-		delete clickToMove;
-		gScene.~Scene();
-
-		if (ToRestart)
-			ImGui::ResetToStandard();
-
-		m_gui.clear();
-		m_gui.shrink_to_fit();
-
-
+		DestroyWindow(wndHandle);
 	}
 	return msg;
 }
@@ -412,93 +356,6 @@ void CoreEngine::CreateTriangleData()
 
 }
 
-void CoreEngine::SetGuiStyle()
-{
-	ImGui::StyleColorsDark();
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	float fontSize = 15.0f;
-	float roundness = 2.0f;
-	ImVec4 white = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImVec4 text = ImVec4(0.76f, 0.77f, 0.8f, 1.0f);
-	ImVec4 black = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-	ImVec4 backgroundVeryDark = ImVec4(0.08f, 0.086f, 0.094f, 1.00f);
-	ImVec4 backgroundDark = ImVec4(0.117f, 0.121f, 0.145f, 1.00f);
-	ImVec4 backgroundMedium = ImVec4(0.26f, 0.26f, 0.27f, 1.0f);
-	ImVec4 backgroundLight = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
-	ImVec4 highlightBlue = ImVec4(0.172f, 0.239f, 0.341f, 1.0f);
-	ImVec4 highlightBlueActive = ImVec4(0.182f, 0.249f, 0.361f, 1.0f);
-	ImVec4 highlightBlueHovered = ImVec4(0.202f, 0.269f, 0.391f, 1.0f);
-	ImVec4 barBackground = ImVec4(0.078f, 0.082f, 0.09f, 1.0f);
-	ImVec4 bar = ImVec4(0.164f, 0.180f, 0.231f, 1.0f);
-	ImVec4 barHovered = ImVec4(0.411f, 0.411f, 0.411f, 1.0f);
-	ImVec4 barActive = ImVec4(0.337f, 0.337f, 0.368f, 1.0f);
-
-	// Spatial
-	style.WindowBorderSize = 1.0f;
-	style.FrameBorderSize = 1.0f;
-	//style.WindowMinSize		= ImVec2(160, 20);
-	style.FramePadding = ImVec2(5, 5);
-	style.ItemSpacing = ImVec2(6, 5);
-	//style.ItemInnerSpacing	= ImVec2(6, 4);
-	style.Alpha = 1.0f;
-	style.WindowRounding = roundness;
-	style.FrameRounding = roundness;
-	style.PopupRounding = roundness;
-	//style.IndentSpacing		= 6.0f;
-	//style.ItemInnerSpacing	= ImVec2(2, 4);
-	//style.ColumnsMinSpacing	= 50.0f;
-	//style.GrabMinSize			= 14.0f;
-	style.GrabRounding = roundness;
-	//style.ScrollbarSize		= 12.0f;
-	style.ScrollbarRounding = roundness;
-
-	// Colors
-	style.Colors[ImGuiCol_Text] = text;
-	//style.Colors[ImGuiCol_TextDisabled]			= ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
-	style.Colors[ImGuiCol_WindowBg] = backgroundDark;
-	//style.Colors[ImGuiCol_ChildBg]				= ImVec4(0.20f, 0.22f, 0.27f, 0.58f);
-	style.Colors[ImGuiCol_Border] = black;
-	//style.Colors[ImGuiCol_BorderShadow]			= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style.Colors[ImGuiCol_FrameBg] = bar;
-	style.Colors[ImGuiCol_FrameBgHovered] = highlightBlue;
-	style.Colors[ImGuiCol_FrameBgActive] = highlightBlueHovered;
-	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
-	//style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
-	style.Colors[ImGuiCol_TitleBgActive] = bar;
-	style.Colors[ImGuiCol_MenuBarBg] = backgroundVeryDark;
-	style.Colors[ImGuiCol_ScrollbarBg] = barBackground;
-	style.Colors[ImGuiCol_ScrollbarGrab] = bar;
-	style.Colors[ImGuiCol_ScrollbarGrabHovered] = barHovered;
-	style.Colors[ImGuiCol_ScrollbarGrabActive] = barActive;
-	style.Colors[ImGuiCol_CheckMark] = white;
-	style.Colors[ImGuiCol_SliderGrab] = bar;
-	style.Colors[ImGuiCol_SliderGrabActive] = barActive;
-	style.Colors[ImGuiCol_Button] = barActive;
-	style.Colors[ImGuiCol_ButtonHovered] = highlightBlue;
-	style.Colors[ImGuiCol_ButtonActive] = highlightBlueHovered;
-	style.Colors[ImGuiCol_Header] = highlightBlue; // selected items (tree, menu bar etc.)
-	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueHovered; // hovered items (tree, menu bar etc.)
-	style.Colors[ImGuiCol_HeaderActive] = highlightBlueActive;
-	style.Colors[ImGuiCol_Separator] = backgroundLight;
-	//style.Colors[ImGuiCol_SeparatorHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
-	//style.Colors[ImGuiCol_SeparatorActive]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-	style.Colors[ImGuiCol_ResizeGrip] = backgroundMedium;
-	style.Colors[ImGuiCol_ResizeGripHovered] = highlightBlue;
-	style.Colors[ImGuiCol_ResizeGripActive] = highlightBlueHovered;
-	//style.Colors[ImGuiCol_PlotLines]				= ImVec4(0.86f, 0.93f, 0.89f, 0.63f);
-	//style.Colors[ImGuiCol_PlotLinesHovered]		= ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-	style.Colors[ImGuiCol_PlotHistogram] = highlightBlue; // Also used for progress bar
-	style.Colors[ImGuiCol_PlotHistogramHovered] = highlightBlueHovered;
-	style.Colors[ImGuiCol_TextSelectedBg] = highlightBlue;
-	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
-	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
-	//style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.22f, 0.27f, 0.73f);
-
-	ImGuiIO& io = ImGui::GetIO();
-	io.Fonts->AddFontFromFileTTF("Assets/Fonts/LiberationSans-Regular.ttf", fontSize);
-}
-
 void CoreEngine::SetViewport(int x, int y)
 {
 	D3D11_VIEWPORT vp;
@@ -516,7 +373,17 @@ void CoreEngine::OnResize()
 	if (!hasResized)
 		return;
 
+	hasResized = false;
+
 	Vector2 ns = Input.GetEngineWindowResolution();
+	Vector2 sns = Input.GetDesktopResolution();
+
+	Debug.Log(ns.y, "\t", sns.y);
+
+	Input.GetEngineWindowResolution();
+
+	int width = Input.GetWidth();
+	int height = Input.GetHeight();
 
 	//if (firstThing != 0)
 		//CreateDirect3DContext(wnd);
@@ -532,35 +399,48 @@ void CoreEngine::OnResize()
 	m_depthStencilView->Release();
 	m_depthStencilView = nullptr;
 
-	DXGI_MODE_DESC dxgiModeDesc;
-	ZeroMemory(&dxgiModeDesc, sizeof(dxgiModeDesc));
-	dxgiModeDesc.Width = (unsigned int)ns.x;
-	dxgiModeDesc.Height = (unsigned int)ns.y;
-	dxgiModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	dxgiModeDesc.RefreshRate = DXGI_RATIONAL{ m_refreshRateNumerator, m_refreshRateDenominator };
-	dxgiModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	dxgiModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	gSwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
-	HRESULT result = gSwapChain->ResizeTarget(&dxgiModeDesc);
-	if (FAILED(result))
-		Console.error("Failed to set resize swapchain");
+	ID3D11Texture2D* pBuffer;
+	gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer);
 
-	result = gSwapChain->ResizeBuffers(1, (unsigned int)ns.x, (unsigned int)ns.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-	if (FAILED(result))
-		Console.error("Failed to set resize buffer swapchain");
+	gDevice->CreateRenderTargetView(pBuffer, NULL, &gBackbufferRTV);
 
-	ID3D11Texture2D* backBuffer = nullptr;
-	result = gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBuffer));
-	if (FAILED(result))
-		Console.error("Failed to get buffer swapchain");
+	pBuffer->Release();
 
-	result = gDevice->CreateRenderTargetView(backBuffer, nullptr, &gBackbufferRTV);
+	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
 
-	backBuffer->Release();
-	backBuffer = nullptr;
+	SetViewport(sns.x, sns.y);
 
-	if (FAILED(result))
-		Console.error("Failed to create render target view.");
+	//DXGI_MODE_DESC dxgiModeDesc;
+	//ZeroMemory(&dxgiModeDesc, sizeof(dxgiModeDesc));
+	//dxgiModeDesc.Width = (unsigned int)ns.x;
+	//dxgiModeDesc.Height = (unsigned int)ns.y;
+	//dxgiModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//dxgiModeDesc.RefreshRate = DXGI_RATIONAL{ m_refreshRateNumerator, m_refreshRateDenominator };
+	//dxgiModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	//dxgiModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+
+	//HRESULT result = gSwapChain->ResizeTarget(&dxgiModeDesc);
+	//if (FAILED(result))
+	//	Console.error("Failed to set resize swapchain");
+
+	//result = gSwapChain->ResizeBuffers(1, (unsigned int)ns.x, (unsigned int)ns.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+	//if (FAILED(result))
+	//	Console.error("Failed to set resize buffer swapchain");
+
+	//ID3D11Texture2D* backBuffer = nullptr;
+	//result = gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBuffer));
+	//if (FAILED(result))
+	//	Console.error("Failed to get buffer swapchain");
+
+	//result = gDevice->CreateRenderTargetView(backBuffer, nullptr, &gBackbufferRTV);
+
+	//backBuffer->Release();
+	//backBuffer = nullptr;
+
+	//if (FAILED(result))
+	//	Console.error("Failed to create render target view.");
 
 	CreateDepthStencilBuffer();
 	CreateDepthStencilView();
@@ -628,6 +508,16 @@ HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 	return handle;
 }
 
+#define ID_NEW_SCENE 1001
+#define ID_LOAD_SCENE 1002
+#define ID_SAVE_SCENE 1003
+
+#define ID_NEW_EMPTY_GAMEOBJECT 2001
+#define ID_CREATE_CUBE 2002
+
+#define ID_HELP_MEME 3001
+#define ID_WORK_AMBITIONS 3002
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -647,6 +537,7 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		HMENU hEdit = CreateMenu();
 		HMENU hAssets = CreateMenu();
 		HMENU hGameObject = CreateMenu();
+		HMENU h3DObjects = CreatePopupMenu();
 		HMENU hComponent = CreateMenu();
 		HMENU hWindow = CreateMenu();
 		HMENU hHelp = CreateMenu();
@@ -655,22 +546,64 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hFile, L"&File");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Edit");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Assets");
-		AppendMenu(hMenubar, MF_POPUP, NULL, L"&GameObject");
+		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hGameObject, L"&GameObject");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Component");
 		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Window");
-		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Help");
+		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hHelp, L"&Help");
 
-		AppendMenu(hFile, MF_STRING, NULL, L"New Scene");
-		AppendMenu(hFile, MF_STRING, NULL, L"Open Scene");
+		AppendMenu(hFile, MF_STRING, ID_NEW_SCENE, L"New Scene");
+		AppendMenu(hFile, MF_STRING, ID_LOAD_SCENE, L"Open Scene");
 		AppendMenu(hFile, MF_SEPARATOR, NULL, L"Separator");
-		AppendMenu(hFile, MF_STRING, NULL, L"Save Scene");
+		AppendMenu(hFile, MF_STRING, ID_SAVE_SCENE, L"Save Scene");
 		AppendMenu(hFile, MF_STRING, NULL, L"Save Scene as...");
 
+		AppendMenu(hGameObject, MF_STRING, ID_NEW_EMPTY_GAMEOBJECT, L"Create Empty");
+		AppendMenu(hGameObject, MF_STRING | MF_POPUP, (UINT_PTR)h3DObjects, L"3D Objects");
+		AppendMenu(h3DObjects, MF_STRING, ID_CREATE_CUBE, L"Cube");
+		//AppendMenu(hGameObject, MF_SEPARATOR, NULL, L"Separator");
+
+
+		AppendMenu(hHelp, MF_STRING, ID_HELP_MEME, L"Help, I need some MEMES");
+		AppendMenu(hHelp, MF_STRING, ID_WORK_AMBITIONS, L"I need some work help");
 
 
 		SetMenu(hWnd, hMenubar);
 	}
 	break;
+
+	case WM_COMMAND:
+	{
+		switch (wParam)
+		{
+		case ID_NEW_SCENE:
+			Debug.Log("New Scene");
+			break;
+
+		case ID_LOAD_SCENE:
+			gScene.LoadScene();
+			break;
+
+		case ID_SAVE_SCENE:
+			gScene.SaveScene();
+			break;
+
+		case ID_NEW_EMPTY_GAMEOBJECT:
+			gScene.CreateGameObject(Primitives::Empty);
+			break;
+
+		case ID_CREATE_CUBE:
+			gScene.CreateGameObject(AssetManager.getMesh("Cube"));
+			break;
+
+		case ID_HELP_MEME:
+			ShellExecute(0, 0, L"https://www.instagram.com/salad.snake/?hl=en", 0, 0, SW_SHOW);
+			break;
+
+		case ID_WORK_AMBITIONS:
+			ShellExecute(0, 0, L"https://www.youtube.com/watch?v=-6_alv0z3mw", 0, 0, SW_SHOW);
+			break;
+		}
+	}break;
 
 	case WM_INPUT:
 	case WM_MOUSEMOVE:
@@ -813,18 +746,18 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 		pBackBuffer = nullptr;
 
 		// set the render target as the back buffer
-		//gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
+		gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
 	}
 
 	//gSwapChain->SetFullscreenState(TRUE, NULL);
 
 	SetViewport();
 
-	if (!CreateDepthStencilState(m_depthStencilStateEnabled, true, true))
+	/*if (!CreateDepthStencilState(m_depthStencilStateEnabled, true, true))
 		Console.error("ERROR on DEPTH-ENABLED");
 
 	if (!CreateDepthStencilState(m_depthStencilStateDisabled, false, false))
-		Console.error("ERROR on DEPTH-DISABLED");
+		Console.error("ERROR on DEPTH-DISABLED");*/
 
 	Console.print("Is it still resizing?   ", hasResized);
 
@@ -868,7 +801,7 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 
 
 
-	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
+	//gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, m_depthStencilView);
 
 
 
@@ -931,11 +864,17 @@ bool CoreEngine::CreateDepthStencilBuffer()
 
 	if (GetWindowRect(wnd, &rect))
 	{
-		width = rect.right - rect.left;
+		width = Input.GetEngineWindowResolution().x;
+		height = Input.GetEngineWindowResolution().y;
+		/*width = rect.right - rect.left;
 		height = rect.bottom - rect.top;
 
-		width -= 16;
-		height -= 39;
+		width /= 2;
+		height /= 2;
+		width -= 8;
+		height -= 20;*/
+		/*width -= 16;
+		height -= 39;*/
 	}
 
 	// Set up the description of the depth buffer.

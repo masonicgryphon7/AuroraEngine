@@ -1,14 +1,16 @@
 #include "Mesh.h"
 
 Mesh::Mesh()
-{}
+{
+}
 
 Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext)
 {
 	vertexCount = 0;
 	gDeviceContext = devContext;
 	CreateTerrainMeshData(vertCountData, TerrainInfoVector, device, devContext);
-
+	this->meshName = "Terrain";
+	this->meshPath = "Terrain";
 }
 
 Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext)
@@ -16,10 +18,30 @@ Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * de
 	vertexCount = 0;
 	gDeviceContext = devContext;
 	CreateMeshData(filePath, device, devContext);
+
+	this->meshPath = filePath;
+
+	std::reverse(filePath.begin(), filePath.end());
+	this->meshName = filePath.substr(0, filePath.find("/", 0));
+	std::reverse(this->meshName.begin(), this->meshName.end());
+	this->meshName = meshName.substr(0, meshName.find(".", 0));
+}
+
+Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary)
+{
+	gDeviceContext = devContext;
+	createMeshFromBinary(filePath, device);
+	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
 }
 
 Mesh::~Mesh()
-{}
+{
+	if (vertexBuffer != nullptr)
+	{
+		vertexBuffer->Release();
+		vertexBuffer = nullptr;
+	}
+}
 
 
 void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11DeviceContext * devContext)
@@ -36,72 +58,6 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 	while (!objFile.eof())
 	{
 		objFile >> readString;
-		/*if (readString == "mtllib")
-		{
-		objFile >> readString;
-		std::ifstream mtlFile(readString);
-		while (!mtlFile.eof())
-		{
-		mtlFile >> readString;
-		if (readString == "map_Kd")
-		{
-		this->isTextured = true;
-		mtlFile >> readString;
-		wchar_t* TextureFileName = new wchar_t[readString.size() + 1];
-		HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
-		if (FAILED(hr))
-		{
-		MessageBox(0, L"HEllo coinit failed", 0, 0);
-		}
-		for (int i = 0; i < readString.size() + 1; i++)
-		{
-		TextureFileName[i] = readString[i];
-		}
-
-		hr = DirectX::CreateWICTextureFromFile(dev, devCon,
-		TextureFileName, nullptr, &textureResourceView);
-		shaderResourceViews[0] = textureResourceView;
-		delete[] TextureFileName;
-		}
-		if (readString == "bump")
-		{
-
-		mtlFile >> readString;
-
-		wchar_t* TextureFileName = new wchar_t[readString.size() + 1];
-
-		for (int i = 0; i < readString.size() + 1; i++)
-		{
-		TextureFileName[i] = readString[i];
-		}
-
-		HRESULT hr = DirectX::CreateWICTextureFromFile(dev, devCon,
-		TextureFileName, nullptr, &textureResourceView);
-		shaderResourceViews[1] = textureResourceView;
-		this->hasNormal = true;
-		delete[] TextureFileName;
-		}
-		if (readString == "Ka")
-		{
-		mtlFile >> KA.x;
-		mtlFile >> KA.y;
-		mtlFile >> KA.z;
-		}
-		if (readString == "Ks")
-		{
-		mtlFile >> KS.x;
-		mtlFile >> KS.y;
-		mtlFile >> KS.z;
-		}
-		if (readString == "Kd")
-		{
-		mtlFile >> KD.x;
-		mtlFile >> KD.y;
-		mtlFile >> KD.z;
-		}
-		}
-		mtlFile.close();
-		}*/
 		if (readString == "v")
 		{
 			DirectX::XMFLOAT3 tempvec;
@@ -213,6 +169,13 @@ void Mesh::CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11Dev
 
 	//Create vertex buffer
 
+	//VERTEX_POS3UV2T3B3N3 *vertex;
+
+	//std::vector<VERTEX_POS3UV2T3B3N3*> vertex;
+
+	//vertex[i].position.pushback.positionfromfile;
+
+
 	D3D11_BUFFER_DESC vertexBufferDesc;
 
 	memset(&vertexBufferDesc, 0, sizeof(vertexBufferDesc));
@@ -239,6 +202,16 @@ void Mesh::bindMesh()
 	// specify which vertex buffer to use next.
 	gDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
 
+}
+
+const std::string Mesh::getMeshName() const
+{
+	return this->meshName;
+}
+
+const std::string Mesh::getMeshPath() const
+{
+	return this->meshPath;
 }
 
 
@@ -312,4 +285,59 @@ DirectX::XMFLOAT2 Mesh::subtract(DirectX::XMFLOAT2 A, DirectX::XMFLOAT2 B)
 
 
 	return tempVec;
+}
+
+void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
+{
+	//std::vector<DirectX::XMFLOAT3> positions;
+	//std::vector<DirectX::XMFLOAT2> texCoords;
+	//std::vector<DirectX::XMFLOAT3> normals;
+
+	MyLibrary::MeshFromFile myMesh;
+	VERTEX_POS3UV2T3B3N3 vertex;
+	std::vector<VERTEX_POS3UV2T3B3N3> vertices;
+	myMesh = myLoader.readMeshFile(fileName);
+
+	for (int i = 0; i < myMesh.mesh_nrOfVertices; i++)
+	{
+		vertex.position.x = myMesh.mesh_vertices[i].vertex_position[0];
+		vertex.position.y = myMesh.mesh_vertices[i].vertex_position[1];
+		vertex.position.z = myMesh.mesh_vertices[i].vertex_position[2];
+		vertexPositions.push_back(DirectX::XMVectorSet(vertex.position.x, vertex.position.y, vertex.position.z, 0));
+
+		vertex.normal.x = myMesh.mesh_vertices[i].vertex_normal[0];
+		vertex.normal.y = myMesh.mesh_vertices[i].vertex_normal[1];
+		vertex.normal.z = myMesh.mesh_vertices[i].vertex_normal[2];
+
+		vertex.uv.x = myMesh.mesh_vertices[i].vertex_UVCoord[0];
+		vertex.uv.y = myMesh.mesh_vertices[i].vertex_UVCoord[1];
+
+		vertex.tangent.x = myMesh.mesh_vertices[i].vertex_tangent[0];
+		vertex.tangent.y = myMesh.mesh_vertices[i].vertex_tangent[1];
+		vertex.tangent.z = myMesh.mesh_vertices[i].vertex_tangent[2];
+
+		vertex.bitangent.x = myMesh.mesh_vertices[i].vertex_biTangent[0];
+		vertex.bitangent.y = myMesh.mesh_vertices[i].vertex_biTangent[1];
+		vertex.bitangent.z = myMesh.mesh_vertices[i].vertex_biTangent[2];
+
+		vertices.push_back(vertex);
+	}
+
+	D3D11_BUFFER_DESC vertexBufferDesc;
+
+	memset(&vertexBufferDesc, 0, sizeof(vertexBufferDesc));
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	vertexBufferDesc.ByteWidth = sizeof(vertices[0])  * vertices.size();
+	D3D11_SUBRESOURCE_DATA vertexdata;
+	ZeroMemory(&vertexdata, sizeof(D3D11_SUBRESOURCE_DATA));
+
+	vertexdata.pSysMem = vertices.data();
+	vertexdata.SysMemPitch = 0;
+	vertexdata.SysMemSlicePitch = 0;
+
+	device->CreateBuffer(&vertexBufferDesc, &vertexdata, &vertexBuffer);
+	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
+	vertexCount = vertices.size();
 }

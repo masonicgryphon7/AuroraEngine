@@ -3,9 +3,15 @@
 #include <DirectXMath.h>
 #include "Transform.h"
 
-enum class PRIMITIVE_GEOMETRY
+enum class Primitives
 {
-	OOBB, AABB, Cube, Sphere, Capsule
+	OOBB,
+	AABB,
+	Cube,
+	Sphere,
+	Capsule,
+	Cylinder,
+	Empty
 };
 
 struct OOBB {

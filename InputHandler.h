@@ -7,6 +7,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "KeyCode.h"
+#include "imgui.h"
 
 constexpr int keyCount = 512; // how many keys (considering we will have joystick and buttons like "Fire1" for mouse_click)
 
@@ -24,8 +25,11 @@ public:
 	bool GetKeyDown(KeyCode key);
 	bool GetKeyUp(KeyCode key);
 
-	POINT GetMouseCoordinates();
-	POINT GetAbsoluteMouseCoordinates();
+
+	Vector2 GetMousePosition();
+
+	// DON'T CALL
+	void InternalSetMouseViewport(unsigned int x, unsigned int y);
 
 	DirectX::Mouse::State GetMouseInput() { return mouseState; };
 	DirectX::Keyboard::State getKyboardInput() { return kb; };
@@ -33,9 +37,28 @@ public:
 
 	Vector2 GetDesktopResolution();
 	Vector2 GetEngineWindowResolution();
+	Vector2 GetViewportSize();
+
+	inline int GetWidth()
+	{
+		RECT rect;
+		GetClientRect(wnd, &rect);
+		return  (int)(rect.right - rect.left);
+	}
+
+	inline int GetHeight()
+	{
+		RECT rect;
+		GetClientRect(wnd, &rect);
+		return (int)(rect.bottom - rect.top);
+	}
+
 private:
 	DirectX::Keyboard* keyboard;
 	DirectX::Mouse* mouse;
+
+	Vector2 currentFramePos;
+	Vector2 viewportSize;
 
 	HWND wnd;
 
@@ -48,5 +71,7 @@ private:
 
 	bool detectKey(int key);
 
+	POINT GetMouseCoordinates();
+	POINT GetAbsoluteMouseCoordinates();
 } Input;
 

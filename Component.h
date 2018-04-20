@@ -12,6 +12,7 @@ public:
 	virtual ~Component();
     GameObject* gameObject;
 	int assetID;
+	std::string guid;
 	std::string assetName;
 	bool operator==(const Component &rhs);
 	virtual void update();

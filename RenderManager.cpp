@@ -1,6 +1,10 @@
 #include "RenderManager.h"
 #include "Console.h"
+#include "ImGuizmo.h"
+#include "InputHandler.h"
 
+void Frustum(float left, float right, float bottom, float top, float znear, float zfar, float *m16);
+void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar, float *m16);
 
 RenderManager::RenderManager()
 {}
@@ -20,6 +24,8 @@ RenderManager::~RenderManager()
 {
 	m_renderTargetTexture->Release();
 	m_shaderResourceView->Release();
+	matrixBuffer->Release();
+	m_renderTargetView->Release();
 }
 
 void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObject*> objectsToRender)
@@ -39,13 +45,16 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 		//Fill matrixbuffer
 		D3D11_MAPPED_SUBRESOURCE dataPtr;
 		gDeviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &dataPtr);
+		matrixBufferData.isTerrain = objectsToRender[i]->materialComponent->isTerrain();
 		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(objectsToRender[i]->calculateWorldMatrix()));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
 		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
-		memcpy(dataPtr.pData, &matrixBufferData, sizeof(MatrixBufferStruct));
+		memcpy(dataPtr.pData, &matrixBufferData, sizeof(MatrixBufferStruct) + 12);
 		gDeviceContext->Unmap(matrixBuffer, 0);
 		gDeviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
+		gDeviceContext->PSSetConstantBuffers(0, 1, &matrixBuffer);
+
 
 
 		// issue a draw call of 3 vertices (similar to OpenGL)
@@ -53,7 +62,46 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 		gDeviceContext->Draw(objectsToRender[i]->meshFilterComponent->getMesh()->getVertexCount(), 0);
 
 	}
+
+	/*ImGuizmo::BeginFrame();
+	ImGuizmo::SetDrawlist();*/
+	//ImGuizmo::DrawCube(cameraView, cameraProjection, objectMatrix);
 }
+
+void Frustum(float left, float right, float bottom, float top, float znear, float zfar, float *m16)
+{
+	float temp, temp2, temp3, temp4;
+	temp = 2.0f * znear;
+	temp2 = right - left;
+	temp3 = top - bottom;
+	temp4 = zfar - znear;
+	m16[0] = temp / temp2;
+	m16[1] = 0.0;
+	m16[2] = 0.0;
+	m16[3] = 0.0;
+	m16[4] = 0.0;
+	m16[5] = temp / temp3;
+	m16[6] = 0.0;
+	m16[7] = 0.0;
+	m16[8] = (right + left) / temp2;
+	m16[9] = (top + bottom) / temp3;
+	m16[10] = (-zfar - znear) / temp4;
+	m16[11] = -1.0f;
+	m16[12] = 0.0;
+	m16[13] = 0.0;
+	m16[14] = (-temp * zfar) / temp4;
+	m16[15] = 0.0;
+}
+
+void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar, float *m16)
+{
+	float ymax, xmax;
+	ymax = znear * tanf(fovyInDegrees * 3.141592f / 180.0f);
+	xmax = ymax * aspectRatio;
+	Frustum(-xmax, xmax, -ymax, ymax, znear, zfar, m16);
+}
+
+
 
 void RenderManager::UpdateStuff(ID3D11Device * gDevice, ID3D11DeviceContext * gDeviceContext, ID3D11RenderTargetView * gBackbufferRTV, IDXGISwapChain * swapChain, ID3D11DepthStencilView * depth)
 {
@@ -69,7 +117,7 @@ void RenderManager::CreateMatrixBuffer()
 	// initialize the description of the buffer.
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	bufferDesc.ByteWidth = sizeof(MatrixBufferStruct);
+	bufferDesc.ByteWidth = sizeof(MatrixBufferStruct) + 12;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferDesc.MiscFlags = 0;
@@ -112,8 +160,8 @@ void RenderManager::CreateRenderTarget(int width, int height)
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 
 	// TEXTURE
-	textureDesc.Width = width / 2;
-	textureDesc.Height = height / 2;
+	textureDesc.Width = width;
+	textureDesc.Height = height;
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -143,7 +191,7 @@ void RenderManager::CreateRenderTarget(int width, int height)
 
 	gDevice->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
 
-	Console.success("Passed");
+	//Console.success("Passed");
 }
 
 void RenderManager::SetRenderTarget(ID3D11DepthStencilView * depthStencilView)
@@ -153,7 +201,7 @@ void RenderManager::SetRenderTarget(ID3D11DepthStencilView * depthStencilView)
 
 void RenderManager::ClearRenderTarget(ID3D11DepthStencilView * depthStencilView)
 {
-	float clearColor[] = { 0.28f, 0.28f, 0.28f, 1.0f };
+	float clearColor[] = { 1.0f, 0.28f, 0.28f, 1.0f };
 
 	gDeviceContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	gDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -163,7 +211,6 @@ void RenderManager::ClearRenderTarget(ID3D11DepthStencilView * depthStencilView)
 
 void RenderManager::BeginFrame()
 {
-	// clear the back buffer to a deep blue
 	float clearColor[] = { 0.28f, 0.28f, 0.28f, 1.0f };
 
 	//// use DeviceContext to talk to the API
@@ -171,7 +218,7 @@ void RenderManager::BeginFrame()
 	//gDeviceContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	//gDeviceContext->ClearRenderTargetView(gBackbufferRTV, clearColor);
 	//gDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	////gDeviceContext->PSSetShaderResources(0, 1, &m_shaderResourceView);
+	gDeviceContext->PSSetShaderResources(0, 1, nullptr);
 
 	//gDeviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 

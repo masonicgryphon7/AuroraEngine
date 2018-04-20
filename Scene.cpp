@@ -1,4 +1,6 @@
 #include "Scene.h"
+
+std::vector<GameObject*> Scene::frustumCulledResult;
 std::vector<GameObject*> Scene::sceneObjects;
 GameObject* Scene::selectedGameObject;
 
@@ -11,7 +13,6 @@ Scene::~Scene()
 {
 	for (int i = 0; i < sceneObjects.size(); i++)
 	{
-
 		delete sceneObjects[i];
 	}
 }
@@ -26,6 +27,41 @@ GameObject * Scene::createEmptyGameObject()
 GameObject * Scene::createEmptyGameObject(DirectX::XMVECTOR position)
 {
 	GameObject* temp = new GameObject(position);
+	sceneObjects.push_back(temp);
+	return temp;
+}
+
+#include "Debug.h"
+#include "AssetManager.h"
+
+GameObject* Scene::CreateGameObject(Primitives primitive, Vector3 position, Vector3 rotation)
+{
+	GameObject* temp = nullptr;
+	switch (primitive)
+	{
+	case Primitives::Empty:
+		temp = new GameObject(position.asXMVECTOR());
+		temp->transform.setRotation(rotation.asXMVECTOR());
+		break;
+
+	case Primitives::Cube:
+		Debug.Log("Name; ", AssetManager.getMesh("Cube"));
+		break;
+	}
+
+	sceneObjects.push_back(temp);
+	selectedGameObject = temp;
+	//Debug.Log("\tPosition: ", position.toString(), "\tRotation: ", rotation.toString());
+	return temp;
+}
+
+GameObject* Scene::CreateGameObject(Mesh * mesh, Vector3 position, Vector3 rotation)
+{
+	GameObject* temp = new GameObject(position.asXMVECTOR());
+	temp->name = mesh->getMeshName();
+	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(0));
+	temp->addComponent(AssetManager.getMaterial(0));
+	temp->addComponent(meshFilter);
 	sceneObjects.push_back(temp);
 	return temp;
 }
@@ -71,8 +107,16 @@ void Scene::SaveScene()
 	{
 		json j;
 		GameObject* temp = getSceneObjects().at(i);
-		JsonSceneWriter write = JsonSceneWriter(temp->name, Vector3(temp->transform.getPosition()), Vector3(temp->transform.getRotation()));
+		std::string meshPath = "NULL";
+		if (temp->meshFilterComponent != nullptr)
+			meshPath = temp->meshFilterComponent->getMesh()->getMeshPath();
+
+		JsonSceneWriter write = JsonSceneWriter(temp->name, meshPath, Vector3(temp->transform.getPosition()), Vector3(temp->transform.getRotation()));
 		j["name"] = write.name;
+
+		if (meshPath != "NULL")
+			j["meshPath"] = write.filePath;
+
 		j["position"] = write.position.toString();
 		j["rotation"] = write.rotation.toString();
 
@@ -97,73 +141,253 @@ void Scene::SaveScene()
 		jason.push_back(j);
 	}
 
-	json end = {
+	json end =
+	{
 		{
 			"Scene-Name",
 			{
 				jason
 			}
 		}
-
 	};
 
+	std::string encryptedSave = Encrypt(end.dump(4), "dSXOv9vbM1MIm5kAf4yjjw");
+	//Debug.Log("Encrypted: ", encryptedSave);
+	//Debug.Log("Decrypted: ", Decrypt(encryptedSave, "dSXOv9vbM1MIm5kAf4yjjw"));
+
 	std::ofstream o("scene.aur");
-	o << std::setw(4) << end << std::endl;
+	std::ofstream os("scene_u.aur");
+	o << std::setw(4) << encryptedSave << std::endl;
+	os << std::setw(4) << end << std::endl;
 }
 
 void Scene::LoadScene()
 {
-	//ProgressReport::Get().Reset(g_progress_Scene);
-	//ProgressReport::Get().SetStatus(g_progress_Scene, "Saving scene...");
-	//Stopwatch timer;
+	std::ifstream i("scene.aur");
 
-	//// Add scene file extension to the filepath if it's missing
-	//string filePath = filePathIn;
-	//if (FileSystem::GetExtensionFromFilePath(filePath) != SCENE_EXTENSION)
-	//{
-	//	filePath += SCENE_EXTENSION;
-	//}
+	std::string takeIn((std::istreambuf_iterator<char>(i)),
+		std::istreambuf_iterator<char>()), decrypted;
 
-	//// Save any in-memory changes done to resources while running.
-	//m_context->GetSubsystem<ResourceManager>()->SaveResourcesToFiles();
+	decrypted = Decrypt(takeIn, "dSXOv9vbM1MIm5kAf4yjjw");
 
-	//// Create a prefab file
-	//auto file = make_unique<FileStream>(filePath, FileStreamMode_Write);
-	//if (!file->IsOpen())
-	//	return false;
+	std::istringstream f(decrypted);
+	std::string line;
 
-	//// Save currently loaded resource paths
-	//vector<string> filePaths;
-	//m_context->GetSubsystem<ResourceManager>()->GetResourceFilePaths(filePaths);
-	//file->Write(filePaths);
+	GameObject* tempGameObject = nullptr;
 
-	////= Save GameObjects ============================
-	//// Only save root GameObjects as they will also save their descendants
-	//vector<weak_ptr<GameObject>> rootGameObjects = GetRootGameObjects();
+	// -- STUFF TO LOAD IN -- //
 
-	//// 1st - GameObject count
-	//int rootGameObjectCount = (int)rootGameObjects.size();
-	//file->Write(rootGameObjectCount);
+	std::string meshPath = "", objectName = "";
+	Vector3 position = Vector3(0, 0, 0), rotation = Vector3(0, 0, 0);
 
-	//// 2nd - GameObject IDs
-	//for (const auto& root : rootGameObjects)
-	//{
-	//	file->Write(root.lock()->GetID());
-	//}
+	while (std::getline(f, line))
+	{
+		meshPath = SetMeshPath(meshPath, line);
+		objectName = SetObjectName(objectName, line);
+		position = SetPosition(position, line);
+		rotation = SetRotation(rotation, line);
 
-	//// 3rd - GameObjects
-	//for (const auto& root : rootGameObjects)
-	//{
-	//	root.lock()->Serialize(file.get());
-	//}
-	////==============================================
+		if (objectName == "Editor Camera")
+		{
+			meshPath = "";
+			objectName = "";
+			position = Vector3(0, 0, 0);
+			rotation = Vector3(0, 0, 0);
+			continue;
+		}
 
-	//LOG_INFO("Scene: Saving took " + to_string((int)timer.GetElapsedTimeMs()) + " ms");
-	//FIRE_EVENT(EVENT_SCENE_SAVED);
+		if (line.find("}") != std::string::npos)
+		{
+			tempGameObject = new GameObject(position.asXMVECTOR());
+			tempGameObject->transform.setRotation(rotation.asXMVECTOR());
+			tempGameObject->name = objectName;
 
-	//ProgressReport::Get().SetIsLoading(g_progress_Scene, false);
+			if (meshPath != "") 
+			{
+				Mesh* t_mesh = nullptr;
+				MeshFilter* t_meshFilter = nullptr;
+				Material* t_material = nullptr;
 
-	//return true;
+				// add a way to actually know if this texture is for THIS material etc. etc. 
+
+				AssetManager.AddTexture("Assets/STSP_ShadowTeam_BaseColor.png");
+				AssetManager.AddTexture("Assets/STSP_ShadowTeam_Normal.png");
+				AssetManager.AddTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+
+				t_material = AssetManager.AddMaterial(AssetManager.getShaderProgram(0));
+
+				t_material->setAlbedo(AssetManager.getTexture(0)->getTexture());
+				t_material->setNormal(AssetManager.getTexture(1)->getTexture());
+				t_material->setAORoughMet(AssetManager.getTexture(2)->getTexture());
+
+				t_mesh = AssetManager.AddMesh(meshPath);
+				t_meshFilter = new MeshFilter(t_mesh);
+
+				tempGameObject->addComponent(t_material);
+				tempGameObject->addComponent(t_meshFilter);
+			}
+
+			tempGameObject->transform.setPosition(position.asXMVECTOR());
+			tempGameObject->transform.setRotation(rotation.asXMVECTOR());
+
+			sceneObjects.push_back(tempGameObject);
+
+			meshPath = "";
+			objectName = "";
+			position = Vector3(0, 0, 0);
+			rotation = Vector3(0, 0, 0);
+			//Debug.Log("RESET");
+		}
+	}
+}
+
+bool Scene::ContainsGUID(std::string guid)
+{
+	bool hasGUID = false;
+	for (std::string& g : containedGUID)
+	{
+		if (g == guid)
+		{
+			hasGUID = true; 
+			break;
+		}
+	}
+
+	if (!hasGUID)
+		containedGUID.push_back(guid);
+
+	return hasGUID;
+}
+
+std::string Scene::SetMeshPath(std::string str, const std::string & line)
+{
+	if (line.find("meshPath") == std::string::npos) return str;
+
+	return Truncate(line);
+}
+
+std::string Scene::SetObjectName(std::string str, const std::string & line)
+{
+	if (line.find("name") == std::string::npos) return str;
+
+	return Truncate(line);
+}
+
+Vector3 Scene::SetPosition(Vector3 vec, const std::string & line)
+{
+	if (line.find("position") == std::string::npos) return vec;
+
+	std::string trunc = Truncate(line);
+
+	std::string x = TruncateVector(trunc, 0), y = TruncateVector(trunc, 1), z = TruncateVector(trunc, 2);
+
+	return vec;
+}
+
+Vector3 Scene::SetRotation(Vector3 vec, const std::string & line)
+{
+	if (line.find("rotation") == std::string::npos) return vec;
+
+	std::string trunc = Truncate(line);
+
+	std::string x = TruncateVector(trunc, 0), y = TruncateVector(trunc, 1), z = TruncateVector(trunc, 2);
+
+	return vec;
+}
+
+std::string Scene::Truncate(std::string line)
+{
+	std::string temp;
+	std::reverse(line.begin(), line.end());
+	temp = line.substr(0, line.find(":", 0) - 2);
+	std::reverse(temp.begin(), temp.end());
+	temp = temp.substr(0, temp.length() - 2);
+	return temp;
+}
+
+std::string Scene::TruncateVector(std::string line, unsigned int type)
+{
+	std::string justVecs;
+
+	std::reverse(line.begin(), line.end());
+
+	justVecs = line.substr(0, line.find("(", 0));
+
+	std::reverse(justVecs.begin(), justVecs.end());
+
+	justVecs = justVecs.substr(0, justVecs.length() - 1);
+
+	if (type == 0) // X
+	{
+		justVecs = justVecs.substr(0, justVecs.find(",", 0));
+	}
+	else if (type == 1) // Y
+	{
+		justVecs = justVecs.substr(justVecs.find_first_of(" \t") + 1);
+		justVecs = justVecs.substr(0, justVecs.find(",", 0));
+	}
+	else if (type == 2) // Z
+	{
+		std::reverse(justVecs.begin(), justVecs.end());
+		justVecs = justVecs.substr(0, justVecs.find(",", 0));
+		std::reverse(justVecs.begin(), justVecs.end());
+	}
+
+	return justVecs;
+}
+
+std::string Scene::Encrypt(std::string msg, std::string const & key)
+{
+	if (!key.size())
+		return msg;
+
+	for (std::string::size_type i = 0; i < msg.size(); ++i)
+		msg[i] ^= key[i%key.size()];
+	return msg;
+}
+
+std::string Scene::Decrypt(std::string const & msg, std::string const & key)
+{
+	return Encrypt(msg, key);
+}
+
+std::string m_StrCompressed;
+
+std::string Scene::Compress(std::string str)
+{
+	std::string returnValue;
+	int count = 1;
+	bool canBeCompressed = false;
+
+	int i = 1;
+	while (i <= str.size())
+	{
+		if (str[i - 1] == str[i])
+		{
+			count++;
+			if (count > 1)
+				canBeCompressed = true;
+		}
+		else
+		{
+			returnValue += str[i - 1];
+			returnValue += IntToString(count);
+			count = 1;
+		}
+		i++;
+	}
+
+	if (canBeCompressed)
+		return returnValue;
+	else
+		return str;
+}
+
+std::string Scene::IntToString(int i)
+{
+	std::stringstream ss;
+	ss << i;
+	return ss.str();
 }
 
 std::vector<GameObject*> Scene::frustumCull(GameObject * camera)

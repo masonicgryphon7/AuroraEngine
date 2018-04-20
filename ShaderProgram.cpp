@@ -1,5 +1,7 @@
 #include "ShaderProgram.h"
 
+#define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
+
 ShaderProgram::ShaderProgram()
 {}
 
@@ -9,7 +11,15 @@ ShaderProgram::ShaderProgram(ID3D11DeviceContext * gDeviceContext, ID3D11Device 
 }
 
 ShaderProgram::~ShaderProgram()
-{}
+{
+	SAFE_RELEASE(gVertexLayout);
+	SAFE_RELEASE(gVertexShader);
+	SAFE_RELEASE(gHullShader);
+	SAFE_RELEASE(gDomainShader);
+	SAFE_RELEASE(gGeometryShader);
+	SAFE_RELEASE(gPixelShader);
+	SAFE_RELEASE(gComputeShader);
+}
 
 std::wstring ShaderProgram::s2ws(const std::string& s)
 {

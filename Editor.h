@@ -24,12 +24,20 @@ public:
 
 	void SetGUIStyle();
 
+	GameObject* editorCamera;
+
 protected:
 	HWND* wnd;
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;
 	CoreEngine* coreEngine;
 
+	Camera* mc;
+	EditorMoveScript* ems;
+	EditorSceneSelectionScript* essc;
+
 	std::vector<std::unique_ptr<GUI>> m_gui;
+
+	bool isPlaying = false, onceChangeState = false;
 };
 

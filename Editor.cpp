@@ -1,8 +1,14 @@
 #include "Editor.h"
 #include "imgui_impl_dx11.h"
+#include "imgui_dock.h"
 #include "GUI.h"
 #include "GUI_MenuBar.h"
 #include "GUI_Viewport.h"
+#include "GUI_Console.h"
+#include "GUI_Hierarchy.h"
+#include "GUI_Inspector.h"
+
+#include "Debug.h"
 
 using namespace std;
 
@@ -10,8 +16,8 @@ using namespace std;
 
 Editor::Editor()
 {
-	m_gui.emplace_back(make_unique<GUI_MenuBar>());
-	m_gui.emplace_back(make_unique<GUI_Viewport>());
+	/*m_gui.emplace_back(make_unique<GUI_MenuBar>());
+	m_gui.emplace_back(make_unique<GUI_Viewport>());*/
 }
 
 Editor::~Editor()
@@ -26,17 +32,146 @@ void Editor::Start(HWND* w, ID3D11Device* d, ID3D11DeviceContext* dc, CoreEngine
 	this->deviceContext = dc;
 	this->coreEngine = ce;
 
-	ImGui_ImplDX11_Init(w, d, dc);
+	// Setup style
+	ImGui::StyleColorsDark();
 	SetGUIStyle();
+	ImGui::ResetToStandard();
+	ImGui::InitDock();
+
+	//ImGui::CreateContext();
+	//ImGuiIO& io = ImGui::GetIO(); (void)io;
+	////io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+	//ImGui_ImplDX11_Init(w, d, dc);
+	//io.MouseDrawCursor = true;
+	//io.SetCustomMouseTexture = false;
+
+	////ImGui_ImplWin32_UpdateMouseCursor();
+
+	//// Setup style
+	//ImGui::StyleColorsDark();
+	//SetGUIStyle();
+
+	//ImGui::ResetToStandard();
+	//ImGui::InitDock();
+
+	editorCamera = ce->camera;
+
+	essc = new EditorSceneSelectionScript(mc);
+	editorCamera->addComponent(essc);
+
+	ems = new EditorMoveScript();//(&engineTime, &inputHandler);
+	editorCamera->addComponent(ems);
+
+	m_gui.emplace_back(make_unique<GUI_Inspector>());
+	m_gui.emplace_back(make_unique<GUI_Viewport>());
+	m_gui.emplace_back(make_unique<GUI_Console>());
+	m_gui.emplace_back(make_unique<GUI_Hierarchy>());
 
 	for (auto& gui : m_gui)
 		gui->Start(ce);
-
 }
+
+bool m = true;
 
 void Editor::Update()
 {
+	ImGui_ImplDX11_NewFrame();
 
+	Vector2 engSize = Input.GetEngineWindowResolution();
+	ImGui::SetNextWindowPos(ImVec2(.0f, .0f), ImGuiSetCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(engSize.x, engSize.y), ImGuiSetCond_Always);
+	ImGui::Begin("Aurora Engine", &m, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize  | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar);
+
+	if (Input.GetKeyDown(KeyCode::P))
+	{
+		isPlaying = !isPlaying;
+	}
+
+	if (!isPlaying) 
+	{
+		if (onceChangeState)
+		{
+			onceChangeState = false;
+			ImGui::ResetToStandard();
+			ImGui::InitDock();
+			ImGui::ResetToStandard();
+		}
+
+		ImGui::BeginDockspace();
+
+		if (Input.GetKeyDown(KeyCode::G))
+			ImGui::ForceSave();
+
+		//if (ImGui::BeginDock("Project"))
+		//{
+		//	//ImGui::ShowTestWindow();
+
+		//	ImGui::Text("All Project Files Shit Here");
+		//	//ImGui::ShowDemoWindow();
+		//}
+		//ImGui::EndDock();
+
+		for (auto& gui : m_gui)
+		{
+			if (gui->GetIsWindow())
+				gui->Begin();
+
+			gui->Update();
+
+			if (gui->GetIsWindow())
+				gui->End();
+		}
+		ImGui::EndDockspace();
+	}
+	else
+	{
+		if (onceChangeState)
+		{
+			onceChangeState = false;
+			ImGui::ResetToStandard();
+			ImGui::ShutdownDock();
+			ImGui::ResetToStandard();
+		}
+		Vector2 screen = Input.GetEngineWindowResolution();
+
+		coreEngine->renderManager->SetRenderTarget(coreEngine->m_depthStencilView);
+		coreEngine->renderManager->ClearRenderTarget(coreEngine->m_depthStencilView);
+		coreEngine->camera->getComponent<Camera>()->height = screen.x;
+		coreEngine->camera->getComponent<Camera>()->width = screen.y;
+		coreEngine->camera->getComponent<Camera>()->aspectRatio = (float)screen.x / (float)screen.y;
+
+		coreEngine->SetViewport(screen.x, screen.y);//(WIDTH / 2, HEIGHT / 2);
+
+		Input.InternalSetMouseViewport(ImGui::GetCurrentWindow()->Size.x, ImGui::GetCurrentWindow()->Size.y);
+
+		coreEngine->renderManager->ForwardRender(coreEngine->camera, coreEngine->objectsToRender);
+		coreEngine->gDeviceContext->OMSetRenderTargets(1, &coreEngine->gBackbufferRTV, coreEngine->m_depthStencilView);
+		coreEngine->SetViewport();
+
+		ImDrawList* mDrawList = ImGui::GetWindowDrawList();
+		ImVec2 size = ImVec2(screen.x, screen.y);
+
+		const ImVec2 p = ImGui::GetCursorScreenPos();
+		ImGui::Dummy(size); // create space for it
+		ImVec2 a(p.x, p.y); // topLeft
+		ImVec2 c(p.x + size.x, p.y + size.y); // bottom right
+		ImVec2 b(c.x, a.y); // topRight
+		ImVec2 d(a.x, c.y); // bottomLeft // CW order
+		ImVec2 uv_a(0, 0), uv_b(0, 1), uv_c(1, 1), uv_d(1, 0);
+
+		Debug.Log(Input.GetViewportSize().toString());
+
+
+		mDrawList->PushTextureID(coreEngine->renderManager->m_shaderResourceView);
+		mDrawList->PrimReserve(6, 4);
+		mDrawList->PrimQuadUV(d, a, b, c, uv_b, uv_a, uv_d, uv_c, 0xFFFFFFFF);
+		mDrawList->PopTextureID();
+	}
+	ImGui::End();
+
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	ImGui::EndFrame();
 }
 
 void Editor::Draw()
@@ -45,6 +180,15 @@ void Editor::Draw()
 
 void Editor::Exit()
 {
+	m_gui.clear();
+	m_gui.shrink_to_fit();
+	//gScene.SaveScene();
+	ImGui_ImplDX11_Shutdown();
+	ImGui::ShutdownDock();
+	ImGui::DestroyContext();
+
+	delete essc;
+	delete ems;
 }
 
 void Editor::OnResize()

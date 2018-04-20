@@ -24,11 +24,11 @@ public:
 	int assetID;
     bool isActive;
     bool hasLight;
-	std::string name;
+	std::string name, meshPath;
 	Transform transform;
 	std::vector<Component*> components;
-    Material *materialComponent;
-    MeshFilter *meshFilterComponent;
+    Material *materialComponent = nullptr;
+    MeshFilter *meshFilterComponent = nullptr;
 	//Light *lightComponent;
 	bool detailedRaycast;
 	

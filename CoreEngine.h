@@ -21,6 +21,8 @@
 #include "TerrainGenerator.h"
 #include "EditorSceneSelectionScript.h"
 #include "ClickToMove.h"
+#include "PlayerScript.h"
+#include "PathCreator.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"
 //#include "MeshLib.h"
@@ -106,11 +108,6 @@ private:
 
 	void CreateTriangleData();
 
-	void SetGuiStyle();
-
-	int importMTLFile(std::string filepath, unsigned int shaderProgram);
-
-
 public:
 	ID3D11DeviceContext * gDeviceContext = nullptr;
 	ID3D11RenderTargetView* gBackbufferRTV = nullptr;
@@ -120,7 +117,7 @@ public:
 	std::vector<GameObject*>objectsToRender;
 
 	GameObject* camera;
-	AssetManager assetManager;
+	cAssetManager assetManager;
 	RenderManager *renderManager;
 
 	void SetViewport(int x = WIDTH, int y = HEIGHT);

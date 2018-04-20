@@ -17,619 +17,619 @@
 
 /*
 
- Index
- - MISSION STATEMENT
- - END-USER GUIDE
- - PROGRAMMER GUIDE (read me!)
-   - Read first
-   - How to update to a newer version of Dear ImGui
-   - Getting started with integrating Dear ImGui in your code/engine
-   - Using gamepad/keyboard navigation controls [BETA]
- - API BREAKING CHANGES (read me when you update!)
- - ISSUES & TODO LIST
- - FREQUENTLY ASKED QUESTIONS (FAQ), TIPS
-   - How can I tell whether to dispatch mouse/keyboard to imgui or to my application?
-   - How can I display an image? What is ImTextureID, how does it works?
-   - How can I have multiple widgets with the same label? Can I have widget without a label? (Yes). A primer on labels and the ID stack.
-   - How can I load a different font than the default?
-   - How can I easily use icons in my application?
-   - How can I load multiple fonts?
-   - How can I display and input non-latin characters such as Chinese, Japanese, Korean, Cyrillic?
-   - How can I use the drawing facilities without an ImGui window? (using ImDrawList API)
-   - I integrated Dear ImGui in my engine and the text or lines are blurry..
-   - I integrated Dear ImGui in my engine and some elements are clipping or disappearing when I move windows around..
-   - How can I help?
- - ISSUES & TODO-LIST
- - CODE
-
-
- MISSION STATEMENT
- =================
-
- - Easy to use to create code-driven and data-driven tools
- - Easy to use to create ad hoc short-lived tools and long-lived, more elaborate tools
- - Easy to hack and improve
- - Minimize screen real-estate usage
- - Minimize setup and maintenance
- - Minimize state storage on user side
- - Portable, minimize dependencies, run on target (consoles, phones, etc.)
- - Efficient runtime and memory consumption (NB- we do allocate when "growing" content e.g. creating a window, opening a tree node
-   for the first time, etc. but a typical frame won't allocate anything)
-
- Designed for developers and content-creators, not the typical end-user! Some of the weaknesses includes:
- - Doesn't look fancy, doesn't animate
- - Limited layout features, intricate layouts are typically crafted in code
-
-
- END-USER GUIDE
- ==============
-
- - Double-click on title bar to collapse window.
- - Click upper right corner to close a window, available when 'bool* p_open' is passed to ImGui::Begin().
- - Click and drag on lower right corner to resize window (double-click to auto fit window to its contents).
- - Click and drag on any empty space to move window.
- - TAB/SHIFT+TAB to cycle through keyboard editable fields.
- - CTRL+Click on a slider or drag box to input value as text.
- - Use mouse wheel to scroll.
- - Text editor:
-   - Hold SHIFT or use mouse to select text.
-   - CTRL+Left/Right to word jump.
-   - CTRL+Shift+Left/Right to select words.
-   - CTRL+A our Double-Click to select all.
-   - CTRL+X,CTRL+C,CTRL+V to use OS clipboard/
-   - CTRL+Z,CTRL+Y to undo/redo.
-   - ESCAPE to revert text to its original value.
-   - You can apply arithmetic operators +,*,/ on numerical values. Use +- to subtract (because - would set a negative value!)
-   - Controls are automatically adjusted for OSX to match standard OSX text editing operations.
- - General Keyboard controls: enable with ImGuiConfigFlags_NavEnableKeyboard.
- - General Gamepad controls: enable with ImGuiConfigFlags_NavEnableGamepad. See suggested mappings in imgui.h ImGuiNavInput_ + download PNG/PSD at goo.gl/9LgVZW.
-
-
- PROGRAMMER GUIDE
- ================
-
- READ FIRST
-
- - Read the FAQ below this section!
- - Your code creates the UI, if your code doesn't run the UI is gone! == very dynamic UI, no construction/destructions steps, less data retention
-   on your side, no state duplication, less sync, less bugs.
- - Call and read ImGui::ShowDemoWindow() for demo code demonstrating most features.
- - You can learn about immediate-mode gui principles at http://www.johno.se/book/imgui.html or watch http://mollyrocket.com/861
-
- HOW TO UPDATE TO A NEWER VERSION OF DEAR IMGUI
-
- - Overwrite all the sources files except for imconfig.h (if you have made modification to your copy of imconfig.h)
- - Read the "API BREAKING CHANGES" section (below). This is where we list occasional API breaking changes.
-   If a function/type has been renamed / or marked obsolete, try to fix the name in your code before it is permanently removed from the public API.
-   If you have a problem with a missing function/symbols, search for its name in the code, there will likely be a comment about it.
-   Please report any issue to the GitHub page!
- - Try to keep your copy of dear imgui reasonably up to date.
-
- GETTING STARTED WITH INTEGRATING DEAR IMGUI IN YOUR CODE/ENGINE
-
- - Add the Dear ImGui source files to your projects, using your preferred build system.
-   It is recommended you build the .cpp files as part of your project and not as a library.
- - You can later customize the imconfig.h file to tweak some compilation time behavior, such as integrating imgui types with your own maths types.
- - See examples/ folder for standalone sample applications.
- - You may be able to grab and copy a ready made imgui_impl_*** file from the examples/.
- - When using Dear ImGui, your programming IDE is your friend: follow the declaration of variables, functions and types to find comments about them.
-
- - Init: retrieve the ImGuiIO structure with ImGui::GetIO() and fill the fields marked 'Settings': at minimum you need to set io.DisplaySize
-   (application resolution). Later on you will fill your keyboard mapping, clipboard handlers, and other advanced features but for a basic
-   integration you don't need to worry about it all.
- - Init: call io.Fonts->GetTexDataAsRGBA32(...), it will build the font atlas texture, then load the texture pixels into graphics memory.
- - Every frame:
-	- In your main loop as early a possible, fill the IO fields marked 'Input' (e.g. mouse position, buttons, keyboard info, etc.)
-	- Call ImGui::NewFrame() to begin the frame
-	- You can use any ImGui function you want between NewFrame() and Render()
-	- Call ImGui::Render() as late as you can to end the frame and finalize render data. it will call your io.RenderDrawListFn handler.
-	   (Even if you don't render, call Render() and ignore the callback, or call EndFrame() instead. Otherwhise some features will break)
- - All rendering information are stored into command-lists until ImGui::Render() is called.
- - Dear ImGui never touches or knows about your GPU state. the only function that knows about GPU is the RenderDrawListFn handler that you provide.
- - Effectively it means you can create widgets at any time in your code, regardless of considerations of being in "update" vs "render" phases
-   of your own application.
- - Refer to the examples applications in the examples/ folder for instruction on how to setup your code.
- - A minimal application skeleton may be:
-
-	 // Application init
-	 ImGui::CreateContext();
-	 ImGuiIO& io = ImGui::GetIO();
-	 io.DisplaySize.x = 1920.0f;
-	 io.DisplaySize.y = 1280.0f;
-	 // TODO: Fill others settings of the io structure later.
-
-	 // Load texture atlas (there is a default font so you don't need to care about choosing a font yet)
-	 unsigned char* pixels;
-	 int width, height;
-	 io.Fonts->GetTexDataAsRGBA32(pixels, &width, &height);
-	 // TODO: At this points you've got the texture data and you need to upload that your your graphic system:
-	 MyTexture* texture = MyEngine::CreateTextureFromMemoryPixels(pixels, width, height, TEXTURE_TYPE_RGBA)
-	 // TODO: Store your texture pointer/identifier (whatever your engine uses) in 'io.Fonts->TexID'. This will be passed back to your via the renderer.
-	 io.Fonts->TexID = (void*)texture;
-
-	 // Application main loop
-	 while (true)
-	 {
-		// Setup low-level inputs (e.g. on Win32, GetKeyboardState(), or write to those fields from your Windows message loop handlers, etc.)
-		ImGuiIO& io = ImGui::GetIO();
-		io.DeltaTime = 1.0f/60.0f;
-		io.MousePos = mouse_pos;
-		io.MouseDown[0] = mouse_button_0;
-		io.MouseDown[1] = mouse_button_1;
-
-		// Call NewFrame(), after this point you can use ImGui::* functions anytime
-		ImGui::NewFrame();
-
-		// Most of your application code here
-		MyGameUpdate(); // may use any ImGui functions, e.g. ImGui::Begin("My window"); ImGui::Text("Hello, world!"); ImGui::End();
-		MyGameRender(); // may use any ImGui functions as well!
-
-		// Render & swap video buffers
-		ImGui::Render();
-		MyImGuiRenderFunction(ImGui::GetDrawData());
-		SwapBuffers();
-	 }
-
-	 // Shutdown
-	 ImGui::DestroyContext();
-
-
- - A minimal render function skeleton may be:
-
-	void void MyRenderFunction(ImDrawData* draw_data)
-	{
-	   // TODO: Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled
-	   // TODO: Setup viewport, orthographic projection matrix
-	   // TODO: Setup shader: vertex { float2 pos, float2 uv, u32 color }, fragment shader sample color from 1 texture, multiply by vertex color.
-	   for (int n = 0; n < draw_data->CmdListsCount; n++)
-	   {
-		  const ImDrawVert* vtx_buffer = cmd_list->VtxBuffer.Data;  // vertex buffer generated by ImGui
-		  const ImDrawIdx* idx_buffer = cmd_list->IdxBuffer.Data;   // index buffer generated by ImGui
-		  for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
-		  {
-			 const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
-			 if (pcmd->UserCallback)
-			 {
-				 pcmd->UserCallback(cmd_list, pcmd);
-			 }
-			 else
-			 {
-				 // The texture for the draw call is specified by pcmd->TextureId.
-				 // The vast majority of draw calls with use the imgui texture atlas, which value you have set yourself during initialization.
-				 MyEngineBindTexture(pcmd->TextureId);
-
-				 // We are using scissoring to clip some objects. All low-level graphics API supports it.
-				 // If your engine doesn't support scissoring yet, you will get some small glitches (some elements outside their bounds) which you can fix later.
-				 MyEngineScissor((int)pcmd->ClipRect.x, (int)pcmd->ClipRect.y, (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
-
-				 // Render 'pcmd->ElemCount/3' indexed triangles.
-				 // By default the indices ImDrawIdx are 16-bits, you can change them to 32-bits if your engine doesn't support 16-bits indices.
-				 MyEngineDrawIndexedTriangles(pcmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, idx_buffer, vtx_buffer);
-			 }
-			 idx_buffer += pcmd->ElemCount;
-		  }
-	   }
-	}
-
- - The examples/ folders contains many functional implementation of the pseudo-code above.
- - When calling NewFrame(), the 'io.WantCaptureMouse'/'io.WantCaptureKeyboard'/'io.WantTextInput' flags are updated.
-   They tell you if ImGui intends to use your inputs. So for example, if 'io.WantCaptureMouse' is set you would typically want to hide
-   mouse inputs from the rest of your application. Read the FAQ below for more information about those flags.
-
- USING GAMEPAD/KEYBOARD NAVIGATION CONTROLS [BETA]
-
- - The gamepad/keyboard navigation is in Beta. Ask questions and report issues at https://github.com/ocornut/imgui/issues/787
- - The initial focus was to support game controllers, but keyboard is becoming increasingly and decently usable.
- - Keyboard:
-	- Set io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard to enable. NewFrame() will automatically fill io.NavInputs[] based on your io.KeyDown[] + io.KeyMap[] arrays.
-	- When keyboard navigation is active (io.NavActive + ImGuiConfigFlags_NavEnableKeyboard), the io.WantCaptureKeyboard flag will be set.
-	  For more advanced uses, you may want to read from:
-	   - io.NavActive: true when a window is focused and it doesn't have the ImGuiWindowFlags_NoNavInputs flag set.
-	   - io.NavVisible: true when the navigation cursor is visible (and usually goes false when mouse is used).
-	   - or query focus information with e.g. IsWindowFocused(), IsItemFocused() etc. functions.
-	  Please reach out if you think the game vs navigation input sharing could be improved.
- - Gamepad:
-	- Set io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad to enable.
-	- Backend: Set io.BackendFlags |= ImGuiBackendFlags_HasGamepad + fill the io.NavInputs[] fields before calling NewFrame(). Note that io.NavInputs[] is cleared by EndFrame().
-	- See 'enum ImGuiNavInput_' in imgui.h for a description of inputs. For each entry of io.NavInputs[], set the following values:
-		 0.0f= not held. 1.0f= fully held. Pass intermediate 0.0f..1.0f values for analog triggers/sticks.
-	- We uses a simple >0.0f test for activation testing, and won't attempt to test for a dead-zone.
-	  Your code will probably need to transform your raw inputs (such as e.g. remapping your 0.2..0.9 raw input range to 0.0..1.0 imgui range, etc.).
-	- You can download PNG/PSD files depicting the gamepad controls for common controllers at: goo.gl/9LgVZW.
-	- If you need to share inputs between your game and the imgui parts, the easiest approach is to go all-or-nothing, with a buttons combo to toggle the target.
-	  Please reach out if you think the game vs navigation input sharing could be improved.
- - Mouse:
-	- PS4 users: Consider emulating a mouse cursor with DualShock4 touch pad or a spare analog stick as a mouse-emulation fallback.
-	- Consoles/Tablet/Phone users: Consider using a Synergy 1.x server (on your PC) + uSynergy.c (on your console/tablet/phone app) to share your PC mouse/keyboard.
-	- On a TV/console system where readability may be lower or mouse inputs may be awkward, you may want to set the ImGuiConfigFlags_NavEnableSetMousePos flag.
-	  Enabling ImGuiConfigFlags_NavEnableSetMousePos + ImGuiBackendFlags_HasSetMousePos instructs dear imgui to move your mouse cursor along with navigation movements.
-	  When enabled, the NewFrame() function may alter 'io.MousePos' and set 'io.WantSetMousePos' to notify you that it wants the mouse cursor to be moved.
-	  When that happens your back-end NEEDS to move the OS or underlying mouse cursor on the next frame. Some of the binding in examples/ do that.
-	  (If you set the NavEnableSetMousePos flag but don't honor 'io.WantSetMousePos' properly, imgui will misbehave as it will see your mouse as moving back and forth!)
-	  (In a setup when you may not have easy control over the mouse cursor, e.g. uSynergy.c doesn't expose moving remote mouse cursor, you may want
-	   to set a boolean to ignore your other external mouse positions until the external source is moved again.)
-
-
- API BREAKING CHANGES
- ====================
-
- Occasionally introducing changes that are breaking the API. The breakage are generally minor and easy to fix.
- Here is a change-log of API breaking changes, if you are using one of the functions listed, expect to have to fix some code.
- Also read releases logs https://github.com/ocornut/imgui/releases for more details.
-
- - 2018/03/20 (1.60) - Renamed io.WantMoveMouse to io.WantSetMousePos for consistency and ease of understanding (was added in 1.52, _not_ used by core and only honored by some binding ahead of merging the Nav branch).
- - 2018/03/12 (1.60) - Removed ImGuiCol_CloseButton, ImGuiCol_CloseButtonActive, ImGuiCol_CloseButtonHovered as the closing cross uses regular button colors now.
- - 2018/03/08 (1.60) - Changed ImFont::DisplayOffset.y to default to 0 instead of +1. Fixed rounding of Ascent/Descent to match TrueType renderer. If you were adding or subtracting to ImFont::DisplayOffset check if your fonts are correctly aligned vertically.
- - 2018/03/03 (1.60) - Renamed ImGuiStyleVar_Count_ to ImGuiStyleVar_COUNT and ImGuiMouseCursor_Count_ to ImGuiMouseCursor_COUNT for consistency with other public enums.
- - 2018/02/18 (1.60) - BeginDragDropSource(): temporarily removed the optional mouse_button=0 parameter because it is not really usable in many situations at the moment.
- - 2018/02/16 (1.60) - obsoleted the io.RenderDrawListsFn callback, you can call your graphics engine render function after ImGui::Render(). Use ImGui::GetDrawData() to retrieve the ImDrawData* to display.
- - 2018/02/07 (1.60) - reorganized context handling to be more explicit,
-					   - YOU NOW NEED TO CALL ImGui::CreateContext() AT THE BEGINNING OF YOUR APP, AND CALL ImGui::DestroyContext() AT THE END.
-					   - removed Shutdown() function, as DestroyContext() serve this purpose.
-					   - you may pass a ImFontAtlas* pointer to CreateContext() to share a font atlas between contexts. Otherwhise CreateContext() will create its own font atlas instance.
-					   - removed allocator parameters from CreateContext(), they are now setup with SetAllocatorFunctions(), and shared by all contexts.
-					   - removed the default global context and font atlas instance, which were confusing for users of DLL reloading and users of multiple contexts.
- - 2018/01/31 (1.60) - moved sample TTF files from extra_fonts/ to misc/fonts/. If you loaded files directly from the imgui repo you may need to update your paths.
- - 2018/01/11 (1.60) - obsoleted IsAnyWindowHovered() in favor of IsWindowHovered(ImGuiHoveredFlags_AnyWindow). Kept redirection function (will obsolete).
- - 2018/01/11 (1.60) - obsoleted IsAnyWindowFocused() in favor of IsWindowFocused(ImGuiFocusedFlags_AnyWindow). Kept redirection function (will obsolete).
- - 2018/01/03 (1.60) - renamed ImGuiSizeConstraintCallback to ImGuiSizeCallback, ImGuiSizeConstraintCallbackData to ImGuiSizeCallbackData.
- - 2017/12/29 (1.60) - removed CalcItemRectClosestPoint() which was weird and not really used by anyone except demo code. If you need it it's easy to replicate on your side.
- - 2017/12/24 (1.53) - renamed the emblematic ShowTestWindow() function to ShowDemoWindow(). Kept redirection function (will obsolete).
- - 2017/12/21 (1.53) - ImDrawList: renamed style.AntiAliasedShapes to style.AntiAliasedFill for consistency and as a way to explicitly break code that manipulate those flag at runtime. You can now manipulate ImDrawList::Flags
- - 2017/12/21 (1.53) - ImDrawList: removed 'bool anti_aliased = true' final parameter of ImDrawList::AddPolyline() and ImDrawList::AddConvexPolyFilled(). Prefer manipulating ImDrawList::Flags if you need to toggle them during the frame.
- - 2017/12/14 (1.53) - using the ImGuiWindowFlags_NoScrollWithMouse flag on a child window forwards the mouse wheel event to the parent window, unless either ImGuiWindowFlags_NoInputs or ImGuiWindowFlags_NoScrollbar are also set.
- - 2017/12/13 (1.53) - renamed GetItemsLineHeightWithSpacing() to GetFrameHeightWithSpacing(). Kept redirection function (will obsolete).
- - 2017/12/13 (1.53) - obsoleted IsRootWindowFocused() in favor of using IsWindowFocused(ImGuiFocusedFlags_RootWindow). Kept redirection function (will obsolete).
-					 - obsoleted IsRootWindowOrAnyChildFocused() in favor of using IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows). Kept redirection function (will obsolete).
- - 2017/12/12 (1.53) - renamed ImGuiTreeNodeFlags_AllowOverlapMode to ImGuiTreeNodeFlags_AllowItemOverlap. Kept redirection enum (will obsolete).
- - 2017/12/10 (1.53) - removed SetNextWindowContentWidth(), prefer using SetNextWindowContentSize(). Kept redirection function (will obsolete).
- - 2017/11/27 (1.53) - renamed ImGuiTextBuffer::append() helper to appendf(), appendv() to appendfv(). If you copied the 'Log' demo in your code, it uses appendv() so that needs to be renamed.
- - 2017/11/18 (1.53) - Style, Begin: removed ImGuiWindowFlags_ShowBorders window flag. Borders are now fully set up in the ImGuiStyle structure (see e.g. style.FrameBorderSize, style.WindowBorderSize). Use ImGui::ShowStyleEditor() to look them up.
-					   Please note that the style system will keep evolving (hopefully stabilizing in Q1 2018), and so custom styles will probably subtly break over time. It is recommended you use the StyleColorsClassic(), StyleColorsDark(), StyleColorsLight() functions.
- - 2017/11/18 (1.53) - Style: removed ImGuiCol_ComboBg in favor of combo boxes using ImGuiCol_PopupBg for consistency.
- - 2017/11/18 (1.53) - Style: renamed ImGuiCol_ChildWindowBg to ImGuiCol_ChildBg.
- - 2017/11/18 (1.53) - Style: renamed style.ChildWindowRounding to style.ChildRounding, ImGuiStyleVar_ChildWindowRounding to ImGuiStyleVar_ChildRounding.
- - 2017/11/02 (1.53) - obsoleted IsRootWindowOrAnyChildHovered() in favor of using IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
- - 2017/10/24 (1.52) - renamed IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCS/IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCS to IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS/IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS for consistency.
- - 2017/10/20 (1.52) - changed IsWindowHovered() default parameters behavior to return false if an item is active in another window (e.g. click-dragging item from another window to this window). You can use the newly introduced IsWindowHovered() flags to requests this specific behavior if you need it.
- - 2017/10/20 (1.52) - marked IsItemHoveredRect()/IsMouseHoveringWindow() as obsolete, in favor of using the newly introduced flags for IsItemHovered() and IsWindowHovered(). See https://github.com/ocornut/imgui/issues/1382 for details.
-					   removed the IsItemRectHovered()/IsWindowRectHovered() names introduced in 1.51 since they were merely more consistent names for the two functions we are now obsoleting.
- - 2017/10/17 (1.52) - marked the old 5-parameters version of Begin() as obsolete (still available). Use SetNextWindowSize()+Begin() instead!
- - 2017/10/11 (1.52) - renamed AlignFirstTextHeightToWidgets() to AlignTextToFramePadding(). Kept inline redirection function (will obsolete).
- - 2017/09/25 (1.52) - removed SetNextWindowPosCenter() because SetNextWindowPos() now has the optional pivot information to do the same and more. Kept redirection function (will obsolete).
- - 2017/08/25 (1.52) - io.MousePos needs to be set to ImVec2(-FLT_MAX,-FLT_MAX) when mouse is unavailable/missing. Previously ImVec2(-1,-1) was enough but we now accept negative mouse coordinates. In your binding if you need to support unavailable mouse, make sure to replace "io.MousePos = ImVec2(-1,-1)" with "io.MousePos = ImVec2(-FLT_MAX,-FLT_MAX)".
- - 2017/08/22 (1.51) - renamed IsItemHoveredRect() to IsItemRectHovered(). Kept inline redirection function (will obsolete). -> (1.52) use IsItemHovered(ImGuiHoveredFlags_RectOnly)!
-					 - renamed IsMouseHoveringAnyWindow() to IsAnyWindowHovered() for consistency. Kept inline redirection function (will obsolete).
-					 - renamed IsMouseHoveringWindow() to IsWindowRectHovered() for consistency. Kept inline redirection function (will obsolete).
- - 2017/08/20 (1.51) - renamed GetStyleColName() to GetStyleColorName() for consistency.
- - 2017/08/20 (1.51) - added PushStyleColor(ImGuiCol idx, ImU32 col) overload, which _might_ cause an "ambiguous call" compilation error if you are using ImColor() with implicit cast. Cast to ImU32 or ImVec4 explicily to fix.
- - 2017/08/15 (1.51) - marked the weird IMGUI_ONCE_UPON_A_FRAME helper macro as obsolete. prefer using the more explicit ImGuiOnceUponAFrame.
- - 2017/08/15 (1.51) - changed parameter order for BeginPopupContextWindow() from (const char*,int buttons,bool also_over_items) to (const char*,int buttons,bool also_over_items). Note that most calls relied on default parameters completely.
- - 2017/08/13 (1.51) - renamed ImGuiCol_Columns*** to ImGuiCol_Separator***. Kept redirection enums (will obsolete).
- - 2017/08/11 (1.51) - renamed ImGuiSetCond_*** types and flags to ImGuiCond_***. Kept redirection enums (will obsolete).
- - 2017/08/09 (1.51) - removed ValueColor() helpers, they are equivalent to calling Text(label) + SameLine() + ColorButton().
- - 2017/08/08 (1.51) - removed ColorEditMode() and ImGuiColorEditMode in favor of ImGuiColorEditFlags and parameters to the various Color*() functions. The SetColorEditOptions() allows to initialize default but the user can still change them with right-click context menu.
-					 - changed prototype of 'ColorEdit4(const char* label, float col[4], bool show_alpha = true)' to 'ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0)', where passing flags = 0x01 is a safe no-op (hello dodgy backward compatibility!). - check and run the demo window, under "Color/Picker Widgets", to understand the various new options.
-					 - changed prototype of rarely used 'ColorButton(ImVec4 col, bool small_height = false, bool outline_border = true)' to 'ColorButton(const char* desc_id, ImVec4 col, ImGuiColorEditFlags flags = 0, ImVec2 size = ImVec2(0,0))'
- - 2017/07/20 (1.51) - removed IsPosHoveringAnyWindow(ImVec2), which was partly broken and misleading. ASSERT + redirect user to io.WantCaptureMouse
- - 2017/05/26 (1.50) - removed ImFontConfig::MergeGlyphCenterV in favor of a more multipurpose ImFontConfig::GlyphOffset.
- - 2017/05/01 (1.50) - renamed ImDrawList::PathFill() (rarely used directly) to ImDrawList::PathFillConvex() for clarity.
- - 2016/11/06 (1.50) - BeginChild(const char*) now applies the stack id to the provided label, consistently with other functions as it should always have been. It shouldn't affect you unless (extremely unlikely) you were appending multiple times to a same child from different locations of the stack id. If that's the case, generate an id with GetId() and use it instead of passing string to BeginChild().
- - 2016/10/15 (1.50) - avoid 'void* user_data' parameter to io.SetClipboardTextFn/io.GetClipboardTextFn pointers. We pass io.ClipboardUserData to it.
- - 2016/09/25 (1.50) - style.WindowTitleAlign is now a ImVec2 (ImGuiAlign enum was removed). set to (0.5f,0.5f) for horizontal+vertical centering, (0.0f,0.0f) for upper-left, etc.
- - 2016/07/30 (1.50) - SameLine(x) with x>0.0f is now relative to left of column/group if any, and not always to left of window. This was sort of always the intent and hopefully breakage should be minimal.
- - 2016/05/12 (1.49) - title bar (using ImGuiCol_TitleBg/ImGuiCol_TitleBgActive colors) isn't rendered over a window background (ImGuiCol_WindowBg color) anymore.
-					   If your TitleBg/TitleBgActive alpha was 1.0f or you are using the default theme it will not affect you.
-					   However if your TitleBg/TitleBgActive alpha was <1.0f you need to tweak your custom theme to readjust for the fact that we don't draw a WindowBg background behind the title bar.
-					   This helper function will convert an old TitleBg/TitleBgActive color into a new one with the same visual output, given the OLD color and the OLD WindowBg color.
-						   ImVec4 ConvertTitleBgCol(const ImVec4& win_bg_col, const ImVec4& title_bg_col)
-						   {
-							   float new_a = 1.0f - ((1.0f - win_bg_col.w) * (1.0f - title_bg_col.w)), k = title_bg_col.w / new_a;
-							   return ImVec4((win_bg_col.x * win_bg_col.w + title_bg_col.x) * k, (win_bg_col.y * win_bg_col.w + title_bg_col.y) * k, (win_bg_col.z * win_bg_col.w + title_bg_col.z) * k, new_a);
-						   }
-					   If this is confusing, pick the RGB value from title bar from an old screenshot and apply this as TitleBg/TitleBgActive. Or you may just create TitleBgActive from a tweaked TitleBg color.
- - 2016/05/07 (1.49) - removed confusing set of GetInternalState(), GetInternalStateSize(), SetInternalState() functions. Now using CreateContext(), DestroyContext(), GetCurrentContext(), SetCurrentContext().
- - 2016/05/02 (1.49) - renamed SetNextTreeNodeOpened() to SetNextTreeNodeOpen(), no redirection.
- - 2016/05/01 (1.49) - obsoleted old signature of CollapsingHeader(const char* label, const char* str_id = NULL, bool display_frame = true, bool default_open = false) as extra parameters were badly designed and rarely used. You can replace the "default_open = true" flag in new API with CollapsingHeader(label, ImGuiTreeNodeFlags_DefaultOpen).
- - 2016/04/26 (1.49) - changed ImDrawList::PushClipRect(ImVec4 rect) to ImDraw::PushClipRect(Imvec2 min,ImVec2 max,bool intersect_with_current_clip_rect=false). Note that higher-level ImGui::PushClipRect() is preferable because it will clip at logic/widget level, whereas ImDrawList::PushClipRect() only affect your renderer.
- - 2016/04/03 (1.48) - removed style.WindowFillAlphaDefault setting which was redundant. Bake default BG alpha inside style.Colors[ImGuiCol_WindowBg] and all other Bg color values. (ref github issue #337).
- - 2016/04/03 (1.48) - renamed ImGuiCol_TooltipBg to ImGuiCol_PopupBg, used by popups/menus and tooltips. popups/menus were previously using ImGuiCol_WindowBg. (ref github issue #337)
- - 2016/03/21 (1.48) - renamed GetWindowFont() to GetFont(), GetWindowFontSize() to GetFontSize(). Kept inline redirection function (will obsolete).
- - 2016/03/02 (1.48) - InputText() completion/history/always callbacks: if you modify the text buffer manually (without using DeleteChars()/InsertChars() helper) you need to maintain the BufTextLen field. added an assert.
- - 2016/01/23 (1.48) - fixed not honoring exact width passed to PushItemWidth(), previously it would add extra FramePadding.x*2 over that width. if you had manual pixel-perfect alignment in place it might affect you.
- - 2015/12/27 (1.48) - fixed ImDrawList::AddRect() which used to render a rectangle 1 px too large on each axis.
- - 2015/12/04 (1.47) - renamed Color() helpers to ValueColor() - dangerously named, rarely used and probably to be made obsolete.
- - 2015/08/29 (1.45) - with the addition of horizontal scrollbar we made various fixes to inconsistencies with dealing with cursor position.
-					   GetCursorPos()/SetCursorPos() functions now include the scrolled amount. It shouldn't affect the majority of users, but take note that SetCursorPosX(100.0f) puts you at +100 from the starting x position which may include scrolling, not at +100 from the window left side.
-					   GetContentRegionMax()/GetWindowContentRegionMin()/GetWindowContentRegionMax() functions allow include the scrolled amount. Typically those were used in cases where no scrolling would happen so it may not be a problem, but watch out!
- - 2015/08/29 (1.45) - renamed style.ScrollbarWidth to style.ScrollbarSize
- - 2015/08/05 (1.44) - split imgui.cpp into extra files: imgui_demo.cpp imgui_draw.cpp imgui_internal.h that you need to add to your project.
- - 2015/07/18 (1.44) - fixed angles in ImDrawList::PathArcTo(), PathArcToFast() (introduced in 1.43) being off by an extra PI for no justifiable reason
- - 2015/07/14 (1.43) - add new ImFontAtlas::AddFont() API. For the old AddFont***, moved the 'font_no' parameter of ImFontAtlas::AddFont** functions to the ImFontConfig structure.
-					   you need to render your textured triangles with bilinear filtering to benefit from sub-pixel positioning of text.
- - 2015/07/08 (1.43) - switched rendering data to use indexed rendering. this is saving a fair amount of CPU/GPU and enables us to get anti-aliasing for a marginal cost.
-					   this necessary change will break your rendering function! the fix should be very easy. sorry for that :(
-					 - if you are using a vanilla copy of one of the imgui_impl_XXXX.cpp provided in the example, you just need to update your copy and you can ignore the rest.
-					 - the signature of the io.RenderDrawListsFn handler has changed!
-					   old: ImGui_XXXX_RenderDrawLists(ImDrawList** const cmd_lists, int cmd_lists_count)
-					   new: ImGui_XXXX_RenderDrawLists(ImDrawData* draw_data).
-						 argument:   'cmd_lists' becomes 'draw_data->CmdLists', 'cmd_lists_count' becomes 'draw_data->CmdListsCount'
-						 ImDrawList: 'commands' becomes 'CmdBuffer', 'vtx_buffer' becomes 'VtxBuffer', 'IdxBuffer' is new.
-						 ImDrawCmd:  'vtx_count' becomes 'ElemCount', 'clip_rect' becomes 'ClipRect', 'user_callback' becomes 'UserCallback', 'texture_id' becomes 'TextureId'.
-					 - each ImDrawList now contains both a vertex buffer and an index buffer. For each command, render ElemCount/3 triangles using indices from the index buffer.
-					 - if you REALLY cannot render indexed primitives, you can call the draw_data->DeIndexAllBuffers() method to de-index the buffers. This is slow and a waste of CPU/GPU. Prefer using indexed rendering!
-					 - refer to code in the examples/ folder or ask on the GitHub if you are unsure of how to upgrade. please upgrade!
- - 2015/07/10 (1.43) - changed SameLine() parameters from int to float.
- - 2015/07/02 (1.42) - renamed SetScrollPosHere() to SetScrollFromCursorPos(). Kept inline redirection function (will obsolete).
- - 2015/07/02 (1.42) - renamed GetScrollPosY() to GetScrollY(). Necessary to reduce confusion along with other scrolling functions, because positions (e.g. cursor position) are not equivalent to scrolling amount.
- - 2015/06/14 (1.41) - changed ImageButton() default bg_col parameter from (0,0,0,1) (black) to (0,0,0,0) (transparent) - makes a difference when texture have transparence
- - 2015/06/14 (1.41) - changed Selectable() API from (label, selected, size) to (label, selected, flags, size). Size override should have been rarely be used. Sorry!
- - 2015/05/31 (1.40) - renamed GetWindowCollapsed() to IsWindowCollapsed() for consistency. Kept inline redirection function (will obsolete).
- - 2015/05/31 (1.40) - renamed IsRectClipped() to IsRectVisible() for consistency. Note that return value is opposite! Kept inline redirection function (will obsolete).
- - 2015/05/27 (1.40) - removed the third 'repeat_if_held' parameter from Button() - sorry! it was rarely used and inconsistent. Use PushButtonRepeat(true) / PopButtonRepeat() to enable repeat on desired buttons.
- - 2015/05/11 (1.40) - changed BeginPopup() API, takes a string identifier instead of a bool. ImGui needs to manage the open/closed state of popups. Call OpenPopup() to actually set the "open" state of a popup. BeginPopup() returns true if the popup is opened.
- - 2015/05/03 (1.40) - removed style.AutoFitPadding, using style.WindowPadding makes more sense (the default values were already the same).
- - 2015/04/13 (1.38) - renamed IsClipped() to IsRectClipped(). Kept inline redirection function until 1.50.
- - 2015/04/09 (1.38) - renamed ImDrawList::AddArc() to ImDrawList::AddArcFast() for compatibility with future API
- - 2015/04/03 (1.38) - removed ImGuiCol_CheckHovered, ImGuiCol_CheckActive, replaced with the more general ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive.
- - 2014/04/03 (1.38) - removed support for passing -FLT_MAX..+FLT_MAX as the range for a SliderFloat(). Use DragFloat() or Inputfloat() instead.
- - 2015/03/17 (1.36) - renamed GetItemBoxMin()/GetItemBoxMax()/IsMouseHoveringBox() to GetItemRectMin()/GetItemRectMax()/IsMouseHoveringRect(). Kept inline redirection function until 1.50.
- - 2015/03/15 (1.36) - renamed style.TreeNodeSpacing to style.IndentSpacing, ImGuiStyleVar_TreeNodeSpacing to ImGuiStyleVar_IndentSpacing
- - 2015/03/13 (1.36) - renamed GetWindowIsFocused() to IsWindowFocused(). Kept inline redirection function until 1.50.
- - 2015/03/08 (1.35) - renamed style.ScrollBarWidth to style.ScrollbarWidth (casing)
- - 2015/02/27 (1.34) - renamed OpenNextNode(bool) to SetNextTreeNodeOpened(bool, ImGuiSetCond). Kept inline redirection function until 1.50.
- - 2015/02/27 (1.34) - renamed ImGuiSetCondition_*** to ImGuiSetCond_***, and _FirstUseThisSession becomes _Once.
- - 2015/02/11 (1.32) - changed text input callback ImGuiTextEditCallback return type from void-->int. reserved for future use, return 0 for now.
- - 2015/02/10 (1.32) - renamed GetItemWidth() to CalcItemWidth() to clarify its evolving behavior
- - 2015/02/08 (1.31) - renamed GetTextLineSpacing() to GetTextLineHeightWithSpacing()
- - 2015/02/01 (1.31) - removed IO.MemReallocFn (unused)
- - 2015/01/19 (1.30) - renamed ImGuiStorage::GetIntPtr()/GetFloatPtr() to GetIntRef()/GetIntRef() because Ptr was conflicting with actual pointer storage functions.
- - 2015/01/11 (1.30) - big font/image API change! now loads TTF file. allow for multiple fonts. no need for a PNG loader.
-			  (1.30) - removed GetDefaultFontData(). uses io.Fonts->GetTextureData*() API to retrieve uncompressed pixels.
-					   font init:  const void* png_data; unsigned int png_size; ImGui::GetDefaultFontData(NULL, NULL, &png_data, &png_size); <..Upload texture to GPU..>
-					   became:     unsigned char* pixels; int width, height; io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height); <..Upload texture to GPU>; io.Fonts->TexId = YourTextureIdentifier;
-					   you now more flexibility to load multiple TTF fonts and manage the texture buffer for internal needs.
-					   it is now recommended that you sample the font texture with bilinear interpolation.
-			  (1.30) - added texture identifier in ImDrawCmd passed to your render function (we can now render images). make sure to set io.Fonts->TexID.
-			  (1.30) - removed IO.PixelCenterOffset (unnecessary, can be handled in user projection matrix)
-			  (1.30) - removed ImGui::IsItemFocused() in favor of ImGui::IsItemActive() which handles all widgets
- - 2014/12/10 (1.18) - removed SetNewWindowDefaultPos() in favor of new generic API SetNextWindowPos(pos, ImGuiSetCondition_FirstUseEver)
- - 2014/11/28 (1.17) - moved IO.Font*** options to inside the IO.Font-> structure (FontYOffset, FontTexUvForWhite, FontBaseScale, FontFallbackGlyph)
- - 2014/11/26 (1.17) - reworked syntax of IMGUI_ONCE_UPON_A_FRAME helper macro to increase compiler compatibility
- - 2014/11/07 (1.15) - renamed IsHovered() to IsItemHovered()
- - 2014/10/02 (1.14) - renamed IMGUI_INCLUDE_IMGUI_USER_CPP to IMGUI_INCLUDE_IMGUI_USER_INL and imgui_user.cpp to imgui_user.inl (more IDE friendly)
- - 2014/09/25 (1.13) - removed 'text_end' parameter from IO.SetClipboardTextFn (the string is now always zero-terminated for simplicity)
- - 2014/09/24 (1.12) - renamed SetFontScale() to SetWindowFontScale()
- - 2014/09/24 (1.12) - moved IM_MALLOC/IM_REALLOC/IM_FREE preprocessor defines to IO.MemAllocFn/IO.MemReallocFn/IO.MemFreeFn
- - 2014/08/30 (1.09) - removed IO.FontHeight (now computed automatically)
- - 2014/08/30 (1.09) - moved IMGUI_FONT_TEX_UV_FOR_WHITE preprocessor define to IO.FontTexUvForWhite
- - 2014/08/28 (1.09) - changed the behavior of IO.PixelCenterOffset following various rendering fixes
-
-
- ISSUES & TODO-LIST
- ==================
- See TODO.txt
-
-
- FREQUENTLY ASKED QUESTIONS (FAQ), TIPS
- ======================================
-
- Q: How can I tell whether to dispatch mouse/keyboard to imgui or to my application?
- A: You can read the 'io.WantCaptureMouse'/'io.WantCaptureKeyboard'/'io.WantTextInput' flags from the ImGuiIO structure.
-	- When 'io.WantCaptureMouse' is set, imgui wants to use your mouse state, and you may want to discard/hide the inputs from the rest of your application.
-	- When 'io.WantCaptureKeyboard' is set, imgui wants to use your keyboard state, and you may want to discard/hide the inputs from the rest of your application.
-	- When 'io.WantTextInput' is set to may want to notify your OS to popup an on-screen keyboard, if available (e.g. on a mobile phone, or console OS).
-	The 'io.WantCaptureMouse' is more accurate that any attempt to "check if the mouse is hovering a window" (don't do that!).
-	It handle mouse dragging correctly (both dragging that started over your application or over an imgui window) and handle e.g. modal windows blocking inputs.
-	Those flags are updated by ImGui::NewFrame(). Preferably read the flags after calling NewFrame() if you can afford it, but reading them before is also
-	perfectly fine, as the bool toggle fairly rarely.
-	(Advanced note: text input releases focus on Return 'KeyDown', so the following Return 'KeyUp' event that your application receive will typically
-	 have 'io.WantCaptureKeyboard=false'. Depending on your application logic it may or not be inconvenient. You might want to track which key-downs
-	 were for Dear ImGui, e.g. with an array of bool, and filter out the corresponding key-ups.)
-
- Q: How can I display an image? What is ImTextureID, how does it works?
- A: ImTextureID is a void* used to pass renderer-agnostic texture references around until it hits your render function.
-	Dear ImGui knows nothing about what those bits represent, it just passes them around. It is up to you to decide what you want the void* to carry!
-	It could be an identifier to your OpenGL texture (cast GLuint to void*), a pointer to your custom engine material (cast MyMaterial* to void*), etc.
-	At the end of the chain, your renderer takes this void* to cast it back into whatever it needs to select a current texture to render.
-	Refer to examples applications, where each renderer (in a imgui_impl_xxxx.cpp file) is treating ImTextureID as a different thing.
-	(c++ tip: OpenGL uses integers to identify textures. You can safely store an integer into a void*, just cast it to void*, don't take it's address!)
-	To display a custom image/texture within an ImGui window, you may use ImGui::Image(), ImGui::ImageButton(), ImDrawList::AddImage() functions.
-	Dear ImGui will generate the geometry and draw calls using the ImTextureID that you passed and which your renderer can use.
-	You may call ImGui::ShowMetricsWindow() to explore active draw lists and visualize/understand how the draw data is generated.
-	It is your responsibility to get textures uploaded to your GPU.
-
- Q: Can I have multiple widgets with the same label? Can I have widget without a label?
- A: Yes. A primer on labels and the ID stack...
-
-   - Elements that are typically not clickable, such as Text() items don't need an ID.
-
-   - Interactive widgets require state to be carried over multiple frames (most typically Dear ImGui often needs to remember what is
-	 the "active" widget). to do so they need a unique ID. unique ID are typically derived from a string label, an integer index or a pointer.
-
-	   Button("OK");          // Label = "OK",     ID = hash of "OK"
-	   Button("Cancel");      // Label = "Cancel", ID = hash of "Cancel"
-
-   - ID are uniquely scoped within windows, tree nodes, etc. so no conflict can happen if you have two buttons called "OK"
-	 in two different windows or in two different locations of a tree.
-
-   - If you have a same ID twice in the same location, you'll have a conflict:
-
-	   Button("OK");
-	   Button("OK");          // ID collision! Both buttons will be treated as the same.
-
-	 Fear not! this is easy to solve and there are many ways to solve it!
-
-   - When passing a label you can optionally specify extra unique ID information within string itself.
-	 Use "##" to pass a complement to the ID that won't be visible to the end-user.
-	 This helps solving the simple collision cases when you know which items are going to be created.
-
-	   Button("Play");        // Label = "Play",   ID = hash of "Play"
-	   Button("Play##foo1");  // Label = "Play",   ID = hash of "Play##foo1" (different from above)
-	   Button("Play##foo2");  // Label = "Play",   ID = hash of "Play##foo2" (different from above)
-
-   - If you want to completely hide the label, but still need an ID:
-
-	   Checkbox("##On", &b);  // Label = "",       ID = hash of "##On" (no label!)
-
-   - Occasionally/rarely you might want change a label while preserving a constant ID. This allows you to animate labels.
-	 For example you may want to include varying information in a window title bar, but windows are uniquely identified by their ID..
-	 Use "###" to pass a label that isn't part of ID:
-
-	   Button("Hello###ID";   // Label = "Hello",  ID = hash of "ID"
-	   Button("World###ID";   // Label = "World",  ID = hash of "ID" (same as above)
-
-	   sprintf(buf, "My game (%f FPS)###MyGame", fps);
-	   Begin(buf);            // Variable label,   ID = hash of "MyGame"
-
-   - Use PushID() / PopID() to create scopes and avoid ID conflicts within the same Window.
-	 This is the most convenient way of distinguishing ID if you are iterating and creating many UI elements.
-	 You can push a pointer, a string or an integer value. Remember that ID are formed from the concatenation of _everything_ in the ID stack!
-
-	   for (int i = 0; i < 100; i++)
-	   {
-		 PushID(i);
-		 Button("Click");   // Label = "Click",  ID = hash of integer + "label" (unique)
-		 PopID();
-	   }
-
-	   for (int i = 0; i < 100; i++)
-	   {
-		 MyObject* obj = Objects[i];
-		 PushID(obj);
-		 Button("Click");   // Label = "Click",  ID = hash of pointer + "label" (unique)
-		 PopID();
-	   }
-
-	   for (int i = 0; i < 100; i++)
-	   {
-		 MyObject* obj = Objects[i];
-		 PushID(obj->Name);
-		 Button("Click");   // Label = "Click",  ID = hash of string + "label" (unique)
-		 PopID();
-	   }
-
-   - More example showing that you can stack multiple prefixes into the ID stack:
-
-	   Button("Click");     // Label = "Click",  ID = hash of "Click"
-	   PushID("node");
-	   Button("Click");     // Label = "Click",  ID = hash of "node" + "Click"
-		 PushID(my_ptr);
-		   Button("Click"); // Label = "Click",  ID = hash of "node" + ptr + "Click"
-		 PopID();
-	   PopID();
-
-   - Tree nodes implicitly creates a scope for you by calling PushID().
-
-	   Button("Click");     // Label = "Click",  ID = hash of "Click"
-	   if (TreeNode("node"))
-	   {
-		 Button("Click");   // Label = "Click",  ID = hash of "node" + "Click"
-		 TreePop();
-	   }
-
-   - When working with trees, ID are used to preserve the open/close state of each tree node.
-	 Depending on your use cases you may want to use strings, indices or pointers as ID.
-	  e.g. when displaying a single object that may change over time (dynamic 1-1 relationship), using a static string as ID will preserve your
-	   node open/closed state when the targeted object change.
-	  e.g. when displaying a list of objects, using indices or pointers as ID will preserve the node open/closed state differently.
-	   experiment and see what makes more sense!
-
- Q: How can I load a different font than the default? (default is an embedded version of ProggyClean.ttf, rendered at size 13)
- A: Use the font atlas to load the TTF/OTF file you want:
-	  ImGuiIO& io = ImGui::GetIO();
-	  io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels);
-	  io.Fonts->GetTexDataAsRGBA32() or GetTexDataAsAlpha8()
-
-	New programmers: remember that in C/C++ and most programming languages if you want to use a backslash \ in a string literal you need to write a double backslash "\\":
-	  io.Fonts->AddFontFromFileTTF("MyDataFolder\MyFontFile.ttf", size_in_pixels);   // WRONG
-	  io.Fonts->AddFontFromFileTTF("MyDataFolder\\MyFontFile.ttf", size_in_pixels);  // CORRECT
-	  io.Fonts->AddFontFromFileTTF("MyDataFolder/MyFontFile.ttf", size_in_pixels);   // ALSO CORRECT
-
- Q: How can I easily use icons in my application?
- A: The most convenient and practical way is to merge an icon font such as FontAwesome inside you main font. Then you can refer to icons within your
-	strings. Read 'How can I load multiple fonts?' and the file 'misc/fonts/README.txt' for instructions and useful header files.
-
- Q: How can I load multiple fonts?
- A: Use the font atlas to pack them into a single texture:
-	(Read misc/fonts/README.txt and the code in ImFontAtlas for more details.)
-
-	  ImGuiIO& io = ImGui::GetIO();
-	  ImFont* font0 = io.Fonts->AddFontDefault();
-	  ImFont* font1 = io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels);
-	  ImFont* font2 = io.Fonts->AddFontFromFileTTF("myfontfile2.ttf", size_in_pixels);
-	  io.Fonts->GetTexDataAsRGBA32() or GetTexDataAsAlpha8()
-	  // the first loaded font gets used by default
-	  // use ImGui::PushFont()/ImGui::PopFont() to change the font at runtime
-
-	  // Options
-	  ImFontConfig config;
-	  config.OversampleH = 3;
-	  config.OversampleV = 1;
-	  config.GlyphOffset.y -= 2.0f;      // Move everything by 2 pixels up
-	  config.GlyphExtraSpacing.x = 1.0f; // Increase spacing between characters
-	  io.Fonts->LoadFromFileTTF("myfontfile.ttf", size_pixels, &config);
-
-	  // Combine multiple fonts into one (e.g. for icon fonts)
-	  ImWchar ranges[] = { 0xf000, 0xf3ff, 0 };
-	  ImFontConfig config;
-	  config.MergeMode = true;
-	  io.Fonts->AddFontDefault();
-	  io.Fonts->LoadFromFileTTF("fontawesome-webfont.ttf", 16.0f, &config, ranges); // Merge icon font
-	  io.Fonts->LoadFromFileTTF("myfontfile.ttf", size_pixels, NULL, &config, io.Fonts->GetGlyphRangesJapanese()); // Merge japanese glyphs
-
- Q: How can I display and input non-Latin characters such as Chinese, Japanese, Korean, Cyrillic?
- A: When loading a font, pass custom Unicode ranges to specify the glyphs to load.
-
-	  // Add default Japanese ranges
-	  io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels, NULL, io.Fonts->GetGlyphRangesJapanese());
-
-	  // Or create your own custom ranges (e.g. for a game you can feed your entire game script and only build the characters the game need)
-	  ImVector<ImWchar> ranges;
-	  ImFontAtlas::GlyphRangesBuilder builder;
-	  builder.AddText("Hello world");                        // Add a string (here "Hello world" contains 7 unique characters)
-	  builder.AddChar(0x7262);                               // Add a specific character
-	  builder.AddRanges(io.Fonts->GetGlyphRangesJapanese()); // Add one of the default ranges
-	  builder.BuildRanges(&ranges);                          // Build the final result (ordered ranges with all the unique characters submitted)
-	  io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels, NULL, ranges.Data);
-
-	All your strings needs to use UTF-8 encoding. In C++11 you can encode a string literal in UTF-8 by using the u8"hello" syntax.
-	Specifying literal in your source code using a local code page (such as CP-923 for Japanese or CP-1251 for Cyrillic) will NOT work!
-	Otherwise you can convert yourself to UTF-8 or load text data from file already saved as UTF-8.
-
-	Text input: it is up to your application to pass the right character code to io.AddInputCharacter(). The applications in examples/ are doing that.
-	For languages using IME, on Windows you can copy the Hwnd of your application to io.ImeWindowHandle.
-	The default implementation of io.ImeSetInputScreenPosFn() on Windows will set your IME position correctly.
-
- Q: How can I use the drawing facilities without an ImGui window? (using ImDrawList API)
- A: - You can create a dummy window. Call SetNextWindowBgAlpha(0.0f), call Begin() with NoTitleBar|NoResize|NoMove|NoScrollbar|NoSavedSettings|NoInputs flags.
-	  Then you can retrieve the ImDrawList* via GetWindowDrawList() and draw to it in any way you like.
-	- You can call ImGui::GetOverlayDrawList() and use this draw list to display contents over every other imgui windows.
-	- You can create your own ImDrawList instance. You'll need to initialize them ImGui::GetDrawListSharedData(), or create your own ImDrawListSharedData.
-
- Q: I integrated Dear ImGui in my engine and the text or lines are blurry..
- A: In your Render function, try translating your projection matrix by (0.5f,0.5f) or (0.375f,0.375f).
-	Also make sure your orthographic projection matrix and io.DisplaySize matches your actual framebuffer dimension.
-
- Q: I integrated Dear ImGui in my engine and some elements are clipping or disappearing when I move windows around..
- A: You are probably mishandling the clipping rectangles in your render function.
-	Rectangles provided by ImGui are defined as (x1=left,y1=top,x2=right,y2=bottom) and NOT as (x1,y1,width,height).
-
- Q: How can I help?
- A: - If you are experienced with Dear ImGui and C++, look at the github issues, or TODO.txt and see how you want/can help!
-	- Convince your company to fund development time! Individual users: you can also become a Patron (patreon.com/imgui) or donate on PayPal! See README.
-	- Disclose your usage of dear imgui via a dev blog post, a tweet, a screenshot, a mention somewhere etc.
-	  You may post screenshot or links in the gallery threads (github.com/ocornut/imgui/issues/1269). Visuals are ideal as they inspire other programmers.
-	  But even without visuals, disclosing your use of dear imgui help the library grow credibility, and help other teams and programmers with taking decisions.
-	- If you have issues or if you need to hack into the library, even if you don't expect any support it is useful that you share your issues (on github or privately).
-
- - tip: you can call Begin() multiple times with the same name during the same frame, it will keep appending to the same window.
-		this is also useful to set yourself in the context of another window (to get/set other settings)
- - tip: you can create widgets without a Begin()/End() block, they will go in an implicit window called "Debug".
- - tip: the ImGuiOnceUponAFrame helper will allow run the block of code only once a frame. You can use it to quickly add custom UI in the middle
-		of a deep nested inner loop in your code.
- - tip: you can call Render() multiple times (e.g for VR renders).
- - tip: call and read the ShowDemoWindow() code in imgui_demo.cpp for more example of how to use ImGui!
+Index
+- MISSION STATEMENT
+- END-USER GUIDE
+- PROGRAMMER GUIDE (read me!)
+- Read first
+- How to update to a newer version of Dear ImGui
+- Getting started with integrating Dear ImGui in your code/engine
+- Using gamepad/keyboard navigation controls [BETA]
+- API BREAKING CHANGES (read me when you update!)
+- ISSUES & TODO LIST
+- FREQUENTLY ASKED QUESTIONS (FAQ), TIPS
+- How can I tell whether to dispatch mouse/keyboard to imgui or to my application?
+- How can I display an image? What is ImTextureID, how does it works?
+- How can I have multiple widgets with the same label? Can I have widget without a label? (Yes). A primer on labels and the ID stack.
+- How can I load a different font than the default?
+- How can I easily use icons in my application?
+- How can I load multiple fonts?
+- How can I display and input non-latin characters such as Chinese, Japanese, Korean, Cyrillic?
+- How can I use the drawing facilities without an ImGui window? (using ImDrawList API)
+- I integrated Dear ImGui in my engine and the text or lines are blurry..
+- I integrated Dear ImGui in my engine and some elements are clipping or disappearing when I move windows around..
+- How can I help?
+- ISSUES & TODO-LIST
+- CODE
+
+
+MISSION STATEMENT
+=================
+
+- Easy to use to create code-driven and data-driven tools
+- Easy to use to create ad hoc short-lived tools and long-lived, more elaborate tools
+- Easy to hack and improve
+- Minimize screen real-estate usage
+- Minimize setup and maintenance
+- Minimize state storage on user side
+- Portable, minimize dependencies, run on target (consoles, phones, etc.)
+- Efficient runtime and memory consumption (NB- we do allocate when "growing" content e.g. creating a window, opening a tree node
+for the first time, etc. but a typical frame won't allocate anything)
+
+Designed for developers and content-creators, not the typical end-user! Some of the weaknesses includes:
+- Doesn't look fancy, doesn't animate
+- Limited layout features, intricate layouts are typically crafted in code
+
+
+END-USER GUIDE
+==============
+
+- Double-click on title bar to collapse window.
+- Click upper right corner to close a window, available when 'bool* p_open' is passed to ImGui::Begin().
+- Click and drag on lower right corner to resize window (double-click to auto fit window to its contents).
+- Click and drag on any empty space to move window.
+- TAB/SHIFT+TAB to cycle through keyboard editable fields.
+- CTRL+Click on a slider or drag box to input value as text.
+- Use mouse wheel to scroll.
+- Text editor:
+- Hold SHIFT or use mouse to select text.
+- CTRL+Left/Right to word jump.
+- CTRL+Shift+Left/Right to select words.
+- CTRL+A our Double-Click to select all.
+- CTRL+X,CTRL+C,CTRL+V to use OS clipboard/
+- CTRL+Z,CTRL+Y to undo/redo.
+- ESCAPE to revert text to its original value.
+- You can apply arithmetic operators +,*,/ on numerical values. Use +- to subtract (because - would set a negative value!)
+- Controls are automatically adjusted for OSX to match standard OSX text editing operations.
+- General Keyboard controls: enable with ImGuiConfigFlags_NavEnableKeyboard.
+- General Gamepad controls: enable with ImGuiConfigFlags_NavEnableGamepad. See suggested mappings in imgui.h ImGuiNavInput_ + download PNG/PSD at goo.gl/9LgVZW.
+
+
+PROGRAMMER GUIDE
+================
+
+READ FIRST
+
+- Read the FAQ below this section!
+- Your code creates the UI, if your code doesn't run the UI is gone! == very dynamic UI, no construction/destructions steps, less data retention
+on your side, no state duplication, less sync, less bugs.
+- Call and read ImGui::ShowDemoWindow() for demo code demonstrating most features.
+- You can learn about immediate-mode gui principles at http://www.johno.se/book/imgui.html or watch http://mollyrocket.com/861
+
+HOW TO UPDATE TO A NEWER VERSION OF DEAR IMGUI
+
+- Overwrite all the sources files except for imconfig.h (if you have made modification to your copy of imconfig.h)
+- Read the "API BREAKING CHANGES" section (below). This is where we list occasional API breaking changes.
+If a function/type has been renamed / or marked obsolete, try to fix the name in your code before it is permanently removed from the public API.
+If you have a problem with a missing function/symbols, search for its name in the code, there will likely be a comment about it.
+Please report any issue to the GitHub page!
+- Try to keep your copy of dear imgui reasonably up to date.
+
+GETTING STARTED WITH INTEGRATING DEAR IMGUI IN YOUR CODE/ENGINE
+
+- Add the Dear ImGui source files to your projects, using your preferred build system.
+It is recommended you build the .cpp files as part of your project and not as a library.
+- You can later customize the imconfig.h file to tweak some compilation time behavior, such as integrating imgui types with your own maths types.
+- See examples/ folder for standalone sample applications.
+- You may be able to grab and copy a ready made imgui_impl_*** file from the examples/.
+- When using Dear ImGui, your programming IDE is your friend: follow the declaration of variables, functions and types to find comments about them.
+
+- Init: retrieve the ImGuiIO structure with ImGui::GetIO() and fill the fields marked 'Settings': at minimum you need to set io.DisplaySize
+(application resolution). Later on you will fill your keyboard mapping, clipboard handlers, and other advanced features but for a basic
+integration you don't need to worry about it all.
+- Init: call io.Fonts->GetTexDataAsRGBA32(...), it will build the font atlas texture, then load the texture pixels into graphics memory.
+- Every frame:
+- In your main loop as early a possible, fill the IO fields marked 'Input' (e.g. mouse position, buttons, keyboard info, etc.)
+- Call ImGui::NewFrame() to begin the frame
+- You can use any ImGui function you want between NewFrame() and Render()
+- Call ImGui::Render() as late as you can to end the frame and finalize render data. it will call your io.RenderDrawListFn handler.
+(Even if you don't render, call Render() and ignore the callback, or call EndFrame() instead. Otherwhise some features will break)
+- All rendering information are stored into command-lists until ImGui::Render() is called.
+- Dear ImGui never touches or knows about your GPU state. the only function that knows about GPU is the RenderDrawListFn handler that you provide.
+- Effectively it means you can create widgets at any time in your code, regardless of considerations of being in "update" vs "render" phases
+of your own application.
+- Refer to the examples applications in the examples/ folder for instruction on how to setup your code.
+- A minimal application skeleton may be:
+
+// Application init
+ImGui::CreateContext();
+ImGuiIO& io = ImGui::GetIO();
+io.DisplaySize.x = 1920.0f;
+io.DisplaySize.y = 1280.0f;
+// TODO: Fill others settings of the io structure later.
+
+// Load texture atlas (there is a default font so you don't need to care about choosing a font yet)
+unsigned char* pixels;
+int width, height;
+io.Fonts->GetTexDataAsRGBA32(pixels, &width, &height);
+// TODO: At this points you've got the texture data and you need to upload that your your graphic system:
+MyTexture* texture = MyEngine::CreateTextureFromMemoryPixels(pixels, width, height, TEXTURE_TYPE_RGBA)
+// TODO: Store your texture pointer/identifier (whatever your engine uses) in 'io.Fonts->TexID'. This will be passed back to your via the renderer.
+io.Fonts->TexID = (void*)texture;
+
+// Application main loop
+while (true)
+{
+// Setup low-level inputs (e.g. on Win32, GetKeyboardState(), or write to those fields from your Windows message loop handlers, etc.)
+ImGuiIO& io = ImGui::GetIO();
+io.DeltaTime = 1.0f/60.0f;
+io.MousePos = mouse_pos;
+io.MouseDown[0] = mouse_button_0;
+io.MouseDown[1] = mouse_button_1;
+
+// Call NewFrame(), after this point you can use ImGui::* functions anytime
+ImGui::NewFrame();
+
+// Most of your application code here
+MyGameUpdate(); // may use any ImGui functions, e.g. ImGui::Begin("My window"); ImGui::Text("Hello, world!"); ImGui::End();
+MyGameRender(); // may use any ImGui functions as well!
+
+// Render & swap video buffers
+ImGui::Render();
+MyImGuiRenderFunction(ImGui::GetDrawData());
+SwapBuffers();
+}
+
+// Shutdown
+ImGui::DestroyContext();
+
+
+- A minimal render function skeleton may be:
+
+void void MyRenderFunction(ImDrawData* draw_data)
+{
+// TODO: Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled
+// TODO: Setup viewport, orthographic projection matrix
+// TODO: Setup shader: vertex { float2 pos, float2 uv, u32 color }, fragment shader sample color from 1 texture, multiply by vertex color.
+for (int n = 0; n < draw_data->CmdListsCount; n++)
+{
+const ImDrawVert* vtx_buffer = cmd_list->VtxBuffer.Data;  // vertex buffer generated by ImGui
+const ImDrawIdx* idx_buffer = cmd_list->IdxBuffer.Data;   // index buffer generated by ImGui
+for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
+{
+const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
+if (pcmd->UserCallback)
+{
+pcmd->UserCallback(cmd_list, pcmd);
+}
+else
+{
+// The texture for the draw call is specified by pcmd->TextureId.
+// The vast majority of draw calls with use the imgui texture atlas, which value you have set yourself during initialization.
+MyEngineBindTexture(pcmd->TextureId);
+
+// We are using scissoring to clip some objects. All low-level graphics API supports it.
+// If your engine doesn't support scissoring yet, you will get some small glitches (some elements outside their bounds) which you can fix later.
+MyEngineScissor((int)pcmd->ClipRect.x, (int)pcmd->ClipRect.y, (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
+
+// Render 'pcmd->ElemCount/3' indexed triangles.
+// By default the indices ImDrawIdx are 16-bits, you can change them to 32-bits if your engine doesn't support 16-bits indices.
+MyEngineDrawIndexedTriangles(pcmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, idx_buffer, vtx_buffer);
+}
+idx_buffer += pcmd->ElemCount;
+}
+}
+}
+
+- The examples/ folders contains many functional implementation of the pseudo-code above.
+- When calling NewFrame(), the 'io.WantCaptureMouse'/'io.WantCaptureKeyboard'/'io.WantTextInput' flags are updated.
+They tell you if ImGui intends to use your inputs. So for example, if 'io.WantCaptureMouse' is set you would typically want to hide
+mouse inputs from the rest of your application. Read the FAQ below for more information about those flags.
+
+USING GAMEPAD/KEYBOARD NAVIGATION CONTROLS [BETA]
+
+- The gamepad/keyboard navigation is in Beta. Ask questions and report issues at https://github.com/ocornut/imgui/issues/787
+- The initial focus was to support game controllers, but keyboard is becoming increasingly and decently usable.
+- Keyboard:
+- Set io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard to enable. NewFrame() will automatically fill io.NavInputs[] based on your io.KeyDown[] + io.KeyMap[] arrays.
+- When keyboard navigation is active (io.NavActive + ImGuiConfigFlags_NavEnableKeyboard), the io.WantCaptureKeyboard flag will be set.
+For more advanced uses, you may want to read from:
+- io.NavActive: true when a window is focused and it doesn't have the ImGuiWindowFlags_NoNavInputs flag set.
+- io.NavVisible: true when the navigation cursor is visible (and usually goes false when mouse is used).
+- or query focus information with e.g. IsWindowFocused(), IsItemFocused() etc. functions.
+Please reach out if you think the game vs navigation input sharing could be improved.
+- Gamepad:
+- Set io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad to enable.
+- Backend: Set io.BackendFlags |= ImGuiBackendFlags_HasGamepad + fill the io.NavInputs[] fields before calling NewFrame(). Note that io.NavInputs[] is cleared by EndFrame().
+- See 'enum ImGuiNavInput_' in imgui.h for a description of inputs. For each entry of io.NavInputs[], set the following values:
+0.0f= not held. 1.0f= fully held. Pass intermediate 0.0f..1.0f values for analog triggers/sticks.
+- We uses a simple >0.0f test for activation testing, and won't attempt to test for a dead-zone.
+Your code will probably need to transform your raw inputs (such as e.g. remapping your 0.2..0.9 raw input range to 0.0..1.0 imgui range, etc.).
+- You can download PNG/PSD files depicting the gamepad controls for common controllers at: goo.gl/9LgVZW.
+- If you need to share inputs between your game and the imgui parts, the easiest approach is to go all-or-nothing, with a buttons combo to toggle the target.
+Please reach out if you think the game vs navigation input sharing could be improved.
+- Mouse:
+- PS4 users: Consider emulating a mouse cursor with DualShock4 touch pad or a spare analog stick as a mouse-emulation fallback.
+- Consoles/Tablet/Phone users: Consider using a Synergy 1.x server (on your PC) + uSynergy.c (on your console/tablet/phone app) to share your PC mouse/keyboard.
+- On a TV/console system where readability may be lower or mouse inputs may be awkward, you may want to set the ImGuiConfigFlags_NavEnableSetMousePos flag.
+Enabling ImGuiConfigFlags_NavEnableSetMousePos + ImGuiBackendFlags_HasSetMousePos instructs dear imgui to move your mouse cursor along with navigation movements.
+When enabled, the NewFrame() function may alter 'io.MousePos' and set 'io.WantSetMousePos' to notify you that it wants the mouse cursor to be moved.
+When that happens your back-end NEEDS to move the OS or underlying mouse cursor on the next frame. Some of the binding in examples/ do that.
+(If you set the NavEnableSetMousePos flag but don't honor 'io.WantSetMousePos' properly, imgui will misbehave as it will see your mouse as moving back and forth!)
+(In a setup when you may not have easy control over the mouse cursor, e.g. uSynergy.c doesn't expose moving remote mouse cursor, you may want
+to set a boolean to ignore your other external mouse positions until the external source is moved again.)
+
+
+API BREAKING CHANGES
+====================
+
+Occasionally introducing changes that are breaking the API. The breakage are generally minor and easy to fix.
+Here is a change-log of API breaking changes, if you are using one of the functions listed, expect to have to fix some code.
+Also read releases logs https://github.com/ocornut/imgui/releases for more details.
+
+- 2018/03/20 (1.60) - Renamed io.WantMoveMouse to io.WantSetMousePos for consistency and ease of understanding (was added in 1.52, _not_ used by core and only honored by some binding ahead of merging the Nav branch).
+- 2018/03/12 (1.60) - Removed ImGuiCol_CloseButton, ImGuiCol_CloseButtonActive, ImGuiCol_CloseButtonHovered as the closing cross uses regular button colors now.
+- 2018/03/08 (1.60) - Changed ImFont::DisplayOffset.y to default to 0 instead of +1. Fixed rounding of Ascent/Descent to match TrueType renderer. If you were adding or subtracting to ImFont::DisplayOffset check if your fonts are correctly aligned vertically.
+- 2018/03/03 (1.60) - Renamed ImGuiStyleVar_Count_ to ImGuiStyleVar_COUNT and ImGuiMouseCursor_Count_ to ImGuiMouseCursor_COUNT for consistency with other public enums.
+- 2018/02/18 (1.60) - BeginDragDropSource(): temporarily removed the optional mouse_button=0 parameter because it is not really usable in many situations at the moment.
+- 2018/02/16 (1.60) - obsoleted the io.RenderDrawListsFn callback, you can call your graphics engine render function after ImGui::Render(). Use ImGui::GetDrawData() to retrieve the ImDrawData* to display.
+- 2018/02/07 (1.60) - reorganized context handling to be more explicit,
+- YOU NOW NEED TO CALL ImGui::CreateContext() AT THE BEGINNING OF YOUR APP, AND CALL ImGui::DestroyContext() AT THE END.
+- removed Shutdown() function, as DestroyContext() serve this purpose.
+- you may pass a ImFontAtlas* pointer to CreateContext() to share a font atlas between contexts. Otherwhise CreateContext() will create its own font atlas instance.
+- removed allocator parameters from CreateContext(), they are now setup with SetAllocatorFunctions(), and shared by all contexts.
+- removed the default global context and font atlas instance, which were confusing for users of DLL reloading and users of multiple contexts.
+- 2018/01/31 (1.60) - moved sample TTF files from extra_fonts/ to misc/fonts/. If you loaded files directly from the imgui repo you may need to update your paths.
+- 2018/01/11 (1.60) - obsoleted IsAnyWindowHovered() in favor of IsWindowHovered(ImGuiHoveredFlags_AnyWindow). Kept redirection function (will obsolete).
+- 2018/01/11 (1.60) - obsoleted IsAnyWindowFocused() in favor of IsWindowFocused(ImGuiFocusedFlags_AnyWindow). Kept redirection function (will obsolete).
+- 2018/01/03 (1.60) - renamed ImGuiSizeConstraintCallback to ImGuiSizeCallback, ImGuiSizeConstraintCallbackData to ImGuiSizeCallbackData.
+- 2017/12/29 (1.60) - removed CalcItemRectClosestPoint() which was weird and not really used by anyone except demo code. If you need it it's easy to replicate on your side.
+- 2017/12/24 (1.53) - renamed the emblematic ShowTestWindow() function to ShowDemoWindow(). Kept redirection function (will obsolete).
+- 2017/12/21 (1.53) - ImDrawList: renamed style.AntiAliasedShapes to style.AntiAliasedFill for consistency and as a way to explicitly break code that manipulate those flag at runtime. You can now manipulate ImDrawList::Flags
+- 2017/12/21 (1.53) - ImDrawList: removed 'bool anti_aliased = true' final parameter of ImDrawList::AddPolyline() and ImDrawList::AddConvexPolyFilled(). Prefer manipulating ImDrawList::Flags if you need to toggle them during the frame.
+- 2017/12/14 (1.53) - using the ImGuiWindowFlags_NoScrollWithMouse flag on a child window forwards the mouse wheel event to the parent window, unless either ImGuiWindowFlags_NoInputs or ImGuiWindowFlags_NoScrollbar are also set.
+- 2017/12/13 (1.53) - renamed GetItemsLineHeightWithSpacing() to GetFrameHeightWithSpacing(). Kept redirection function (will obsolete).
+- 2017/12/13 (1.53) - obsoleted IsRootWindowFocused() in favor of using IsWindowFocused(ImGuiFocusedFlags_RootWindow). Kept redirection function (will obsolete).
+- obsoleted IsRootWindowOrAnyChildFocused() in favor of using IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows). Kept redirection function (will obsolete).
+- 2017/12/12 (1.53) - renamed ImGuiTreeNodeFlags_AllowOverlapMode to ImGuiTreeNodeFlags_AllowItemOverlap. Kept redirection enum (will obsolete).
+- 2017/12/10 (1.53) - removed SetNextWindowContentWidth(), prefer using SetNextWindowContentSize(). Kept redirection function (will obsolete).
+- 2017/11/27 (1.53) - renamed ImGuiTextBuffer::append() helper to appendf(), appendv() to appendfv(). If you copied the 'Log' demo in your code, it uses appendv() so that needs to be renamed.
+- 2017/11/18 (1.53) - Style, Begin: removed ImGuiWindowFlags_ShowBorders window flag. Borders are now fully set up in the ImGuiStyle structure (see e.g. style.FrameBorderSize, style.WindowBorderSize). Use ImGui::ShowStyleEditor() to look them up.
+Please note that the style system will keep evolving (hopefully stabilizing in Q1 2018), and so custom styles will probably subtly break over time. It is recommended you use the StyleColorsClassic(), StyleColorsDark(), StyleColorsLight() functions.
+- 2017/11/18 (1.53) - Style: removed ImGuiCol_ComboBg in favor of combo boxes using ImGuiCol_PopupBg for consistency.
+- 2017/11/18 (1.53) - Style: renamed ImGuiCol_ChildWindowBg to ImGuiCol_ChildBg.
+- 2017/11/18 (1.53) - Style: renamed style.ChildWindowRounding to style.ChildRounding, ImGuiStyleVar_ChildWindowRounding to ImGuiStyleVar_ChildRounding.
+- 2017/11/02 (1.53) - obsoleted IsRootWindowOrAnyChildHovered() in favor of using IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
+- 2017/10/24 (1.52) - renamed IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCS/IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCS to IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS/IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS for consistency.
+- 2017/10/20 (1.52) - changed IsWindowHovered() default parameters behavior to return false if an item is active in another window (e.g. click-dragging item from another window to this window). You can use the newly introduced IsWindowHovered() flags to requests this specific behavior if you need it.
+- 2017/10/20 (1.52) - marked IsItemHoveredRect()/IsMouseHoveringWindow() as obsolete, in favor of using the newly introduced flags for IsItemHovered() and IsWindowHovered(). See https://github.com/ocornut/imgui/issues/1382 for details.
+removed the IsItemRectHovered()/IsWindowRectHovered() names introduced in 1.51 since they were merely more consistent names for the two functions we are now obsoleting.
+- 2017/10/17 (1.52) - marked the old 5-parameters version of Begin() as obsolete (still available). Use SetNextWindowSize()+Begin() instead!
+- 2017/10/11 (1.52) - renamed AlignFirstTextHeightToWidgets() to AlignTextToFramePadding(). Kept inline redirection function (will obsolete).
+- 2017/09/25 (1.52) - removed SetNextWindowPosCenter() because SetNextWindowPos() now has the optional pivot information to do the same and more. Kept redirection function (will obsolete).
+- 2017/08/25 (1.52) - io.MousePos needs to be set to ImVec2(-FLT_MAX,-FLT_MAX) when mouse is unavailable/missing. Previously ImVec2(-1,-1) was enough but we now accept negative mouse coordinates. In your binding if you need to support unavailable mouse, make sure to replace "io.MousePos = ImVec2(-1,-1)" with "io.MousePos = ImVec2(-FLT_MAX,-FLT_MAX)".
+- 2017/08/22 (1.51) - renamed IsItemHoveredRect() to IsItemRectHovered(). Kept inline redirection function (will obsolete). -> (1.52) use IsItemHovered(ImGuiHoveredFlags_RectOnly)!
+- renamed IsMouseHoveringAnyWindow() to IsAnyWindowHovered() for consistency. Kept inline redirection function (will obsolete).
+- renamed IsMouseHoveringWindow() to IsWindowRectHovered() for consistency. Kept inline redirection function (will obsolete).
+- 2017/08/20 (1.51) - renamed GetStyleColName() to GetStyleColorName() for consistency.
+- 2017/08/20 (1.51) - added PushStyleColor(ImGuiCol idx, ImU32 col) overload, which _might_ cause an "ambiguous call" compilation error if you are using ImColor() with implicit cast. Cast to ImU32 or ImVec4 explicily to fix.
+- 2017/08/15 (1.51) - marked the weird IMGUI_ONCE_UPON_A_FRAME helper macro as obsolete. prefer using the more explicit ImGuiOnceUponAFrame.
+- 2017/08/15 (1.51) - changed parameter order for BeginPopupContextWindow() from (const char*,int buttons,bool also_over_items) to (const char*,int buttons,bool also_over_items). Note that most calls relied on default parameters completely.
+- 2017/08/13 (1.51) - renamed ImGuiCol_Columns*** to ImGuiCol_Separator***. Kept redirection enums (will obsolete).
+- 2017/08/11 (1.51) - renamed ImGuiSetCond_*** types and flags to ImGuiCond_***. Kept redirection enums (will obsolete).
+- 2017/08/09 (1.51) - removed ValueColor() helpers, they are equivalent to calling Text(label) + SameLine() + ColorButton().
+- 2017/08/08 (1.51) - removed ColorEditMode() and ImGuiColorEditMode in favor of ImGuiColorEditFlags and parameters to the various Color*() functions. The SetColorEditOptions() allows to initialize default but the user can still change them with right-click context menu.
+- changed prototype of 'ColorEdit4(const char* label, float col[4], bool show_alpha = true)' to 'ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0)', where passing flags = 0x01 is a safe no-op (hello dodgy backward compatibility!). - check and run the demo window, under "Color/Picker Widgets", to understand the various new options.
+- changed prototype of rarely used 'ColorButton(ImVec4 col, bool small_height = false, bool outline_border = true)' to 'ColorButton(const char* desc_id, ImVec4 col, ImGuiColorEditFlags flags = 0, ImVec2 size = ImVec2(0,0))'
+- 2017/07/20 (1.51) - removed IsPosHoveringAnyWindow(ImVec2), which was partly broken and misleading. ASSERT + redirect user to io.WantCaptureMouse
+- 2017/05/26 (1.50) - removed ImFontConfig::MergeGlyphCenterV in favor of a more multipurpose ImFontConfig::GlyphOffset.
+- 2017/05/01 (1.50) - renamed ImDrawList::PathFill() (rarely used directly) to ImDrawList::PathFillConvex() for clarity.
+- 2016/11/06 (1.50) - BeginChild(const char*) now applies the stack id to the provided label, consistently with other functions as it should always have been. It shouldn't affect you unless (extremely unlikely) you were appending multiple times to a same child from different locations of the stack id. If that's the case, generate an id with GetId() and use it instead of passing string to BeginChild().
+- 2016/10/15 (1.50) - avoid 'void* user_data' parameter to io.SetClipboardTextFn/io.GetClipboardTextFn pointers. We pass io.ClipboardUserData to it.
+- 2016/09/25 (1.50) - style.WindowTitleAlign is now a ImVec2 (ImGuiAlign enum was removed). set to (0.5f,0.5f) for horizontal+vertical centering, (0.0f,0.0f) for upper-left, etc.
+- 2016/07/30 (1.50) - SameLine(x) with x>0.0f is now relative to left of column/group if any, and not always to left of window. This was sort of always the intent and hopefully breakage should be minimal.
+- 2016/05/12 (1.49) - title bar (using ImGuiCol_TitleBg/ImGuiCol_TitleBgActive colors) isn't rendered over a window background (ImGuiCol_WindowBg color) anymore.
+If your TitleBg/TitleBgActive alpha was 1.0f or you are using the default theme it will not affect you.
+However if your TitleBg/TitleBgActive alpha was <1.0f you need to tweak your custom theme to readjust for the fact that we don't draw a WindowBg background behind the title bar.
+This helper function will convert an old TitleBg/TitleBgActive color into a new one with the same visual output, given the OLD color and the OLD WindowBg color.
+ImVec4 ConvertTitleBgCol(const ImVec4& win_bg_col, const ImVec4& title_bg_col)
+{
+float new_a = 1.0f - ((1.0f - win_bg_col.w) * (1.0f - title_bg_col.w)), k = title_bg_col.w / new_a;
+return ImVec4((win_bg_col.x * win_bg_col.w + title_bg_col.x) * k, (win_bg_col.y * win_bg_col.w + title_bg_col.y) * k, (win_bg_col.z * win_bg_col.w + title_bg_col.z) * k, new_a);
+}
+If this is confusing, pick the RGB value from title bar from an old screenshot and apply this as TitleBg/TitleBgActive. Or you may just create TitleBgActive from a tweaked TitleBg color.
+- 2016/05/07 (1.49) - removed confusing set of GetInternalState(), GetInternalStateSize(), SetInternalState() functions. Now using CreateContext(), DestroyContext(), GetCurrentContext(), SetCurrentContext().
+- 2016/05/02 (1.49) - renamed SetNextTreeNodeOpened() to SetNextTreeNodeOpen(), no redirection.
+- 2016/05/01 (1.49) - obsoleted old signature of CollapsingHeader(const char* label, const char* str_id = NULL, bool display_frame = true, bool default_open = false) as extra parameters were badly designed and rarely used. You can replace the "default_open = true" flag in new API with CollapsingHeader(label, ImGuiTreeNodeFlags_DefaultOpen).
+- 2016/04/26 (1.49) - changed ImDrawList::PushClipRect(ImVec4 rect) to ImDraw::PushClipRect(Imvec2 min,ImVec2 max,bool intersect_with_current_clip_rect=false). Note that higher-level ImGui::PushClipRect() is preferable because it will clip at logic/widget level, whereas ImDrawList::PushClipRect() only affect your renderer.
+- 2016/04/03 (1.48) - removed style.WindowFillAlphaDefault setting which was redundant. Bake default BG alpha inside style.Colors[ImGuiCol_WindowBg] and all other Bg color values. (ref github issue #337).
+- 2016/04/03 (1.48) - renamed ImGuiCol_TooltipBg to ImGuiCol_PopupBg, used by popups/menus and tooltips. popups/menus were previously using ImGuiCol_WindowBg. (ref github issue #337)
+- 2016/03/21 (1.48) - renamed GetWindowFont() to GetFont(), GetWindowFontSize() to GetFontSize(). Kept inline redirection function (will obsolete).
+- 2016/03/02 (1.48) - InputText() completion/history/always callbacks: if you modify the text buffer manually (without using DeleteChars()/InsertChars() helper) you need to maintain the BufTextLen field. added an assert.
+- 2016/01/23 (1.48) - fixed not honoring exact width passed to PushItemWidth(), previously it would add extra FramePadding.x*2 over that width. if you had manual pixel-perfect alignment in place it might affect you.
+- 2015/12/27 (1.48) - fixed ImDrawList::AddRect() which used to render a rectangle 1 px too large on each axis.
+- 2015/12/04 (1.47) - renamed Color() helpers to ValueColor() - dangerously named, rarely used and probably to be made obsolete.
+- 2015/08/29 (1.45) - with the addition of horizontal scrollbar we made various fixes to inconsistencies with dealing with cursor position.
+GetCursorPos()/SetCursorPos() functions now include the scrolled amount. It shouldn't affect the majority of users, but take note that SetCursorPosX(100.0f) puts you at +100 from the starting x position which may include scrolling, not at +100 from the window left side.
+GetContentRegionMax()/GetWindowContentRegionMin()/GetWindowContentRegionMax() functions allow include the scrolled amount. Typically those were used in cases where no scrolling would happen so it may not be a problem, but watch out!
+- 2015/08/29 (1.45) - renamed style.ScrollbarWidth to style.ScrollbarSize
+- 2015/08/05 (1.44) - split imgui.cpp into extra files: imgui_demo.cpp imgui_draw.cpp imgui_internal.h that you need to add to your project.
+- 2015/07/18 (1.44) - fixed angles in ImDrawList::PathArcTo(), PathArcToFast() (introduced in 1.43) being off by an extra PI for no justifiable reason
+- 2015/07/14 (1.43) - add new ImFontAtlas::AddFont() API. For the old AddFont***, moved the 'font_no' parameter of ImFontAtlas::AddFont** functions to the ImFontConfig structure.
+you need to render your textured triangles with bilinear filtering to benefit from sub-pixel positioning of text.
+- 2015/07/08 (1.43) - switched rendering data to use indexed rendering. this is saving a fair amount of CPU/GPU and enables us to get anti-aliasing for a marginal cost.
+this necessary change will break your rendering function! the fix should be very easy. sorry for that :(
+- if you are using a vanilla copy of one of the imgui_impl_XXXX.cpp provided in the example, you just need to update your copy and you can ignore the rest.
+- the signature of the io.RenderDrawListsFn handler has changed!
+old: ImGui_XXXX_RenderDrawLists(ImDrawList** const cmd_lists, int cmd_lists_count)
+new: ImGui_XXXX_RenderDrawLists(ImDrawData* draw_data).
+argument:   'cmd_lists' becomes 'draw_data->CmdLists', 'cmd_lists_count' becomes 'draw_data->CmdListsCount'
+ImDrawList: 'commands' becomes 'CmdBuffer', 'vtx_buffer' becomes 'VtxBuffer', 'IdxBuffer' is new.
+ImDrawCmd:  'vtx_count' becomes 'ElemCount', 'clip_rect' becomes 'ClipRect', 'user_callback' becomes 'UserCallback', 'texture_id' becomes 'TextureId'.
+- each ImDrawList now contains both a vertex buffer and an index buffer. For each command, render ElemCount/3 triangles using indices from the index buffer.
+- if you REALLY cannot render indexed primitives, you can call the draw_data->DeIndexAllBuffers() method to de-index the buffers. This is slow and a waste of CPU/GPU. Prefer using indexed rendering!
+- refer to code in the examples/ folder or ask on the GitHub if you are unsure of how to upgrade. please upgrade!
+- 2015/07/10 (1.43) - changed SameLine() parameters from int to float.
+- 2015/07/02 (1.42) - renamed SetScrollPosHere() to SetScrollFromCursorPos(). Kept inline redirection function (will obsolete).
+- 2015/07/02 (1.42) - renamed GetScrollPosY() to GetScrollY(). Necessary to reduce confusion along with other scrolling functions, because positions (e.g. cursor position) are not equivalent to scrolling amount.
+- 2015/06/14 (1.41) - changed ImageButton() default bg_col parameter from (0,0,0,1) (black) to (0,0,0,0) (transparent) - makes a difference when texture have transparence
+- 2015/06/14 (1.41) - changed Selectable() API from (label, selected, size) to (label, selected, flags, size). Size override should have been rarely be used. Sorry!
+- 2015/05/31 (1.40) - renamed GetWindowCollapsed() to IsWindowCollapsed() for consistency. Kept inline redirection function (will obsolete).
+- 2015/05/31 (1.40) - renamed IsRectClipped() to IsRectVisible() for consistency. Note that return value is opposite! Kept inline redirection function (will obsolete).
+- 2015/05/27 (1.40) - removed the third 'repeat_if_held' parameter from Button() - sorry! it was rarely used and inconsistent. Use PushButtonRepeat(true) / PopButtonRepeat() to enable repeat on desired buttons.
+- 2015/05/11 (1.40) - changed BeginPopup() API, takes a string identifier instead of a bool. ImGui needs to manage the open/closed state of popups. Call OpenPopup() to actually set the "open" state of a popup. BeginPopup() returns true if the popup is opened.
+- 2015/05/03 (1.40) - removed style.AutoFitPadding, using style.WindowPadding makes more sense (the default values were already the same).
+- 2015/04/13 (1.38) - renamed IsClipped() to IsRectClipped(). Kept inline redirection function until 1.50.
+- 2015/04/09 (1.38) - renamed ImDrawList::AddArc() to ImDrawList::AddArcFast() for compatibility with future API
+- 2015/04/03 (1.38) - removed ImGuiCol_CheckHovered, ImGuiCol_CheckActive, replaced with the more general ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive.
+- 2014/04/03 (1.38) - removed support for passing -FLT_MAX..+FLT_MAX as the range for a SliderFloat(). Use DragFloat() or Inputfloat() instead.
+- 2015/03/17 (1.36) - renamed GetItemBoxMin()/GetItemBoxMax()/IsMouseHoveringBox() to GetItemRectMin()/GetItemRectMax()/IsMouseHoveringRect(). Kept inline redirection function until 1.50.
+- 2015/03/15 (1.36) - renamed style.TreeNodeSpacing to style.IndentSpacing, ImGuiStyleVar_TreeNodeSpacing to ImGuiStyleVar_IndentSpacing
+- 2015/03/13 (1.36) - renamed GetWindowIsFocused() to IsWindowFocused(). Kept inline redirection function until 1.50.
+- 2015/03/08 (1.35) - renamed style.ScrollBarWidth to style.ScrollbarWidth (casing)
+- 2015/02/27 (1.34) - renamed OpenNextNode(bool) to SetNextTreeNodeOpened(bool, ImGuiSetCond). Kept inline redirection function until 1.50.
+- 2015/02/27 (1.34) - renamed ImGuiSetCondition_*** to ImGuiSetCond_***, and _FirstUseThisSession becomes _Once.
+- 2015/02/11 (1.32) - changed text input callback ImGuiTextEditCallback return type from void-->int. reserved for future use, return 0 for now.
+- 2015/02/10 (1.32) - renamed GetItemWidth() to CalcItemWidth() to clarify its evolving behavior
+- 2015/02/08 (1.31) - renamed GetTextLineSpacing() to GetTextLineHeightWithSpacing()
+- 2015/02/01 (1.31) - removed IO.MemReallocFn (unused)
+- 2015/01/19 (1.30) - renamed ImGuiStorage::GetIntPtr()/GetFloatPtr() to GetIntRef()/GetIntRef() because Ptr was conflicting with actual pointer storage functions.
+- 2015/01/11 (1.30) - big font/image API change! now loads TTF file. allow for multiple fonts. no need for a PNG loader.
+(1.30) - removed GetDefaultFontData(). uses io.Fonts->GetTextureData*() API to retrieve uncompressed pixels.
+font init:  const void* png_data; unsigned int png_size; ImGui::GetDefaultFontData(NULL, NULL, &png_data, &png_size); <..Upload texture to GPU..>
+became:     unsigned char* pixels; int width, height; io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height); <..Upload texture to GPU>; io.Fonts->TexId = YourTextureIdentifier;
+you now more flexibility to load multiple TTF fonts and manage the texture buffer for internal needs.
+it is now recommended that you sample the font texture with bilinear interpolation.
+(1.30) - added texture identifier in ImDrawCmd passed to your render function (we can now render images). make sure to set io.Fonts->TexID.
+(1.30) - removed IO.PixelCenterOffset (unnecessary, can be handled in user projection matrix)
+(1.30) - removed ImGui::IsItemFocused() in favor of ImGui::IsItemActive() which handles all widgets
+- 2014/12/10 (1.18) - removed SetNewWindowDefaultPos() in favor of new generic API SetNextWindowPos(pos, ImGuiSetCondition_FirstUseEver)
+- 2014/11/28 (1.17) - moved IO.Font*** options to inside the IO.Font-> structure (FontYOffset, FontTexUvForWhite, FontBaseScale, FontFallbackGlyph)
+- 2014/11/26 (1.17) - reworked syntax of IMGUI_ONCE_UPON_A_FRAME helper macro to increase compiler compatibility
+- 2014/11/07 (1.15) - renamed IsHovered() to IsItemHovered()
+- 2014/10/02 (1.14) - renamed IMGUI_INCLUDE_IMGUI_USER_CPP to IMGUI_INCLUDE_IMGUI_USER_INL and imgui_user.cpp to imgui_user.inl (more IDE friendly)
+- 2014/09/25 (1.13) - removed 'text_end' parameter from IO.SetClipboardTextFn (the string is now always zero-terminated for simplicity)
+- 2014/09/24 (1.12) - renamed SetFontScale() to SetWindowFontScale()
+- 2014/09/24 (1.12) - moved IM_MALLOC/IM_REALLOC/IM_FREE preprocessor defines to IO.MemAllocFn/IO.MemReallocFn/IO.MemFreeFn
+- 2014/08/30 (1.09) - removed IO.FontHeight (now computed automatically)
+- 2014/08/30 (1.09) - moved IMGUI_FONT_TEX_UV_FOR_WHITE preprocessor define to IO.FontTexUvForWhite
+- 2014/08/28 (1.09) - changed the behavior of IO.PixelCenterOffset following various rendering fixes
+
+
+ISSUES & TODO-LIST
+==================
+See TODO.txt
+
+
+FREQUENTLY ASKED QUESTIONS (FAQ), TIPS
+======================================
+
+Q: How can I tell whether to dispatch mouse/keyboard to imgui or to my application?
+A: You can read the 'io.WantCaptureMouse'/'io.WantCaptureKeyboard'/'io.WantTextInput' flags from the ImGuiIO structure.
+- When 'io.WantCaptureMouse' is set, imgui wants to use your mouse state, and you may want to discard/hide the inputs from the rest of your application.
+- When 'io.WantCaptureKeyboard' is set, imgui wants to use your keyboard state, and you may want to discard/hide the inputs from the rest of your application.
+- When 'io.WantTextInput' is set to may want to notify your OS to popup an on-screen keyboard, if available (e.g. on a mobile phone, or console OS).
+The 'io.WantCaptureMouse' is more accurate that any attempt to "check if the mouse is hovering a window" (don't do that!).
+It handle mouse dragging correctly (both dragging that started over your application or over an imgui window) and handle e.g. modal windows blocking inputs.
+Those flags are updated by ImGui::NewFrame(). Preferably read the flags after calling NewFrame() if you can afford it, but reading them before is also
+perfectly fine, as the bool toggle fairly rarely.
+(Advanced note: text input releases focus on Return 'KeyDown', so the following Return 'KeyUp' event that your application receive will typically
+have 'io.WantCaptureKeyboard=false'. Depending on your application logic it may or not be inconvenient. You might want to track which key-downs
+were for Dear ImGui, e.g. with an array of bool, and filter out the corresponding key-ups.)
+
+Q: How can I display an image? What is ImTextureID, how does it works?
+A: ImTextureID is a void* used to pass renderer-agnostic texture references around until it hits your render function.
+Dear ImGui knows nothing about what those bits represent, it just passes them around. It is up to you to decide what you want the void* to carry!
+It could be an identifier to your OpenGL texture (cast GLuint to void*), a pointer to your custom engine material (cast MyMaterial* to void*), etc.
+At the end of the chain, your renderer takes this void* to cast it back into whatever it needs to select a current texture to render.
+Refer to examples applications, where each renderer (in a imgui_impl_xxxx.cpp file) is treating ImTextureID as a different thing.
+(c++ tip: OpenGL uses integers to identify textures. You can safely store an integer into a void*, just cast it to void*, don't take it's address!)
+To display a custom image/texture within an ImGui window, you may use ImGui::Image(), ImGui::ImageButton(), ImDrawList::AddImage() functions.
+Dear ImGui will generate the geometry and draw calls using the ImTextureID that you passed and which your renderer can use.
+You may call ImGui::ShowMetricsWindow() to explore active draw lists and visualize/understand how the draw data is generated.
+It is your responsibility to get textures uploaded to your GPU.
+
+Q: Can I have multiple widgets with the same label? Can I have widget without a label?
+A: Yes. A primer on labels and the ID stack...
+
+- Elements that are typically not clickable, such as Text() items don't need an ID.
+
+- Interactive widgets require state to be carried over multiple frames (most typically Dear ImGui often needs to remember what is
+the "active" widget). to do so they need a unique ID. unique ID are typically derived from a string label, an integer index or a pointer.
+
+Button("OK");          // Label = "OK",     ID = hash of "OK"
+Button("Cancel");      // Label = "Cancel", ID = hash of "Cancel"
+
+- ID are uniquely scoped within windows, tree nodes, etc. so no conflict can happen if you have two buttons called "OK"
+in two different windows or in two different locations of a tree.
+
+- If you have a same ID twice in the same location, you'll have a conflict:
+
+Button("OK");
+Button("OK");          // ID collision! Both buttons will be treated as the same.
+
+Fear not! this is easy to solve and there are many ways to solve it!
+
+- When passing a label you can optionally specify extra unique ID information within string itself.
+Use "##" to pass a complement to the ID that won't be visible to the end-user.
+This helps solving the simple collision cases when you know which items are going to be created.
+
+Button("Play");        // Label = "Play",   ID = hash of "Play"
+Button("Play##foo1");  // Label = "Play",   ID = hash of "Play##foo1" (different from above)
+Button("Play##foo2");  // Label = "Play",   ID = hash of "Play##foo2" (different from above)
+
+- If you want to completely hide the label, but still need an ID:
+
+Checkbox("##On", &b);  // Label = "",       ID = hash of "##On" (no label!)
+
+- Occasionally/rarely you might want change a label while preserving a constant ID. This allows you to animate labels.
+For example you may want to include varying information in a window title bar, but windows are uniquely identified by their ID..
+Use "###" to pass a label that isn't part of ID:
+
+Button("Hello###ID";   // Label = "Hello",  ID = hash of "ID"
+Button("World###ID";   // Label = "World",  ID = hash of "ID" (same as above)
+
+sprintf(buf, "My game (%f FPS)###MyGame", fps);
+Begin(buf);            // Variable label,   ID = hash of "MyGame"
+
+- Use PushID() / PopID() to create scopes and avoid ID conflicts within the same Window.
+This is the most convenient way of distinguishing ID if you are iterating and creating many UI elements.
+You can push a pointer, a string or an integer value. Remember that ID are formed from the concatenation of _everything_ in the ID stack!
+
+for (int i = 0; i < 100; i++)
+{
+PushID(i);
+Button("Click");   // Label = "Click",  ID = hash of integer + "label" (unique)
+PopID();
+}
+
+for (int i = 0; i < 100; i++)
+{
+MyObject* obj = Objects[i];
+PushID(obj);
+Button("Click");   // Label = "Click",  ID = hash of pointer + "label" (unique)
+PopID();
+}
+
+for (int i = 0; i < 100; i++)
+{
+MyObject* obj = Objects[i];
+PushID(obj->Name);
+Button("Click");   // Label = "Click",  ID = hash of string + "label" (unique)
+PopID();
+}
+
+- More example showing that you can stack multiple prefixes into the ID stack:
+
+Button("Click");     // Label = "Click",  ID = hash of "Click"
+PushID("node");
+Button("Click");     // Label = "Click",  ID = hash of "node" + "Click"
+PushID(my_ptr);
+Button("Click"); // Label = "Click",  ID = hash of "node" + ptr + "Click"
+PopID();
+PopID();
+
+- Tree nodes implicitly creates a scope for you by calling PushID().
+
+Button("Click");     // Label = "Click",  ID = hash of "Click"
+if (TreeNode("node"))
+{
+Button("Click");   // Label = "Click",  ID = hash of "node" + "Click"
+TreePop();
+}
+
+- When working with trees, ID are used to preserve the open/close state of each tree node.
+Depending on your use cases you may want to use strings, indices or pointers as ID.
+e.g. when displaying a single object that may change over time (dynamic 1-1 relationship), using a static string as ID will preserve your
+node open/closed state when the targeted object change.
+e.g. when displaying a list of objects, using indices or pointers as ID will preserve the node open/closed state differently.
+experiment and see what makes more sense!
+
+Q: How can I load a different font than the default? (default is an embedded version of ProggyClean.ttf, rendered at size 13)
+A: Use the font atlas to load the TTF/OTF file you want:
+ImGuiIO& io = ImGui::GetIO();
+io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels);
+io.Fonts->GetTexDataAsRGBA32() or GetTexDataAsAlpha8()
+
+New programmers: remember that in C/C++ and most programming languages if you want to use a backslash \ in a string literal you need to write a double backslash "\\":
+io.Fonts->AddFontFromFileTTF("MyDataFolder\MyFontFile.ttf", size_in_pixels);   // WRONG
+io.Fonts->AddFontFromFileTTF("MyDataFolder\\MyFontFile.ttf", size_in_pixels);  // CORRECT
+io.Fonts->AddFontFromFileTTF("MyDataFolder/MyFontFile.ttf", size_in_pixels);   // ALSO CORRECT
+
+Q: How can I easily use icons in my application?
+A: The most convenient and practical way is to merge an icon font such as FontAwesome inside you main font. Then you can refer to icons within your
+strings. Read 'How can I load multiple fonts?' and the file 'misc/fonts/README.txt' for instructions and useful header files.
+
+Q: How can I load multiple fonts?
+A: Use the font atlas to pack them into a single texture:
+(Read misc/fonts/README.txt and the code in ImFontAtlas for more details.)
+
+ImGuiIO& io = ImGui::GetIO();
+ImFont* font0 = io.Fonts->AddFontDefault();
+ImFont* font1 = io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels);
+ImFont* font2 = io.Fonts->AddFontFromFileTTF("myfontfile2.ttf", size_in_pixels);
+io.Fonts->GetTexDataAsRGBA32() or GetTexDataAsAlpha8()
+// the first loaded font gets used by default
+// use ImGui::PushFont()/ImGui::PopFont() to change the font at runtime
+
+// Options
+ImFontConfig config;
+config.OversampleH = 3;
+config.OversampleV = 1;
+config.GlyphOffset.y -= 2.0f;      // Move everything by 2 pixels up
+config.GlyphExtraSpacing.x = 1.0f; // Increase spacing between characters
+io.Fonts->LoadFromFileTTF("myfontfile.ttf", size_pixels, &config);
+
+// Combine multiple fonts into one (e.g. for icon fonts)
+ImWchar ranges[] = { 0xf000, 0xf3ff, 0 };
+ImFontConfig config;
+config.MergeMode = true;
+io.Fonts->AddFontDefault();
+io.Fonts->LoadFromFileTTF("fontawesome-webfont.ttf", 16.0f, &config, ranges); // Merge icon font
+io.Fonts->LoadFromFileTTF("myfontfile.ttf", size_pixels, NULL, &config, io.Fonts->GetGlyphRangesJapanese()); // Merge japanese glyphs
+
+Q: How can I display and input non-Latin characters such as Chinese, Japanese, Korean, Cyrillic?
+A: When loading a font, pass custom Unicode ranges to specify the glyphs to load.
+
+// Add default Japanese ranges
+io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels, NULL, io.Fonts->GetGlyphRangesJapanese());
+
+// Or create your own custom ranges (e.g. for a game you can feed your entire game script and only build the characters the game need)
+ImVector<ImWchar> ranges;
+ImFontAtlas::GlyphRangesBuilder builder;
+builder.AddText("Hello world");                        // Add a string (here "Hello world" contains 7 unique characters)
+builder.AddChar(0x7262);                               // Add a specific character
+builder.AddRanges(io.Fonts->GetGlyphRangesJapanese()); // Add one of the default ranges
+builder.BuildRanges(&ranges);                          // Build the final result (ordered ranges with all the unique characters submitted)
+io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels, NULL, ranges.Data);
+
+All your strings needs to use UTF-8 encoding. In C++11 you can encode a string literal in UTF-8 by using the u8"hello" syntax.
+Specifying literal in your source code using a local code page (such as CP-923 for Japanese or CP-1251 for Cyrillic) will NOT work!
+Otherwise you can convert yourself to UTF-8 or load text data from file already saved as UTF-8.
+
+Text input: it is up to your application to pass the right character code to io.AddInputCharacter(). The applications in examples/ are doing that.
+For languages using IME, on Windows you can copy the Hwnd of your application to io.ImeWindowHandle.
+The default implementation of io.ImeSetInputScreenPosFn() on Windows will set your IME position correctly.
+
+Q: How can I use the drawing facilities without an ImGui window? (using ImDrawList API)
+A: - You can create a dummy window. Call SetNextWindowBgAlpha(0.0f), call Begin() with NoTitleBar|NoResize|NoMove|NoScrollbar|NoSavedSettings|NoInputs flags.
+Then you can retrieve the ImDrawList* via GetWindowDrawList() and draw to it in any way you like.
+- You can call ImGui::GetOverlayDrawList() and use this draw list to display contents over every other imgui windows.
+- You can create your own ImDrawList instance. You'll need to initialize them ImGui::GetDrawListSharedData(), or create your own ImDrawListSharedData.
+
+Q: I integrated Dear ImGui in my engine and the text or lines are blurry..
+A: In your Render function, try translating your projection matrix by (0.5f,0.5f) or (0.375f,0.375f).
+Also make sure your orthographic projection matrix and io.DisplaySize matches your actual framebuffer dimension.
+
+Q: I integrated Dear ImGui in my engine and some elements are clipping or disappearing when I move windows around..
+A: You are probably mishandling the clipping rectangles in your render function.
+Rectangles provided by ImGui are defined as (x1=left,y1=top,x2=right,y2=bottom) and NOT as (x1,y1,width,height).
+
+Q: How can I help?
+A: - If you are experienced with Dear ImGui and C++, look at the github issues, or TODO.txt and see how you want/can help!
+- Convince your company to fund development time! Individual users: you can also become a Patron (patreon.com/imgui) or donate on PayPal! See README.
+- Disclose your usage of dear imgui via a dev blog post, a tweet, a screenshot, a mention somewhere etc.
+You may post screenshot or links in the gallery threads (github.com/ocornut/imgui/issues/1269). Visuals are ideal as they inspire other programmers.
+But even without visuals, disclosing your use of dear imgui help the library grow credibility, and help other teams and programmers with taking decisions.
+- If you have issues or if you need to hack into the library, even if you don't expect any support it is useful that you share your issues (on github or privately).
+
+- tip: you can call Begin() multiple times with the same name during the same frame, it will keep appending to the same window.
+this is also useful to set yourself in the context of another window (to get/set other settings)
+- tip: you can create widgets without a Begin()/End() block, they will go in an implicit window called "Debug".
+- tip: the ImGuiOnceUponAFrame helper will allow run the block of code only once a frame. You can use it to quickly add custom UI in the middle
+of a deep nested inner loop in your code.
+- tip: you can call Render() multiple times (e.g for VR renders).
+- tip: call and read the ShowDemoWindow() code in imgui_demo.cpp for more example of how to use ImGui!
 
 */
 
@@ -2226,7 +2226,7 @@ static bool NavScoreItem(ImGuiNavMoveResult* result, ImRect cand)
 	float dcy = (cand.Min.y + cand.Max.y) - (curr.Min.y + curr.Max.y);
 	float dist_center = fabsf(dcx) + fabsf(dcy); // L1 metric (need this for our connectedness guarantee)
 
-	// Determine which quadrant of 'curr' our candidate item 'cand' lies in based on distance
+												 // Determine which quadrant of 'curr' our candidate item 'cand' lies in based on distance
 	ImGuiDir quadrant;
 	float dax = 0.0f, day = 0.0f, dist_axial = 0.0f;
 	if (dbx != 0.0f || dby != 0.0f)
@@ -2270,7 +2270,7 @@ static bool NavScoreItem(ImGuiNavMoveResult* result, ImRect cand)
 			g.OverlayDrawList.AddRectFilled(cand.Min, cand.Max, IM_COL32(255, 0, 0, 200));
 			g.OverlayDrawList.AddText(g.IO.FontDefault, 13.0f, cand.Min, IM_COL32(255, 255, 255, 255), buf);
 		}
-}
+	}
 #endif
 
 	// Is it in the quadrant we're interesting in moving to?
@@ -2476,11 +2476,11 @@ bool ImGui::IsItemHovered(ImGuiHoveredFlags flags)
 		return false;
 	IM_ASSERT((flags & (ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_ChildWindows)) == 0);   // Flags not supported by this function
 
-	// Test if we are hovering the right window (our window could be behind another window)
-	// [2017/10/16] Reverted commit 344d48be3 and testing RootWindow instead. I believe it is correct to NOT test for RootWindow but this leaves us unable to use IsItemHovered() after EndChild() itself.
-	// Until a solution is found I believe reverting to the test from 2017/09/27 is safe since this was the test that has been running for a long while.
-	//if (g.HoveredWindow != window)
-	//    return false;
+																								 // Test if we are hovering the right window (our window could be behind another window)
+																								 // [2017/10/16] Reverted commit 344d48be3 and testing RootWindow instead. I believe it is correct to NOT test for RootWindow but this leaves us unable to use IsItemHovered() after EndChild() itself.
+																								 // Until a solution is found I believe reverting to the test from 2017/09/27 is safe since this was the test that has been running for a long while.
+																								 //if (g.HoveredWindow != window)
+																								 //    return false;
 	if (g.HoveredRootWindow != window->RootWindow && !(flags & ImGuiHoveredFlags_AllowWhenOverlapped))
 		return false;
 
@@ -3249,7 +3249,7 @@ static void ImGui::NavUpdate()
 	g.NavScoringRectScreen.Min.x = ImMin(g.NavScoringRectScreen.Min.x + 1.0f, g.NavScoringRectScreen.Max.x);
 	g.NavScoringRectScreen.Max.x = g.NavScoringRectScreen.Min.x;
 	IM_ASSERT(!g.NavScoringRectScreen.IsInverted()); // Ensure if we have a finite, non-inverted bounding box here will allows us to remove extraneous fabsf() calls in NavScoreItem().
-	//g.OverlayDrawList.AddRect(g.NavScoringRectScreen.Min, g.NavScoringRectScreen.Max, IM_COL32(255,200,0,255)); // [DEBUG]
+													 //g.OverlayDrawList.AddRect(g.NavScoringRectScreen.Min, g.NavScoringRectScreen.Max, IM_COL32(255,200,0,255)); // [DEBUG]
 	g.NavScoringCount = 0;
 #if IMGUI_DEBUG_NAV_RECTS
 	if (g.NavWindow) { for (int layer = 0; layer < 2; layer++) g.OverlayDrawList.AddRect(g.NavWindow->Pos + g.NavWindow->NavRectRel[layer].Min, g.NavWindow->Pos + g.NavWindow->NavRectRel[layer].Max, IM_COL32(255, 200, 0, 255)); } // [DEBUG] 
@@ -3490,8 +3490,8 @@ void ImGui::NewFrame()
 	g.WantCaptureMouseNextFrame = g.WantCaptureKeyboardNextFrame = g.WantTextInputNextFrame = -1;
 	g.OsImePosRequest = ImVec2(1.0f, 1.0f); // OS Input Method Editor showing on top-left of our window by default
 
-	// If mouse was first clicked outside of ImGui bounds we also cancel out hovering.
-	// FIXME: For patterns of drag and drop across OS windows, we may need to rework/remove this test (first committed 311c0ca9 on 2015/02)
+											// If mouse was first clicked outside of ImGui bounds we also cancel out hovering.
+											// FIXME: For patterns of drag and drop across OS windows, we may need to rework/remove this test (first committed 311c0ca9 on 2015/02)
 	bool mouse_dragging_extern_payload = g.DragDropActive && (g.DragDropSourceFlags & ImGuiDragDropFlags_SourceExtern) != 0;
 	if (!mouse_avail_to_imgui && !mouse_dragging_extern_payload)
 		g.HoveredWindow = g.HoveredRootWindow = NULL;
@@ -5467,9 +5467,9 @@ struct ImGuiResizeGripDef
 const ImGuiResizeGripDef resize_grip_def[4] =
 {
 	{ ImVec2(1,1), ImVec2(-1,-1), 0, 3 }, // Lower right
-	{ ImVec2(0,1), ImVec2(+1,-1), 3, 6 }, // Lower left
-	{ ImVec2(0,0), ImVec2(+1,+1), 6, 9 }, // Upper left
-	{ ImVec2(1,0), ImVec2(-1,+1), 9,12 }, // Upper right
+{ ImVec2(0,1), ImVec2(+1,-1), 3, 6 }, // Lower left
+{ ImVec2(0,0), ImVec2(+1,+1), 6, 9 }, // Upper left
+{ ImVec2(1,0), ImVec2(-1,+1), 9,12 }, // Upper right
 };
 
 static ImRect GetBorderRect(ImGuiWindow* window, int border_n, float perp_padding, float thickness)
@@ -5605,7 +5605,7 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
 	IM_ASSERT(g.Initialized);                       // Forgot to call ImGui::NewFrame()
 	IM_ASSERT(g.FrameCountEnded != g.FrameCount);   // Called ImGui::Render() or ImGui::EndFrame() and haven't called ImGui::NewFrame() again yet
 
-	// Find or create
+													// Find or create
 	ImGuiWindow* window = FindWindowByName(name);
 	if (!window)
 	{
@@ -5718,7 +5718,7 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
 	{
 		const bool window_is_child_tooltip = (flags & ImGuiWindowFlags_ChildWindow) && (flags & ImGuiWindowFlags_Tooltip); // FIXME-WIP: Undocumented behavior of Child+Tooltip for pinned tooltip (#1345)
 
-		// Initialize
+																														   // Initialize
 		window->ParentWindow = parent_window;
 		window->RootWindow = window->RootWindowForTitleBarHighlight = window->RootWindowForTabbing = window->RootWindowForNav = window;
 		if (parent_window && (flags & ImGuiWindowFlags_ChildWindow) && !window_is_child_tooltip)
@@ -6154,8 +6154,8 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
 		// Maybe we can support CTRL+C on every element?
 		/*
 		if (g.ActiveId == move_id)
-			if (g.IO.KeyCtrl && IsKeyPressedMap(ImGuiKey_C))
-				ImGui::LogToClipboard();
+		if (g.IO.KeyCtrl && IsKeyPressedMap(ImGuiKey_C))
+		ImGui::LogToClipboard();
 		*/
 
 		// Inner rectangle
@@ -6237,7 +6237,7 @@ void ImGui::End()
 		EndColumns();
 	PopClipRect();   // Inner window clip rectangle
 
-	// Stop logging
+					 // Stop logging
 	if (!(window->Flags & ImGuiWindowFlags_ChildWindow))    // FIXME: add more options for scope of logging
 		LogFinish();
 
@@ -6610,26 +6610,26 @@ struct ImGuiStyleVarInfo
 static const ImGuiStyleVarInfo GStyleVarInfo[] =
 {
 	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, Alpha) },              // ImGuiStyleVar_Alpha
-	{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowPadding) },      // ImGuiStyleVar_WindowPadding
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowRounding) },     // ImGuiStyleVar_WindowRounding
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowBorderSize) },   // ImGuiStyleVar_WindowBorderSize
-	{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowMinSize) },      // ImGuiStyleVar_WindowMinSize
-	{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowTitleAlign) },   // ImGuiStyleVar_WindowTitleAlign
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, ChildRounding) },      // ImGuiStyleVar_ChildRounding
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, ChildBorderSize) },    // ImGuiStyleVar_ChildBorderSize
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, PopupRounding) },      // ImGuiStyleVar_PopupRounding
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, PopupBorderSize) },    // ImGuiStyleVar_PopupBorderSize
-	{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, FramePadding) },       // ImGuiStyleVar_FramePadding
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, FrameRounding) },      // ImGuiStyleVar_FrameRounding
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, FrameBorderSize) },    // ImGuiStyleVar_FrameBorderSize
-	{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, ItemSpacing) },        // ImGuiStyleVar_ItemSpacing
-	{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, ItemInnerSpacing) },   // ImGuiStyleVar_ItemInnerSpacing
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, IndentSpacing) },      // ImGuiStyleVar_IndentSpacing
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, ScrollbarSize) },      // ImGuiStyleVar_ScrollbarSize
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, ScrollbarRounding) },  // ImGuiStyleVar_ScrollbarRounding
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, GrabMinSize) },        // ImGuiStyleVar_GrabMinSize
-	{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, GrabRounding) },       // ImGuiStyleVar_GrabRounding
-	{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, ButtonTextAlign) },    // ImGuiStyleVar_ButtonTextAlign
+{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowPadding) },      // ImGuiStyleVar_WindowPadding
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowRounding) },     // ImGuiStyleVar_WindowRounding
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowBorderSize) },   // ImGuiStyleVar_WindowBorderSize
+{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowMinSize) },      // ImGuiStyleVar_WindowMinSize
+{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, WindowTitleAlign) },   // ImGuiStyleVar_WindowTitleAlign
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, ChildRounding) },      // ImGuiStyleVar_ChildRounding
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, ChildBorderSize) },    // ImGuiStyleVar_ChildBorderSize
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, PopupRounding) },      // ImGuiStyleVar_PopupRounding
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, PopupBorderSize) },    // ImGuiStyleVar_PopupBorderSize
+{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, FramePadding) },       // ImGuiStyleVar_FramePadding
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, FrameRounding) },      // ImGuiStyleVar_FrameRounding
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, FrameBorderSize) },    // ImGuiStyleVar_FrameBorderSize
+{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, ItemSpacing) },        // ImGuiStyleVar_ItemSpacing
+{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, ItemInnerSpacing) },   // ImGuiStyleVar_ItemInnerSpacing
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, IndentSpacing) },      // ImGuiStyleVar_IndentSpacing
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, ScrollbarSize) },      // ImGuiStyleVar_ScrollbarSize
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, ScrollbarRounding) },  // ImGuiStyleVar_ScrollbarRounding
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, GrabMinSize) },        // ImGuiStyleVar_GrabMinSize
+{ ImGuiDataType_Float, 1, (ImU32)IM_OFFSETOF(ImGuiStyle, GrabRounding) },       // ImGuiStyleVar_GrabRounding
+{ ImGuiDataType_Float, 2, (ImU32)IM_OFFSETOF(ImGuiStyle, ButtonTextAlign) },    // ImGuiStyleVar_ButtonTextAlign
 };
 
 static const ImGuiStyleVarInfo* GetStyleVarInfo(ImGuiStyleVar idx)
@@ -10747,7 +10747,7 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
 	char name[16];
 	ImFormatString(name, IM_ARRAYSIZE(name), "##Combo_%02d", g.CurrentPopupStack.Size); // Recycle windows based on depth
 
-	// Peak into expected window size so we can position it
+																						// Peak into expected window size so we can position it
 	if (ImGuiWindow* popup_window = FindWindowByName(name))
 		if (popup_window->WasActive)
 		{
@@ -11239,7 +11239,7 @@ bool ImGui::BeginMenu(const char* label, bool enabled)
 	if (menuset_is_open)
 		g.NavWindow = window;  // Odd hack to allow hovering across menus of a same menu-set (otherwise we wouldn't be able to hover parent)
 
-	// The reference position stored in popup_pos will be used by Begin() to find a suitable position for the child menu (using FindBestPopupWindowPos).
+							   // The reference position stored in popup_pos will be used by Begin() to find a suitable position for the child menu (using FindBestPopupWindowPos).
 	ImVec2 popup_pos, pos = window->DC.CursorPos;
 	if (window->DC.LayoutType == ImGuiLayoutType_Horizontal)
 	{
@@ -11506,7 +11506,7 @@ bool ImGui::ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFl
 	else
 		window->DrawList->AddRect(bb.Min, bb.Max, GetColorU32(ImGuiCol_FrameBg), rounding); // Color button are often in need of some sort of border
 
-	// Drag and Drop Source
+																							// Drag and Drop Source
 	if (g.ActiveId == id && BeginDragDropSource()) // NB: The ActiveId test is merely an optional micro-optimization
 	{
 		if (flags & ImGuiColorEditFlags_NoAlpha)
@@ -11678,15 +11678,15 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
 		const char* ids[4] = { "##X", "##Y", "##Z", "##W" };
 		const char* fmt_table_int[3][4] =
 		{
-			{   "%3.0f",   "%3.0f",   "%3.0f",   "%3.0f" }, // Short display
-			{ "R:%3.0f", "G:%3.0f", "B:%3.0f", "A:%3.0f" }, // Long display for RGBA
-			{ "H:%3.0f", "S:%3.0f", "V:%3.0f", "A:%3.0f" }  // Long display for HSVA
+			{ "%3.0f",   "%3.0f",   "%3.0f",   "%3.0f" }, // Short display
+		{ "R:%3.0f", "G:%3.0f", "B:%3.0f", "A:%3.0f" }, // Long display for RGBA
+		{ "H:%3.0f", "S:%3.0f", "V:%3.0f", "A:%3.0f" }  // Long display for HSVA
 		};
 		const char* fmt_table_float[3][4] =
 		{
-			{   "%0.3f",   "%0.3f",   "%0.3f",   "%0.3f" }, // Short display
-			{ "R:%0.3f", "G:%0.3f", "B:%0.3f", "A:%0.3f" }, // Long display for RGBA
-			{ "H:%0.3f", "S:%0.3f", "V:%0.3f", "A:%0.3f" }  // Long display for HSVA
+			{ "%0.3f",   "%0.3f",   "%0.3f",   "%0.3f" }, // Short display
+		{ "R:%0.3f", "G:%0.3f", "B:%0.3f", "A:%0.3f" }, // Long display for RGBA
+		{ "H:%0.3f", "S:%0.3f", "V:%0.3f", "A:%0.3f" }  // Long display for HSVA
 		};
 		const int fmt_idx = hide_prefix ? 0 : (flags & ImGuiColorEditFlags_HSV) ? 2 : 1;
 
@@ -12574,8 +12574,8 @@ void ImGui::BeginColumns(const char* str_id, int columns_count, ImGuiColumnsFlag
 	IM_ASSERT(columns_count > 1);
 	IM_ASSERT(window->DC.ColumnsSet == NULL); // Nested columns are currently not supported
 
-	// Differentiate column ID with an arbitrary prefix for cases where users name their columns set the same as another widget.
-	// In addition, when an identifier isn't explicitly provided we include the number of columns in the hash to make it uniquer.
+											  // Differentiate column ID with an arbitrary prefix for cases where users name their columns set the same as another widget.
+											  // In addition, when an identifier isn't explicitly provided we include the number of columns in the hash to make it uniquer.
 	PushID(0x11223347 + (str_id ? 0 : columns_count));
 	ImGuiID id = window->GetID(str_id ? str_id : "columns");
 	PopID();
@@ -12646,7 +12646,7 @@ void ImGui::EndColumns()
 	if (!(columns->Flags & ImGuiColumnsFlags_GrowParentContentsSize))
 		window->DC.CursorMaxPos.x = ImMax(columns->StartMaxPosX, columns->MaxX);  // Restore cursor max pos, as columns don't grow parent
 
-	// Draw columns borders and handle resize
+																				  // Draw columns borders and handle resize
 	bool is_being_resized = false;
 	if (!(columns->Flags & ImGuiColumnsFlags_NoBorder) && !window->SkipItems)
 	{
