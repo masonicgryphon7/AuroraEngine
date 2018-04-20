@@ -87,7 +87,6 @@ void TerrainGenerator::createTerrainPatches()
 {
 }
 
-
 void TerrainGenerator::loadRandomTerrainHeights()
 {
 	srand(time(NULL));
@@ -126,8 +125,6 @@ void TerrainGenerator::loadRandomTerrainHeights()
 	}
 							// - - - - - - - - - - -
 
-
-
 	for (int i = 1; i < grid_Row -1; i++)
 	{
 		for (int j = 1; j < grid_Column -1; j++)
@@ -152,13 +149,10 @@ void TerrainGenerator::loadRandomTerrainHeights()
 		}
 	}
 
-
 	for (int indexX = 0; indexX < (grid_Row - 1); indexX++)
 	{
 		for (int indexZ = 0; indexZ < (grid_Column - 1); indexZ++)
 		{
-
-
 			TriangleArr.push_back(RealVertArr[indexX + 1][indexZ]);
 			TriangleArr.push_back(RealVertArr[indexX + 1][indexZ + 1]);
 			TriangleArr.push_back(RealVertArr[indexX][indexZ]);
@@ -209,7 +203,6 @@ void TerrainGenerator::loadRandomTerrainHeights()
 		DirectX::XMStoreFloat3(&TriangleArr[i].bitangent, bitangent);
 		DirectX::XMStoreFloat3(&TriangleArr[i + 1].bitangent, bitangent);
 		DirectX::XMStoreFloat3(&TriangleArr[i + 2].bitangent, bitangent);
-
 	}
 
 	vertCount = TriangleArr.size();

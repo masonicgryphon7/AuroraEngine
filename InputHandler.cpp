@@ -1,6 +1,8 @@
 #include "InputHandler.h"
 #include "Console.h"
 
+Vector2 InputHandler::viewportSize;
+
 InputHandler::InputHandler()
 {}
 

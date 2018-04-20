@@ -193,9 +193,47 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.getMaterial(0)->setAlbedo(AssetManager.getTexture(0)->getTexture());
 		AssetManager.getMaterial(0)->setNormal(AssetManager.getTexture(1)->getTexture());
 		AssetManager.getMaterial(0)->setAORoughMet(AssetManager.getTexture(2)->getTexture());
+		assetManager.getMaterial(0)->setIsTerrain(false);
+
+		//Terrain Texture.
+		assetManager.addTexture("Assets/rutTextur.png");
+		assetManager.addTexture("Assets/rutNormal.png");
+		assetManager.addTexture("Assets/rutAoMetalRough.png");
+
+		assetManager.addTexture("Assets/stenTextur.png");
+		assetManager.addTexture("Assets/stenNormal.png");
+		assetManager.addTexture("Assets/stenAoMetalRough.png");
+
+		assetManager.addTexture("Assets/tygTextur.png");
+		assetManager.addTexture("Assets/tygNormal.png");
+		assetManager.addTexture("Assets/tygAoMetalRough.png");
+
+		assetManager.addTexture("Assets/ID_MAP.png");
+		assetManager.addTexture("Assets/vitTextur.png");
+		assetManager.addTexture("Assets/vitNormal.png");
+		assetManager.addTexture("Assets/vitAoMetalRough.png");
+		//----------------
+
+		AssetManager.addMaterial(AssetManager.getShaderProgram(0));
+		assetManager.getMaterial(1)->setIsTerrain(true);
+		assetManager.getMaterial(1)->setAlbedo(assetManager.getTexture(3)->getTexture());
+		assetManager.getMaterial(1)->setNormal(assetManager.getTexture(4)->getTexture());
+		assetManager.getMaterial(1)->setAORoughMet(assetManager.getTexture(5)->getTexture());
+		assetManager.getMaterial(1)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
+			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
+
+		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(2, 0, 0, 0));
+		terrain->name = "Terrain";
+		terrain->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
+		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
+		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
+		terrain->addComponent(AssetManager.getMaterial(1));
+		terrain->addComponent(meshFilterTerrain);
+
 
 		//AssetManager.addMeshFromBinary("Assets/pCube1_Mesh.bin");
-
 		//GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
 		//MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
 		//YoObject->addComponent(AssetManager.getMaterial(0));

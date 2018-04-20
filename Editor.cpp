@@ -60,7 +60,8 @@ void Editor::Start(HWND* w, ID3D11Device* d, ID3D11DeviceContext* dc, CoreEngine
 	editorCamera->addComponent(essc);
 
 	ems = new EditorMoveScript();//(&engineTime, &inputHandler);
-	editorCamera->addComponent(ems);
+	PMS = new PlayerMoveScript();
+	editorCamera->addComponent(PMS);
 
 	m_gui.emplace_back(make_unique<GUI_Inspector>());
 	m_gui.emplace_back(make_unique<GUI_Viewport>());

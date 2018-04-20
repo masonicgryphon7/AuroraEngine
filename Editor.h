@@ -35,6 +35,7 @@ protected:
 	Camera* mc;
 	EditorMoveScript* ems;
 	EditorSceneSelectionScript* essc;
+	PlayerMoveScript* PMS;
 
 	std::vector<std::unique_ptr<GUI>> m_gui;
 

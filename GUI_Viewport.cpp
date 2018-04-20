@@ -178,8 +178,6 @@ void GUI_Viewport::DoMousePick()
 		}
 	}
 
-
-
 	if (Input.GetKeyUp(KeyCode::LeftMouse)) 
 	{
 		Vector2 currentPos = Input.GetMousePosition();
@@ -194,6 +192,7 @@ void GUI_Viewport::DoMousePick()
 
 		if (isSelection) {
 			std::vector<GameObject*> selectedObjects = gPhysics.ScreenSelection(DirectX::XMVectorSet(mousePosRelative.x, mousePosRelative.y, currentPos.x, currentPos.y), m_engine->camera);
+
 
 			for (int i = 0; i < selectedObjects.size(); i++)
 			{
