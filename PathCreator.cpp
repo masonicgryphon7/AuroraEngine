@@ -79,8 +79,8 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
 	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
 
-	if (goalNode.pathable == false) {
-		goalNode = startNode;
+	if (startNode.pathable == false) {
+		 startNode.position= goalNode.position;
 	}
 	//
 	std::vector<Node> resultNodes = std::vector<Node>();
@@ -110,7 +110,6 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 		if (closedNodes.back().position == goalNode.position) {
 			succes = true;
-
 			break;
 		}
 
