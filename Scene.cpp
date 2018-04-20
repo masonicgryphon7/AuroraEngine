@@ -34,7 +34,7 @@ GameObject * Scene::createEmptyGameObject(DirectX::XMVECTOR position)
 #include "Debug.h"
 #include "AssetManager.h"
 
-void Scene::CreateGameObject(Primitives primitive, Vector3 position, Vector3 rotation)
+GameObject* Scene::CreateGameObject(Primitives primitive, Vector3 position, Vector3 rotation)
 {
 	GameObject* temp = nullptr;
 	switch (primitive)
@@ -52,9 +52,10 @@ void Scene::CreateGameObject(Primitives primitive, Vector3 position, Vector3 rot
 	sceneObjects.push_back(temp);
 	selectedGameObject = temp;
 	//Debug.Log("\tPosition: ", position.toString(), "\tRotation: ", rotation.toString());
+	return temp;
 }
 
-void Scene::CreateGameObject(Mesh * mesh, Vector3 position, Vector3 rotation)
+GameObject* Scene::CreateGameObject(Mesh * mesh, Vector3 position, Vector3 rotation)
 {
 	GameObject* temp = new GameObject(position.asXMVECTOR());
 	temp->name = mesh->getMeshName();
@@ -62,6 +63,7 @@ void Scene::CreateGameObject(Mesh * mesh, Vector3 position, Vector3 rotation)
 	temp->addComponent(AssetManager.getMaterial(0));
 	temp->addComponent(meshFilter);
 	sceneObjects.push_back(temp);
+	return temp;
 }
 
 GameObject * Scene::getGameObjectAt(int index)

@@ -22,6 +22,7 @@
 #include "EditorSceneSelectionScript.h"
 #include "ClickToMove.h"
 #include "PlayerScript.h"
+#include "PathCreator.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"
 //#include "MeshLib.h"

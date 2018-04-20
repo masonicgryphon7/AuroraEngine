@@ -243,8 +243,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//YoObject->addComponent(AssetManager.getMaterial(0));
 		//YoObject->addComponent(yomeshFilter);
 
-
-
+		PathCreator.createNodes(terrainGenerator->getRealVertArr());
 
 
 
@@ -258,6 +257,14 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
 			camera->addComponent(cam);
 		}
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
+		cube->name = "Cube";
+		AssetManager.AddMesh("Assets/Cube.obj");
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(1));
+		cube->addComponent(meshFilter);
+		cube->addComponent(AssetManager.getMaterial(0));
+		ClickToMove* clickToMove = new ClickToMove(cam);
+		cube->addComponent(clickToMove);
 
 
 		Editor* editor = nullptr;

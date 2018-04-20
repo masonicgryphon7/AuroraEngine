@@ -6,17 +6,12 @@
 #include "Debug.h"
 #include "PathCreator.h"
 
-ClickToMove::ClickToMove()
+ClickToMove::ClickToMove() :Component(-1, "Click To Move")
 {
-	lerpValue = 0;
-
-	DirectX::XMFLOAT3 current;
-	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
-
-	goalPos = current;
+	Debug.Log("WRONG CLICK TO MOVE CONSTRUCTOR, TAKE WITH CAMERA");
 }
 
-ClickToMove::ClickToMove(Camera * editorCamera)
+ClickToMove::ClickToMove(Camera * editorCamera) :Component(-1, "Click To Move")
 {
 	lerpValue = 0;
 
