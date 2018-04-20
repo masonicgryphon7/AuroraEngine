@@ -18,6 +18,7 @@ EditorMoveScript::EditorMoveScript() :Component(-1, "Editor Move Script")
 	xoffset = 0;
 	yoffset = 0;
 	sensitivity = 0.002f;
+
 }
 
 
@@ -43,6 +44,11 @@ void EditorMoveScript::update()
 		direction = DirectX::XMVectorAdd(gameObject->transform.getRight(), direction);
 	if (Input.GetKey(KeyCode::Escape))
 		exit(-1);
+
+
+
+
+
 
 	direction = DirectX::XMVector3Normalize(direction);
 

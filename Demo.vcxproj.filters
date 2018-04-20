@@ -179,6 +179,15 @@
     <ClInclude Include="ClickToMove.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AudioListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEmitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreEngine.cpp">
@@ -290,6 +299,15 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="ClickToMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
