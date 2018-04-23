@@ -5,13 +5,14 @@
 #include "alut.h"
 #include <stdio.h>
 #include "Component.h"
-#include "Scene.h"
 
 class AudioListener :public Component
 {
+
 public:
 	AudioListener();
 	~AudioListener();
+
 
 	void playMain();
 	void playHurt();

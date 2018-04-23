@@ -1,4 +1,6 @@
 #include "Scene.h"
+#include "Debug.h"
+#include "AssetManager.h"
 
 std::vector<GameObject*> Scene::frustumCulledResult;
 std::vector<GameObject*> Scene::sceneObjects;
@@ -13,7 +15,9 @@ Scene::~Scene()
 {
 	for (int i = 0; i < sceneObjects.size(); i++)
 	{
-		delete sceneObjects[i];
+		if (sceneObjects[i])
+			delete sceneObjects[i];
+		sceneObjects[i] = nullptr;
 	}
 }
 
@@ -31,8 +35,6 @@ GameObject * Scene::createEmptyGameObject(DirectX::XMVECTOR position)
 	return temp;
 }
 
-#include "Debug.h"
-#include "AssetManager.h"
 
 GameObject* Scene::CreateGameObject(Primitives primitive, Vector3 position, Vector3 rotation)
 {
