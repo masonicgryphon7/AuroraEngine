@@ -113,9 +113,9 @@ void Unit::RecieveOrder(RaycastHit Values)
 			//enemy
 			switch (type)
 			{
-			case Unit::Hero:
+			case Type::Hero:
 				break;
-			case Unit::Soldier:
+			case Type::Soldier:
 				break;
 			default:
 				//walk to

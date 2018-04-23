@@ -91,14 +91,35 @@ void AudioListener::update()
 
 	for (int i = 0; i < sceneObjects.size(); i++)
 	{
+		if (sceneObjects[i]->tag > 0) {
+			Unit* unit = sceneObjects[i]->getComponent<Unit>();
+			if (unit != nullptr && state != AL_PLAYING) {
+				switch (unit->getType())
+				{
+				case Type::Hero:
 
-		if (sceneObjects[i]->name == "Hit obj" && state != AL_PLAYING)
-		{
+					break;
+
+				case Type::Building:
+
+					break;
+
+				case Type::Soldier:
+
+					break;
+
+				case Type::Worker:
+
+					break;
+
+				default:
+					break;
+				}
+			}
 			playHurt();
 			DirectX::XMVECTOR cubepos = sceneObjects[i]->transform.getPosition();
 			alSource3f(source[i], AL_POSITION, DirectX::XMVectorGetX(cubepos), DirectX::XMVectorGetY(cubepos), DirectX::XMVectorGetZ(cubepos));
 		}
-		
-
 	}
+	
 }

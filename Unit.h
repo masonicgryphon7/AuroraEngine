@@ -8,10 +8,6 @@
 #include "PRIMITIVE_GEOMETRY.h"
 
 #pragma once
-
-class Unit : public Component
-{
-private:
 	/*
 	Factions
 	Stats
@@ -54,6 +50,10 @@ private:
 		float distance;
 		Command command;
 	};
+
+class Unit : public Component
+{
+private:
 
 	int Resources;
 	Type type;
