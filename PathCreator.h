@@ -9,11 +9,12 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include "PRIMITIVE_GEOMETRY.h"
+#include <algorithm>
 
 #define MAX 100
 #define MIN 0
 #define GRID 100 // spannet mellan min till max
-
+#define EPSILON 0.000001
 static class cPathCreator
 {
 public:

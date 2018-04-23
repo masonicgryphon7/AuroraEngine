@@ -82,6 +82,18 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	if (startNode.pathable == false) {
 		 startNode.position= goalNode.position;
 	}
+
+	//direction help test
+	bool reversePath = false;
+	DirectX::XMVECTOR direction = DirectX::XMVectorSubtract(DirectX::XMVectorSet(goalNode.position.x, goalNode.position.y, goalNode.position.z, 0), DirectX::XMVectorSet(startNode.position.x, startNode.position.y, startNode.position.z, 0));
+	if (DirectX::XMVectorGetW(DirectX::XMVector3Dot(direction, DirectX::XMVectorSet(1, 0, 1, 0)))>EPSILON) {
+		Node temp = goalNode;
+		goalNode = startNode;
+		startNode = temp;
+		reversePath = true;
+	}
+
+
 	//
 	std::vector<Node> resultNodes = std::vector<Node>();
 	std::vector<Node> openNodes = std::vector<Node>();
@@ -208,6 +220,10 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	else {
 
 		resultNodes.push_back(goalNode);
+	}
+
+	if (reversePath) {
+		std::reverse(resultNodes.begin(), resultNodes.end());
 	}
 
 	return resultNodes;
