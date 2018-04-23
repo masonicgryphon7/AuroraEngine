@@ -212,6 +212,9 @@
     <ClInclude Include="ImSequencer.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="Unit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreEngine.cpp">
@@ -357,6 +360,9 @@
     </ClCompile>
     <ClCompile Include="ImSequencer.cpp">
       <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Unit.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

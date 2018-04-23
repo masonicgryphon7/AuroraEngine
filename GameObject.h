@@ -21,7 +21,7 @@ public:
 	GameObject(int otherAssetID);
 	~GameObject();
 
-	int assetID;
+	int assetID, tag;
     bool isActive;
     bool hasLight;
 	std::string name, meshPath;

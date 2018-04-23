@@ -1,4 +1,5 @@
 #include "PathCreator.h"
+#include "Debug.h"
 
 std::vector<std::vector<Node>> cPathCreator::grid;
 
@@ -75,12 +76,24 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 {
 	std::vector<std::vector<Node>> tempGrid = grid;
 
-	Node startNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
-	Node goalNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
+	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
+	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
 
-	if (goalNode.pathable == false) {
-		goalNode = startNode;
+	if (startNode.pathable == false) {
+		 startNode.position= goalNode.position;
 	}
+
+	//direction help test
+	bool reversePath = false;
+	DirectX::XMVECTOR direction = DirectX::XMVectorSubtract(DirectX::XMVectorSet(goalNode.position.x, goalNode.position.y, goalNode.position.z, 0), DirectX::XMVectorSet(startNode.position.x, startNode.position.y, startNode.position.z, 0));
+	if (DirectX::XMVectorGetW(DirectX::XMVector3Dot(direction, DirectX::XMVectorSet(1, 0, 1, 0)))>EPSILON) {
+		Node temp = goalNode;
+		goalNode = startNode;
+		startNode = temp;
+		reversePath = true;
+	}
+
+
 	//
 	std::vector<Node> resultNodes = std::vector<Node>();
 	std::vector<Node> openNodes = std::vector<Node>();
@@ -88,7 +101,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	openNodes.push_back(startNode);
 	bool succes = false;
 	Node currentNode = Node();
-
+	int i = 0;
 	while (openNodes.size() > 0 && succes == false) {
 
 		float lowestF = -1;
@@ -109,7 +122,6 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 		if (closedNodes.back().position == goalNode.position) {
 			succes = true;
-
 			break;
 		}
 
@@ -185,7 +197,9 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 			}
 
 		}
+		i++;
 	}
+	Debug.Log("AStar Iterations:", i);
 	int gg = 0;
 	if (succes == true) {
 
@@ -204,7 +218,12 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 	}
 	else {
-		//failed
+
+		resultNodes.push_back(goalNode);
+	}
+
+	if (reversePath) {
+		std::reverse(resultNodes.begin(), resultNodes.end());
 	}
 
 	return resultNodes;
