@@ -198,6 +198,7 @@ void GUI_Viewport::DoMousePick()
 			{
 				Debug.Log("Selected", selectedObjects.at(i)->name);
 			}
+
 		}
 		else
 		{

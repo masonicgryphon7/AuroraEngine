@@ -227,6 +227,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 		terrain->name = "Terrain";
+		terrain->tag = 0;
 		terrain->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
 		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
@@ -261,6 +262,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		}
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
 		cube->name = "Cube";
+		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(1));
 		cube->addComponent(meshFilter);
