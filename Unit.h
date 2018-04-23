@@ -57,13 +57,17 @@ private:
 
 	int Resources;
 	Type type;
-	Order UnitOrders;
+	std::vector<Order> UnitOrders;
 	Stats UnitStats;
 
 public:
 
 	Unit();
 	~Unit();
+
+	Type getType() { return this->type; };
+	Stats getStats() { return this->UnitStats; };
+	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
 
 	void MoveCommand();
 

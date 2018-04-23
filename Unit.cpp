@@ -8,21 +8,21 @@ Unit::Unit()
 {
 	switch (type)
 	{
-	case 0: //HERO
+	case Type::Hero: //HERO
 		this->UnitStats.HealthPoints = 100;
 		this->UnitStats.AttackPoints = 13;
 		this->UnitStats.DefencePoints = 13;
 		this->Resources = 10;
 		break;
 
-	case 1: //SOLDIER
+	case Type::Soldier: //SOLDIER
 		this->UnitStats.HealthPoints = 20;
 		this->UnitStats.AttackPoints = 4;
 		this->UnitStats.DefencePoints = 8;
 		this->Resources = 0;
 		break;
 
-	case 2: //WORKER
+		case Type::Worker: //WORKER
 		this->UnitStats.HealthPoints = 15;
 		this->UnitStats.AttackPoints = 0;
 		this->UnitStats.DefencePoints = 5;
@@ -48,7 +48,6 @@ Unit::Unit()
 
 Unit::~Unit()
 {
-
 }
 
 void Unit::MoveCommand()
@@ -143,10 +142,10 @@ void Unit::RecieveOrder(RaycastHit Values)
 
 void Unit::update()
 {
-	switch (UnitOrders.command)
+	switch (UnitOrders.at(0).command)
 	{
 	case Command::Move: //MOVE
-
+		//MoveCommand();
 
 	case Command::Attack: //ATTACK
 
