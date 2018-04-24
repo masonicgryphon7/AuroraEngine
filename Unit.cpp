@@ -12,6 +12,7 @@ Unit::Unit()
 		this->UnitStats.HealthPoints = 100;
 		this->UnitStats.AttackPoints = 13;
 		this->UnitStats.DefencePoints = 13;
+		this->UnitStats.attackDistance = 1;
 		this->Resources = 10;
 		break;
 
@@ -19,13 +20,15 @@ Unit::Unit()
 		this->UnitStats.HealthPoints = 20;
 		this->UnitStats.AttackPoints = 4;
 		this->UnitStats.DefencePoints = 8;
+		this->UnitStats.attackDistance = 1;
 		this->Resources = 0;
 		break;
 
 		case Type::Worker: //WORKER
 		this->UnitStats.HealthPoints = 15;
-		this->UnitStats.AttackPoints = 0;
+		this->UnitStats.AttackPoints = 1;
 		this->UnitStats.DefencePoints = 5;
+		this->UnitStats.attackDistance = 1;
 		this->Resources = 0;
 		break;
 
@@ -33,6 +36,7 @@ Unit::Unit()
 		this->UnitStats.HealthPoints = 500;
 		this->UnitStats.AttackPoints = 0;
 		this->UnitStats.DefencePoints = 20;
+		this->UnitStats.attackDistance = 0;
 		this->Resources = 0;
 		break;
 
@@ -145,10 +149,27 @@ void Unit::update()
 	switch (UnitOrders.at(0).command)
 	{
 	case Command::Move: //MOVE
-		//MoveCommand();
+		MoveCommand();
 
 	case Command::Attack: //ATTACK
+		DirectX::XMVECTOR enemyPos = UnitOrders.at(0).transform->getPosition();
+		DirectX::XMVECTOR unitPos = gameObject->transform.getPosition();
 
+		DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, enemyPos);
+		float distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
+
+		if (distance < this->attackDistance)
+		{
+			// Damage enemy
+			int enemyHealth = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints();
+			int damage = this->attackPoints - UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getDefencePoints();
+			int newEnemyHealth = enemyHealth - damage;
+			UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setHealthPoints(newEnemyHealth);
+		}
+		else
+		{
+			//followCommand()
+		}
 
 	case Command::Gather: //GATHER
 

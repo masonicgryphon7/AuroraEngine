@@ -15,12 +15,6 @@
 	Resources
 	Type
 	*/
-	struct Stats
-	{
-		int HealthPoints;
-		int AttackPoints;
-		int DefencePoints;
-	};
 	
 	enum Command
 	{
@@ -47,7 +41,6 @@
 	{
 		Transform* transform;
 		DirectX::XMVECTOR point;
-		float distance;
 		Command command;
 	};
 
@@ -58,7 +51,10 @@ private:
 	int Resources;
 	Type type;
 	std::vector<Order> UnitOrders;
-	Stats UnitStats;
+	int healthPoints;
+	int attackPoints;
+	int defencePoints;
+	float attackDistance;
 
 public:
 
@@ -66,8 +62,17 @@ public:
 	~Unit();
 
 	Type getType() { return this->type; };
-	Stats getStats() { return this->UnitStats; };
 	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
+
+	int getHealthPoints() { return this->healthPoints; };
+	int getAttackPoints() { return this->attackPoints; };
+	int getDefencePoints() { return this->defencePoints; };
+	float getAttackDistance() { return this->attackDistance; };
+
+	void setHealthPoints(int healthPoints) { this->healthPoints = healthPoints; };
+	void setAttackPoints(int attackPoints) { this->attackPoints = attackPoints; };
+	void setDefencePoints(int defencePoints) { this->defencePoints = defencePoints; };
+	void setAttackDistance(float attackDistance) { this->attackDistance = attackDistance; };
 
 	void MoveCommand();
 
