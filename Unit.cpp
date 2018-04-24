@@ -141,6 +141,8 @@ void Unit::MoveCommand()
 		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 			pathNodes.erase(pathNodes.begin());
 			lerpValue = 0;
+			UnitOrders.erase(UnitOrders.begin());
+
 
 		}
 		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
@@ -164,12 +166,7 @@ void Unit::attackCommand()
 
 void Unit::RecieveOrder(RaycastHit Values)
 {
-	//erease move command
-	if (UnitOrders.size() > 0) {
-		UnitOrders.clear();
-		pathNodes.clear();
 
-	}
 
 	//Target is a unit
 	if (Values.transform->gameObject->getComponent<Unit>()!=nullptr)
