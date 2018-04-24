@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include <vector>
 #include "PRIMITIVE_GEOMETRY.h"
+#include "Node.h"
 
 #pragma once
 	/*
@@ -57,6 +58,9 @@ private:
 	float attackDistance;
 
 	float distance;
+	DirectX::XMFLOAT3 goalPos;
+	float lerpValue;
+	std::vector<Node> pathNodes;
 
 public:
 
