@@ -56,6 +56,8 @@ private:
 	int defencePoints;
 	float attackDistance;
 
+	float distance;
+
 public:
 
 	Unit();
@@ -75,6 +77,7 @@ public:
 	void setAttackDistance(float attackDistance) { this->attackDistance = attackDistance; };
 
 	void MoveCommand();
+	void attackCommand();
 
 	void RecieveOrder(RaycastHit Values);
 	void update();

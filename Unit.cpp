@@ -108,6 +108,14 @@ void Unit::MoveCommand()
 	//}
 }
 
+void Unit::attackCommand()
+{
+	int enemyHealth = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints();
+	int damage = this->attackPoints - UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getDefencePoints();
+	int newEnemyHealth = enemyHealth - damage;
+	UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setHealthPoints(newEnemyHealth);
+}
+
 void Unit::RecieveOrder(RaycastHit Values)
 {
 	//Target is a unit
@@ -118,8 +126,10 @@ void Unit::RecieveOrder(RaycastHit Values)
 			switch (type)
 			{
 			case Type::Hero:
+				Attack;
 				break;
 			case Type::Soldier:
+				Attack;
 				break;
 			default:
 				//walk to
@@ -150,38 +160,40 @@ void Unit::update()
 	{
 	case Command::Move: //MOVE
 		MoveCommand();
+		break;
 
 	case Command::Attack: //ATTACK
 		DirectX::XMVECTOR enemyPos = UnitOrders.at(0).transform->getPosition();
 		DirectX::XMVECTOR unitPos = gameObject->transform.getPosition();
 
 		DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, enemyPos);
-		float distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
+		distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
 
-		if (distance < this->attackDistance)
+		while (UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints() > 0) //&& Command::Attack == true
 		{
-			// Damage enemy
-			int enemyHealth = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints();
-			int damage = this->attackPoints - UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getDefencePoints();
-			int newEnemyHealth = enemyHealth - damage;
-			UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setHealthPoints(newEnemyHealth);
+			if (distance <= this->attackDistance)
+			{
+				//Damage enemy
+				attackCommand();
+			}
+			else
+			{
+				//followCommand()
+			}
 		}
-		else
-		{
-			//followCommand()
-		}
+		break;
 
 	case Command::Gather: //GATHER
-
+		break;
 
 	case Command::Build: //BUILD
-
+		break;
 
 	case Command::Follow: //FOLLOW
-
+		break;
 
 	case Command::Summon: //SUMMON
-
+		break;
 
 	default:
 		break;
