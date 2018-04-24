@@ -101,7 +101,7 @@ void GUI_Viewport::ShowEngineView()
 
 	Gizmo(m_engine, width + (width / 35.f), height + (height / 7.7f));
 
-	DoMousePick();
+	//DoMousePick();
 }
 
 void Gizmo(CoreEngine* m_engine, float w, float h)
