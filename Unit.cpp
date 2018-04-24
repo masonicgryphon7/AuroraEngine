@@ -4,6 +4,7 @@
 #include "InputHandler.h"
 #include "GUI.h"
 #include "Debug.h"
+#include <DirectXMath.h>
 
 Unit::Unit()
 {
@@ -60,10 +61,14 @@ void Unit::MoveCommand()
 	DirectX::XMFLOAT3 current;
 	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
+	DirectX::XMFLOAT3 pointPosition;
+	DirectX::XMStoreFloat3(&pointPosition, TempValues->point);
+
+
 	if (pathNodes.size() == 0)
 		{
 			lerpValue = 0;
-			pathNodes = PathCreator.getPath(current, goalPos);
+			pathNodes = PathCreator.getPath(current, pointPosition); // Point position
 		}
 
 	if (pathNodes.size() > 0) {
