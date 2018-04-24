@@ -9,34 +9,34 @@ Unit::Unit()
 	switch (type)
 	{
 	case Type::Hero: //HERO
-		this->UnitStats.HealthPoints = 100;
-		this->UnitStats.AttackPoints = 13;
-		this->UnitStats.DefencePoints = 13;
-		this->UnitStats.attackDistance = 1;
+		this->healthPoints = 100;
+		this->attackPoints = 13;
+		this->defencePoints = 13;
+		this->attackDistance = 1;
 		this->Resources = 10;
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->UnitStats.HealthPoints = 20;
-		this->UnitStats.AttackPoints = 4;
-		this->UnitStats.DefencePoints = 8;
-		this->UnitStats.attackDistance = 1;
+		this->healthPoints = 20;
+		this->attackPoints = 4;
+		this->defencePoints = 8;
+		this->attackDistance = 1;
 		this->Resources = 0;
 		break;
 
 		case Type::Worker: //WORKER
-		this->UnitStats.HealthPoints = 15;
-		this->UnitStats.AttackPoints = 1;
-		this->UnitStats.DefencePoints = 5;
-		this->UnitStats.attackDistance = 1;
+		this->healthPoints = 15;
+		this->attackPoints = 1;
+		this->defencePoints = 5;
+		this->attackDistance = 1;
 		this->Resources = 0;
 		break;
 
 	case 3: //BUILDING
-		this->UnitStats.HealthPoints = 500;
-		this->UnitStats.AttackPoints = 0;
-		this->UnitStats.DefencePoints = 20;
-		this->UnitStats.attackDistance = 0;
+		this->healthPoints = 500;
+		this->attackPoints = 0;
+		this->defencePoints = 20;
+		this->attackDistance = 0;
 		this->Resources = 0;
 		break;
 
