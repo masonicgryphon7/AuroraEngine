@@ -267,9 +267,18 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(1));
 		cube->addComponent(meshFilter);
 		cube->addComponent(AssetManager.getMaterial(0));
-		ClickToMove* clickToMove = new ClickToMove(cam);
-		cube->addComponent(clickToMove);
+		//ClickToMove* clickToMove = new ClickToMove(cam);
+		//cube->addComponent(clickToMove);
+		Unit* unit = new Unit();
+		cube->addComponent(unit);
 
+		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 20, 0));
+		cube2->name = "Cube2";
+		cube2->tag = 2;
+		cube2->addComponent(meshFilter);
+		cube2->addComponent(AssetManager.getMaterial(0));
+		Unit* unit2 = new Unit();
+		cube2->addComponent(unit2);
 
 		Editor* editor = nullptr;
 		editor = new Editor();
