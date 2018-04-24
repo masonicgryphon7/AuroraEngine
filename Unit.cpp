@@ -9,30 +9,34 @@ Unit::Unit()
 	switch (type)
 	{
 	case Type::Hero: //HERO
-		this->UnitStats.HealthPoints = 100;
-		this->UnitStats.AttackPoints = 13;
-		this->UnitStats.DefencePoints = 13;
+		this->healthPoints = 100;
+		this->attackPoints = 13;
+		this->defencePoints = 13;
+		this->attackDistance = 1;
 		this->Resources = 10;
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->UnitStats.HealthPoints = 20;
-		this->UnitStats.AttackPoints = 4;
-		this->UnitStats.DefencePoints = 8;
+		this->healthPoints = 20;
+		this->attackPoints = 4;
+		this->defencePoints = 8;
+		this->attackDistance = 1;
 		this->Resources = 0;
 		break;
 
 		case Type::Worker: //WORKER
-		this->UnitStats.HealthPoints = 15;
-		this->UnitStats.AttackPoints = 0;
-		this->UnitStats.DefencePoints = 5;
+		this->healthPoints = 15;
+		this->attackPoints = 1;
+		this->defencePoints = 5;
+		this->attackDistance = 1;
 		this->Resources = 0;
 		break;
 
 	case 3: //BUILDING
-		this->UnitStats.HealthPoints = 500;
-		this->UnitStats.AttackPoints = 0;
-		this->UnitStats.DefencePoints = 20;
+		this->healthPoints = 500;
+		this->attackPoints = 0;
+		this->defencePoints = 20;
+		this->attackDistance = 0;
 		this->Resources = 0;
 		break;
 
@@ -145,10 +149,27 @@ void Unit::update()
 	switch (UnitOrders.at(0).command)
 	{
 	case Command::Move: //MOVE
-		//MoveCommand();
+		MoveCommand();
 
 	case Command::Attack: //ATTACK
+		DirectX::XMVECTOR enemyPos = UnitOrders.at(0).transform->getPosition();
+		DirectX::XMVECTOR unitPos = gameObject->transform.getPosition();
 
+		DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, enemyPos);
+		float distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
+
+		if (distance < this->attackDistance)
+		{
+			// Damage enemy
+			int enemyHealth = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints();
+			int damage = this->attackPoints - UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getDefencePoints();
+			int newEnemyHealth = enemyHealth - damage;
+			UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setHealthPoints(newEnemyHealth);
+		}
+		else
+		{
+			//followCommand()
+		}
 
 	case Command::Gather: //GATHER
 
