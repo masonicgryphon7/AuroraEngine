@@ -7,14 +7,14 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 {
 	device = alcOpenDevice(NULL);
 
-	if (!device)
+	//if (!device)
 		//exit(-1);
 
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
 
-	if (!context)
-		exit(-1);
+	/*if (!context)
+		exit(-1);*/
 
 	alutInitWithoutContext(NULL, NULL);
 
@@ -116,7 +116,6 @@ void AudioListener::update()
 					break;
 				}
 			}
-			playHurt();
 			DirectX::XMVECTOR cubepos = sceneObjects[i]->transform.getPosition();
 			alSource3f(source[i], AL_POSITION, DirectX::XMVectorGetX(cubepos), DirectX::XMVectorGetY(cubepos), DirectX::XMVectorGetZ(cubepos));
 		}
