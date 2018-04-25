@@ -16,10 +16,15 @@ public:
 
 	void playMain();
 	void playHurt();
-	void playHit();
-	void de();
+	void playAttack();
+	void playBuild();
+	void playFollow();
+	void playGather();
+	void playMove(int m);
+	void playSummon();
 
 	int nrOfBuffSou = 32;
+	int multiPlay;
 
 	ALCcontext *context;
 	ALCdevice *device;

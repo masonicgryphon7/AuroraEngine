@@ -305,7 +305,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				OnResize();
 
-				objectsToRender = gScene.frustumCull(camera);
+				gScene.frustumCull(camera);
+				objectsToRender = gScene.getFrustumCulledResult();
 				gScene.update();
 
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
@@ -315,7 +316,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				renderManager->EndFrame(); // END RENDERING
 
-				objectsToRender.clear();
+				objectsToRender[0].clear();
 
 				hasResized = false;
 			}

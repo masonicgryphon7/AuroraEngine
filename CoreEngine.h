@@ -118,7 +118,7 @@ public:
 
 	ID3D11DepthStencilView * m_depthStencilView;
 
-	std::vector<GameObject*>objectsToRender;
+	std::vector<GameObject*>*objectsToRender;
 
 	GameObject* camera;
 	cAssetManager assetManager;
