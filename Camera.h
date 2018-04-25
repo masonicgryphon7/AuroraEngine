@@ -20,7 +20,7 @@ public:
 	float getHeight() { return height; };
 
 
-	int height;
+	int height; 
 	int width;
 	float FOV;
 	float aspectRatio;
