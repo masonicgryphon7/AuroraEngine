@@ -87,6 +87,7 @@ public:
 
 	void MoveCommand();
 	void attackCommand();
+	void FollowCommand();
 
 	void RecieveOrder(RaycastHit Values);
 	void update();
