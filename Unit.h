@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include <vector>
 #include "PRIMITIVE_GEOMETRY.h"
+#include "Node.h"
 
 #pragma once
 	/*
@@ -57,6 +58,10 @@ private:
 	float attackDistance;
 
 	float distance;
+	DirectX::XMFLOAT3 goalPos;
+	float lerpValue;
+	std::vector<Node> pathNodes;
+	RaycastHit* TempValues;
 
 public:
 
@@ -65,6 +70,8 @@ public:
 
 	Type getType() { return this->type; };
 	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
+
+	void setRayCastHitTemp(RaycastHit* TempValues) { this->TempValues = TempValues; };
 
 	int getResources() { return this->Resources; };
 	int getHealthPoints() { return this->healthPoints; };
