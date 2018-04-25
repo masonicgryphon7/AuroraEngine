@@ -61,25 +61,23 @@ private:
 	DirectX::XMFLOAT3 goalPos;
 	float lerpValue;
 	std::vector<Node> pathNodes;
-	RaycastHit* TempValues;
 
 public:
 
+
 	Unit();
+	Unit(Type UnitTypeSet);
 	~Unit();
 
 	Type getType() { return this->type; };
 	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
 
-	void setRayCastHitTemp(RaycastHit* TempValues) { this->TempValues = TempValues; };
 
-	int getResources() { return this->Resources; };
 	int getHealthPoints() { return this->healthPoints; };
 	int getAttackPoints() { return this->attackPoints; };
 	int getDefencePoints() { return this->defencePoints; };
 	float getAttackDistance() { return this->attackDistance; };
 
-	void setResources(int resources) { this->Resources = resources; };
 	void setHealthPoints(int healthPoints) { this->healthPoints = healthPoints; };
 	void setAttackPoints(int attackPoints) { this->attackPoints = attackPoints; };
 	void setDefencePoints(int defencePoints) { this->defencePoints = defencePoints; };

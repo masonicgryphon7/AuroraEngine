@@ -186,6 +186,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
 
+
+
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
@@ -246,10 +248,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		PathCreator.createNodes(terrainGenerator->getRealVertArr());
 
-
-
-
-
 		// Create a Main Camera
 		Camera* cam = nullptr;
 		{
@@ -257,7 +255,11 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			camera->name = "Main Camera";
 			cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
 			camera->addComponent(cam);
+			PlayerSelectionScript* playerSelectionScript = new PlayerSelectionScript(camera);
+			camera->addComponent(playerSelectionScript);
 		}
+
+
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
@@ -267,18 +269,23 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(1));
 		cube->addComponent(meshFilter);
 		cube->addComponent(AssetManager.getMaterial(0));
-		//ClickToMove* clickToMove = new ClickToMove(cam);
-		//cube->addComponent(clickToMove);
-		Unit* unit = new Unit();
-		cube->addComponent(unit);
+		Unit *UnitHero1 = new Unit(Hero);
+		cube->addComponent(UnitHero1);
 
-		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 20, 0));
-		cube2->name = "Cube2";
-		cube2->tag = 2;
+		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 5, 0));
+		cube2->name = "FedoraSniper";
+		cube2->tag = 1;
 		cube2->addComponent(meshFilter);
 		cube2->addComponent(AssetManager.getMaterial(0));
-		Unit* unit2 = new Unit();
-		cube2->addComponent(unit2);
+		Unit *UnitSoldier1 = new Unit(Soldier);
+		cube2->addComponent(UnitSoldier1);
+
+		
+		/*ClickToMove* clickToMove = new ClickToMove(cam);
+		cube->addComponent(clickToMove);*/
+
+
+
 
 		Editor* editor = nullptr;
 		editor = new Editor();
