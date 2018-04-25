@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GUI.h"
-
+#include "Unit.h"
 class GUI_Inspector : public GUI
 {
 public:
@@ -20,6 +20,7 @@ protected:
 
 	void ShowTransformView();
 	void ShowCameraView();
+	void ShowUnitView();
 
 	void ShowAddComponent();
 	void ShowPopupAddComponent();

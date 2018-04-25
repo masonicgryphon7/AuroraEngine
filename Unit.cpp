@@ -5,7 +5,6 @@
 #include "GUI.h"
 #include "Debug.h"
 #include <DirectXMath.h>
-#include <string>
 
 Unit::Unit()
 {
@@ -111,7 +110,6 @@ Unit::~Unit()
 
 void Unit::MoveCommand()
 {
-	count++;
 	DirectX::XMFLOAT3 current;
 	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
@@ -139,7 +137,6 @@ void Unit::MoveCommand()
 
 			goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 			lerpValue = 0;
-			
 		}
 		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 			pathNodes.erase(pathNodes.begin());
@@ -155,9 +152,7 @@ void Unit::MoveCommand()
 		lerpValue = 0;
 		
 	}
-	Debug.Log("Moving " + std::to_string(count));
-	
-	//UnitOrders.erase(UnitOrders.begin());
+	Debug.Log("Moving");
 }
 
 void Unit::attackCommand()
@@ -171,10 +166,7 @@ void Unit::attackCommand()
 
 void Unit::RecieveOrder(RaycastHit Values)
 {
-	count2++;
-	UnitOrders.clear();
-	pathNodes.clear();
-	//Debug.Log("OrdersInAct: " + UnitOrders.size());
+
 
 	//Target is a unit
 	if (Values.transform->gameObject->getComponent<Unit>()!=nullptr)
@@ -185,8 +177,8 @@ void Unit::RecieveOrder(RaycastHit Values)
 			switch (type)
 			{
 			case Type::Hero:				
-				//tempOrder.command = Attack;
-				tempOrder.command = Move;
+				tempOrder.command = Attack;
+				//tempOrder.command = Move;
 
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
@@ -194,8 +186,8 @@ void Unit::RecieveOrder(RaycastHit Values)
 				break;
 
 			case Type::Soldier:
-				//tempOrder.command = Attack;
-				tempOrder.command = Move;
+				tempOrder.command = Attack;
+				//tempOrder.command = Move;
 
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
@@ -209,6 +201,10 @@ void Unit::RecieveOrder(RaycastHit Values)
 		else if(Values.transform->gameObject->tag==0){
 			//neutral
 			//walk to
+			//tempOrder.command = Move;
+			//tempOrder.transform = Values.transform;
+			//tempOrder.transform = Values.transform;
+			//UnitOrders.push_back(tempOrder);
 			
 		}
 		else {
@@ -235,15 +231,11 @@ void Unit::RecieveOrder(RaycastHit Values)
 			break;
 		}
 	}
-
-	Debug.Log("RecieveOrder iteration " + std::to_string(count2));
 }
 
 void Unit::update()
 {
-	//Debug.Log("OrdersInAct: " + UnitOrders.size());
 	if (UnitOrders.size() > 0) {
-		count3++;
 
 		switch (UnitOrders.at(0).command)
 		{
@@ -258,19 +250,17 @@ void Unit::update()
 			DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, enemyPos);
 			distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
 
-			while (UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints() > 0)
+			if (distance <= this->attackDistance)
 			{
-				if (distance <= this->attackDistance)
-				{
-					//Damage enemy
-					attackCommand();
-					UnitOrders.erase(UnitOrders.begin());
-				}
-				else
-				{
-					//followCommand()
-					//UnitOrders.erase(UnitOrders.begin());
-				}
+				//Damage enemy
+				attackCommand();
+				UnitOrders.erase(UnitOrders.begin());
+				Debug.Log("Enemy Hit!");
+			}
+			else
+			{
+				//followCommand()
+				//UnitOrders.erase(UnitOrders.begin());
 			}
 			break;
 
@@ -289,7 +279,6 @@ void Unit::update()
 		default:
 			break;
 		}
-		Debug.Log("update Iteration " + std::to_string(count3));
 	}
 
 }
