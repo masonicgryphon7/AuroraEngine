@@ -45,6 +45,7 @@ public:
 	std::vector<GameObject*> getFrustumCulledResult();
 	std::vector<GameObject*> getSceneObjects();
 	int getSceneObjectsCount();
+	void destroy(GameObject* gameObject);
 	std::vector<GameObject*> frustumCull(GameObject * camera);
 
 	void update();

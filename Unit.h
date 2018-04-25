@@ -56,6 +56,7 @@ private:
 	int attackPoints;
 	int defencePoints;
 	float attackDistance;
+	float actionTime;
 
 	float distance;
 	DirectX::XMFLOAT3 goalPos;
