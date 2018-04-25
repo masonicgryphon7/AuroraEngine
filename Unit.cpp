@@ -177,8 +177,8 @@ void Unit::RecieveOrder(RaycastHit Values)
 			switch (type)
 			{
 			case Type::Hero:				
-				//tempOrder.command = Attack;
-				tempOrder.command = Move;
+				tempOrder.command = Attack;
+				//tempOrder.command = Move;
 
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
@@ -186,8 +186,8 @@ void Unit::RecieveOrder(RaycastHit Values)
 				break;
 
 			case Type::Soldier:
-				//tempOrder.command = Attack;
-				tempOrder.command = Move;
+				tempOrder.command = Attack;
+				//tempOrder.command = Move;
 
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
@@ -201,6 +201,10 @@ void Unit::RecieveOrder(RaycastHit Values)
 		else if(Values.transform->gameObject->tag==0){
 			//neutral
 			//walk to
+			//tempOrder.command = Move;
+			//tempOrder.transform = Values.transform;
+			//tempOrder.transform = Values.transform;
+			//UnitOrders.push_back(tempOrder);
 			
 		}
 		else {
@@ -246,19 +250,17 @@ void Unit::update()
 			DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, enemyPos);
 			distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
 
-			while (UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints() > 0) //&& Command::Attack == true
+			if (distance <= this->attackDistance)
 			{
-				if (distance <= this->attackDistance)
-				{
-					//Damage enemy
-					attackCommand();
-					UnitOrders.erase(UnitOrders.begin());
-				}
-				else
-				{
-					//followCommand()
-					//UnitOrders.erase(UnitOrders.begin());
-				}
+				//Damage enemy
+				attackCommand();
+				UnitOrders.erase(UnitOrders.begin());
+				Debug.Log("Enemy Hit!");
+			}
+			else
+			{
+				//followCommand()
+				//UnitOrders.erase(UnitOrders.begin());
 			}
 			break;
 
