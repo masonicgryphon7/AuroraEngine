@@ -115,7 +115,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 		ImGui_ImplDX11_Init(wndHandle, gDevice, gDeviceContext);
 		io.MouseDrawCursor = true;
-		io.SetCustomMouseTexture = false;
+		//io.SetCustomMouseTexture = false;
 
 		//ImGui_ImplWin32_UpdateMouseCursor();
 
@@ -336,12 +336,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				gScene.frustumCull(camera);
 				objectsToRender = gScene.getFrustumCulledResult();
+				if (editor != nullptr)
+					editor->Update();
 				gScene.update();
 
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 
-				if (editor != nullptr)
-					editor->Update();
 
 				renderManager->EndFrame(); // END RENDERING
 
@@ -548,8 +548,8 @@ HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, // spawn window x
 		CW_USEDEFAULT, // spawn window y
-		WIDTH, // size x
-		HEIGHT, // size y
+		rc.right - rc.left, // size x
+		rc.bottom - rc.top, // size y
 		nullptr,
 		nullptr,
 		hInstance,

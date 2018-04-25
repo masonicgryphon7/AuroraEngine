@@ -2,6 +2,7 @@
 #include "Console.h"
 
 Vector2 InputHandler::viewportSize;
+Vector2 InputHandler::mousePosition;
 
 InputHandler::InputHandler()
 {}
