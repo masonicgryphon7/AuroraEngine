@@ -156,7 +156,7 @@ void Unit::MoveCommand()
 		lerpValue = 0;
 		
 	}
-	Debug.Log("Moving");
+	//Debug.Log("Moving");
 }
 
 void Unit::attackCommand()
@@ -168,9 +168,67 @@ void Unit::attackCommand()
 	Debug.Log("Attacking.");
 }
 
+void Unit::FollowCommand()
+{
+	DirectX::XMFLOAT3 current;
+	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
+
+	DirectX::XMFLOAT3 TransformPosition;
+	DirectX::XMStoreFloat3(&TransformPosition, UnitOrders.at(0).transform->getPosition());
+	int xyz[3] = { (int)TransformPosition.x,(int)TransformPosition.y, (int)TransformPosition.z };
+
+
+	if (pathNodes.size() == 0)
+	{
+		pathNodes = PathCreator.getPath(TransformPosition, current);
+		lerpValue = 0;
+	}
+	else
+	{
+		if(pathNodes.back().position.x != xyz[0] || pathNodes.back().position.y != xyz[1] || pathNodes.back().position.z != xyz[2]) {
+			pathNodes = PathCreator.getPath(TransformPosition, current);
+
+		}
+	}
+	
+
+	if (pathNodes.size() > 0) {
+		lerpValue += Time.getDeltaTime() * 2;
+		if (lerpValue > 1) {
+			lerpValue = 1;
+		}
+		DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+		DirectX::XMFLOAT3 goalVec;
+		DirectX::XMStoreFloat3(&goalVec, goal);
+
+
+		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
+			pathNodes.erase(pathNodes.begin());
+
+			goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+			lerpValue = 0;
+		}
+		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
+			pathNodes.erase(pathNodes.begin());
+			lerpValue = 0;
+
+
+		}
+
+		//is final path the same as transform?
+		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
+	}
+	else
+	{
+		lerpValue = 0;
+
+	}
+	Debug.Log("Following...");
+}
+
 void Unit::RecieveOrder(RaycastHit Values)
 {
-	//UnitOrders.clear();
+	UnitOrders.clear();
 	pathNodes.clear();
 
 	//Target is a unit
@@ -216,6 +274,37 @@ void Unit::RecieveOrder(RaycastHit Values)
 		else {
 			//friendly
 			//walk to
+
+			switch (type)
+			{
+			case Type::Hero:
+				tempOrder.command = Follow;
+
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
+				break;
+
+			case Type::Soldier:
+				tempOrder.command = Follow;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				break;
+
+			case Type::Worker:
+				tempOrder.command = Follow;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				break;
+
+			default:
+				//walk to
+				break;
+			}
+
 			
 		}
 
@@ -275,7 +364,7 @@ void Unit::update()
 				}
 				else
 				{
-					//followCommand()
+					//FollowCommand();
 					//UnitOrders.erase(UnitOrders.begin());
 					MoveCommand();
 				}
@@ -294,6 +383,8 @@ void Unit::update()
 			break;
 
 		case Command::Follow: //FOLLOW
+			FollowCommand();
+
 			break;
 
 		case Command::Summon: //SUMMON
