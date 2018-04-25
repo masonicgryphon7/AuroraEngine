@@ -16,8 +16,13 @@ public:
 
 	void playMain();
 	void playHurt();
-	void playHit();
-	void de();
+	void playAttack();
+	void playBuild();
+	void playFollow();
+	void playGather();
+	void playMove();
+	void playSummon();
+
 
 	int nrOfBuffSou = 32;
 
