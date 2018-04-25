@@ -73,7 +73,7 @@ void AudioListener::de()
 void AudioListener::update()
 {
 	alGetSourcei(source[1], AL_SOURCE_STATE, &state);
-	std::vector<GameObject*>sceneObjects = gScene.getFrustumCulledResult();
+	std::vector<GameObject*>* sceneObjects = gScene.getFrustumCulledResult();
 	DirectX::XMVECTOR pos = gameObject->transform.getPosition();
 	
 	alListener3f(AL_POSITION, DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
@@ -89,10 +89,10 @@ void AudioListener::update()
 		playHit();
 
 
-	for (int i = 0; i < sceneObjects.size(); i++)
+	for (int i = 0; i < sceneObjects[0].size(); i++)
 	{
-		if (sceneObjects[i]->tag > 0) {
-			Unit* unit = sceneObjects[i]->getComponent<Unit>();
+		if (sceneObjects[0][i]->tag > 0) {
+			Unit* unit = sceneObjects[0][i]->getComponent<Unit>();
 			if (unit != nullptr && state != AL_PLAYING) {
 				switch (unit->getType())
 				{
@@ -116,7 +116,7 @@ void AudioListener::update()
 					break;
 				}
 			}
-			DirectX::XMVECTOR cubepos = sceneObjects[i]->transform.getPosition();
+			DirectX::XMVECTOR cubepos = sceneObjects[0][i]->transform.getPosition();
 			alSource3f(source[i], AL_POSITION, DirectX::XMVectorGetX(cubepos), DirectX::XMVectorGetY(cubepos), DirectX::XMVectorGetZ(cubepos));
 		}
 	}

@@ -28,25 +28,25 @@ RenderManager::~RenderManager()
 	m_renderTargetView->Release();
 }
 
-void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObject*> objectsToRender)
+void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObject*>* objectsToRender)
 {
 	DirectX::XMMATRIX viewMatrix = cameraObject->getComponent<Camera>()->calculateViewMatrix();
 	DirectX::XMMATRIX perspectiveMatrix = cameraObject->getComponent<Camera>()->calculatePerspectiveMatrix();
 
 
 	//for each 
-	for (int i = 0; i < objectsToRender.size(); i++)
+	for (int i = 0; i < objectsToRender->size(); i++)
 	{
 
-		objectsToRender[i]->materialComponent->bindMaterial();
-		objectsToRender[i]->meshFilterComponent->getMesh()->bindMesh();
+		objectsToRender[0][i]->materialComponent->bindMaterial();
+		objectsToRender[0][i]->meshFilterComponent->getMesh()->bindMesh();
 
 
 		//Fill matrixbuffer
 		D3D11_MAPPED_SUBRESOURCE dataPtr;
 		gDeviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &dataPtr);
-		matrixBufferData.isTerrain = objectsToRender[i]->materialComponent->isTerrain();
-		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(objectsToRender[i]->calculateWorldMatrix()));
+		matrixBufferData.isTerrain = objectsToRender[0][i]->materialComponent->isTerrain();
+		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(objectsToRender[0][i]->calculateWorldMatrix()));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
 		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
@@ -59,7 +59,7 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 
 		// issue a draw call of 3 vertices (similar to OpenGL)
 
-		gDeviceContext->Draw(objectsToRender[i]->meshFilterComponent->getMesh()->getVertexCount(), 0);
+		gDeviceContext->Draw(objectsToRender[0][i]->meshFilterComponent->getMesh()->getVertexCount(), 0);
 
 	}
 
