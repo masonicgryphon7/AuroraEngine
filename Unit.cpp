@@ -8,6 +8,8 @@
 
 Unit::Unit()
 {
+	actionTime = 2;
+
 	switch (type)
 	{
 	case Type::Hero: //HERO
@@ -54,6 +56,8 @@ Unit::Unit()
 
 Unit::Unit(Type UnitTypeSet)
 {
+	actionTime = 2;
+
 	switch (UnitTypeSet)
 	{
 	case Type::Hero: //HERO
@@ -166,7 +170,8 @@ void Unit::attackCommand()
 
 void Unit::RecieveOrder(RaycastHit Values)
 {
-
+	//UnitOrders.clear();
+	pathNodes.clear();
 
 	//Target is a unit
 	if (Values.transform->gameObject->getComponent<Unit>()!=nullptr)
@@ -177,17 +182,18 @@ void Unit::RecieveOrder(RaycastHit Values)
 			switch (type)
 			{
 			case Type::Hero:				
-				//tempOrder.command = Attack;
-				tempOrder.command = Move;
+				tempOrder.command = Attack;
+				//tempOrder.command = Move;
 
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
 				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
 				break;
 
 			case Type::Soldier:
-				//tempOrder.command = Attack;
-				tempOrder.command = Move;
+				tempOrder.command = Attack;
+				//tempOrder.command = Move;
 
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
@@ -201,6 +207,10 @@ void Unit::RecieveOrder(RaycastHit Values)
 		else if(Values.transform->gameObject->tag==0){
 			//neutral
 			//walk to
+			//tempOrder.command = Move;
+			//tempOrder.transform = Values.transform;
+			//tempOrder.transform = Values.transform;
+			//UnitOrders.push_back(tempOrder);
 			
 		}
 		else {
@@ -233,6 +243,8 @@ void Unit::update()
 {
 	if (UnitOrders.size() > 0) {
 
+		Unit* enemyUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+
 		switch (UnitOrders.at(0).command)
 		{
 		case Command::Move: //MOVE
@@ -246,19 +258,32 @@ void Unit::update()
 			DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, enemyPos);
 			distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
 
-			while (UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints() > 0) //&& Command::Attack == true
+
+			if (enemyUnit != nullptr && enemyUnit->getHealthPoints() >= 0)
 			{
 				if (distance <= this->attackDistance)
 				{
+					actionTime += Time.getDeltaTime();
 					//Damage enemy
-					attackCommand();
-					UnitOrders.erase(UnitOrders.begin());
+					if (actionTime > 1)
+					{
+						attackCommand();
+						Debug.Log("Enemy Hit!");
+						actionTime = 0;
+					}
+					//UnitOrders.erase(UnitOrders.begin());
 				}
 				else
 				{
 					//followCommand()
 					//UnitOrders.erase(UnitOrders.begin());
+					MoveCommand();
 				}
+			}
+			else
+			{
+				UnitOrders[0].transform->gameObject->Destroy();
+				UnitOrders.erase(UnitOrders.begin());
 			}
 			break;
 

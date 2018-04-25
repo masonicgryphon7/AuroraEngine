@@ -12,7 +12,6 @@
 //#include "Light.h"
 
 
-
 class GameObject
 {
 public:
@@ -31,7 +30,7 @@ public:
     MeshFilter *meshFilterComponent = nullptr;
 	//Light *lightComponent;
 	bool detailedRaycast;
-	
+	void Destroy();
     void updateMaterialAndMeshFilterPointers();
     void updateHasLight();
 	void addComponent(Component* otherComponent);

@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Scene.h"
 
 GameObject::GameObject()
 {
@@ -40,6 +41,11 @@ GameObject::~GameObject()
 {
 	//if (meshFilterComponent != nullptr)
 	//	delete meshFilterComponent;
+}
+
+void GameObject::Destroy()
+{
+	gScene.destroy(this);
 }
 
 void GameObject::updateMaterialAndMeshFilterPointers() {

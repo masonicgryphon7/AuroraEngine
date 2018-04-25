@@ -56,11 +56,13 @@ private:
 	int attackPoints;
 	int defencePoints;
 	float attackDistance;
+	float actionTime;
 
 	float distance;
 	DirectX::XMFLOAT3 goalPos;
 	float lerpValue;
 	std::vector<Node> pathNodes;
+	int count = 0, count2 = 0, count3 = 0;
 
 public:
 

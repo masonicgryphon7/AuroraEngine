@@ -42,10 +42,11 @@ public:
 	GameObject* CreateGameObject(Mesh* mesh, Vector3 position = Vector3(0, 0, 0), Vector3 rotation = Vector3(0, 0, 0));
 
 	GameObject* getGameObjectAt(int index);
-	std::vector<GameObject*> getFrustumCulledResult();
+	std::vector<GameObject*>* getFrustumCulledResult();
 	std::vector<GameObject*> getSceneObjects();
 	int getSceneObjectsCount();
-	std::vector<GameObject*> frustumCull(GameObject * camera);
+	void destroy(GameObject* gameObject);
+	void frustumCull(GameObject * camera);
 
 	void update();
 

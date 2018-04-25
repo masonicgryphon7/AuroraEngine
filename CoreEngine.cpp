@@ -274,7 +274,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 5, 0));
 		cube2->name = "FedoraSniper";
-		cube2->tag = 1;
+		cube2->tag = 2;
 		cube2->addComponent(meshFilter);
 		cube2->addComponent(AssetManager.getMaterial(0));
 		Unit *UnitSoldier1 = new Unit(Soldier);
@@ -305,7 +305,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				OnResize();
 
-				objectsToRender = gScene.frustumCull(camera);
+				gScene.frustumCull(camera);
+				objectsToRender = gScene.getFrustumCulledResult();
 				gScene.update();
 
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
@@ -315,7 +316,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				renderManager->EndFrame(); // END RENDERING
 
-				objectsToRender.clear();
+				objectsToRender[0].clear();
 
 				hasResized = false;
 			}
