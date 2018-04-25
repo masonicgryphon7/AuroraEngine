@@ -166,7 +166,8 @@ void Unit::attackCommand()
 
 void Unit::RecieveOrder(RaycastHit Values)
 {
-
+	UnitOrders.clear();
+	pathNodes.clear();
 
 	//Target is a unit
 	if (Values.transform->gameObject->getComponent<Unit>()!=nullptr)
