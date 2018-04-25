@@ -28,22 +28,17 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 	sBuffer[5] = alutCreateBufferFromFile("Assets/sound/Move.wav");
 	sBuffer[6] = alutCreateBufferFromFile("Assets/sound/Summon.wav");
 	sBuffer[7] = alutCreateBufferFromFile("Assets/sound/Follow.wav");
-	alGenSources(1, &source[0]);
-	alGenSources(1, &source[1]);
-	alGenSources(1, &source[2]);
-	alGenSources(1, &source[3]);
-	alGenSources(1, &source[4]);
-	alGenSources(1, &source[5]);
-	alGenSources(1, &source[6]);
-	alGenSources(1, &source[7]);
-	alSourcei(source[0], AL_BUFFER, sBuffer[0]);
-	alSourcei(source[1], AL_BUFFER, sBuffer[1]);
-	alSourcei(source[2], AL_BUFFER, sBuffer[2]);
-	alSourcei(source[3], AL_BUFFER, sBuffer[3]);
-	alSourcei(source[4], AL_BUFFER, sBuffer[4]);
-	alSourcei(source[5], AL_BUFFER, sBuffer[5]);
-	alSourcei(source[6], AL_BUFFER, sBuffer[6]);
-	alSourcei(source[7], AL_BUFFER, sBuffer[7]);
+	int j = 8;
+	for (int i = 0; i < 8; i++)
+	{
+		alGenSources(1, &source[i]);
+		alGenSources(1, &source[j]);
+		alSourcei(source[i], AL_BUFFER, sBuffer[i]);
+		alSourcei(source[j], AL_BUFFER, sBuffer[i]);
+		alSourcef(source[j], AL_PITCH, 0.8f);
+		j++;
+	}
+
 	alSourcei(source[0], AL_LOOPING, AL_TRUE);
 
 }
@@ -52,16 +47,16 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 
 AudioListener::~AudioListener()
 {
-	//for (int i = 0; i > nrOfBuffSou; i++)
-	//{
-	//	alDeleteSources(1, &source[i]);
-	//	alDeleteBuffers(1, &sBuffer[i]);
-	//}
+	for (int i = 0; i > nrOfBuffSou; i++)
+	{
+		alDeleteSources(1, &source[i]);
+		alDeleteBuffers(1, &sBuffer[i]);
+	}
 
-	//device = alcGetContextsDevice(context);
-	//alcMakeContextCurrent(NULL);
-	//alcDestroyContext(context);
-	//alcCloseDevice(device);
+	device = alcGetContextsDevice(context);
+	alcMakeContextCurrent(NULL);
+	alcDestroyContext(context);
+	alcCloseDevice(device);
 }
 
 void AudioListener::playMain()
@@ -71,47 +66,64 @@ void AudioListener::playMain()
 
 void AudioListener::playHurt()
 {
-	alSourcePlay(source[1]);
+	alGetSourcei(source[1], AL_SOURCE_STATE, &state);
+	if (state != AL_PLAYING)
+		alSourcePlay(source[1]);
 }
 
 void AudioListener::playAttack()
 {
-	alSourcePlay(source[2]);
+	alGetSourcei(source[2], AL_SOURCE_STATE, &state);
+	if (state != AL_PLAYING)
+		alSourcePlay(source[2]);
 }
 
 void AudioListener::playBuild()
 {
-	alSourcePlay(source[4]);
+	alGetSourcei(source[4], AL_SOURCE_STATE, &state);
+	if (state != AL_PLAYING)
+		alSourcePlay(source[4]);
 }
 
 void AudioListener::playFollow()
 {
-	alSourcePlay(source[7]);
+	alGetSourcei(source[7], AL_SOURCE_STATE, &state);
+	if (state != AL_PLAYING)
+		alSourcePlay(source[7]);
 }
 
 void AudioListener::playGather()
 {
-	alSourcePlay(source[3]);
+	alGetSourcei(source[3], AL_SOURCE_STATE, &state);
+	if (state != AL_PLAYING)
+		alSourcePlay(source[3]);
 }
 
-void AudioListener::playMove()
+void AudioListener::playMove(int m)
 {
-	alSourcePlay(source[5]);
+	alGetSourcei(source[5], AL_SOURCE_STATE, &state);
+	if (state != AL_PLAYING)
+		alSourcePlay(source[5]);
+	if(m > 1)
+		alSourcePlay(source[13]);
+
 }
 
 void AudioListener::playSummon()
 {
-	alSourcePlay(source[6]);
+	alGetSourcei(source[6], AL_SOURCE_STATE, &state);
+	if (state != AL_PLAYING)
+		alSourcePlay(source[6]);
 }
 
 void AudioListener::update()
 {
+	multiPlay = 0;
 	alGetSourcei(source[1], AL_SOURCE_STATE, &state);
 	std::vector<GameObject*>sceneObjects = gScene.getFrustumCulledResult();
-	DirectX::XMVECTOR pos = gameObject->transform.getPosition();
+	//DirectX::XMVECTOR pos = gameObject->transform.getPosition();
 	
-	alListener3f(AL_POSITION, DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
-	alListener3f(AL_VELOCITY, 0, 0, 0);
+	//alListener3f(AL_POSITION, DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
 
 	if (Input.GetKey(KeyCode::R))
 		playMain();
@@ -125,7 +137,7 @@ void AudioListener::update()
 	if (Input.GetKey(KeyCode::I))
 		playFollow();
 	if (Input.GetKey(KeyCode::O))
-		playMove();
+		playMove(multiPlay);
 	if (Input.GetKey(KeyCode::P))
 		playSummon();
 	if (Input.GetKey(KeyCode::Q))
@@ -136,33 +148,50 @@ void AudioListener::update()
 	{
 		if (sceneObjects[i]->tag > 0) {
 			Unit* unit = sceneObjects[i]->getComponent<Unit>();
-			//Order order = unit->getUnitOrders()[1];
-			if (unit != nullptr && state != AL_PLAYING) {
-				
-				switch (unit->getType())
-				{
-				case Type::Hero:
-					
-					break;
+			if (unit->getUnitOrders().size() > 0)
+			{
+				Order order = unit->getUnitOrders()[0];
+				if (unit != nullptr && state != AL_PLAYING) {
 
-				case Type::Building:
+					switch (order.command)
+					{
 
-					break;
+					case Command::Move:
+						multiPlay++;
+						playMove(multiPlay);
+						break;
 
-				case Type::Soldier:
+					case Command::Attack:
+						playAttack();
+						break;
 
-					break;
+					case Command::Gather:
+						playGather();
+						break;
 
-				case Type::Worker:
+					case Command::Build:
+						playBuild();
+						break;
 
-					break;
+					case Command::Follow:
+						playFollow();
+						break;
 
-				default:
-					break;
+					case Command::Idle:
+						
+						break;
+
+					case Command::Summon:
+						playSummon();
+						break;
+
+					default:
+						break;
+					}
 				}
 			}
-			DirectX::XMVECTOR cubepos = sceneObjects[i]->transform.getPosition();
-			alSource3f(source[i], AL_POSITION, DirectX::XMVectorGetX(cubepos), DirectX::XMVectorGetY(cubepos), DirectX::XMVectorGetZ(cubepos));
+			//DirectX::XMVECTOR cubepos = sceneObjects[i]->transform.getPosition();
+			//alSource3f(source[i], AL_POSITION, DirectX::XMVectorGetX(cubepos), DirectX::XMVectorGetY(cubepos), DirectX::XMVectorGetZ(cubepos));
 		}
 	}
 	

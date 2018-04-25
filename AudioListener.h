@@ -20,11 +20,11 @@ public:
 	void playBuild();
 	void playFollow();
 	void playGather();
-	void playMove();
+	void playMove(int m);
 	void playSummon();
 
-
 	int nrOfBuffSou = 32;
+	int multiPlay;
 
 	ALCcontext *context;
 	ALCdevice *device;
