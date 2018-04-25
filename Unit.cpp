@@ -123,7 +123,8 @@ void Unit::MoveCommand()
 		}
 
 	if (pathNodes.size() > 0) {
-		lerpValue += Time.getDeltaTime() * 10;
+		lerpValue += Time.getDeltaTime() * 0.5;
+
 		if (lerpValue > 1) {
 			lerpValue = 1;
 		}
@@ -134,7 +135,6 @@ void Unit::MoveCommand()
 
 		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
 			pathNodes.erase(pathNodes.begin());
-
 			goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 			lerpValue = 0;
 		}
@@ -142,8 +142,6 @@ void Unit::MoveCommand()
 			pathNodes.erase(pathNodes.begin());
 			lerpValue = 0;
 			UnitOrders.erase(UnitOrders.begin());
-
-
 		}
 		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
 	}
@@ -162,6 +160,15 @@ void Unit::attackCommand()
 	int newEnemyHealth = enemyHealth - damage;
 	UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setHealthPoints(newEnemyHealth);
 	Debug.Log("Attacking.");
+}
+
+void Unit::FollowCommand()
+{
+	MoveCommand();
+
+	if()
+	{ }
+
 }
 
 void Unit::RecieveOrder(RaycastHit Values)
@@ -211,7 +218,33 @@ void Unit::RecieveOrder(RaycastHit Values)
 		else {
 			//friendly
 			//walk to
-			
+			switch (type)
+			{
+			case Type::Hero:
+				tempOrder.command = Follow;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				break;
+
+			case Type::Soldier:
+				tempOrder.command = Follow;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				break;
+
+			case Type::Worker:
+				tempOrder.command = Follow;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+
+			default:
+				//walk to
+				break;
+			}
+
 		}
 
 	}
@@ -245,11 +278,11 @@ void Unit::update()
 			break;
 
 		case Command::Attack: //ATTACK
-			DirectX::XMVECTOR enemyPos = UnitOrders.at(0).transform->getPosition();
-			DirectX::XMVECTOR unitPos = gameObject->transform.getPosition();
+			DirectX::XMVECTOR Attack_EnemyPos = UnitOrders.at(0).transform->getPosition();
+			DirectX::XMVECTOR Attack_UnitPos = gameObject->transform.getPosition();
 
-			DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, enemyPos);
-			distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
+			DirectX::XMVECTOR Attack_diff = DirectX::XMVectorSubtract(Attack_UnitPos, Attack_EnemyPos);
+			distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(Attack_diff));
 
 			if (distance <= this->attackDistance)
 			{
@@ -260,8 +293,8 @@ void Unit::update()
 			}
 			else
 			{
-				//followCommand()
-				//UnitOrders.erase(UnitOrders.begin());
+				FollowCommand();
+				UnitOrders.erase(UnitOrders.begin());
 			}
 			break;
 
@@ -272,6 +305,23 @@ void Unit::update()
 			break;
 
 		case Command::Follow: //FOLLOW
+			DirectX::XMVECTOR Follow_TargetPos = UnitOrders.at(0).transform->getPosition();
+			DirectX::XMVECTOR Follow_UnitPos = gameObject->transform.getPosition();
+
+			DirectX::XMVECTOR Follow_diff = DirectX::XMVectorSubtract(Follow_UnitPos, Follow_TargetPos);
+			distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(Follow_diff));
+
+			if (distance <= this->attackDistance)
+			{
+				FollowCommand();
+				UnitOrders.erase(UnitOrders.begin());
+
+			}
+			else
+			{
+				FollowCommand();
+				UnitOrders.erase(UnitOrders.begin());
+			}
 			break;
 
 		case Command::Summon: //SUMMON
