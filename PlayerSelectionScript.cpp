@@ -24,13 +24,13 @@ void PlayerSelectionScript::SelectUnits()
 		if (isSelectingHolding != 1)
 		{
 			isSelectingHolding = 1;
-			mousePosRelative = Input.GetMousePosition();
+			mousePosRelative = Input.mousePosition;
 		}
 	}
 
 	if (Input.GetKeyUp(KeyCode::LeftMouse))
 	{
-		Vector2 currentPos = Input.GetMousePosition();
+		Vector2 currentPos = Input.mousePosition;
 
 		//10 is selection deadzone
 		bool isSelection = true;
@@ -68,7 +68,7 @@ void PlayerSelectionScript::SelectUnits()
 			//unity har en deadzone för drag selection och att man raycastar eller selectar inte först man releasar mus. börja uppdatera mousePosRelative on mousedown och räkna ut if utanför deadzone så selection i physics else mousepick
 			RaycastHit hit;
 
-			Ray ray = Player->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(Input.GetMousePosition().x, Input.GetMousePosition().y, 0, 0));
+			Ray ray = Player->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(Input.mousePosition.x, Input.mousePosition.y, 0, 0));
 			gPhysics.Raycast(ray, hit);
 
 			if (hit.transform != nullptr) {
@@ -96,13 +96,13 @@ void PlayerSelectionScript::SelectUnits()
 
 	if (Input.GetKeyUp(KeyCode::RightMouse))
 	{
-		Vector2 currentPos = Input.GetMousePosition();
+		Vector2 currentPos = Input.mousePosition;
 
 		
 		//unity har en deadzone för drag selection och att man raycastar eller selectar inte först man releasar mus. börja uppdatera mousePosRelative on mousedown och räkna ut if utanför deadzone så selection i physics else mousepick
 		RaycastHit hit;
 
-		Ray ray = Player->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(Input.GetMousePosition().x, Input.GetMousePosition().y, 0, 0));
+		Ray ray = Player->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(Input.mousePosition.x, Input.mousePosition.y, 0, 0));
 		gPhysics.Raycast(ray, hit);
 
 		if (hit.transform != nullptr) {

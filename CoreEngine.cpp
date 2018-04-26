@@ -115,7 +115,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 		ImGui_ImplDX11_Init(wndHandle, gDevice, gDeviceContext);
 		io.MouseDrawCursor = true;
-		io.SetCustomMouseTexture = false;
+		//io.SetCustomMouseTexture = false;
 
 		//ImGui_ImplWin32_UpdateMouseCursor();
 
@@ -227,17 +227,48 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
 
 
-		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
-		terrain->name = "Terrain";
-		terrain->tag = 0;
-		terrain->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
-		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
+		GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
+		terrain1->name = "Terrain1";
+		terrain1->tag = 0;
+		terrain1->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
+		AssetManager.addMesh(terrainGenerator1->vertCount, &terrainGenerator1->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
-		terrain->addComponent(AssetManager.getMaterial(1));
-		terrain->addComponent(meshFilterTerrain);
+		terrain1->addComponent(AssetManager.getMaterial(1));
+		terrain1->addComponent(meshFilterTerrain);
 
-		PathCreator.createNodes(terrainGenerator->getRealVertArr());
+		GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 0, 0));
+		terrain2->name = "Terrain2";
+		terrain2->tag = 0;
+		terrain2->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
+		AssetManager.addMesh(terrainGenerator2->vertCount, &terrainGenerator2->TriangleArr);
+		MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
+		terrain2->addComponent(AssetManager.getMaterial(1));
+		terrain2->addComponent(meshFilterTerrain2);
+
+		GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 99, 0));
+		terrain3->name = "Terrain3";
+		terrain3->tag = 0;
+		terrain3->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
+		AssetManager.addMesh(terrainGenerator3->vertCount, &terrainGenerator3->TriangleArr);
+		MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
+		terrain3->addComponent(AssetManager.getMaterial(1));
+		terrain3->addComponent(meshFilterTerrain3);
+
+		GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
+		terrain4->name = "Terrain4";
+		terrain4->tag = 0;
+		terrain4->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
+		AssetManager.addMesh(terrainGenerator4->vertCount, &terrainGenerator4->TriangleArr);
+		MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
+		terrain4->addComponent(AssetManager.getMaterial(1));
+		terrain4->addComponent(meshFilterTerrain4);
+
+
+		PathCreator.createNodes(terrainGenerator1->getRealVertArr()/*, x,y*/); // Skapa en ny konstruktor som stödjer flera terrainbitar, dvs getRealVertArr uppdelat i olika delar.
 
 		//AssetManager.addMeshFromBinary("Assets/pCube1_Mesh.bin");
 
@@ -245,8 +276,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
 		//YoObject->addComponent(AssetManager.getMaterial(0));
 		//YoObject->addComponent(yomeshFilter);
-
-		PathCreator.createNodes(terrainGenerator->getRealVertArr());
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
@@ -263,30 +292,27 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
-		cube->name = "Human";
+		cube->name = "Cube";
 		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj");
-		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(1));
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 		cube->addComponent(meshFilter);
 		cube->addComponent(AssetManager.getMaterial(0));
-		Unit *UnitHero1 = new Unit(Worker);
+		Unit *UnitHero1 = new Unit(Hero);
 		cube->addComponent(UnitHero1);
 
-		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
-		cube2->name = "Goldmine";
-		cube2->tag = 3;
+		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 5, 0));
+		cube2->name = "FedoraSniper";
+		cube2->tag = 1;
 		cube2->addComponent(meshFilter);
 		cube2->addComponent(AssetManager.getMaterial(0));
-		Unit *UnitSoldier1 = new Unit(GoldMine);
+		Unit *UnitSoldier1 = new Unit(Soldier);
 		cube2->addComponent(UnitSoldier1);
 
-		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
-		cube3->name = "Silo";
-		cube3->tag = 3;
-		cube3->addComponent(meshFilter);
-		cube3->addComponent(AssetManager.getMaterial(0));
-		Unit* unitBuilding = new Unit(Building);
-		cube3->addComponent(unitBuilding);
+		
+		/*ClickToMove* clickToMove = new ClickToMove(cam);
+		cube->addComponent(clickToMove);*/
+
 
 
 
@@ -310,12 +336,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				gScene.frustumCull(camera);
 				objectsToRender = gScene.getFrustumCulledResult();
+				if (editor != nullptr)
+					editor->Update();
 				gScene.update();
 
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 
-				if (editor != nullptr)
-					editor->Update();
 
 				renderManager->EndFrame(); // END RENDERING
 
@@ -522,8 +548,8 @@ HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, // spawn window x
 		CW_USEDEFAULT, // spawn window y
-		WIDTH, // size x
-		HEIGHT, // size y
+		rc.right - rc.left, // size x
+		rc.bottom - rc.top, // size y
 		nullptr,
 		nullptr,
 		hInstance,
