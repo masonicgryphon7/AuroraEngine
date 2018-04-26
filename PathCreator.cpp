@@ -5,11 +5,218 @@ std::vector<std::vector<Node>> cPathCreator::grid;
 
 cPathCreator::cPathCreator()
 {
+
+}
+
+cPathCreator::cPathCreator(std::vector<std::vector<std::vector<VERTEX_POS3UV2T3B3N3>>> positionsArr, int Width, int Height)
+{
+	/* begins		begins		begins		 begins
+		0,0:tr1		100,0:tr2	0,100:tr3	 100,100:tr4
+
+	*/
+
+	//for (int s = 0; s < positionsArr.size(); s++)
+	//{
+	//	grid = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
+	//	for (int x = MIN; x < MAX; x++)
+	//	{
+	//		for (int y = MIN; y < MAX; y++)
+	//		{
+	//			grid[y][x].position = Vec3(positionsArr.at(s)[x][y].position.x, positionsArr.at(s)[x][y].position.y, positionsArr.at(s)[x][y].position.z);
+	//			grid[y][x].g = 0;
+	//			grid[y][x].f = 0;
+	//			grid[y][x].h = 0;
+	//			grid[y][x].parentX = -999999999;
+	//			grid[y][x].parentZ = -999999999;
+	//			grid[y][x].pathable = true;
+	//		}
+	//	}
+
+
+
+		////border grid
+		//for (int i = MIN; i < MAX; i++)
+		//{
+		//	grid[i][MIN].pathable = false;
+		//	//display[i][MIN] = 1;
+
+		//}
+		//for (int i = MIN; i < MAX; i++)
+		//{
+		//	grid[i][MAX - 1].pathable = false;
+		//	//display[i][MAX - 1] = 1;
+
+		//}
+		//for (int i = MIN; i < MAX; i++)
+		//{
+		//	grid[MIN][i].pathable = false;
+		//	//display[MIN][i] = 1;
+
+		//}
+		//for (int i = MIN; i < MAX; i++)
+		//{
+		//	grid[MAX - 1][i].pathable = false;
+		//	//display[MAX - 1][i] = 1;
+
+		//}
+	//}
 }
 
 
 cPathCreator::~cPathCreator()
 {
+
+}
+
+void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions, int minX, int minZ, int maxX, int maxZ)
+{
+	grid = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
+	int s = 0, z = 0;
+
+	for (int x = minZ; x < maxZ; x++)
+	{
+		for (int y = minX; y < maxX; y++)
+		{
+			grid[y][x].position = Vec3(positions[s][z].position.x, positions[s][z].position.y, positions[s][z].position.z);
+			grid[y][x].g = 0;
+			grid[y][x].f = 0;
+			grid[y][x].h = 0;
+			grid[y][x].parentX = -999999999;
+			grid[y][x].parentZ = -999999999;
+			grid[y][x].pathable = true;
+
+			s++;
+		}
+		z++;
+	}
+
+	//border grid
+	for (int i = minX; i < maxX; i++)
+	{
+		grid[i][minX].pathable = false;
+		//display[i][MIN] = 1;
+
+	}
+	for (int i = minX; i < maxX; i++)
+	{
+		grid[i][maxX - 1].pathable = false;
+		//display[i][MAX - 1] = 1;
+
+	}
+	for (int i = minZ; i < maxZ; i++)
+	{
+		grid[minZ][i].pathable = false;
+		//display[MIN][i] = 1;
+
+	}
+	for (int i = minZ; i < maxZ; i++)
+	{
+		grid[maxZ - 1][i].pathable = false;
+		//display[MAX - 1][i] = 1;
+
+	}
+}
+
+void cPathCreator::createNodes(std::vector<std::vector<std::vector<VERTEX_POS3UV2T3B3N3>>> positionsArr, int MAXg, int MINg, int TerrrainPatchSize)
+{
+	grid = std::vector<std::vector<Node>>(MAXg, std::vector<Node>(MAXg));	
+	/*int patchXstart = 0, patchZstart = 0, patchXend = 0, patchZend = 0;*/
+	int s = 0, z = 0;
+
+	for (int s = 0; s < positionsArr.size(); s++)
+	{
+		//TerrainOne Z:0 X:0
+		for (int x = MIN; x < MAX; x++)
+		{
+			for (int y = MIN; y < MAX; y++)
+			{
+
+				grid[y][x].position = Vec3(positionsArr.at(s)[x][y].position.x, positionsArr.at(s)[x][y].position.y, positionsArr.at(s)[x][y].position.z);
+				grid[y][x].g = 0;
+				grid[y][x].f = 0;
+				grid[y][x].h = 0;
+				grid[y][x].parentX = -999999999;
+				grid[y][x].parentZ = -999999999;
+				grid[y][x].pathable = true;
+
+			}
+		}
+		//TerrainTwo X:99 Z:0
+		for (int x = MIN; x < MAX; x++)
+		{
+			for (int y = MIN; y < MAX; y++)
+			{
+
+				grid[100 + y][x].position = Vec3(positionsArr.at(s)[x][y].position.x, positionsArr.at(s)[x][y].position.y, positionsArr.at(s)[x][y].position.z);
+				grid[100 + y][x].g = 0;
+				grid[100 + y][x].f = 0;
+				grid[100 + y][x].h = 0;
+				grid[100 + y][x].parentX = -999999999;
+				grid[100 + y][x].parentZ = -999999999;
+				grid[100 + y][x].pathable = true;
+
+			}
+		}
+		//TerrainThree Z:99 X:99
+		for (int x = MIN; x < MAX; x++)
+		{
+			for (int y = MIN; y < MAX; y++)
+			{
+
+				grid[100 + y][100 + x].position = Vec3(positionsArr.at(s)[x][y].position.x, positionsArr.at(s)[x][y].position.y, positionsArr.at(s)[x][y].position.z);
+				grid[100 + y][100 + x].g = 0;
+				grid[100 + y][100 + x].f = 0;
+				grid[100 + y][100 + x].h = 0;
+				grid[100 + y][100 + x].parentX = -999999999;
+				grid[100 + y][100 + x].parentZ = -999999999;
+				grid[100 + y][100 + x].pathable = true;
+
+			}
+		}
+		//TerrainFour X:00 Z:99
+		for (int x = MIN; x < MAX; x++)
+		{
+			for (int y = MIN; y < MAX; y++)
+			{
+
+				grid[y][100 + x].position = Vec3(positionsArr.at(s)[x][y].position.x, positionsArr.at(s)[x][y].position.y, positionsArr.at(s)[x][y].position.z);
+				grid[y][100 + x].g = 0;
+				grid[y][100 + x].f = 0;
+				grid[y][100 + x].h = 0;
+				grid[y][100 + x].parentX = -999999999;
+				grid[y][100 + x].parentZ = -999999999;
+				grid[y][100 + x].pathable = true;
+
+			}
+		}
+		//JAG FÅR HYBRIS PÅ HÅRDKODNING.
+
+		//border grid
+		for (int i = MINg; i < MAXg; i++)
+		{
+			grid[i][MIN].pathable = false;
+			//display[i][MIN] = 1;
+
+		}
+		for (int i = MINg; i < MAXg; i++)
+		{
+			grid[i][MAXg - 1].pathable = false;
+			//display[i][MAX - 1] = 1;
+
+		}
+		for (int i = MINg; i < MAXg; i++)
+		{
+			grid[MIN][i].pathable = false;
+			//display[MIN][i] = 1;
+
+		}
+		for (int i = MINg; i < MAXg; i++)
+		{
+			grid[MAX - 1][i].pathable = false;
+			//display[MAX - 1][i] = 1;
+
+		}
+	}
 }
 
 void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions)
