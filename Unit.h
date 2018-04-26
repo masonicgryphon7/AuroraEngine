@@ -22,6 +22,7 @@
 		Move,
 		Attack,
 		Gather,
+		//Drop,
 		Build,
 		Follow,
 		Summon,
@@ -35,7 +36,7 @@
 		Worker,
 		Building,
 		//BrainParasite,
-		//Nature
+		GoldMine
 	};
 
 	struct Order
@@ -57,6 +58,11 @@ private:
 	int defencePoints;
 	float attackDistance;
 	float actionTime;
+	int e = 0;
+
+
+	DirectX::XMVECTOR targetPos;
+	DirectX::XMVECTOR unitPos;
 
 	float distance;
 	DirectX::XMFLOAT3 goalPos;
@@ -74,23 +80,31 @@ public:
 	Type getType() { return this->type; };
 	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
 
-
+	int getResources() { return this->Resources; };
 	int getHealthPoints() { return this->healthPoints; };
 	int getAttackPoints() { return this->attackPoints; };
 	int getDefencePoints() { return this->defencePoints; };
 	float getAttackDistance() { return this->attackDistance; };
 
+	void setResources(int resources) { this->Resources = resources; };
 	void setHealthPoints(int healthPoints) { this->healthPoints = healthPoints; };
 	void setAttackPoints(int attackPoints) { this->attackPoints = attackPoints; };
 	void setDefencePoints(int defencePoints) { this->defencePoints = defencePoints; };
 	void setAttackDistance(float attackDistance) { this->attackDistance = attackDistance; };
 
-	void MoveCommand();
+	void MoveCommand(DirectX::XMVECTOR *goalPos);
 	void attackCommand();
 	void FollowCommand();
+	void gatherCommand(Unit* targetedUnit);
+	void gatherResources();
+	void dropResources();
+
+	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 
 	void RecieveOrder(RaycastHit Values);
 	void update();
+
+	//void test();
 
 };
 

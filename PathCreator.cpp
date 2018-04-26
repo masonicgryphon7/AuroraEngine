@@ -199,7 +199,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 		}
 		i++;
 	}
-	Debug.Log("AStar Iterations:", i);
+	//Debug.Log("AStar Iterations:", i);
 	int gg = 0;
 	if (succes == true) {
 

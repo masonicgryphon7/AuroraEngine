@@ -127,7 +127,6 @@ void AudioListener::update()
 
 	if (Input.GetKey(KeyCode::R))
 		playMain();
-
 	if (Input.GetKey(KeyCode::T))
 		playHurt();
 	if (Input.GetKey(KeyCode::Y))
