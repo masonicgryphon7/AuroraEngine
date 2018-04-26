@@ -312,25 +312,35 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		}
 
 
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
-		cube->name = "Cube";
+		cube->name = "Human";
 		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 		cube->addComponent(meshFilter);
 		cube->addComponent(AssetManager.getMaterial(0));
-		Unit *UnitHero1 = new Unit(Hero);
+		Unit *UnitHero1 = new Unit(Worker);
 		cube->addComponent(UnitHero1);
 
-		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 5, 0));
-		cube2->name = "FedoraSniper";
-		cube2->tag = 1;
+		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
+		cube2->name = "Goldmine";
+		cube2->tag = 3;
 		cube2->addComponent(meshFilter);
 		cube2->addComponent(AssetManager.getMaterial(0));
-		Unit *UnitSoldier1 = new Unit(Soldier);
+		Unit *UnitSoldier1 = new Unit(GoldMine);
 		cube2->addComponent(UnitSoldier1);
+
+		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
+		cube3->name = "Silo";
+		cube3->tag = 3;
+		cube3->addComponent(meshFilter);
+		cube3->addComponent(AssetManager.getMaterial(0));
+		Unit* unitBuilding = new Unit(Building);
+		cube3->addComponent(unitBuilding);
+
+
 
 		
 		/*ClickToMove* clickToMove = new ClickToMove(cam);
