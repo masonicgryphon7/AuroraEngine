@@ -7,7 +7,7 @@
 
 PlayerScript::PlayerScript() :Component(-1, "Editor Move Script")
 {
-	speed = 7.5f;
+	speed = 0.01f;
 	//direction = DirectX::XMVectorSet(0, 0, 0, 0);
 	position = DirectX::XMVectorSet(0, 0, 0, 0);
 
