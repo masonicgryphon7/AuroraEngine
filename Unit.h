@@ -35,7 +35,7 @@
 		Soldier,
 		Worker,
 		Building,
-		//BrainParasite,
+		Bank,
 		GoldMine
 	};
 
