@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-
+#include "GameObject.h"
 
 Transform::Transform()
 {
@@ -53,6 +53,16 @@ DirectX::XMVECTOR Transform::getRotation()
 void Transform::setRotation(const DirectX::XMVECTOR in_setRotation)
 {
 	rotation = DirectX::XMVectorScale(in_setRotation, PI/180.0);
+
+	DirectX::XMMATRIX rotationM;
+
+	rotationM = DirectX::XMMatrixRotationAxis(getRight(), -DirectX::XMVectorGetZ(in_setRotation));
+	rotationM = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationAxis(getUp(), -DirectX::XMVectorGetX(in_setRotation)), rotationM);
+
+	//up = DirectX::XMVector3Transform(up, rotationM);
+	right = DirectX::XMVector3Transform(right, rotationM);
+	forward = DirectX::XMVector3Transform(forward, rotationM);
+
 }
 
 	
