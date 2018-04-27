@@ -249,8 +249,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//----------------
 
-		std::vector<std::vector<std::vector<VERTEX_POS3UV2T3B3N3>>> TerrainVertArr;
-
 		GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 		terrain1->name = "Terrain1";
 		terrain1->tag = 0;
@@ -260,7 +258,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
 		terrain1->addComponent(AssetManager.getMaterial(1));
 		terrain1->addComponent(meshFilterTerrain);
-		//TerrainVertArr.push_back(terrainGenerator1->getRealVertArr());
 
 		GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 0, 0));
 		terrain2->name = "Terrain2";
@@ -271,7 +268,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
 		terrain2->addComponent(AssetManager.getMaterial(2));
 		terrain2->addComponent(meshFilterTerrain2);
-		//TerrainVertArr.push_back(terrainGenerator2->getRealVertArr());
 
 		GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 99, 0));
 		terrain3->name = "Terrain3";
@@ -282,7 +278,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
 		terrain3->addComponent(AssetManager.getMaterial(3));
 		terrain3->addComponent(meshFilterTerrain3);
-		//TerrainVertArr.push_back(terrainGenerator3->getRealVertArr());
 
 		GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
 		terrain4->name = "Terrain4";
@@ -293,11 +288,16 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
 		terrain4->addComponent(AssetManager.getMaterial(4));
 		terrain4->addComponent(meshFilterTerrain4);
-		//TerrainVertArr.push_back(terrainGenerator4->getRealVertArr());
 
-		PathCreator.createNodes(terrainGenerator1->getRealVertArr());
-		//PathCreator.createNodes(TerrainVertArr, 200, 0, 0); // Skapa en ny konstruktor som stödjer flera terrainbitar, dvs getRealVertArr uppdelat i olika delar.
-		TerrainVertArr.clear();
+		//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
+		cPathCreator* PathCreator1 = new cPathCreator(200, 200);
+
+		PathCreator1->addTerrain(terrainGenerator1->getRealVertArr(), 0, 0);
+		PathCreator1->addTerrain(terrainGenerator2->getRealVertArr(), 0, 100);
+		PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 100, 0);
+		PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 100, 100);
+		PathCreator.trumpTheBorders();
+
 		//PathCreator.createNodes();
 
 		// Create a Main Camera
