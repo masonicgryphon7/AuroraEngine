@@ -64,7 +64,7 @@ Unit::Unit(Type UnitTypeSet)
 		this->healthPoints = 100;
 		this->attackPoints = 13;
 		this->defencePoints = 13;
-		this->attackDistance = 1;
+		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
 		break;
@@ -73,7 +73,7 @@ Unit::Unit(Type UnitTypeSet)
 		this->healthPoints = 20;
 		this->attackPoints = 4;
 		this->defencePoints = 8;
-		this->attackDistance = 1;
+		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Soldier;
 		break;
@@ -96,6 +96,16 @@ Unit::Unit(Type UnitTypeSet)
 		this->type = Building;
 		break;
 
+	case Type::Bank: //Bank
+
+		this->healthPoints = 500;
+		this->attackPoints = 0;
+		this->defencePoints = 0;
+		this->attackDistance = 0;
+		this->Resources = 0;
+		this->type = Bank;
+		break;
+		
 	case Type::GoldMine: //NATURE TREES, MINES, ETC
 
 		this->healthPoints = 10000;
@@ -232,7 +242,7 @@ void Unit::FollowCommand()
 		lerpValue = 0;
 
 	}
-	Debug.Log("Following...");
+	//Debug.Log("Following...");
 }
 
 void Unit::gatherCommand(Unit* targetedUnit)
@@ -240,6 +250,9 @@ void Unit::gatherCommand(Unit* targetedUnit)
 	if (targetedUnit != nullptr && targetedUnit->getResources() >= 0)
 	{
 		unitPos = gameObject->transform.getPosition();
+		//gameObject->getComponent<Unit>();
+		//Debug.Log("Following...",gameObject->name);
+
 		//targetPos = UnitOrders.at(0).transform->getPosition(); // click goldmine first, pos of goldmine
 
 		if (this->Resources < 100 && e == 0) // worker is not full
@@ -303,6 +316,12 @@ void Unit::dropResources()
 	Debug.Log("Resources dropped! In worker: ", this->getResources());
 	//int resourcesInTarget = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
 	//UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+}
+
+void Unit::destroyUnit()
+{
+	UnitOrders[0].transform->gameObject->Destroy();
+	UnitOrders.erase(UnitOrders.begin());
 }
 
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)

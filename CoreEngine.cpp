@@ -302,14 +302,16 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		{
-			camera = gScene.createEmptyGameObject();
-			camera->name = "Main Camera";
-			cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
-			camera->addComponent(cam);
-			PlayerSelectionScript* playerSelectionScript = new PlayerSelectionScript(camera);
-			camera->addComponent(playerSelectionScript);
-		}
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera->name = "Main Camera";
+		cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
+		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0));
+		camera->addComponent(cam);
+		PlayerSelectionScript* playerSelectionScript = new PlayerSelectionScript(camera);
+		camera->addComponent(playerSelectionScript);
+
+		PlayerScript *playerscript = new PlayerScript();
+		camera->addComponent(playerscript);
 
 
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
@@ -323,6 +325,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(AssetManager.getMaterial(0));
 		Unit *UnitHero1 = new Unit(Worker);
 		cube->addComponent(UnitHero1);
+		//playerscript->friendlyUnits.push_back(UnitHero1);
+
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
 		cube2->name = "Goldmine";
@@ -333,14 +337,22 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube2->addComponent(UnitSoldier1);
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
-		cube3->name = "Silo";
+		cube3->name = "Bank";
 		cube3->tag = 3;
 		cube3->addComponent(meshFilter);
 		cube3->addComponent(AssetManager.getMaterial(0));
-		Unit* unitBuilding = new Unit(Building);
+		Unit* unitBuilding = new Unit(Bank);
 		cube3->addComponent(unitBuilding);
+		//playerscript->friendlyBuildings.push_back(unitBuilding);
 
-
+		GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
+		cube4->name = "Hero";
+		cube4->tag = 1;
+		cube4->addComponent(meshFilter);
+		cube4->addComponent(AssetManager.getMaterial(0));
+		Unit* UnitHero2 = new Unit(Hero);
+		cube4->addComponent(UnitHero2);
+		//playerscript->friendlyUnits.push_back(UnitHero2);
 
 		
 		/*ClickToMove* clickToMove = new ClickToMove(cam);

@@ -35,7 +35,7 @@
 #include "MeshFilter.h"
 #include "Material.h"
 #include "EditorMoveScript.h"
-#include "PlayerMoveScript.h"
+#include "PlayerScript.h"
 #include "Unit.h"
 //#include "CharacterMovement.h"
 #include "Camera.h"
@@ -123,6 +123,7 @@ public:
 	GameObject* camera;
 	cAssetManager assetManager;
 	RenderManager *renderManager;
+
 
 	void SetViewport(int x = WIDTH, int y = HEIGHT);
 	void OnResize();

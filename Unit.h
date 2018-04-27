@@ -8,6 +8,7 @@
 #include "PRIMITIVE_GEOMETRY.h"
 #include "Node.h"
 
+class PlayerScript;
 #pragma once
 	/*
 	Factions
@@ -35,7 +36,7 @@
 		Soldier,
 		Worker,
 		Building,
-		//BrainParasite,
+		Bank,
 		GoldMine
 	};
 
@@ -60,9 +61,10 @@ private:
 	float actionTime;
 	int e = 0;
 
-
 	DirectX::XMVECTOR targetPos;
 	DirectX::XMVECTOR unitPos;
+
+	PlayerScript* playerScript;
 
 	float distance;
 	DirectX::XMFLOAT3 goalPos;
@@ -98,14 +100,12 @@ public:
 	void gatherCommand(Unit* targetedUnit);
 	void gatherResources();
 	void dropResources();
+	void destroyUnit();
 
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 
 	void RecieveOrder(RaycastHit Values);
 	void update();
-
-	//void test();
-
 };
 
 #endif

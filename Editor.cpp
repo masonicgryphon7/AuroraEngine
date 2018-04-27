@@ -56,9 +56,8 @@ void Editor::Start(HWND* w, ID3D11Device* d, ID3D11DeviceContext* dc, CoreEngine
 
 	editorCamera = ce->camera;
 
-	ems = new EditorMoveScript();//(&engineTime, &inputHandler);
-	//PMS = new PlayerMoveScript();
-	editorCamera->addComponent(ems);
+	//ems = new EditorMoveScript();//(&engineTime, &inputHandler);
+
 
 	m_gui.emplace_back(make_unique<GUI_Inspector>());
 	m_gui.emplace_back(make_unique<GUI_Viewport>());
@@ -185,7 +184,7 @@ void Editor::Exit()
 	ImGui::ShutdownDock();
 	ImGui::DestroyContext();
 
-	delete ems;
+	//delete ems;
 }
 
 void Editor::OnResize()
