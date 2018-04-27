@@ -65,7 +65,7 @@ Unit::Unit(Type UnitTypeSet)
 		this->attackPoints = 13;
 		this->defencePoints = 13;
 		this->attackDistance = 1;
-		this->Resources = 10;
+		this->Resources = 0;
 		this->type = Hero;
 		break;
 
@@ -82,7 +82,7 @@ Unit::Unit(Type UnitTypeSet)
 		this->healthPoints = 15;
 		this->attackPoints = 1;
 		this->defencePoints = 5;
-		this->attackDistance = 1;
+		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Worker;
 		break;
@@ -96,13 +96,15 @@ Unit::Unit(Type UnitTypeSet)
 		this->type = Building;
 		break;
 
-		//case 4: //NATURE TREES, MINES, ETC
+	case Type::GoldMine: //NATURE TREES, MINES, ETC
 
-		//	this->UnitStats.HealthPoints = 100;
-		//	this->UnitStats.AttackPoints = 0;
-		//	this->UnitStats.DefencePoints = 0;
-		//	this->Resources = 50;
-		//	break;
+		this->healthPoints = 10000;
+		this->attackPoints = 0;
+		this->defencePoints = 0;
+		this->attackDistance = 0;
+		this->Resources = 1000;
+		this->type = GoldMine;
+		break;
 
 	}
 }
@@ -112,13 +114,20 @@ Unit::~Unit()
 
 }
 
-void Unit::MoveCommand()
+void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 {
 	DirectX::XMFLOAT3 current;
 	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
 	DirectX::XMFLOAT3 pointPosition;
-	DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
+	if (goalPos == nullptr)
+	{
+		DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
+	}
+	else
+	{
+	DirectX::XMStoreFloat3(&pointPosition, *goalPos);
+	}
 
 	if (pathNodes.size() == 0)
 		{
@@ -145,7 +154,7 @@ void Unit::MoveCommand()
 		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 			pathNodes.erase(pathNodes.begin());
 			lerpValue = 0;
-			UnitOrders.erase(UnitOrders.begin());
+			//UnitOrders.erase(UnitOrders.begin());
 
 
 		}
@@ -156,7 +165,7 @@ void Unit::MoveCommand()
 		lerpValue = 0;
 		
 	}
-	Debug.Log("Moving");
+	//Debug.Log("Moving");
 }
 
 void Unit::attackCommand()
@@ -168,16 +177,182 @@ void Unit::attackCommand()
 	Debug.Log("Attacking.");
 }
 
+void Unit::FollowCommand()
+{
+	DirectX::XMFLOAT3 current;
+	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
+
+	DirectX::XMFLOAT3 TransformPosition;
+	DirectX::XMStoreFloat3(&TransformPosition, UnitOrders.at(0).transform->getPosition());
+	int xyz[3] = { (int)TransformPosition.x,(int)TransformPosition.y, (int)TransformPosition.z };
+
+
+	if (pathNodes.size() == 0)
+	{
+		pathNodes = PathCreator.getPath(TransformPosition, current);
+		lerpValue = 0;
+	}
+	else
+	{
+		if (pathNodes.back().position.x != xyz[0] || pathNodes.back().position.y != xyz[1] || pathNodes.back().position.z != xyz[2]) {
+			pathNodes = PathCreator.getPath(TransformPosition, current);
+
+		}
+	}
+
+
+	if (pathNodes.size() > 0) {
+		lerpValue += Time.getDeltaTime() * 2;
+		if (lerpValue > 1) {
+			lerpValue = 1;
+		}
+		DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+		DirectX::XMFLOAT3 goalVec;
+		DirectX::XMStoreFloat3(&goalVec, goal);
+
+
+		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
+			pathNodes.erase(pathNodes.begin());
+
+			goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+			lerpValue = 0;
+		}
+		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
+			pathNodes.erase(pathNodes.begin());
+			lerpValue = 0;
+
+
+		}
+
+		//is final path the same as transform?
+		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
+	}
+	else
+	{
+		lerpValue = 0;
+
+	}
+	Debug.Log("Following...");
+}
+
+void Unit::gatherCommand(Unit* targetedUnit)
+{
+	if (targetedUnit != nullptr && targetedUnit->getResources() >= 0)
+	{
+		unitPos = gameObject->transform.getPosition();
+		//targetPos = UnitOrders.at(0).transform->getPosition(); // click goldmine first, pos of goldmine
+
+		if (this->Resources < 100 && e == 0) // worker is not full
+		{
+			if (getDistanceBetweenUnits(unitPos, DirectX::XMVectorSet(1, 0, 20, 0)) < this->attackDistance)
+			{
+				actionTime += Time.getDeltaTime();
+				if (actionTime > 1)
+				{
+					gatherResources();
+					actionTime = 0;
+					if (this->Resources == 100)
+						e = 1;
+				}
+			}
+			else 
+			{
+				MoveCommand(&DirectX::XMVectorSet(1, 0, 20, 0)); //Move to goldmine
+			}
+		}
+		else if (this->Resources > 0) // worker has gold
+		{
+			if (getDistanceBetweenUnits(unitPos, DirectX::XMVectorSet(20, 0, 1, 0)) < this->attackDistance)
+			{
+				actionTime += Time.getDeltaTime();
+				if (actionTime > 1)
+				{
+					dropResources();		
+					actionTime = 0;
+					if (this->Resources == 0)
+						e = 0;
+				}
+			}
+			else 
+			{
+				MoveCommand(&DirectX::XMVectorSet(20, 0, 1, 0)); //Move to silo
+			}
+		}
+	}
+	else
+	{
+		//UnitOrders[0].transform->gameObject->Destroy(); /Tar bort "guldgruvan"
+		UnitOrders.erase(UnitOrders.begin());
+	}
+}
+
+void Unit::gatherResources()
+{
+	int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
+	UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
+	int workersAmount = this->getResources();
+	this->setResources(workersAmount + 20);
+	Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
+
+}
+
+void Unit::dropResources()
+{
+	int resourcesInUnit = this->getResources();
+	this->setResources(resourcesInUnit - 20);
+	Debug.Log("Resources dropped! In worker: ", this->getResources());
+	//int resourcesInTarget = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
+	//UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+}
+
+float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
+{
+	DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, targetPos);
+	distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
+	return distance;
+}
+
 void Unit::RecieveOrder(RaycastHit Values)
 {
-	//UnitOrders.clear();
+	
+	UnitOrders.clear();
 	pathNodes.clear();
 
 	//Target is a unit
 	if (Values.transform->gameObject->getComponent<Unit>()!=nullptr)
 	{
 		Order tempOrder;
-		if(Values.transform->gameObject->tag!=gameObject->tag){
+		if (Values.transform->gameObject->tag == 1) {
+			//friendly
+			//walk to
+
+			switch (type)
+			{
+			case Type::Hero:
+				tempOrder.command = Follow;
+
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
+				break;
+
+			case Type::Soldier:
+				tempOrder.command = Follow;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				break;
+
+			case Type::Worker:
+				tempOrder.command = Follow;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				break;
+			}
+		}
+		else if(Values.transform->gameObject->tag == 2){ //!=gameObject->tag){
 			//enemy
 			switch (type)
 			{
@@ -199,22 +374,55 @@ void Unit::RecieveOrder(RaycastHit Values)
 				tempOrder.transform = Values.transform;
 				UnitOrders.push_back(tempOrder);
 				break;
+
 			default:
 				//walk to
 				break;
 			}
 		}
-		else if(Values.transform->gameObject->tag==0){
-			//neutral
-			//walk to
-			//tempOrder.command = Move;
-			//tempOrder.transform = Values.transform;
-			//tempOrder.transform = Values.transform;
-			//UnitOrders.push_back(tempOrder);
+		else if(Values.transform->gameObject->tag==3){
+			//Resource
+			//Gather
+
+			switch (type)
+			{
+			case Type::Hero:
+				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
+				//{
+					tempOrder.command = Gather;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				//}
+
+				break;
+
+
+			case Type::Worker:
+				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
+				//{
+					tempOrder.command = Gather;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				//}
+
+				break;
+
+			default:
+				//walk to
+				break;
+			}
 			
 		}
+		else if (Values.transform->gameObject->tag == 0) {
+			//Terrain
+			//Walk 
+		}
 		else {
-			//friendly
+			//friendly  tag == 1
 			//walk to
 			
 		}
@@ -243,25 +451,22 @@ void Unit::update()
 {
 	if (UnitOrders.size() > 0) {
 
-		Unit* enemyUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+		Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
 
 		switch (UnitOrders.at(0).command)
 		{
 		case Command::Move: //MOVE
-			MoveCommand();
+			MoveCommand(&UnitOrders.at(0).point);
 			break;
 
 		case Command::Attack: //ATTACK
-			DirectX::XMVECTOR enemyPos = UnitOrders.at(0).transform->getPosition();
-			DirectX::XMVECTOR unitPos = gameObject->transform.getPosition();
 
-			DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, enemyPos);
-			distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
-
-
-			if (enemyUnit != nullptr && enemyUnit->getHealthPoints() >= 0)
+			if (targetedUnit != nullptr && targetedUnit->getHealthPoints() >= 0)
 			{
-				if (distance <= this->attackDistance)
+				unitPos = UnitOrders.at(0).transform->getPosition();
+				targetPos = gameObject->transform.getPosition();
+
+				if (getDistanceBetweenUnits(unitPos, targetPos) <= this->attackDistance)
 				{
 					actionTime += Time.getDeltaTime();
 					//Damage enemy
@@ -277,7 +482,7 @@ void Unit::update()
 				{
 					//followCommand()
 					//UnitOrders.erase(UnitOrders.begin());
-					MoveCommand();
+					MoveCommand(&UnitOrders.at(0).point);
 				}
 			}
 			else
@@ -287,13 +492,18 @@ void Unit::update()
 			}
 			break;
 
+
+
 		case Command::Gather: //GATHER
+			gatherCommand(targetedUnit);
 			break;
 
 		case Command::Build: //BUILD
+
 			break;
 
 		case Command::Follow: //FOLLOW
+			FollowCommand();
 			break;
 
 		case Command::Summon: //SUMMON

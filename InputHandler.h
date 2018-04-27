@@ -25,6 +25,7 @@ public:
 	bool GetKeyDown(KeyCode key);
 	bool GetKeyUp(KeyCode key);
 
+	static Vector2 mousePosition;
 
 	Vector2 GetMousePosition();
 

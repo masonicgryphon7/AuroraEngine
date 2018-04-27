@@ -79,6 +79,8 @@ void GUI_Viewport::ShowEngineView()
 	m_engine->gDeviceContext->OMSetRenderTargets(1, &m_engine->gBackbufferRTV, m_engine->m_depthStencilView);
 	m_engine->SetViewport();
 
+	Input.mousePosition = Input.GetMousePosition();
+
 
 	ImDrawList* mDrawList = ImGui::GetWindowDrawList();
 	ImVec2 size = ImVec2(width, height);
@@ -100,6 +102,7 @@ void GUI_Viewport::ShowEngineView()
 	//ImGui::Image(renderManager->m_shaderResourceView, ImVec2(width, height));
 
 	Gizmo(m_engine, width + (width / 35.f), height + (height / 7.7f));
+
 
 	//DoMousePick();
 }
@@ -178,7 +181,7 @@ void GUI_Viewport::DoMousePick()
 		}
 	}
 
-	if (Input.GetKeyUp(KeyCode::LeftMouse)) 
+	if (Input.GetKeyUp(KeyCode::LeftMouse))
 	{
 		Vector2 currentPos = Input.GetMousePosition();
 
