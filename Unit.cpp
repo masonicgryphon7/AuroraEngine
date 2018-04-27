@@ -242,7 +242,7 @@ void Unit::FollowCommand()
 		lerpValue = 0;
 
 	}
-	Debug.Log("Following...");
+	//Debug.Log("Following...");
 }
 
 void Unit::gatherCommand(Unit* targetedUnit)
@@ -316,6 +316,12 @@ void Unit::dropResources()
 	Debug.Log("Resources dropped! In worker: ", this->getResources());
 	//int resourcesInTarget = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
 	//UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+}
+
+void Unit::destroyUnit()
+{
+	UnitOrders[0].transform->gameObject->Destroy();
+	UnitOrders.erase(UnitOrders.begin());
 }
 
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
