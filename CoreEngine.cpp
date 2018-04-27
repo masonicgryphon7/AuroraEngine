@@ -341,7 +341,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Unit* unitBuilding = new Unit(Building);
 		cube3->addComponent(unitBuilding);
 
-
+		GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
+		cube4->name = "Hero";
+		cube4->tag = 1;
+		cube4->addComponent(meshFilter);
+		cube4->addComponent(AssetManager.getMaterial(0));
+		Unit* UnitHero2 = new Unit(Hero);
+		cube4->addComponent(UnitHero2);
 
 		
 		/*ClickToMove* clickToMove = new ClickToMove(cam);
