@@ -26,7 +26,7 @@ public:
 
 	~RenderManager();
 
-	void ForwardRender(GameObject* cameraObject, std::vector<GameObject*> objectsToRender);
+	void ForwardRender(GameObject* cameraObject, std::vector<GameObject*>* objectsToRender);
 	void UpdateStuff(ID3D11Device * gDevice, ID3D11DeviceContext* gDeviceContext, ID3D11RenderTargetView* gBackbufferRTV, IDXGISwapChain *swapChain, ID3D11DepthStencilView* depth);
 
 

@@ -30,9 +30,6 @@
     <FxCompile Include="Vertex.hlsl">
       <Filter>Source Files\HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="VertexAnimation.hlsl">
-      <Filter>Source Files\HLSL</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreEngine.h">
@@ -215,7 +212,7 @@
     <ClInclude Include="ImSequencer.h">
       <Filter>GUI</Filter>
     </ClInclude>
-    <ClInclude Include="Animator.h">
+    <ClInclude Include="Unit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -364,7 +361,7 @@
     <ClCompile Include="ImSequencer.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Animator.cpp">
+    <ClCompile Include="Unit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

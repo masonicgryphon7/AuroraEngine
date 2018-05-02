@@ -12,7 +12,6 @@
 //#include "Light.h"
 
 
-
 class GameObject
 {
 public:
@@ -21,7 +20,7 @@ public:
 	GameObject(int otherAssetID);
 	~GameObject();
 
-	int assetID;
+	int assetID, tag;
     bool isActive;
     bool hasLight;
 	std::string name, meshPath;
@@ -31,7 +30,7 @@ public:
     MeshFilter *meshFilterComponent = nullptr;
 	//Light *lightComponent;
 	bool detailedRaycast;
-	
+	void Destroy();
     void updateMaterialAndMeshFilterPointers();
     void updateHasLight();
 	void addComponent(Component* otherComponent);

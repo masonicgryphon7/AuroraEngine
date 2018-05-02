@@ -31,6 +31,7 @@ void GUI_Inspector::Update()
 
 GameObject* gObject;
 Camera* camera;
+Unit* unit;
 
 void GUI_Inspector::ShowFrame()
 {
@@ -46,6 +47,7 @@ void GUI_Inspector::ShowFrame()
 
 		ShowTransformView();
 		ShowCameraView();
+		ShowUnitView();
 
 		ShowAddComponent();
 	}
@@ -84,6 +86,11 @@ void GUI_Inspector::SetComponents()
 		camera = gObject->getComponent<Camera>();
 	else
 		camera = nullptr;
+
+	if (gObject->getComponent<Unit>())
+		unit = gObject->getComponent<Unit>();
+	else
+		unit = nullptr;
 }
 
 //float v, p, m;
@@ -344,6 +351,34 @@ void GUI_Inspector::ShowCameraView()
 	if (farZ > 0.0f)
 		camera->farZ = farZ;
 }
+
+void GUI_Inspector::ShowUnitView()
+{
+	if (unit == nullptr) return;
+
+	float hp = unit->getHealthPoints();
+
+	BEGIN_COMPONENT("Unit")
+	{
+		auto inputTextFlags = ImGuiInputTextFlags_CharsDecimal;
+
+		ImGui::SliderFloat("Health Points", &hp, 0.1f, 90.0f);
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+			ImGui::TextUnformatted("CTRL + Left Click on slider to manually input...");
+			ImGui::PopTextWrapPos();
+			ImGui::EndTooltip();
+		}
+
+	}
+	END_COMPONENT;
+
+	unit->setHealthPoints(hp);
+
+}
+
 
 void GUI_Inspector::ShowAddComponent()
 {

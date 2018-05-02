@@ -2,40 +2,29 @@
 #include "Debug.h"
 
 std::vector<std::vector<Node>> cPathCreator::grid;
+int cPathCreator::MAX;
+int cPathCreator::MIN;
 
 cPathCreator::cPathCreator()
 {
+
 }
 
+cPathCreator::cPathCreator(int gridWidth, int gridHeight)
+{
+	MAX = gridWidth;
+	grid = std::vector<std::vector<Node>>(gridWidth, std::vector<Node>(gridHeight));
+
+	
+
+}
 
 cPathCreator::~cPathCreator()
 {
 }
 
-void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions)
+void cPathCreator::trumpTheBorders()
 {
-	//std::vector<Node> result;
-	//Node grid[GRID][GRID];
-	//int display[GRID][GRID];
-	//pos
-	grid = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
-	for (int x = MIN; x < MAX; x++)
-	{
-		for (int y = MIN; y < MAX; y++)
-		{
-				 
-			grid[y][x].position = Vec3(positions[x][y].position.x, positions[x][y].position.y, positions[x][y].position.z);
-			grid[y][x].g = 0;
-			grid[y][x].f = 0;
-			grid[y][x].h = 0;
-			grid[y][x].parentX = -999999999;
-			grid[y][x].parentZ = -999999999;
-			grid[y][x].pathable = true;
-
-			//display[x][y] = 0;
-		}
-	}
-
 	//border grid
 	for (int i = MIN; i < MAX; i++)
 	{
@@ -61,16 +50,87 @@ void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> po
 		//display[MAX - 1][i] = 1;
 
 	}
-
-
-	////fail test
-	//for (int i = MIN; i < MAX - 2; i++)
-	//{
-	//	grid[i][3].pathable = false;
-	//	//display[i][3] = 1;
-
-	//}
 }
+
+void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions, int StartX, int StartY)
+{
+	for (int x = MIN; x < positions.size(); x++) //Row
+	{
+		for (int y = MIN; y <positions.size(); y++) //Column
+		{
+
+			grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x+ StartY, positions[x][y].position.y, positions[x][y].position.z+ StartX);
+			grid[StartY + y][StartX + x].g = 0;
+			grid[StartY + y][StartX + x].f = 0;
+			grid[StartY + y][StartX + x].h = 0;
+			grid[StartY + y][StartX + x].parentX = -999999999;
+			grid[StartY + y][StartX + x].parentZ = -999999999;
+			grid[StartY + y][StartX + x].pathable = true;
+		}
+	}
+	int i = 0;
+
+}
+//
+////void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions)
+//{
+//	//std::vector<Node> result;
+//	//Node grid[GRID][GRID];
+//	//int display[GRID][GRID];
+//	//pos
+//	grid = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
+//	for (int x = MIN; x < MAX; x++)
+//	{
+//		for (int y = MIN; y < MAX; y++)
+//		{
+//				 
+//			grid[y][x].position = Vec3(positions[x][y].position.x, positions[x][y].position.y, positions[x][y].position.z);
+//			grid[y][x].g = 0;
+//			grid[y][x].f = 0;
+//			grid[y][x].h = 0;
+//			grid[y][x].parentX = -999999999;
+//			grid[y][x].parentZ = -999999999;
+//			grid[y][x].pathable = true;
+//
+//			//display[x][y] = 0;
+//		}
+//	}
+//
+//	//border grid
+//	for (int i = MIN; i < MAX; i++)
+//	{
+//		grid[i][MIN].pathable = false;
+//		//display[i][MIN] = 1;
+//
+//	}
+//	for (int i = MIN; i < MAX; i++)
+//	{
+//		grid[i][MAX - 1].pathable = false;
+//		//display[i][MAX - 1] = 1;
+//
+//	}
+//	for (int i = MIN; i < MAX; i++)
+//	{
+//		grid[MIN][i].pathable = false;
+//		//display[MIN][i] = 1;
+//
+//	}
+//	for (int i = MIN; i < MAX; i++)
+//	{
+//		grid[MAX - 1][i].pathable = false;
+//		//display[MAX - 1][i] = 1;
+//
+//	}
+//
+//
+//	////fail test
+//	//for (int i = MIN; i < MAX - 2; i++)
+//	//{
+//	//	grid[i][3].pathable = false;
+//	//	//display[i][3] = 1;
+//
+//	//}
+//}
 
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
@@ -199,7 +259,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 		}
 		i++;
 	}
-	Debug.Log("AStar Iterations:", i);
+	//Debug.Log("AStar Iterations:", i);
 	int gg = 0;
 	if (succes == true) {
 

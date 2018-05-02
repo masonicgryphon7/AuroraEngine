@@ -2,22 +2,28 @@
 #include "Component.h"
 #include "Physics.h"
 #include "InputHandler.h"
-//#include "GameObject.h"
+#include "Unit.h"
+
+
 
 class PlayerSelectionScript : public Component
 {
 private:
-	Camera * Player;
-	GameObject SelectedUnits[25];
+	GameObject * Player;
+
+	std::vector<GameObject*> SelectedUnits;
+	Vector2 mousePosRelative;
+	int isSelectingHolding = 0;
 
 public:
 
 	PlayerSelectionScript();
-	PlayerSelectionScript(Camera* player);
+	PlayerSelectionScript(GameObject* player);
 	~PlayerSelectionScript();
 
-	void UnitsSelected(); // Kolla på GUI_VIEWPORT för att se hur det fungerar där med selection.
-	void SelectOneUnit();
+	std::vector<GameObject*> getSelectedUnits() { return SelectedUnits; };
+	void SelectUnits();
+	bool UnitAlreadySelected(std::vector<GameObject*> object, int element);
 	void EmptyUnitArr();
 
 	void update();

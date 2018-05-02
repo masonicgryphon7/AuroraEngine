@@ -32,20 +32,20 @@ void PlayerMoveScript::update()
 	distance = speed * Time.getDeltaTime();
 	position = DirectX::XMVectorSet(0, 0, 0, 0);
 
-	if (Input.GetKey(KeyCode::W) || Input.GetKey(KeyCode::UpArrow) || Input.GetMousePosition().y == 0.0f)
+	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow) || Input.GetMousePosition().x == 0.0f)
 		//direction = DirectX::XMVectorAdd(gameObject->transform.getForward(), direction);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, 0, 1, 0)));
 		
-	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.GetMousePosition().x >= Input.GetViewportSize().x)
+	if (Input.GetKey(KeyCode::W) || Input.GetKey(KeyCode::UpArrow) || Input.GetMousePosition().y == 0.0f)
 		//direction = DirectX::XMVectorScale(DirectX::XMVectorAdd(gameObject->transform.getRight(), direction), -1);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1, 0, 0, 0)));
 		
 
-	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.GetMousePosition().y >= Input.GetViewportSize().y)
+	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.GetMousePosition().x >= Input.GetWidth())
 		//direction = DirectX::XMVectorScale(DirectX::XMVectorAdd(gameObject->transform.getForward(), direction), -1);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, 0, -1, 0)));
 		
-	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow) || Input.GetMousePosition().x == 0.0f)
+	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.GetMousePosition().y >= Input.GetHeight())
 		//direction = DirectX::XMVectorAdd(gameObject->transform.getRight(), direction);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(-1, 0, 0, 0)));
 		
@@ -66,7 +66,7 @@ void PlayerMoveScript::update()
 	xpos = Input.GetMousePosition().x;
 	ypos = Input.GetMousePosition().y;
 
-	if (Input.GetKey(KeyCode::RightMouse))
+	/*if (Input.GetKey(KeyCode::RightMouse))
 	{
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
@@ -87,7 +87,7 @@ void PlayerMoveScript::update()
 
 		gameObject->transform.setForward(DirectX::XMVector3Transform(gameObject->transform.getForward(), rotation));
 		gameObject->transform.setRight(DirectX::XMVector3Transform(gameObject->transform.getRight(), rotation));
-	}
+	}*/
 	// Left button is down
 	xoffset = (float)xpos - lastX;
 	yoffset = (float)ypos - lastY;

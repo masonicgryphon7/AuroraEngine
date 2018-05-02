@@ -1,4 +1,6 @@
 #include "Scene.h"
+#include "Debug.h"
+#include "AssetManager.h"
 
 std::vector<GameObject*> Scene::frustumCulledResult;
 std::vector<GameObject*> Scene::sceneObjects;
@@ -13,7 +15,9 @@ Scene::~Scene()
 {
 	for (int i = 0; i < sceneObjects.size(); i++)
 	{
-		delete sceneObjects[i];
+		if (sceneObjects[i])
+			delete sceneObjects[i];
+		sceneObjects[i] = nullptr;
 	}
 }
 
@@ -31,8 +35,6 @@ GameObject * Scene::createEmptyGameObject(DirectX::XMVECTOR position)
 	return temp;
 }
 
-#include "Debug.h"
-#include "AssetManager.h"
 
 GameObject* Scene::CreateGameObject(Primitives primitive, Vector3 position, Vector3 rotation)
 {
@@ -71,9 +73,9 @@ GameObject * Scene::getGameObjectAt(int index)
 	return sceneObjects.at(index);
 }
 
-std::vector<GameObject*> Scene::getFrustumCulledResult()
+std::vector<GameObject*>* Scene::getFrustumCulledResult()
 {
-	return frustumCulledResult;
+	return &frustumCulledResult;
 }
 
 std::vector<GameObject*> Scene::getSceneObjects() {
@@ -83,6 +85,26 @@ std::vector<GameObject*> Scene::getSceneObjects() {
 int Scene::getSceneObjectsCount()
 {
 	return sceneObjects.size();
+}
+
+void Scene::destroy(GameObject *gameObject)
+{
+	for (int i = 0; i < sceneObjects.size(); i++)
+	{
+		if (sceneObjects[i] == gameObject) {
+			delete sceneObjects[i];
+			sceneObjects.erase(sceneObjects.begin() + i);
+
+		}
+	}
+
+	for (int i = 0; i < frustumCulledResult.size(); i++)
+	{
+		if (frustumCulledResult[i] == gameObject) {
+			frustumCulledResult.erase(frustumCulledResult.begin() + i);
+
+		}
+	}
 }
 
 
@@ -390,7 +412,7 @@ std::string Scene::IntToString(int i)
 	return ss.str();
 }
 
-std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
+void Scene::frustumCull(GameObject * camera)
 {
 	std::vector<GameObject*> objectsToRender;
 
@@ -465,7 +487,6 @@ std::vector<GameObject*> Scene::frustumCull(GameObject * camera)
 	}
 
 	frustumCulledResult = objectsToRender;
-	return objectsToRender;
 }
 
 template <typename T> T convert_to(const std::string &str)

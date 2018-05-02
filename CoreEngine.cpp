@@ -115,10 +115,62 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 		ImGui_ImplDX11_Init(wndHandle, gDevice, gDeviceContext);
 		io.MouseDrawCursor = true;
-		io.SetCustomMouseTexture = false;
+		//io.SetCustomMouseTexture = false;
 
 		//ImGui_ImplWin32_UpdateMouseCursor();
 
+
+		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+			{
+				"POSITION",		// "semantic" name in shader
+				0,				// "semantic" index (not used)
+				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+				0,							 // input slot
+				0,							 // offset of first element
+				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+				0							 // used for INSTANCING (ignore)
+			},
+			{
+				"UV",
+				0,				// same slot as previous (same vertexBuffer)
+				DXGI_FORMAT_R32G32_FLOAT,
+				0,
+				12,							// offset of FIRST element (after POSITION)
+				D3D11_INPUT_PER_VERTEX_DATA,
+				0
+			},
+			{
+				"TANGENT",		// "semantic" name in shader
+				0,				// "semantic" index (not used)
+				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+				0,							 // input slot
+				20,							 // offset of first element
+				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+				0							 // used for INSTANCING (ignore)
+			},{
+				"BITANGENT",		// "semantic" name in shader
+				0,				// "semantic" index (not used)
+				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+				0,							 // input slot
+				32,							 // offset of first element
+				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+				0							 // used for INSTANCING (ignore)
+			},{
+				"NORMAL",		// "semantic" name in shader
+				0,				// "semantic" index (not used)
+				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+				0,							 // input slot
+				44,							 // offset of first element
+				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+				0							 // used for INSTANCING (ignore)
+			},
+		};
+		std::vector<D3D11_INPUT_ELEMENT_DESC> descTest;
+		descTest.push_back(inputDesc[0]);
+		descTest.push_back(inputDesc[1]);
+		descTest.push_back(inputDesc[2]);
+		descTest.push_back(inputDesc[3]);
+		descTest.push_back(inputDesc[4]);
 
 		Time.start();
 
@@ -131,90 +183,182 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
 		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
-		//AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4, "VertexAnimation.hlsl", "", "", "", "Fragment.hlsl", "");
 
-		///////////////////////////ERROR
+		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
+
+
+
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 		
 		//Terrain Texture.
-		assetManager.addTexture("Assets/rutTextur.png");
-		assetManager.addTexture("Assets/rutNormal.png");
-		assetManager.addTexture("Assets/rutAoMetalRough.png");
+		assetManager.addTexture("Assets/rutTextur.png"); //3
+		assetManager.addTexture("Assets/rutNormal.png"); //4
+		assetManager.addTexture("Assets/rutAoMetalRough.png"); //5
 
-		assetManager.addTexture("Assets/stenTextur.png");
-		assetManager.addTexture("Assets/stenNormal.png");
-		assetManager.addTexture("Assets/stenAoMetalRough.png");
+		assetManager.addTexture("Assets/stenTextur.png"); //6
+		assetManager.addTexture("Assets/stenNormal.png"); //7
+		assetManager.addTexture("Assets/stenAoMetalRough.png"); //8
 
-		assetManager.addTexture("Assets/tygTextur.png");
-		assetManager.addTexture("Assets/tygNormal.png");
-		assetManager.addTexture("Assets/tygAoMetalRough.png");
+		assetManager.addTexture("Assets/tygTextur.png"); //9
+		assetManager.addTexture("Assets/tygNormal.png"); //10
+		assetManager.addTexture("Assets/tygAoMetalRough.png"); //11
 
-		assetManager.addTexture("Assets/ID_MAP.png");
-		assetManager.addTexture("Assets/vitTextur.png");
-		assetManager.addTexture("Assets/vitNormal.png");
-		assetManager.addTexture("Assets/vitAoMetalRough.png");
-		//----------------
+		assetManager.addTexture("Assets/ID_MAP2.png"); //12
+		assetManager.addTexture("Assets/vitTextur.png"); //13
+		assetManager.addTexture("Assets/vitNormal.png"); //14
+		assetManager.addTexture("Assets/vitAoMetalRough.png"); //15
+
+		assetManager.addTexture("Assets/ID_MAP2part1.png"); // 16 // 1 // ALL THE PARTS SHOULD BE ROTATED CLOCKEWISE 90 DEGREES TO MATCH WITH BMP.
+		assetManager.addTexture("Assets/ID_MAP2part2.png"); // 17 // 2
+		assetManager.addTexture("Assets/ID_MAP2part3.png"); // 18 // 3
+		assetManager.addTexture("Assets/ID_MAP2part4.png"); //19 // 4
+
 
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
-		assetManager.addMaterial(assetManager.getShaderProgram(0));
+
 		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
 		assetManager.getMaterial(0)->setNormal(assetManager.getTexture(1)->getTexture());
 		assetManager.getMaterial(0)->setAORoughMet(assetManager.getTexture(2)->getTexture());
 		assetManager.getMaterial(0)->setIsTerrain(false);
 
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.getMaterial(1)->setIsTerrain(true);
-		assetManager.getMaterial(1)->setAlbedo(assetManager.getTexture(3)->getTexture());
-		assetManager.getMaterial(1)->setNormal(assetManager.getTexture(4)->getTexture());
-		assetManager.getMaterial(1)->setAORoughMet(assetManager.getTexture(5)->getTexture());
 		assetManager.getMaterial(1)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
 		assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
-		assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(12)->getTexture());
+		assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(18)->getTexture()); //USE ID_PART 3
 
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
+		assetManager.getMaterial(2)->setIsTerrain(true);
+		assetManager.getMaterial(2)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
+			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(16)->getTexture()); //USE ID_PART 1
 
-		GameObject* terrain = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
-		terrain->name = "Terrain";
-		terrain->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator = new TerrainGenerator(100, 100, "Assets/BmpMAPTEST100x1002.bmp");
-		AssetManager.addMesh(terrainGenerator->vertCount, &terrainGenerator->TriangleArr);
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
+		assetManager.getMaterial(3)->setIsTerrain(true);
+		assetManager.getMaterial(3)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
+			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(19)->getTexture()); //USE ID_PART 4
+
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
+		assetManager.getMaterial(4)->setIsTerrain(true);
+		assetManager.getMaterial(4)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
+			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(17)->getTexture()); //USE ID_PART 2
+
+		//----------------
+
+		GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
+		terrain1->name = "Terrain1";
+		terrain1->tag = 0;
+		terrain1->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part3.bmp");
+		AssetManager.addMesh(terrainGenerator1->vertCount, &terrainGenerator1->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
-		terrain->addComponent(AssetManager.getMaterial(1));
-		terrain->addComponent(meshFilterTerrain);
+		terrain1->addComponent(AssetManager.getMaterial(1));
+		terrain1->addComponent(meshFilterTerrain);
 
-		PathCreator.createNodes(terrainGenerator->getRealVertArr());
+		GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 0, 0));
+		terrain2->name = "Terrain2";
+		terrain2->tag = 0;
+		terrain2->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part1.bmp");
+		AssetManager.addMesh(terrainGenerator2->vertCount, &terrainGenerator2->TriangleArr);
+		MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
+		terrain2->addComponent(AssetManager.getMaterial(2));
+		terrain2->addComponent(meshFilterTerrain2);
 
-		//AssetManager.addMeshFromBinary("Assets/pCube1_Mesh.bin");
+		GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 99, 0));
+		terrain3->name = "Terrain3";
+		terrain3->tag = 0;
+		terrain3->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part4.bmp");
+		AssetManager.addMesh(terrainGenerator3->vertCount, &terrainGenerator3->TriangleArr);
+		MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
+		terrain3->addComponent(AssetManager.getMaterial(3));
+		terrain3->addComponent(meshFilterTerrain3);
 
-		//GameObject* YoObject = gScene.createEmptyGameObject(Vector3(0, 0, 0).asXMVECTOR());//DirectX::XMVectorSet(0, 0, 0, 0));
-		//MeshFilter* yomeshFilter = new MeshFilter(AssetManager.getMesh(0));
-		//YoObject->addComponent(AssetManager.getMaterial(0));
-		//YoObject->addComponent(yomeshFilter);
+		GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
+		terrain4->name = "Terrain4";
+		terrain4->tag = 0;
+		terrain4->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part2.bmp");
+		AssetManager.addMesh(terrainGenerator4->vertCount, &terrainGenerator4->TriangleArr);
+		MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
+		terrain4->addComponent(AssetManager.getMaterial(4));
+		terrain4->addComponent(meshFilterTerrain4);
 
-		PathCreator.createNodes(terrainGenerator->getRealVertArr());
+		//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
+		cPathCreator* PathCreator1 = new cPathCreator(200, 200);
 
+		PathCreator1->addTerrain(terrainGenerator1->getRealVertArr(), 0, 0);
+		PathCreator1->addTerrain(terrainGenerator2->getRealVertArr(), 0, 100);
+		PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 100, 0);
+		PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 100, 100);
+		PathCreator.trumpTheBorders();
 
-
-
+		//PathCreator.createNodes();
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		{
-			camera = gScene.createEmptyGameObject();
-			camera->name = "Main Camera";
-			cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
-			camera->addComponent(cam);
-			//AudioListener* audioListener = new AudioListener();
-			//camera->addComponent(audioListener);
-		}
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1,0,1,0));
-		cube->name = "Cube";
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera->name = "Main Camera";
+		cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
+		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0));
+		camera->addComponent(cam);
+		PlayerSelectionScript* playerSelectionScript = new PlayerSelectionScript(camera);
+		camera->addComponent(playerSelectionScript);
+
+		PlayerScript *playerscript = new PlayerScript();
+		camera->addComponent(playerscript);
+
+
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
+		AudioListener* audioListener = new AudioListener();
+		camera->addComponent(audioListener);
+		cube->name = "Human";
+		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj");
-		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(1));
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 		cube->addComponent(meshFilter);
 		cube->addComponent(AssetManager.getMaterial(0));
-		ClickToMove* clickToMove = new ClickToMove(cam);
-		cube->addComponent(clickToMove);
+		Unit *UnitHero1 = new Unit(Worker);
+		cube->addComponent(UnitHero1);
+		//playerscript->friendlyUnits.push_back(UnitHero1);
+
+
+		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
+		cube2->name = "Goldmine";
+		cube2->tag = 3;
+		cube2->addComponent(meshFilter);
+		cube2->addComponent(AssetManager.getMaterial(0));
+		Unit *UnitSoldier1 = new Unit(GoldMine);
+		cube2->addComponent(UnitSoldier1);
+
+		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
+		cube3->name = "Bank";
+		cube3->tag = 3;
+		cube3->addComponent(meshFilter);
+		cube3->addComponent(AssetManager.getMaterial(0));
+		Unit* unitBuilding = new Unit(Bank);
+		cube3->addComponent(unitBuilding);
+		//playerscript->friendlyBuildings.push_back(unitBuilding);
+
+		GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
+		cube4->name = "Hero";
+		cube4->tag = 1;
+		cube4->addComponent(meshFilter);
+		cube4->addComponent(AssetManager.getMaterial(0));
+		Unit* UnitHero2 = new Unit(Hero);
+		cube4->addComponent(UnitHero2);
+		//playerscript->friendlyUnits.push_back(UnitHero2);
+
+		
+		/*ClickToMove* clickToMove = new ClickToMove(cam);
+		cube->addComponent(clickToMove);*/
+
+
 
 
 		Editor* editor = nullptr;
@@ -235,17 +379,18 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				OnResize();
 
-				objectsToRender = gScene.frustumCull(camera);
+				gScene.frustumCull(camera);
+				objectsToRender = gScene.getFrustumCulledResult();
+				if (editor != nullptr)
+					editor->Update();
 				gScene.update();
 
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 
-				if (editor != nullptr)
-					editor->Update();
 
 				renderManager->EndFrame(); // END RENDERING
 
-				objectsToRender.clear();
+				objectsToRender[0].clear();
 
 				hasResized = false;
 			}
@@ -448,8 +593,8 @@ HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, // spawn window x
 		CW_USEDEFAULT, // spawn window y
-		WIDTH, // size x
-		HEIGHT, // size y
+		rc.right - rc.left, // size x
+		rc.bottom - rc.top, // size y
 		nullptr,
 		nullptr,
 		hInstance,

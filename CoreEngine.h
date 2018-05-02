@@ -24,6 +24,8 @@
 #include "PlayerScript.h"
 #include "PathCreator.h"
 #include "AudioListener.h"
+#include "PlayerSelectionScript.h"
+#include "PlayerScript.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"
 //#include "MeshLib.h"
@@ -34,7 +36,8 @@
 #include "MeshFilter.h"
 #include "Material.h"
 #include "EditorMoveScript.h"
-#include "PlayerMoveScript.h"
+#include "PlayerScript.h"
+#include "Unit.h"
 //#include "CharacterMovement.h"
 #include "Camera.h"
 #include "Time.h"
@@ -116,11 +119,12 @@ public:
 
 	ID3D11DepthStencilView * m_depthStencilView;
 
-	std::vector<GameObject*>objectsToRender;
+	std::vector<GameObject*>*objectsToRender;
 
 	GameObject* camera;
 	cAssetManager assetManager;
 	RenderManager *renderManager;
+
 
 	void SetViewport(int x = WIDTH, int y = HEIGHT);
 	void OnResize();
