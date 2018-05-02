@@ -325,8 +325,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(AssetManager.getMaterial(0));
 		Unit *UnitHero1 = new Unit(Worker);
 		cube->addComponent(UnitHero1);
-		//playerscript->friendlyUnits.push_back(UnitHero1);
+		playerscript->friendlyUnits.push_back(UnitHero1);
 
+		Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
 		cube2->name = "Goldmine";

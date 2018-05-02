@@ -39,7 +39,7 @@ public:
 
 	//std::vector<GameObject*>*objectsToRender;
 
-	std::vector<Unit*> mfriendlyUnits;
+	std::vector<Unit*> friendlyUnits;
 	std::vector<Unit*> friendlyBuildings;
 };
 
