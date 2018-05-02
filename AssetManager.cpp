@@ -165,8 +165,62 @@ void cAssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std:
 	switch (description)
 	{
 	case INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3:
+		{
+			D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+				{
+					"POSITION",		// "semantic" name in shader
+					0,				// "semantic" index (not used)
+					DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+					0,							 // input slot
+					0,							 // offset of first element
+					D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+					0							 // used for INSTANCING (ignore)
+				},
+				{
+					"UV",
+					0,				// same slot as previous (same vertexBuffer)
+					DXGI_FORMAT_R32G32_FLOAT,
+					0,
+					12,							// offset of FIRST element (after POSITION)
+					D3D11_INPUT_PER_VERTEX_DATA,
+					0
+				},
+				{
+					"TANGENT",		// "semantic" name in shader
+					0,				// "semantic" index (not used)
+					DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+					0,							 // input slot
+					20,							 // offset of first element
+					D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+					0							 // used for INSTANCING (ignore)
+				},{
+					"BITANGENT",		// "semantic" name in shader
+					0,				// "semantic" index (not used)
+					DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+					0,							 // input slot
+					32,							 // offset of first element
+					D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+					0							 // used for INSTANCING (ignore)
+				},{
+					"NORMAL",		// "semantic" name in shader
+					0,				// "semantic" index (not used)
+					DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+					0,							 // input slot
+					44,							 // offset of first element
+					D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+					0							 // used for INSTANCING (ignore)
+				}
+			};
+			descArr.push_back(inputDesc[0]);
+			descArr.push_back(inputDesc[1]);
+			descArr.push_back(inputDesc[2]);
+			descArr.push_back(inputDesc[3]);
+			descArr.push_back(inputDesc[4]);
+			break;
+		}
+	case INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4:
 
-		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+		D3D11_INPUT_ELEMENT_DESC inputDesc1[] = {
 			{
 				"POSITION",		// "semantic" name in shader
 				0,				// "semantic" index (not used)
@@ -209,13 +263,31 @@ void cAssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std:
 				44,							 // offset of first element
 				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
 				0							 // used for INSTANCING (ignore)
+			},{
+				"JOINTINDEX",		// "semantic" name in shader
+				0,				// "semantic" index (not used)
+				DXGI_FORMAT_R32G32B32A32_FLOAT, // size of ONE element (3 floats)
+				0,							 // input slot
+				56,							 // offset of first element
+				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+				0							 // used for INSTANCING (ignore)
+			},{
+				"WEIGHT",		// "semantic" name in shader
+				0,				// "semantic" index (not used)
+				DXGI_FORMAT_R32G32B32A32_FLOAT, // size of ONE element (3 floats)
+				0,							 // input slot
+				72,							 // offset of first element
+				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+				0							 // used for INSTANCING (ignore)
 			}
 		};
-		descArr.push_back(inputDesc[0]);
-		descArr.push_back(inputDesc[1]);
-		descArr.push_back(inputDesc[2]);
-		descArr.push_back(inputDesc[3]);
-		descArr.push_back(inputDesc[4]);
+		descArr.push_back(inputDesc1[0]);
+		descArr.push_back(inputDesc1[1]);
+		descArr.push_back(inputDesc1[2]);
+		descArr.push_back(inputDesc1[3]);
+		descArr.push_back(inputDesc1[4]);
+		descArr.push_back(inputDesc1[5]);
+		descArr.push_back(inputDesc1[6]);
 		break;
 	}
 

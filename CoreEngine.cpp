@@ -120,58 +120,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//ImGui_ImplWin32_UpdateMouseCursor();
 
 
-		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
-			{
-				"POSITION",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				0,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},
-			{
-				"UV",
-				0,				// same slot as previous (same vertexBuffer)
-				DXGI_FORMAT_R32G32_FLOAT,
-				0,
-				12,							// offset of FIRST element (after POSITION)
-				D3D11_INPUT_PER_VERTEX_DATA,
-				0
-			},
-			{
-				"TANGENT",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				20,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},{
-				"BITANGENT",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				32,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},{
-				"NORMAL",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				44,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},
-		};
-		std::vector<D3D11_INPUT_ELEMENT_DESC> descTest;
-		descTest.push_back(inputDesc[0]);
-		descTest.push_back(inputDesc[1]);
-		descTest.push_back(inputDesc[2]);
-		descTest.push_back(inputDesc[3]);
-		descTest.push_back(inputDesc[4]);
-
 		Time.start();
 
 		renderManager = new RenderManager(gDevice, gDeviceContext, gBackbufferRTV, gSwapChain, m_depthStencilView);
@@ -183,9 +131,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
 		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
+		//AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4, "VertexAnimation.hlsl", "", "", "", "Fragment.hlsl", "");
 
-		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
-
+		///////////////////////////ERROR
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");

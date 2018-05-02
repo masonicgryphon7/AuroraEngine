@@ -2,7 +2,8 @@
 
 #include <DirectXMath.h>
 #include "Transform.h"
-
+#include <vector>
+#include <string>
 enum class Primitives
 {
 	OOBB,
@@ -14,15 +15,36 @@ enum class Primitives
 	Empty
 };
 
+struct Joint {
+	std::string name;
+	unsigned int parentID;
+	DirectX::XMVECTOR position;
+	DirectX::XMVECTOR rotation;
+	DirectX::XMVECTOR scale;
+};
+
+struct AnimationFrame {
+	std::vector<Joint> joints;
+};
+
+struct AnimationClip {
+	std::vector<AnimationFrame> animationFrames;
+};
+
+struct Skeleton {
+	std::vector < DirectX::XMMATRIX > bindPose;
+	std::vector < DirectX::XMMATRIX > inverseBindPose;
+
+};
+
+
 struct OOBB {
 	bool isActive;
 	DirectX::XMVECTOR centre;
 	DirectX::XMVECTOR x_hx;
 	DirectX::XMVECTOR y_hy;
 	DirectX::XMVECTOR z_hz;
-
 	DirectX::XMVECTOR corners[8];
-
 };
 
 struct Ray {
@@ -42,7 +64,16 @@ struct VERTEX_POS3UV2T3B3N3 {
 	DirectX::XMFLOAT3 tangent;
 	DirectX::XMFLOAT3 bitangent;
 	DirectX::XMFLOAT3 normal;
+};
 
+struct VERTEX_POS3UV2T3B3N3JNT4WT4 {
+	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT2 uv;
+	DirectX::XMFLOAT3 tangent;
+	DirectX::XMFLOAT3 bitangent;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT4 jointIndex;
+	DirectX::XMFLOAT4 jointWeight;
 };
 
 struct VERTEX_POS3UV2
