@@ -11,25 +11,25 @@
 #include "PRIMITIVE_GEOMETRY.h"
 #include <algorithm>
 
-/*#define MAX 100
+/*#define MAX 200
 #define MIN 0
-#define GRID 100*/ // spannet mellan min till max
+#define GRID 200*/ // spannet mellan min till max
 #define EPSILON 0.00001
 static class cPathCreator
 {
 public:
 	cPathCreator();
-	cPathCreator(std::vector<std::vector<std::vector<VERTEX_POS3UV2T3B3N3>>> positionsArr, int Width, int Height);
+	cPathCreator(int Width, int Height);
 	~cPathCreator();
 
-	void createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions, int minX, int minZ, int maxX, int maxZ);
-	void createNodes(std::vector<std::vector<std::vector<VERTEX_POS3UV2T3B3N3>>> positionsArr, int MAX, int MIN, int TerrrainPatchSize);
+	void trumpTheBorders();
+	void addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions, int Width, int Height);
 	void createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions);
 	std::vector<Node> getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos);
 
 private:
-	int MAX = 100;
-	int MIN = 0;
+	static int MAX;
+	static int MIN;
 
 	static std::vector<std::vector<Node>> grid;
 	int xArr[9] = { -1,-1,-1,0,0,0,1,1,1 };

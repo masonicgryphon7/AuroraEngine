@@ -25,6 +25,7 @@
 #include "PathCreator.h"
 #include "AudioListener.h"
 #include "PlayerSelectionScript.h"
+#include "PlayerScript.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"
 //#include "MeshLib.h"
