@@ -250,10 +250,6 @@ void Unit::gatherCommand(Unit* targetedUnit)
 	if (targetedUnit != nullptr && targetedUnit->getResources() >= 0)
 	{
 		unitPos = gameObject->transform.getPosition();
-		//gameObject->getComponent<Unit>();
-		//Debug.Log("Following...",gameObject->name);
-
-		//targetPos = UnitOrders.at(0).transform->getPosition(); // click goldmine first, pos of goldmine
 
 		if (this->Resources < 100 && e == 0) // worker is not full
 		{
@@ -270,7 +266,8 @@ void Unit::gatherCommand(Unit* targetedUnit)
 			}
 			else 
 			{
-				MoveCommand(&DirectX::XMVectorSet(1, 0, 20, 0)); //Move to goldmine
+				//MoveCommand(&DirectX::XMVectorSet(1, 0, 20, 0)); //Move to goldmine
+				MoveCommand(&targetedUnit->gameObject->transform.getPosition());
 			}
 		}
 		else if (this->Resources > 0) // worker has gold
@@ -288,7 +285,8 @@ void Unit::gatherCommand(Unit* targetedUnit)
 			}
 			else 
 			{
-				MoveCommand(&DirectX::XMVectorSet(20, 0, 1, 0)); //Move to silo
+				//MoveCommand(&DirectX::XMVectorSet(20, 0, 1, 0)); //Move to silo
+				MoveCommand(&this->homePos->getPosition());
 			}
 		}
 	}
@@ -314,7 +312,9 @@ void Unit::dropResources()
 	int resourcesInUnit = this->getResources();
 	this->setResources(resourcesInUnit - 20);
 	Debug.Log("Resources dropped! In worker: ", this->getResources());
-	//int resourcesInTarget = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
+	int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
+	this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+	Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
 	//UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
 }
 

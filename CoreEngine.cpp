@@ -317,7 +317,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
-		cube->name = "Human";
+		cube->name = "Worker";
 		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
@@ -327,7 +327,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(UnitHero1);
 		playerscript->friendlyUnits.push_back(UnitHero1);
 
-		Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
+		//Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
 		cube2->name = "Goldmine";
@@ -344,7 +344,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube3->addComponent(AssetManager.getMaterial(0));
 		Unit* unitBuilding = new Unit(Bank);
 		cube3->addComponent(unitBuilding);
-		//playerscript->friendlyBuildings.push_back(unitBuilding);
+		playerscript->friendlyBuildings.push_back(unitBuilding);
 
 		GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
 		cube4->name = "Hero";
@@ -355,7 +355,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube4->addComponent(UnitHero2);
 		//playerscript->friendlyUnits.push_back(UnitHero2);
 
-		
+		playerscript->friendlyUnits.at(0)->setHomePos(&playerscript->friendlyBuildings.at(0)->gameObject->transform);
+
+
 		/*ClickToMove* clickToMove = new ClickToMove(cam);
 		cube->addComponent(clickToMove);*/
 

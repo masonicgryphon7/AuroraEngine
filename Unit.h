@@ -59,10 +59,13 @@ private:
 	int defencePoints;
 	float attackDistance;
 	float actionTime;
+	Transform* homePos;
+
 	int e = 0;
 
 	DirectX::XMVECTOR targetPos;
 	DirectX::XMVECTOR unitPos;
+
 
 	PlayerScript* playerScript;
 
@@ -87,12 +90,14 @@ public:
 	int getAttackPoints() { return this->attackPoints; };
 	int getDefencePoints() { return this->defencePoints; };
 	float getAttackDistance() { return this->attackDistance; };
-
+	Transform* getHomePos() { return this->homePos; };
+	
 	void setResources(int resources) { this->Resources = resources; };
 	void setHealthPoints(int healthPoints) { this->healthPoints = healthPoints; };
 	void setAttackPoints(int attackPoints) { this->attackPoints = attackPoints; };
 	void setDefencePoints(int defencePoints) { this->defencePoints = defencePoints; };
 	void setAttackDistance(float attackDistance) { this->attackDistance = attackDistance; };
+	void setHomePos(Transform* homePos) { this->homePos = homePos; };
 
 	void MoveCommand(DirectX::XMVECTOR *goalPos);
 	void attackCommand();
