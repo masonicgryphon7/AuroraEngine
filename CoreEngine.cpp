@@ -17,6 +17,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
+#define GRAPHICS_DEBUGGER_ENABLED 1
 
 bool CoreEngine::hasResized = false;
 
@@ -191,7 +192,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		
+
 		//Terrain Texture.
 		assetManager.addTexture("Assets/rutTextur.png"); //3
 		assetManager.addTexture("Assets/rutNormal.png"); //4
@@ -226,8 +227,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.getMaterial(1)->setIsTerrain(true);
 		assetManager.getMaterial(1)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
-		assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
-		assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(18)->getTexture()); //USE ID_PART 3
+			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(18)->getTexture()); //USE ID_PART 3
 
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.getMaterial(2)->setIsTerrain(true);
@@ -471,92 +472,105 @@ void CoreEngine::SetViewport(int x, int y)
 
 void CoreEngine::OnResize()
 {
-	if (!hasResized)
-		return;
+	if (!GRAPHICS_DEBUGGER_ENABLED)
+	{
+		if (!hasResized)
+			return;
 
-	hasResized = false;
+		hasResized = false;
 
-	Vector2 ns = Input.GetEngineWindowResolution();
-	Vector2 sns = Input.GetDesktopResolution();
+		Vector2 ns = Input.GetEngineWindowResolution();
+		Vector2 sns = Input.GetDesktopResolution();
 
-	Debug.Log(ns.y, "\t", sns.y);
+		Input.GetEngineWindowResolution();
 
-	Input.GetEngineWindowResolution();
+		int width = Input.GetWidth();
+		int height = Input.GetHeight();
 
-	int width = Input.GetWidth();
-	int height = Input.GetHeight();
+		gBackbufferRTV->Release();
+		gBackbufferRTV = nullptr;
+		m_depthStencilBuffer->Release();
+		m_depthStencilBuffer = nullptr;
+		m_depthStencilView->Release();
+		m_depthStencilView = nullptr;
 
-	//if (firstThing != 0)
-		//CreateDirect3DContext(wnd);
+		gSwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
-	//firstThing = 1;
+		ID3D11Texture2D* pBuffer;
+		gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer);
 
+		gDevice->CreateRenderTargetView(pBuffer, NULL, &gBackbufferRTV);
 
+		pBuffer->Release();
 
-	gBackbufferRTV->Release();
-	gBackbufferRTV = nullptr;
-	m_depthStencilBuffer->Release();
-	m_depthStencilBuffer = nullptr;
-	m_depthStencilView->Release();
-	m_depthStencilView = nullptr;
+		gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
 
-	gSwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+		SetViewport(sns.x, sns.y);
 
-	ID3D11Texture2D* pBuffer;
-	gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer);
+		CreateDepthStencilBuffer();
+		CreateDepthStencilView();
 
-	gDevice->CreateRenderTargetView(pBuffer, NULL, &gBackbufferRTV);
+		renderManager->UpdateStuff(gDevice, gDeviceContext, gBackbufferRTV, gSwapChain, m_depthStencilView);
 
-	pBuffer->Release();
+		renderManager->CreateRenderTarget(ns.x, ns.y);
 
-	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
+		ImGui_ImplDX11_InvalidateDeviceObjects();
+		ImGui_ImplDX11_CreateDeviceObjects();
+	}
+	else
+	{
+		if (!hasResized)
+			return;
 
-	SetViewport(sns.x, sns.y);
+		Vector2 ns = Input.GetEngineWindowResolution();
 
-	//DXGI_MODE_DESC dxgiModeDesc;
-	//ZeroMemory(&dxgiModeDesc, sizeof(dxgiModeDesc));
-	//dxgiModeDesc.Width = (unsigned int)ns.x;
-	//dxgiModeDesc.Height = (unsigned int)ns.y;
-	//dxgiModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//dxgiModeDesc.RefreshRate = DXGI_RATIONAL{ m_refreshRateNumerator, m_refreshRateDenominator };
-	//dxgiModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	//dxgiModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		gBackbufferRTV->Release();
+		gBackbufferRTV = nullptr;
+		m_depthStencilBuffer->Release();
+		m_depthStencilBuffer = nullptr;
+		m_depthStencilView->Release();
+		m_depthStencilView = nullptr;
 
-	//HRESULT result = gSwapChain->ResizeTarget(&dxgiModeDesc);
-	//if (FAILED(result))
-	//	Console.error("Failed to set resize swapchain");
+		DXGI_MODE_DESC dxgiModeDesc;
+		ZeroMemory(&dxgiModeDesc, sizeof(dxgiModeDesc));
+		dxgiModeDesc.Width = (unsigned int)ns.x;
+		dxgiModeDesc.Height = (unsigned int)ns.y;
+		dxgiModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		dxgiModeDesc.RefreshRate = DXGI_RATIONAL{ m_refreshRateNumerator, m_refreshRateDenominator };
+		dxgiModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		dxgiModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 
-	//result = gSwapChain->ResizeBuffers(1, (unsigned int)ns.x, (unsigned int)ns.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-	//if (FAILED(result))
-	//	Console.error("Failed to set resize buffer swapchain");
+		HRESULT result = gSwapChain->ResizeTarget(&dxgiModeDesc);
+		if (FAILED(result))
+			Console.error("Failed to set resize swapchain");
 
-	//ID3D11Texture2D* backBuffer = nullptr;
-	//result = gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBuffer));
-	//if (FAILED(result))
-	//	Console.error("Failed to get buffer swapchain");
+		result = gSwapChain->ResizeBuffers(1, (unsigned int)ns.x, (unsigned int)ns.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+		if (FAILED(result))
+			Console.error("Failed to set resize buffer swapchain");
 
-	//result = gDevice->CreateRenderTargetView(backBuffer, nullptr, &gBackbufferRTV);
+		ID3D11Texture2D* backBuffer = nullptr;
+		result = gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBuffer));
+		if (FAILED(result))
+			Console.error("Failed to get buffer swapchain");
 
-	//backBuffer->Release();
-	//backBuffer = nullptr;
+		result = gDevice->CreateRenderTargetView(backBuffer, nullptr, &gBackbufferRTV);
 
-	//if (FAILED(result))
-	//	Console.error("Failed to create render target view.");
+		backBuffer->Release();
+		backBuffer = nullptr;
 
-	CreateDepthStencilBuffer();
-	CreateDepthStencilView();
+		if (FAILED(result))
+			Console.error("Failed to create render target view.");
 
-	renderManager->UpdateStuff(gDevice, gDeviceContext, gBackbufferRTV, gSwapChain, m_depthStencilView);
+		CreateDepthStencilBuffer();
+		CreateDepthStencilView();
 
-	renderManager->CreateRenderTarget(ns.x, ns.y);
+		renderManager->UpdateStuff(gDevice, gDeviceContext, gBackbufferRTV, gSwapChain, m_depthStencilView);
 
-	ImGui_ImplDX11_InvalidateDeviceObjects();
-	ImGui_ImplDX11_CreateDeviceObjects();
+		renderManager->CreateRenderTarget(ns.x, ns.y);
 
-	/*SetViewport(ns.x, ns.y);
-	Console.success("Successfully Resized Window");
-	std::string str = "Vector2(" + std::to_string(ns.x) + ", " + std::to_string(ns.y) + ")";
-	Console.success("New Window Size: ", str);*/
+		ImGui_ImplDX11_InvalidateDeviceObjects();
+		ImGui_ImplDX11_CreateDeviceObjects();
+	}
 }
 
 HWND CoreEngine::InitWindow(HINSTANCE hInstance)
