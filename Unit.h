@@ -110,7 +110,8 @@ public:
 	void summonCommand();
 
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
-
+	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
+	
 	void RecieveOrder(RaycastHit Values);
 	void RecieveOrder(OPTIONS option);
 	void update();

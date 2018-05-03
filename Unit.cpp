@@ -16,7 +16,7 @@ Unit::Unit()
 		this->healthPoints = 100;
 		this->attackPoints = 13;
 		this->defencePoints = 13;
-		this->attackDistance = 1;
+		this->attackDistance = 2;
 		this->Resources = 10;
 		break;
 
@@ -185,7 +185,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 		targetPos = UnitOrders.at(0).transform->getPosition();
 		unitPos = gameObject->transform.getPosition();
 
-		if (getDistanceBetweenUnits(unitPos, targetPos) <= this->attackDistance)
+		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 		{
 			actionTime += Time.getDeltaTime();
 			//Damage enemy
@@ -195,22 +195,18 @@ void Unit::attackCommand(Unit* targetedUnit)
 				Debug.Log("Enemy Hit!");
 				actionTime = 0;
 			}
-			//UnitOrders.erase(UnitOrders.begin());
 		}
 		else
 		{
+			DirectX::XMVECTOR pathOffset = calculateOffsetInPath(unitPos, targetPos);
 			Order tempOrder;
 			tempOrder.command = Command::Move;
-			tempOrder.point = targetedUnit->gameObject->transform.getPosition();
+			tempOrder.point = DirectX::XMVectorAdd(targetedUnit->gameObject->transform.getPosition(), pathOffset);
 			UnitOrders.insert(UnitOrders.begin(), tempOrder);
-
-			//MoveCommand(&UnitOrders.at(0).point);
 		}
 	}
 	else
 	{
-		//UnitOrders[0].transform->gameObject->Destroy();
-		//UnitOrders.erase(UnitOrders.begin());
 		destroyUnit();
 	}
 }
@@ -392,6 +388,13 @@ float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR
 	DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, targetPos);
 	distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
 	return distance;
+}
+
+DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
+{
+	DirectX::XMVECTOR vectorBetween = DirectX::XMVectorSubtract(unitPos, targetPos);
+	DirectX::XMVECTOR normalizedDistance = DirectX::XMVector3Normalize(vectorBetween);
+	return normalizedDistance;
 }
 
 void Unit::RecieveOrder(RaycastHit Values)
@@ -583,6 +586,8 @@ void Unit::RecieveOrder(OPTIONS option)
 		}
 	}
 }
+
+
 
 void Unit::update()
 {

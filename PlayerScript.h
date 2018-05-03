@@ -5,18 +5,12 @@
 #include "Time.h"
 #include "InputHandler.h"
 #include "Transform.h"
+#include "PRIMITIVE_GEOMETRY.h"
 
 #include <vector>
 
 class Unit;
 
-enum OPTIONS
-{
-	Option0,
-	Option1,
-	Option2,
-	Option3
-};
 
 class PlayerScript : public Component
 {
