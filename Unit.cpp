@@ -102,7 +102,7 @@ Unit::Unit(Type UnitTypeSet)
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
-		this->Resources = 0;
+		this->Resources = 1000;
 		this->type = Bank;
 		break;
 		
@@ -253,39 +253,33 @@ void Unit::gatherCommand(Unit* targetedUnit)
 
 		if (this->Resources < 100 && e == 0) // worker is not full
 		{
-			if (getDistanceBetweenUnits(unitPos, DirectX::XMVectorSet(1, 0, 20, 0)) < this->attackDistance)
+			if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
 			{
-				actionTime += Time.getDeltaTime();
-				if (actionTime > 1)
-				{
+				//actionTime += Time.getDeltaTime();
+				//if (actionTime > 1)
+				//{
 					gatherResources();
-					actionTime = 0;
-					if (this->Resources == 100)
-						e = 1;
-				}
+				//	actionTime = 0;
+				//}
 			}
 			else 
 			{
-				//MoveCommand(&DirectX::XMVectorSet(1, 0, 20, 0)); //Move to goldmine
 				MoveCommand(&targetedUnit->gameObject->transform.getPosition());
 			}
 		}
-		else if (this->Resources > 0) // worker has gold
+		else if (this->Resources > 0 && e == 1) // worker has gold
 		{
-			if (getDistanceBetweenUnits(unitPos, DirectX::XMVectorSet(20, 0, 1, 0)) < this->attackDistance)
+			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
 			{
-				actionTime += Time.getDeltaTime();
-				if (actionTime > 1)
-				{
+				//actionTime += Time.getDeltaTime();
+				//if (actionTime > 1)
+				//{
 					dropResources();		
-					actionTime = 0;
-					if (this->Resources == 0)
-						e = 0;
-				}
+				//	actionTime = 0;
+				//}
 			}
 			else 
 			{
-				//MoveCommand(&DirectX::XMVectorSet(20, 0, 1, 0)); //Move to silo
 				MoveCommand(&this->homePos->getPosition());
 			}
 		}
@@ -297,25 +291,83 @@ void Unit::gatherCommand(Unit* targetedUnit)
 	}
 }
 
+void Unit::HeroGatherCommand(Unit * targetedUnit)
+{
+	unitPos = gameObject->transform.getPosition();
+
+	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->gameObject->getComponent<Unit>()->getResources() > 0)
+	{
+		actionTime += Time.getDeltaTime();
+		if (targetedUnit->gameObject->getComponent<Unit>()->type == Bank && actionTime > 4)
+		{
+			int resourcesLeft = targetedUnit->gameObject->getComponent<Unit>()->getResources();
+			targetedUnit->gameObject->getComponent<Unit>()->setResources(0);
+			this->setResources(this->getResources() + resourcesLeft);
+			Debug.Log("Resources: ", targetedUnit->getResources());
+		}
+
+		if(targetedUnit->gameObject->getComponent<Unit>()->type == GoldMine && actionTime > 1)
+		{
+			gatherResources();
+			actionTime = 0;
+			Debug.Log("Resources: ", this->getResources());
+		}
+	}
+	else
+	{
+		MoveCommand(&targetedUnit->gameObject->transform.getPosition());
+	}
+}
+
 void Unit::gatherResources()
 {
-	int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
-	UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
-	int workersAmount = this->getResources();
-	this->setResources(workersAmount + 20);
-	Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
+	actionTime += Time.getDeltaTime();
+	if (actionTime > 1)
+	{
+		int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
+		UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
+		int workersAmount = this->getResources();
+		this->setResources(workersAmount + 20);
+		Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
+		if (this->Resources == 100)
+			e = 1;
+		actionTime = 0;
+	}
+}
 
+void Unit::dropCommand(Unit* targetedUnit)
+{
+	unitPos = gameObject->transform.getPosition();
+
+	if (this->Resources > 0)
+	{
+		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+		{
+			dropResources();
+		}
+		else
+		{
+			MoveCommand(&this->homePos->getPosition()); //not good, change
+		}
+	}
 }
 
 void Unit::dropResources()
 {
-	int resourcesInUnit = this->getResources();
-	this->setResources(resourcesInUnit - 20);
-	Debug.Log("Resources dropped! In worker: ", this->getResources());
-	int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
-	this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
-	Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
-	//UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+	actionTime += Time.getDeltaTime();
+	if (actionTime > 1)
+	{
+		int resourcesInUnit = this->getResources();
+		this->setResources(resourcesInUnit - 20);
+		Debug.Log("Resources dropped! In worker: ", this->getResources());
+		int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
+		this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+		Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
+		//UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+		if (this->Resources == 0)
+			e = 0;
+		actionTime = 0;
+	}
 }
 
 void Unit::destroyUnit()
@@ -408,7 +460,7 @@ void Unit::RecieveOrder(RaycastHit Values)
 			case Type::Hero:
 				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
 				//{
-					tempOrder.command = Gather;
+					tempOrder.command = HeroGather;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
@@ -419,14 +471,22 @@ void Unit::RecieveOrder(RaycastHit Values)
 
 
 			case Type::Worker:
-				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
-				//{
+				if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
+				{
 					tempOrder.command = Gather;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
 					actionTime = 2;
-				//}
+				}
+				if (Values.transform->gameObject->getComponent<Unit>()->type == Bank)
+				{
+					tempOrder.command = Drop;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 
 				break;
 
@@ -515,6 +575,14 @@ void Unit::update()
 
 		case Command::Gather: //GATHER
 			gatherCommand(targetedUnit);
+			break;
+
+		case Command::HeroGather: //HEROGATHER
+			HeroGatherCommand(targetedUnit);
+			break;
+
+		case Command::Drop:
+			dropCommand(targetedUnit);
 			break;
 
 		case Command::Build: //BUILD

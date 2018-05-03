@@ -23,7 +23,8 @@ class PlayerScript;
 		Move,
 		Attack,
 		Gather,
-		//Drop,
+		HeroGather,
+		Drop,
 		Build,
 		Follow,
 		Summon,
@@ -103,7 +104,9 @@ public:
 	void attackCommand();
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);
+	void HeroGatherCommand(Unit* targetedUnit);
 	void gatherResources();
+	void dropCommand(Unit* targetedUnit);
 	void dropResources();
 	void destroyUnit();
 
