@@ -45,7 +45,7 @@ GameObject::~GameObject()
 
 void GameObject::Destroy()
 {
-	gScene.destroy(this);
+	destroyGO = true;
 }
 
 void GameObject::updateMaterialAndMeshFilterPointers() {

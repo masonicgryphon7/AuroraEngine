@@ -23,6 +23,7 @@ public:
 	int assetID, tag;
     bool isActive;
     bool hasLight;
+	bool destroyGO = false;
 	std::string name, meshPath;
 	Transform transform;
 	std::vector<Component*> components;

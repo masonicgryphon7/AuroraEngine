@@ -14,6 +14,14 @@ enum class Primitives
 	Empty
 };
 
+enum OPTIONS
+{
+	Option0,
+	Option1,
+	Option2,
+	Option3
+};
+
 struct OOBB {
 	bool isActive;
 	DirectX::XMVECTOR centre;

@@ -5,10 +5,13 @@
 #include "Time.h"
 #include "InputHandler.h"
 #include "Transform.h"
+#include "PRIMITIVE_GEOMETRY.h"
 
 #include <vector>
 
 class Unit;
+
+
 class PlayerScript : public Component
 {
 
@@ -39,7 +42,7 @@ public:
 
 	//std::vector<GameObject*>*objectsToRender;
 
-	std::vector<Unit*> friendlyUnits;
-	std::vector<Unit*> friendlyBuildings;
+	std::vector<Unit*> friendlyUnits; //= std::vector<Unit*>(20);
+	std::vector<Unit*> friendlyBuildings; //= std::vector<Unit*>(10);
 };
 
