@@ -9,6 +9,15 @@
 #include <vector>
 
 class Unit;
+
+enum OPTIONS
+{
+	Option0,
+	Option1,
+	Option2,
+	Option3
+};
+
 class PlayerScript : public Component
 {
 
@@ -39,7 +48,7 @@ public:
 
 	//std::vector<GameObject*>*objectsToRender;
 
-	std::vector<Unit*> friendlyUnits;
-	std::vector<Unit*> friendlyBuildings;
+	std::vector<Unit*> friendlyUnits; //= std::vector<Unit*>(20);
+	std::vector<Unit*> friendlyBuildings; //= std::vector<Unit*>(10);
 };
 

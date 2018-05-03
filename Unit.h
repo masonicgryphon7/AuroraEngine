@@ -98,18 +98,21 @@ public:
 	void setDefencePoints(int defencePoints) { this->defencePoints = defencePoints; };
 	void setAttackDistance(float attackDistance) { this->attackDistance = attackDistance; };
 	void setHomePos(Transform* homePos) { this->homePos = homePos; };
-
+	void setPlayerScript(PlayerScript* playerScript) {	this->playerScript = playerScript;};
 	void MoveCommand(DirectX::XMVECTOR *goalPos);
-	void attackCommand();
+	void attackCommand(Unit* targetedUnit);
+	void attackEnemy();
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);
 	void gatherResources();
 	void dropResources();
 	void destroyUnit();
+	void summonCommand();
 
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 
 	void RecieveOrder(RaycastHit Values);
+	void RecieveOrder(OPTIONS option);
 	void update();
 };
 

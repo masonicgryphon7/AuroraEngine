@@ -164,7 +164,7 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 			pathNodes.erase(pathNodes.begin());
 			lerpValue = 0;
-			//UnitOrders.erase(UnitOrders.begin());
+			UnitOrders.erase(UnitOrders.begin());
 
 
 		}
@@ -178,7 +178,44 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 	//Debug.Log("Moving");
 }
 
-void Unit::attackCommand()
+void Unit::attackCommand(Unit* targetedUnit)
+{
+	if (targetedUnit != nullptr && targetedUnit->getHealthPoints() >= 0)
+	{
+		targetPos = UnitOrders.at(0).transform->getPosition();
+		unitPos = gameObject->transform.getPosition();
+
+		if (getDistanceBetweenUnits(unitPos, targetPos) <= this->attackDistance)
+		{
+			actionTime += Time.getDeltaTime();
+			//Damage enemy
+			if (actionTime > 1)
+			{
+				attackEnemy();
+				Debug.Log("Enemy Hit!");
+				actionTime = 0;
+			}
+			//UnitOrders.erase(UnitOrders.begin());
+		}
+		else
+		{
+			Order tempOrder;
+			tempOrder.command = Command::Move;
+			tempOrder.point = targetedUnit->gameObject->transform.getPosition();
+			UnitOrders.insert(UnitOrders.begin(), tempOrder);
+
+			//MoveCommand(&UnitOrders.at(0).point);
+		}
+	}
+	else
+	{
+		//UnitOrders[0].transform->gameObject->Destroy();
+		//UnitOrders.erase(UnitOrders.begin());
+		destroyUnit();
+	}
+}
+
+void Unit::attackEnemy()
 {
 	int enemyHealth = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints();
 	int damage = this->attackPoints - UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getDefencePoints();
@@ -267,7 +304,13 @@ void Unit::gatherCommand(Unit* targetedUnit)
 			else 
 			{
 				//MoveCommand(&DirectX::XMVectorSet(1, 0, 20, 0)); //Move to goldmine
-				MoveCommand(&targetedUnit->gameObject->transform.getPosition());
+				Order tempOrder;
+				tempOrder.command = Command::Move;
+				tempOrder.point = targetedUnit->gameObject->transform.getPosition();
+				UnitOrders.insert(UnitOrders.begin(), tempOrder);
+
+
+				//MoveCommand(&targetedUnit->gameObject->transform.getPosition());
 			}
 		}
 		else if (this->Resources > 0) // worker has gold
@@ -285,8 +328,13 @@ void Unit::gatherCommand(Unit* targetedUnit)
 			}
 			else 
 			{
+				Order tempOrder;
+				tempOrder.command = Command::Move;
+				tempOrder.point = this->homePos->getPosition();
+				UnitOrders.insert(UnitOrders.begin(), tempOrder);
+
 				//MoveCommand(&DirectX::XMVectorSet(20, 0, 1, 0)); //Move to silo
-				MoveCommand(&this->homePos->getPosition());
+				//MoveCommand(&this->homePos->getPosition());
 			}
 		}
 	}
@@ -324,6 +372,21 @@ void Unit::destroyUnit()
 	UnitOrders.erase(UnitOrders.begin());
 }
 
+void Unit::summonCommand()
+{
+	GameObject* cube = gScene.createEmptyGameObject(playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+	cube->name = "Worker"; //+ playerScript->friendlyUnits.size();
+	cube->tag = gameObject->tag;
+	//AssetManager.AddMesh("Assets/Cube.obj");
+	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
+	cube->addComponent(meshFilter);
+	cube->addComponent(AssetManager.getMaterial(0));
+	Unit *unitWorker = new Unit(Worker);
+	unitWorker->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+	cube->addComponent(unitWorker);
+	playerScript->friendlyUnits.push_back(unitWorker);
+}
+
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
 {
 	DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, targetPos);
@@ -349,7 +412,7 @@ void Unit::RecieveOrder(RaycastHit Values)
 			{
 			case Type::Hero:
 				tempOrder.command = Follow;
-
+				
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
 				UnitOrders.push_back(tempOrder);
@@ -440,9 +503,23 @@ void Unit::RecieveOrder(RaycastHit Values)
 			//Terrain
 			//Walk 
 		}
+		else if (Input.GetKey(KeyCode::B)){
+			switch (type)
+			{
+			case Type::Hero:
+				tempOrder.command = Summon;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
+				break;
+
+			case Type::Building:
+				tempOrder.command = Summon;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
+				break;
+			}
+		}
 		else {
-			//friendly  tag == 1
-			//walk to
 			
 		}
 
@@ -466,11 +543,51 @@ void Unit::RecieveOrder(RaycastHit Values)
 	}
 }
 
+void Unit::RecieveOrder(OPTIONS option)
+{
+	UnitOrders.clear();
+	pathNodes.clear();
+
+	Order tempOrder;
+
+	if (option == Option0)
+	{
+		switch (type)
+		{
+		case Type::Bank:
+			break;
+		}
+	}
+	else if (option == Option1)
+	{
+		switch (type)
+		{
+		case Type::Bank:
+			break;
+		}
+	}
+	else if (option == Option2)
+	{
+		switch (type)
+		{
+		case Type::Bank:
+			break;
+		}
+	}
+	else if (option == Option3)
+	{
+		switch (type)
+		{
+		case Type::Bank:
+			break;
+		}
+	}
+}
+
 void Unit::update()
 {
 	if (UnitOrders.size() > 0) {
 
-		Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
 
 		switch (UnitOrders.at(0).command)
 		{
@@ -479,42 +596,17 @@ void Unit::update()
 			break;
 
 		case Command::Attack: //ATTACK
-
-			if (targetedUnit != nullptr && targetedUnit->getHealthPoints() >= 0)
-			{
-				unitPos = UnitOrders.at(0).transform->getPosition();
-				targetPos = gameObject->transform.getPosition();
-
-				if (getDistanceBetweenUnits(unitPos, targetPos) <= this->attackDistance)
-				{
-					actionTime += Time.getDeltaTime();
-					//Damage enemy
-					if (actionTime > 1)
-					{
-						attackCommand();
-						Debug.Log("Enemy Hit!");
-						actionTime = 0;
-					}
-					//UnitOrders.erase(UnitOrders.begin());
-				}
-				else
-				{
-					//followCommand()
-					//UnitOrders.erase(UnitOrders.begin());
-					MoveCommand(&UnitOrders.at(0).point);
-				}
-			}
-			else
-			{
-				UnitOrders[0].transform->gameObject->Destroy();
-				UnitOrders.erase(UnitOrders.begin());
-			}
+		{
+			Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+			attackCommand(targetedUnit);			
+		}
 			break;
 
-
-
 		case Command::Gather: //GATHER
+		{
+			Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
 			gatherCommand(targetedUnit);
+		}
 			break;
 
 		case Command::Build: //BUILD
@@ -526,6 +618,7 @@ void Unit::update()
 			break;
 
 		case Command::Summon: //SUMMON
+			summonCommand();
 			break;
 
 		default:
@@ -533,4 +626,7 @@ void Unit::update()
 		}
 	}
 
+	if (Input.GetKeyUp(KeyCode::B)) {
+		summonCommand();
+		}
 }

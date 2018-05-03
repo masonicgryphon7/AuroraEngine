@@ -318,7 +318,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 		cube->name = "Worker";
-		cube->tag = 1;
+		cube->tag = 2;
 		AssetManager.AddMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 		cube->addComponent(meshFilter);
@@ -326,7 +326,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Unit *UnitHero1 = new Unit(Worker);
 		cube->addComponent(UnitHero1);
 		playerscript->friendlyUnits.push_back(UnitHero1);
-
+		UnitHero1->setPlayerScript(playerscript);
 		//Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
@@ -336,6 +336,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube2->addComponent(AssetManager.getMaterial(0));
 		Unit *UnitSoldier1 = new Unit(GoldMine);
 		cube2->addComponent(UnitSoldier1);
+		UnitSoldier1->setPlayerScript(playerscript);
+
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
 		cube3->name = "Bank";
@@ -345,6 +347,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Unit* unitBuilding = new Unit(Bank);
 		cube3->addComponent(unitBuilding);
 		playerscript->friendlyBuildings.push_back(unitBuilding);
+		unitBuilding->setPlayerScript(playerscript);
 
 		GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
 		cube4->name = "Hero";
@@ -353,10 +356,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube4->addComponent(AssetManager.getMaterial(0));
 		Unit* UnitHero2 = new Unit(Hero);
 		cube4->addComponent(UnitHero2);
-		//playerscript->friendlyUnits.push_back(UnitHero2);
-
+		playerscript->friendlyUnits.push_back(UnitHero2);
+		UnitHero2->setPlayerScript(playerscript);
 		playerscript->friendlyUnits.at(0)->setHomePos(&playerscript->friendlyBuildings.at(0)->gameObject->transform);
-
 
 		/*ClickToMove* clickToMove = new ClickToMove(cam);
 		cube->addComponent(clickToMove);*/
@@ -381,7 +383,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				Time.tick();
 
 				OnResize();
-
+				gScene.destroyGameObjects();
 				gScene.frustumCull(camera);
 				objectsToRender = gScene.getFrustumCulledResult();
 				if (editor != nullptr)
