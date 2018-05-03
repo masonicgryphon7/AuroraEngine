@@ -101,6 +101,7 @@ public:
 	void setHomePos(Transform* homePos) { this->homePos = homePos; };
 	void setPlayerScript(PlayerScript* playerScript) {	this->playerScript = playerScript;};
 	void MoveCommand(DirectX::XMVECTOR *goalPos);
+	void SecondMoveCommand(DirectX::XMVECTOR *goalPos);
 	void attackCommand(Unit* targetedUnit);
 	void attackEnemy();
 	void FollowCommand();
