@@ -132,6 +132,11 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 //	//}
 //}
 
+void cPathCreator::blockGrid(float x, float y)
+{
+	grid[x][y].pathable = false;
+}
+
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
 	std::vector<std::vector<Node>> tempGrid = grid;
