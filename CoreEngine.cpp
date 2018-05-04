@@ -309,18 +309,18 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0));
 		camera->addComponent(cam);
-		PlayerSelectionScript* playerSelectionScript = new PlayerSelectionScript(camera);
-		camera->addComponent(playerSelectionScript);
-
-		PlayerScript *playerscript = new PlayerScript();
+		PlayerScript* playerscript = new PlayerScript(camera);
 		camera->addComponent(playerscript);
 
+		//PlayerScript *playerscript = new PlayerScript();
+		//camera->addComponent(playerscript);
 
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
+
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 		cube->name = "Worker";
-		cube->tag = 2;
+		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh(4));
 		cube->addComponent(meshFilter1);
@@ -337,18 +337,18 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh(4));
 		cube2->addComponent(meshFilter2);
 		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
-		Unit *UnitSoldier1 = new Unit(Bank);
+		Unit *UnitSoldier1 = new Unit(GoldMine);
 		cube2->addComponent(UnitSoldier1);
 		UnitSoldier1->setPlayerScript(playerscript);
 
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
 		cube3->name = "Bank";
-		cube3->tag = 3;
+		cube3->tag = 1;
 		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh(4));
 		cube3->addComponent(meshFilter3);
 		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
-		Unit* unitBuilding = new Unit(GoldMine);
+		Unit* unitBuilding = new Unit(Bank);
 		cube3->addComponent(unitBuilding);
 		playerscript->friendlyBuildings.push_back(unitBuilding);
 		unitBuilding->setPlayerScript(playerscript);
