@@ -8,7 +8,7 @@
 
 Unit::Unit()
 {
-	actionTime = 2;
+	actionTime = 10;
 
 	switch (type)
 	{
@@ -16,7 +16,7 @@ Unit::Unit()
 		this->healthPoints = 100;
 		this->attackPoints = 13;
 		this->defencePoints = 13;
-		this->attackDistance = 1;
+		this->attackDistance = 2;
 		this->Resources = 10;
 		break;
 
@@ -102,7 +102,7 @@ Unit::Unit(Type UnitTypeSet)
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
-		this->Resources = 0;
+		this->Resources = 1000;
 		this->type = Bank;
 		break;
 		
@@ -164,7 +164,7 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 			pathNodes.erase(pathNodes.begin());
 			lerpValue = 0;
-			//UnitOrders.erase(UnitOrders.begin());
+			UnitOrders.erase(UnitOrders.begin());
 
 
 		}
@@ -178,7 +178,96 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 	//Debug.Log("Moving");
 }
 
-void Unit::attackCommand()
+void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
+{
+	DirectX::XMFLOAT3 current;
+	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
+
+	DirectX::XMFLOAT3 pointPosition;
+	if (goalPos == nullptr)
+	{
+		DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
+	}
+	else
+	{
+		DirectX::XMStoreFloat3(&pointPosition, *goalPos);
+	}
+
+	if (pathNodes.size() == 0)
+	{
+		lerpValue = 0;
+		pathNodes = PathCreator.getPath(current, pointPosition); // Point position
+	}
+
+	if (pathNodes.size() > 0) {
+		lerpValue += Time.getDeltaTime() * 10;
+		if (lerpValue > 1) {
+			lerpValue = 1;
+		}
+		DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+		DirectX::XMFLOAT3 goalVec;
+		DirectX::XMStoreFloat3(&goalVec, goal);
+
+
+		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
+			pathNodes.erase(pathNodes.begin());
+
+			goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+			lerpValue = 0;
+		}
+		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
+			pathNodes.erase(pathNodes.begin());
+			lerpValue = 0;
+			//UnitOrders.erase(UnitOrders.begin() + 1);
+
+
+		}
+		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
+	}
+	else
+	{
+		lerpValue = 0;
+
+	}
+	//Debug.Log("Moving");
+}
+
+void Unit::attackCommand(Unit* targetedUnit)
+{
+	targetPos = UnitOrders.at(0).transform->getPosition();
+	unitPos = gameObject->transform.getPosition();
+
+	if (targetedUnit != nullptr && targetedUnit->getHealthPoints() >= 0)
+	{
+
+		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
+		{
+			actionTime += Time.getDeltaTime();
+			//Damage enemy
+			if (actionTime > 1)
+			{
+				attackEnemy();
+				Debug.Log("Enemy Hit!");
+				actionTime = 0;
+			}
+		}
+		else
+		{
+			//DirectX::XMVECTOR pathOffset = calculateOffsetInPath(unitPos, targetPos);
+			//Order tempOrder;
+			//tempOrder.command = Command::Move;
+			//tempOrder.point = targetedUnit->gameObject->transform.getPosition();//DirectX::XMVectorAdd(targetedUnit->gameObject->transform.getPosition(), DirectX::XMVectorSet(0.5, 0.0, 0.5, 0.0));
+			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
+			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		}
+	}
+	else
+	{
+		destroyUnit();
+	}
+}
+
+void Unit::attackEnemy() 
 {
 	int enemyHealth = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getHealthPoints();
 	int damage = this->attackPoints - UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getDefencePoints();
@@ -247,75 +336,124 @@ void Unit::FollowCommand()
 
 void Unit::gatherCommand(Unit* targetedUnit)
 {
-	if (targetedUnit != nullptr && targetedUnit->getResources() >= 0)
+	unitPos = gameObject->transform.getPosition();
+
+	if (this->Resources < 100 && e == 0) // worker is not full
 	{
-		unitPos = gameObject->transform.getPosition();
-		//gameObject->getComponent<Unit>();
-		//Debug.Log("Following...",gameObject->name);
-
-		//targetPos = UnitOrders.at(0).transform->getPosition(); // click goldmine first, pos of goldmine
-
-		if (this->Resources < 100 && e == 0) // worker is not full
+		if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
 		{
-			if (getDistanceBetweenUnits(unitPos, DirectX::XMVectorSet(1, 0, 20, 0)) < this->attackDistance)
-			{
-				actionTime += Time.getDeltaTime();
-				if (actionTime > 1)
-				{
-					gatherResources();
-					actionTime = 0;
-					if (this->Resources == 100)
-						e = 1;
-				}
-			}
-			else 
-			{
-				MoveCommand(&DirectX::XMVectorSet(1, 0, 20, 0)); //Move to goldmine
-			}
+			gatherResources();
 		}
-		else if (this->Resources > 0) // worker has gold
+		else
 		{
-			if (getDistanceBetweenUnits(unitPos, DirectX::XMVectorSet(20, 0, 1, 0)) < this->attackDistance)
-			{
-				actionTime += Time.getDeltaTime();
-				if (actionTime > 1)
-				{
-					dropResources();		
-					actionTime = 0;
-					if (this->Resources == 0)
-						e = 0;
-				}
-			}
-			else 
-			{
-				MoveCommand(&DirectX::XMVectorSet(20, 0, 1, 0)); //Move to silo
-			}
+			//Order tempOrder;
+			//tempOrder.command = Command::Move;
+			//tempOrder.point = targetedUnit->gameObject->transform.getPosition();
+			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
+			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		}
+	}
+	else if (this->Resources > 0 && e == 1) // worker has gold
+	{
+		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+		{
+			dropResources();
+		}
+		else
+		{
+			//Order tempOrder;
+			//tempOrder.command = Command::Move;
+			//tempOrder.point = this->homePos->getPosition();
+			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
+			SecondMoveCommand(&this->homePos->getPosition());
+		}
+	}
+	
+}
+
+void Unit::HeroGatherCommand(Unit * targetedUnit)
+{
+	unitPos = gameObject->transform.getPosition();
+
+	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->getResources() > 0)
+	{
+		actionTime += Time.getDeltaTime();
+		if (targetedUnit->type == Bank && actionTime > 4)
+		{
+			int resourcesLeft = targetedUnit->getResources();
+			targetedUnit->setResources(0);
+			this->setResources(this->getResources() + resourcesLeft);
+			Debug.Log("Resources: ", targetedUnit->getResources());
+		}
+
+		if (targetedUnit->type == GoldMine && actionTime > 1)
+		{
+			gatherResources();
+			actionTime = 0;
+			Debug.Log("Resources: ", this->getResources());
 		}
 	}
 	else
 	{
-		//UnitOrders[0].transform->gameObject->Destroy(); /Tar bort "guldgruvan"
-		UnitOrders.erase(UnitOrders.begin());
+		//Order tempOrder;
+		//tempOrder.command = Command::Move;
+		//tempOrder.point = targetedUnit->gameObject->transform.getPosition();
+		//UnitOrders.insert(UnitOrders.begin(), tempOrder);
+		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 	}
 }
 
 void Unit::gatherResources()
 {
-	int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
-	UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
-	int workersAmount = this->getResources();
-	this->setResources(workersAmount + 20);
-	Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
+	actionTime += Time.getDeltaTime();
+	if (actionTime > 1)
+	{
+		int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
+		UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
+		int workersAmount = this->getResources();
+		this->setResources(workersAmount + 20);
+		Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
+		if (this->Resources == 100)
+			e = 1;
+		actionTime = 0;
+	}
+}
 
+void Unit::dropCommand(Unit* targetedUnit)
+{
+	unitPos = gameObject->transform.getPosition();
+
+	if (this->Resources > 0)
+	{
+		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+		{
+			dropResources();
+		}
+		else
+		{
+			Order tempOrder;
+			tempOrder.command = Command::Move;
+			tempOrder.point = this->homePos->getPosition();
+			UnitOrders.insert(UnitOrders.begin(), tempOrder);
+		}
+	}
 }
 
 void Unit::dropResources()
 {
-	int resourcesInUnit = this->getResources();
-	this->setResources(resourcesInUnit - 20);
-	Debug.Log("Resources dropped! In worker: ", this->getResources());
-	//int resourcesInTarget = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
-	//UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+	actionTime += Time.getDeltaTime();
+	if (actionTime > 1)
+	{
+		int resourcesInUnit = this->getResources();
+		this->setResources(resourcesInUnit - 20);
+		Debug.Log("Resources dropped! In worker: ", this->getResources());
+		int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
+		this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+		Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
+		if (this->Resources == 0)
+			e = 0;
+		actionTime = 0;
+	}
 }
 
 void Unit::destroyUnit()
@@ -324,11 +462,33 @@ void Unit::destroyUnit()
 	UnitOrders.erase(UnitOrders.begin());
 }
 
+void Unit::summonCommand()
+{
+	GameObject* cube = gScene.createEmptyGameObject(playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+	cube->name = "Worker"; //+ playerScript->friendlyUnits.size();
+	cube->tag = gameObject->tag;
+	//AssetManager.AddMesh("Assets/Cube.obj");
+	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
+	cube->addComponent(meshFilter);
+	cube->addComponent(AssetManager.getMaterial(0));
+	Unit *unitWorker = new Unit(Worker);
+	unitWorker->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+	cube->addComponent(unitWorker);
+	playerScript->friendlyUnits.push_back(unitWorker);
+}
+
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
 {
 	DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, targetPos);
 	distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
 	return distance;
+}
+
+DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
+{
+	DirectX::XMVECTOR vectorBetween = DirectX::XMVectorSubtract(unitPos, targetPos);
+	DirectX::XMVECTOR normalizedDistance = DirectX::XMVector3Normalize(vectorBetween);
+	return normalizedDistance;
 }
 
 void Unit::RecieveOrder(RaycastHit Values)
@@ -349,7 +509,7 @@ void Unit::RecieveOrder(RaycastHit Values)
 			{
 			case Type::Hero:
 				tempOrder.command = Follow;
-
+				
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
 				UnitOrders.push_back(tempOrder);
@@ -408,25 +568,34 @@ void Unit::RecieveOrder(RaycastHit Values)
 			case Type::Hero:
 				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
 				//{
-					tempOrder.command = Gather;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
+				tempOrder.command = HeroGather;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
 				//}
 
 				break;
 
 
 			case Type::Worker:
-				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
-				//{
+				if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
+				{
 					tempOrder.command = Gather;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
 					actionTime = 2;
-				//}
+				}
+
+				if (Values.transform->gameObject->getComponent<Unit>()->type == Bank)
+				{
+					tempOrder.command = Drop;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 
 				break;
 
@@ -440,9 +609,23 @@ void Unit::RecieveOrder(RaycastHit Values)
 			//Terrain
 			//Walk 
 		}
+		else if (Input.GetKey(KeyCode::B)){
+			switch (type)
+			{
+			case Type::Hero:
+				tempOrder.command = Summon;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
+				break;
+
+			case Type::Building:
+				tempOrder.command = Summon;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
+				break;
+			}
+		}
 		else {
-			//friendly  tag == 1
-			//walk to
 			
 		}
 
@@ -466,11 +649,51 @@ void Unit::RecieveOrder(RaycastHit Values)
 	}
 }
 
+void Unit::RecieveOrder(OPTIONS option)
+{
+	UnitOrders.clear();
+	pathNodes.clear();
+
+	Order tempOrder;
+
+	if (option == Option0)
+	{
+		switch (type)
+		{
+		case Type::Bank:
+			break;
+		}
+	}
+	else if (option == Option1)
+	{
+		switch (type)
+		{
+		case Type::Bank:
+			break;
+		}
+	}
+	else if (option == Option2)
+	{
+		switch (type)
+		{
+		case Type::Bank:
+			break;
+		}
+	}
+	else if (option == Option3)
+	{
+		switch (type)
+		{
+		case Type::Bank:
+			break;
+		}
+	}
+}
+
 void Unit::update()
 {
 	if (UnitOrders.size() > 0) {
 
-		Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
 
 		switch (UnitOrders.at(0).command)
 		{
@@ -479,42 +702,31 @@ void Unit::update()
 			break;
 
 		case Command::Attack: //ATTACK
-
-			if (targetedUnit != nullptr && targetedUnit->getHealthPoints() >= 0)
-			{
-				unitPos = UnitOrders.at(0).transform->getPosition();
-				targetPos = gameObject->transform.getPosition();
-
-				if (getDistanceBetweenUnits(unitPos, targetPos) <= this->attackDistance)
-				{
-					actionTime += Time.getDeltaTime();
-					//Damage enemy
-					if (actionTime > 1)
-					{
-						attackCommand();
-						Debug.Log("Enemy Hit!");
-						actionTime = 0;
-					}
-					//UnitOrders.erase(UnitOrders.begin());
-				}
-				else
-				{
-					//followCommand()
-					//UnitOrders.erase(UnitOrders.begin());
-					MoveCommand(&UnitOrders.at(0).point);
-				}
-			}
-			else
-			{
-				UnitOrders[0].transform->gameObject->Destroy();
-				UnitOrders.erase(UnitOrders.begin());
-			}
+		{
+			Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+			attackCommand(targetedUnit);			
+		}
 			break;
 
-
-
 		case Command::Gather: //GATHER
+		{
+			Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
 			gatherCommand(targetedUnit);
+		}
+			break;
+
+		case Command::HeroGather: //HEROGATHER
+		{
+			Unit * targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+			HeroGatherCommand(targetedUnit);
+		}
+			break;
+
+		case Command::Drop:
+		{
+			Unit * targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+			dropCommand(targetedUnit);
+		}
 			break;
 
 		case Command::Build: //BUILD
@@ -526,6 +738,7 @@ void Unit::update()
 			break;
 
 		case Command::Summon: //SUMMON
+			summonCommand();
 			break;
 
 		default:
@@ -533,4 +746,7 @@ void Unit::update()
 		}
 	}
 
+	if (Input.GetKeyUp(KeyCode::B)) {
+		summonCommand();
+		}
 }

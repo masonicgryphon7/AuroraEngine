@@ -23,7 +23,8 @@ class PlayerScript;
 		Move,
 		Attack,
 		Gather,
-		//Drop,
+		HeroGather,
+		Drop,
 		Build,
 		Follow,
 		Summon,
@@ -59,10 +60,13 @@ private:
 	int defencePoints;
 	float attackDistance;
 	float actionTime;
+	Transform* homePos;
+
 	int e = 0;
 
 	DirectX::XMVECTOR targetPos;
 	DirectX::XMVECTOR unitPos;
+
 
 	PlayerScript* playerScript;
 
@@ -87,24 +91,33 @@ public:
 	int getAttackPoints() { return this->attackPoints; };
 	int getDefencePoints() { return this->defencePoints; };
 	float getAttackDistance() { return this->attackDistance; };
-
+	Transform* getHomePos() { return this->homePos; };
+	
 	void setResources(int resources) { this->Resources = resources; };
 	void setHealthPoints(int healthPoints) { this->healthPoints = healthPoints; };
 	void setAttackPoints(int attackPoints) { this->attackPoints = attackPoints; };
 	void setDefencePoints(int defencePoints) { this->defencePoints = defencePoints; };
 	void setAttackDistance(float attackDistance) { this->attackDistance = attackDistance; };
-
+	void setHomePos(Transform* homePos) { this->homePos = homePos; };
+	void setPlayerScript(PlayerScript* playerScript) {	this->playerScript = playerScript;};
 	void MoveCommand(DirectX::XMVECTOR *goalPos);
-	void attackCommand();
+	void SecondMoveCommand(DirectX::XMVECTOR *goalPos);
+	void attackCommand(Unit* targetedUnit);
+	void attackEnemy();
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);
+	void HeroGatherCommand(Unit* targetedUnit);
 	void gatherResources();
+	void dropCommand(Unit* targetedUnit);
 	void dropResources();
 	void destroyUnit();
+	void summonCommand();
 
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
-
+	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
+	
 	void RecieveOrder(RaycastHit Values);
+	void RecieveOrder(OPTIONS option);
 	void update();
 };
 
