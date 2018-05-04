@@ -63,8 +63,8 @@ CoreEngine::~CoreEngine()
 	SAFE_RELEASE(gSwapChain);
 
 	Input.~InputHandler();
-	AssetManager.~cAssetManager();
 	gScene.~Scene();
+	AssetManager.~cAssetManager();
 	SAFE_RELEASE(gDeviceContext);
 	SAFE_RELEASE(gDevice);
 	// Cleanup
@@ -258,7 +258,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part3.bmp");
 		AssetManager.addMesh(terrainGenerator1->vertCount, &terrainGenerator1->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
-		terrain1->addComponent(AssetManager.getMaterial(1));
+		terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial(1)));
 		terrain1->addComponent(meshFilterTerrain);
 
 		GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 0, 0));
@@ -268,7 +268,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part1.bmp");
 		AssetManager.addMesh(terrainGenerator2->vertCount, &terrainGenerator2->TriangleArr);
 		MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
-		terrain2->addComponent(AssetManager.getMaterial(2));
+		terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial(2)));
 		terrain2->addComponent(meshFilterTerrain2);
 
 		GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 99, 0));
@@ -278,7 +278,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part4.bmp");
 		AssetManager.addMesh(terrainGenerator3->vertCount, &terrainGenerator3->TriangleArr);
 		MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
-		terrain3->addComponent(AssetManager.getMaterial(3));
+		terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial(3)));
 		terrain3->addComponent(meshFilterTerrain3);
 
 		GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
@@ -288,7 +288,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part2.bmp");
 		AssetManager.addMesh(terrainGenerator4->vertCount, &terrainGenerator4->TriangleArr);
 		MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
-		terrain4->addComponent(AssetManager.getMaterial(4));
+		terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial(4)));
 		terrain4->addComponent(meshFilterTerrain4);
 
 		//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
@@ -316,15 +316,15 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		camera->addComponent(playerscript);
 
 
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 		cube->name = "Worker";
 		cube->tag = 2;
 		AssetManager.AddMesh("Assets/Cube.obj");
-		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
-		cube->addComponent(meshFilter);
-		cube->addComponent(AssetManager.getMaterial(0));
+		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh(4));
+		cube->addComponent(meshFilter1);
+		cube->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 		Unit *UnitHero1 = new Unit(Worker);
 		cube->addComponent(UnitHero1);
 		playerscript->friendlyUnits.push_back(UnitHero1);
@@ -334,9 +334,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
 		cube2->name = "Goldmine";
 		cube2->tag = 3;
-		cube2->addComponent(meshFilter);
-		cube2->addComponent(AssetManager.getMaterial(0));
-		Unit *UnitSoldier1 = new Unit(GoldMine);
+		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh(4));
+		cube2->addComponent(meshFilter2);
+		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
+		Unit *UnitSoldier1 = new Unit(Bank);
 		cube2->addComponent(UnitSoldier1);
 		UnitSoldier1->setPlayerScript(playerscript);
 
@@ -344,9 +345,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
 		cube3->name = "Bank";
 		cube3->tag = 3;
-		cube3->addComponent(meshFilter);
-		cube3->addComponent(AssetManager.getMaterial(0));
-		Unit* unitBuilding = new Unit(Bank);
+		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh(4));
+		cube3->addComponent(meshFilter3);
+		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
+		Unit* unitBuilding = new Unit(GoldMine);
 		cube3->addComponent(unitBuilding);
 		playerscript->friendlyBuildings.push_back(unitBuilding);
 		unitBuilding->setPlayerScript(playerscript);
@@ -354,8 +356,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
 		cube4->name = "Hero";
 		cube4->tag = 1;
-		cube4->addComponent(meshFilter);
-		cube4->addComponent(AssetManager.getMaterial(0));
+		MeshFilter* meshFilter4 = new MeshFilter(AssetManager.getMesh(4));
+		cube4->addComponent(meshFilter4);
+		cube4->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 		Unit* UnitHero2 = new Unit(Hero);
 		cube4->addComponent(UnitHero2);
 		playerscript->friendlyUnits.push_back(UnitHero2);
@@ -407,7 +410,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		if (editor != nullptr)
 			delete editor;
 
-		delete cam;
 		delete renderManager;
 		DestroyWindow(wndHandle);
 	}

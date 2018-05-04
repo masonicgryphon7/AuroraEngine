@@ -17,6 +17,8 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix projection;
 	float4 cameraPosition;
 	bool isTerrain;
+	bool instanceDraw;
+
 };
 
 Texture2D Diffuse:register(t0);
