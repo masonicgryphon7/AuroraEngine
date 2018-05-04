@@ -43,13 +43,6 @@ struct Skeleton {
 };
 
 
-enum OPTIONS
-{
-	Option0,
-	Option1,
-	Option2,
-	Option3
-};
 
 struct OOBB {
 	bool isActive;
