@@ -9,7 +9,7 @@
 #include "imgui_dock.h"
 #include "ImGuizmo.h"
 #include "Editor.h"
-
+#include "NPC.h"
 #include "Debug.h"
 
 #include <crtdbg.h>
@@ -368,6 +368,15 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		UnitHero2->setPlayerScript(playerscript);
 
 		playerscript->friendlyUnits.at(0)->setHomePos(&playerscript->friendlyBuildings.at(0)->gameObject->transform);
+
+		GameObject* enemy_player = gScene.createEmptyGameObject();
+		NPC* enemy_NPC = new NPC();
+		enemy_NPC->instantiate_NPC();
+		enemy_player->addComponent(enemy_NPC);
+
+
+
+		
 
 		/*ClickToMove* clickToMove = new ClickToMove(cam);
 		cube->addComponent(clickToMove);*/
