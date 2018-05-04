@@ -167,6 +167,7 @@
     <ClInclude Include="FormatHeader.h" />
     <ClInclude Include="formatImporter.h" />
     <ClInclude Include="FullSkeleton.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUI_Console.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="EditorSceneSelectionScript.cpp" />
     <ClCompile Include="formatImporter.cpp" />
     <ClCompile Include="FullSkeleton.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUI_Console.cpp" />

@@ -28,25 +28,25 @@ void cPathCreator::trumpTheBorders()
 	//border grid
 	for (int i = MIN; i < MAX; i++)
 	{
-		grid[i][MIN].pathable = false;
+		grid[i][MIN].pathable = NONE_PATHABLE;
 		//display[i][MIN] = 1;
 
 	}
 	for (int i = MIN; i < MAX; i++)
 	{
-		grid[i][MAX - 1].pathable = false;
+		grid[i][MAX - 1].pathable = NONE_PATHABLE;
 		//display[i][MAX - 1] = 1;
 
 	}
 	for (int i = MIN; i < MAX; i++)
 	{
-		grid[MIN][i].pathable = false;
+		grid[MIN][i].pathable = NONE_PATHABLE;
 		//display[MIN][i] = 1;
 
 	}
 	for (int i = MIN; i < MAX; i++)
 	{
-		grid[MAX - 1][i].pathable = false;
+		grid[MAX - 1][i].pathable = NONE_PATHABLE;
 		//display[MAX - 1][i] = 1;
 
 	}
@@ -65,11 +65,11 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 			grid[StartY + y][StartX + x].h = 0;
 			grid[StartY + y][StartX + x].parentX = -999999999;
 			grid[StartY + y][StartX + x].parentZ = -999999999;
-			grid[StartY + y][StartX + x].pathable = true;
+			grid[StartY + y][StartX + x].pathable = PATHABLE;
 		}
 	}
 	int i = 0;
-
+	blockGrid(DirectX::XMFLOAT3(20,1,1));
 }
 //
 ////void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions)
@@ -132,6 +132,16 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 //	//}
 //}
 
+void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
+{
+	for (int i = 0; i < 10; i++)
+	{
+		grid[10][i].pathable = PATHABLE_CHECK;
+		grid[11][i].pathable = PATHABLE_CHECK;
+	}
+	grid[pos.x][pos.y].pathable = PATHABLE_CHECK;
+}
+
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
 	std::vector<std::vector<Node>> tempGrid = grid;
@@ -139,8 +149,12 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
 	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
 
-	if (startNode.pathable == false) {
+	if (startNode.pathable == NONE_PATHABLE) {
 		 startNode.position= goalNode.position;
+	}
+
+	if (goalNode.pathable == NONE_PATHABLE) {
+		startNode.position = startNode.position;
 	}
 
 	//direction help test
@@ -194,11 +208,14 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 			//std::cout << "x" << x << " z" << z << std::endl;
 
 			bool isViableNeighbor = true;
-			if (tempGrid[x][z].pathable == false) {
+			if (tempGrid[x][z].pathable == NONE_PATHABLE) {
 				isViableNeighbor = false;
 
 			}
+			if (tempGrid[x][z].pathable == PATHABLE_CHECK && tempGrid[x][z].position!=goalNode.position) {
+				isViableNeighbor = false;
 
+			}
 			for (int j = 0; j < closedNodes.size(); j++)
 			{
 				if (tempGrid[x][z].position == closedNodes[j].position) {
