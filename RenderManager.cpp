@@ -57,7 +57,7 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 	//Material sort
 	for (int i = 0; i < objectsToRender->size(); i++)
 	{
-		Material* temp = objectsToRender[0][i]->getComponent<Material>();
+		Material* temp = objectsToRender[0][i]->getComponent<MaterialFilter>()->material;
 		if (temp->getAlpha()) {
 			if (temp->renderIndex == -1) {
 				objectsToRender[0][i]->instanceIndex = instanceIndex;
@@ -90,7 +90,7 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 			}
 		}
 
-		if(tempInstanceGroup.size()>0)
+		if (tempInstanceGroup.size()>0)
 			opaqueDraw.push_back(tempInstanceGroup);
 	}
 
@@ -105,81 +105,42 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 	for (int i = 0; i < opaqueDraw.size(); i++)
 	{
 		//Draw
-		if (opaqueDraw[i].size() <=1) {
-			for (int j = 0; j < opaqueDraw[i].size(); j++)
-			{
 
-				opaqueDraw[i][j]->materialComponent->bindMaterial();
-				opaqueDraw[i][j]->meshFilterComponent->getMesh()->bindMesh();
+		//Instance Draw
+		opaqueDraw[i][0]->materialFilterComponent->material->bindMaterial();
+		opaqueDraw[i][0]->meshFilterComponent->getMesh()->bindMesh();
 
-
-				//Fill matrixbuffer
-				D3D11_MAPPED_SUBRESOURCE dataPtr;
-				gDeviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &dataPtr);
-				matrixBufferData.isTerrain = opaqueDraw[i][j]->materialComponent->isTerrain();
-				matrixBufferData.instanceDraw = false;
-				DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(opaqueDraw[i][j]->calculateWorldMatrix()));
-				DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
-				DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
-				DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
-				memcpy(dataPtr.pData, &matrixBufferData, sizeof(MatrixBufferStruct));
-				gDeviceContext->Unmap(matrixBuffer, 0);
-				gDeviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
-				gDeviceContext->PSSetConstantBuffers(0, 1, &matrixBuffer);
-
-
-				// issue a draw call of 3 vertices (similar to OpenGL)
-
-				gDeviceContext->Draw(opaqueDraw[i][j]->meshFilterComponent->getMesh()->getVertexCount(), 0);
-
-
-			}
-
-		}
-		else
+		//Get world matricies
+		std::vector<DirectX::XMFLOAT4X4> opaqueTransforms;
+		for (int j = 0; j < opaqueDraw[i].size(); j++)
 		{
-			//Instance Draw
-			opaqueDraw[i][0]->materialComponent->bindMaterial();
-			opaqueDraw[i][0]->meshFilterComponent->getMesh()->bindMesh();
-
-			//Get world matricies
-			std::vector<DirectX::XMFLOAT4X4> opaqueTransforms;
-			for (int j = 0; j < opaqueDraw[i].size(); j++)
-			{
-				DirectX::XMFLOAT4X4 temp;
-				DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j]->calculateWorldMatrix()));
-				opaqueTransforms.push_back(temp);
-			}
-
-
-
-
-			//Fill matrixbuffer
-			D3D11_MAPPED_SUBRESOURCE dataPtr;
-			gDeviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &dataPtr);
-			matrixBufferData.isTerrain = opaqueDraw[i][0]->materialComponent->isTerrain();
-			matrixBufferData.instanceDraw = true;
-			DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(opaqueDraw[i][0]->calculateWorldMatrix()));
-			DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
-			DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
-			DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
-			memcpy(dataPtr.pData, &matrixBufferData, sizeof(MatrixBufferStruct));
-			gDeviceContext->Unmap(matrixBuffer, 0);
-			gDeviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
-			gDeviceContext->PSSetConstantBuffers(0, 1, &matrixBuffer);
-
-
-
-			//instance buffer
-			gDeviceContext->Map(instanceBuffer, 1, D3D11_MAP_WRITE_DISCARD, 0, &dataPtr);
-			memcpy(dataPtr.pData, opaqueTransforms.data(), sizeof(DirectX::XMFLOAT4X4)*100);
-			gDeviceContext->Unmap(instanceBuffer, 1);
-			gDeviceContext->VSSetConstantBuffers(1, 1, &instanceBuffer);
-
-			gDeviceContext->DrawInstanced(opaqueDraw[i][0]->meshFilterComponent->getMesh()->getVertexCount(), opaqueDraw[i].size(),0,0);
-
-
+			DirectX::XMFLOAT4X4 temp;
+			DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j]->calculateWorldMatrix()));
+			opaqueTransforms.push_back(temp);
 		}
+
+
+
+
+		//Fill matrixbuffer
+		matrixBufferData.isTerrain = opaqueDraw[i][0]->materialFilterComponent->material->isTerrain();
+		matrixBufferData.instanceDraw = true;
+		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(opaqueDraw[i][0]->calculateWorldMatrix()));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
+		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
+		gDeviceContext->UpdateSubresource(matrixBuffer, 0, nullptr, &matrixBufferData, 0, 0);
+
+
+		//instance buffer
+		gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, opaqueTransforms.data(), 0, 0);
+
+
+
+		gDeviceContext->DrawInstanced(opaqueDraw[i][0]->meshFilterComponent->getMesh()->getVertexCount(), opaqueDraw[i].size(), 0, 0);
+
+
+		
 	}
 
 	/////////////////////Animation?
@@ -260,13 +221,12 @@ void RenderManager::CreateMatrixBuffer()
 {
 	// initialize the description of the buffer.
 	D3D11_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	int gg = sizeof(MatrixBufferStruct);
 	bufferDesc.ByteWidth = sizeof(MatrixBufferStruct) + 12;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	bufferDesc.MiscFlags = 0;
-	bufferDesc.StructureByteStride = 0;
+
 
 	// check if the creation failed for any reason
 	HRESULT hr = 0;
@@ -276,18 +236,21 @@ void RenderManager::CreateMatrixBuffer()
 		// handle the error, could be fatal or a warning...
 		exit(-1);
 	}
+	gDeviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
+	gDeviceContext->PSSetConstantBuffers(0, 1, &matrixBuffer);
+
+
 }
 
 void RenderManager::CreateInstanceMatrixBuffer()
 {
 	// initialize the description of the buffer.
 	D3D11_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	bufferDesc.ByteWidth = sizeof(DirectX::XMFLOAT4X4)*100;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * 100;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	bufferDesc.MiscFlags = 0;
-	bufferDesc.StructureByteStride = 0;
+
 
 	// check if the creation failed for any reason
 	HRESULT hr = 0;
@@ -297,6 +260,7 @@ void RenderManager::CreateInstanceMatrixBuffer()
 		// handle the error, could be fatal or a warning...
 		exit(-1);
 	}
+	gDeviceContext->VSSetConstantBuffers(1, 1, &instanceBuffer);
 }
 
 void RenderManager::CreateRenderTarget(int width, int height)

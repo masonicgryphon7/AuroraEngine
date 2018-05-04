@@ -1,8 +1,7 @@
 #pragma once
-#include "Component.h"
 #include "ShaderProgram.h"
 
-class Material : public Component
+class Material
 {
 public:
 	Material();

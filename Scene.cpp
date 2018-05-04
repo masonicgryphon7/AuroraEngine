@@ -62,7 +62,7 @@ GameObject* Scene::CreateGameObject(Mesh * mesh, Vector3 position, Vector3 rotat
 	GameObject* temp = new GameObject(position.asXMVECTOR());
 	temp->name = mesh->getMeshName();
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(0));
-	temp->addComponent(AssetManager.getMaterial(0));
+	temp->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 	temp->addComponent(meshFilter);
 	sceneObjects.push_back(temp);
 	return temp;
@@ -105,7 +105,7 @@ void Scene::update()
 {
 	for (int i = 0; i < sceneObjects.size(); i++) {
 		for (int j = 0; j < sceneObjects[i]->components.size(); j++) {
-			sceneObjects[i]->components[j]->update();
+			sceneObjects.at(i)->components.at(j)->update();
 		}
 	}
 }
@@ -148,7 +148,7 @@ void Scene::SaveScene()
 			}
 			else if (compName == "Material")
 			{
-				Material* m = temp->getComponent<Material>();
+				Material* m = temp->getComponent<MaterialFilter>()->material;
 			}
 		}
 
@@ -220,7 +220,7 @@ void Scene::LoadScene()
 			{
 				Mesh* t_mesh = nullptr;
 				MeshFilter* t_meshFilter = nullptr;
-				Material* t_material = nullptr;
+				MaterialFilter* t_materialFilter = nullptr;
 
 				// add a way to actually know if this texture is for THIS material etc. etc. 
 
@@ -228,7 +228,7 @@ void Scene::LoadScene()
 				AssetManager.AddTexture("Assets/STSP_ShadowTeam_Normal.png");
 				AssetManager.AddTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 
-				t_material = AssetManager.AddMaterial(AssetManager.getShaderProgram(0));
+				Material* t_material = AssetManager.AddMaterial(AssetManager.getShaderProgram(0));
 
 				t_material->setAlbedo(AssetManager.getTexture(0)->getTexture());
 				t_material->setNormal(AssetManager.getTexture(1)->getTexture());
@@ -237,7 +237,7 @@ void Scene::LoadScene()
 				t_mesh = AssetManager.AddMesh(meshPath);
 				t_meshFilter = new MeshFilter(t_mesh);
 
-				tempGameObject->addComponent(t_material);
+				tempGameObject->addComponent(new MaterialFilter(t_material));
 				tempGameObject->addComponent(t_meshFilter);
 			}
 

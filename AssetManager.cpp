@@ -30,28 +30,36 @@ cAssetManager::~cAssetManager()
 {
 	for (int i = 0; i < meshes.size(); i++)
 	{
-		delete meshes[i];
+		if (meshes[i])
+			delete meshes[i];
+		meshes[i] = nullptr;
 	}
 
 	meshes.clear();
 
 	for (int i = 0; i < textures.size(); i++)
 	{
-		delete textures[i];
+		if (textures[i])
+			delete textures[i];
+		textures[i] = nullptr;
 	}
 
 	textures.clear();
 
 	for (int i = 0; i < materials.size(); i++)
 	{
-		delete materials[i];
+		if (materials[i])
+			delete materials[i];
+		materials[i] = nullptr;
 	}
 
 	materials.clear();
 
 	for (int i = 0; i < shaderPrograms.size(); i++)
 	{
-		delete shaderPrograms[i];
+		if (shaderPrograms[i])
+			delete shaderPrograms[i];
+		shaderPrograms[i] = nullptr;
 	}
 
 	shaderPrograms.clear();

@@ -464,13 +464,14 @@ void Unit::destroyUnit()
 
 void Unit::summonCommand()
 {
+
 	GameObject* cube = gScene.createEmptyGameObject(playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 	cube->name = "Worker"; //+ playerScript->friendlyUnits.size();
 	cube->tag = gameObject->tag;
 	//AssetManager.AddMesh("Assets/Cube.obj");
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 	cube->addComponent(meshFilter);
-	cube->addComponent(AssetManager.getMaterial(0));
+	cube->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 	Unit *unitWorker = new Unit(Worker);
 	unitWorker->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	cube->addComponent(unitWorker);

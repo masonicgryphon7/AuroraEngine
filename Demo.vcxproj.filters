@@ -221,6 +221,9 @@
     <ClInclude Include="AnimationClip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreEngine.cpp">
@@ -374,6 +377,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AnimationClip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
