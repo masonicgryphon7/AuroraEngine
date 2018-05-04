@@ -105,7 +105,7 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 	for (int i = 0; i < opaqueDraw.size(); i++)
 	{
 		//Draw
-		if (opaqueDraw[i].size() <=1) {
+		if (opaqueDraw[i].size() >0) {
 			for (int j = 0; j < opaqueDraw[i].size(); j++)
 			{
 

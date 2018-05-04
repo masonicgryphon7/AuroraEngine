@@ -49,6 +49,14 @@ void PlayerScript::update()
 		//direction = DirectX::XMVectorAdd(gameObject->transform.getRight(), direction);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(-1, 0, 0, 0)));
 
+	//if (Input.GetKeyUp(KeyCode::Alpha1))
+	//{
+	//	//for each unit recieveope
+	//	for (int i = 0; i < friendlyUnits.size(); i++)
+	//	{
+	//		friendlyUnits.at(0)
+	//	}
+	//}
 
 	if (Input.GetKey(KeyCode::Escape))
 		exit(-1);

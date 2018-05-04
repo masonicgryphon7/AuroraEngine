@@ -316,7 +316,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		camera->addComponent(playerscript);
 
 
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 		cube->name = "Worker";
@@ -336,7 +336,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube2->tag = 3;
 		cube2->addComponent(meshFilter);
 		cube2->addComponent(AssetManager.getMaterial(0));
-		Unit *UnitSoldier1 = new Unit(Bank);
+		Unit *UnitSoldier1 = new Unit(GoldMine);
 		cube2->addComponent(UnitSoldier1);
 		UnitSoldier1->setPlayerScript(playerscript);
 
@@ -346,7 +346,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube3->tag = 3;
 		cube3->addComponent(meshFilter);
 		cube3->addComponent(AssetManager.getMaterial(0));
-		Unit* unitBuilding = new Unit(GoldMine);
+		Unit* unitBuilding = new Unit(Bank);
 		cube3->addComponent(unitBuilding);
 		playerscript->friendlyBuildings.push_back(unitBuilding);
 		unitBuilding->setPlayerScript(playerscript);
