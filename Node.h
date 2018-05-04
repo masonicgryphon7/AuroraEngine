@@ -2,6 +2,11 @@
 
 #include"Vec3.h"
 
+enum NODETYPE
+{
+	NONE_PATHABLE, PATHABLE, PATHABLE_CHECK
+};
+
 class Node
 {
 public:
@@ -12,7 +17,7 @@ public:
 	int g;
 	int h;
 	int f;
-	bool pathable;
+	NODETYPE pathable;
 	Vec3 position;
 	int parentX;
 	int parentZ;
