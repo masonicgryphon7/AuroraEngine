@@ -192,6 +192,7 @@
     <ClInclude Include="KeyCode.h" />
     <ClInclude Include="LIGHT_TYPES.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MaterialFilter.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshFilter.h" />
     <ClInclude Include="Node.h" />
@@ -262,6 +263,7 @@
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialFilter.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshFilter.cpp" />
     <ClCompile Include="Node.cpp" />

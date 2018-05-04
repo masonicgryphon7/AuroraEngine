@@ -5,7 +5,7 @@
 Material::Material()
 {}
 
-Material::Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram * shaderProgram) :Component(-1, "Material")
+Material::Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram * shaderProgram) 
 {
 	this->gDeviceContext = gDeviceContext;
 	this->shaderProgram = shaderProgram;
