@@ -2,8 +2,6 @@
 #include <vector>
 #include "PRIMITIVE_GEOMETRY.h"
 #include "formatImporter.h"
-#pragma comment(lib, "myLibrary.lib")
-
 class AnimationClip
 {
 public:
@@ -13,6 +11,8 @@ public:
 	void createClipFromBinary(std::string filePath);
 	const std::string getClipName() const;
 	const std::string getClipPath() const;
+	int nrOfKeyFrames;
+	std::vector<MyLibrary::Transform> animationKeys;
 private:
 	std::vector<AnimationFrame> animationFrames;
 	std::string clipName, clipPath;

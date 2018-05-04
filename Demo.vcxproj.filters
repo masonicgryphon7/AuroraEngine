@@ -221,6 +221,15 @@
     <ClInclude Include="AnimationClip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FormatHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="formatImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FullSkeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreEngine.cpp">
@@ -374,6 +383,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AnimationClip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="formatImporter.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FullSkeleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -15,17 +15,18 @@ namespace MyLibrary
 		~Loadera();
 
 		MeshFromFile readMeshFile(std::string fileName);
+		AnimatedMeshFromFile readAnimatedMeshFile(std::string fileName);
 		CameraFromFile readCameraFile(std::string fileName);
 		MaterialFromFile readMaterialFile(std::string fileName);
 		LightFromFile readLightFile(std::string fileName);
 		bool readMorphAnimationFile(std::string fileName);
 		SkeletonFromFile readSkeletonFile(std::string fileName);
-		bool readAnimationFile(std::string fileName);
+		AnimationFromFile readAnimationFile(std::string fileName);
 		bool readGroupFile(std::string fileName);
-
+		
 	private:
 		int getNrOfVerticesFromFile(std::ifstream& file);
-		void calculateTangentsAndBitangents(MeshFromFile mesh);
+		template <class T> void calculateTangentsAndBitangents(T mesh);
 	};
 
 

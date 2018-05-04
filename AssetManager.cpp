@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iomanip>
 #include "Scene.h"
-
+#include "FullSkeleton.h"
 
 std::vector<Texture*> cAssetManager::textures;
 std::vector<AnimationClip*> cAssetManager::animationClips;
@@ -65,6 +65,7 @@ void cAssetManager::addTexture(std::string filePath)
 
 Texture * cAssetManager::AddTexture(std::string filePath)
 {
+
 	Texture* temp = nullptr;
 	bool makingSureBool = false;
 
@@ -323,6 +324,37 @@ void cAssetManager::Start(ID3D11Device * device, ID3D11DeviceContext * devContex
 {
 	this->device = device;
 	this->devContext = devContext;
+}
+
+void cAssetManager::addSkeletonFromBinary(const std::string & filePath)
+{
+}
+
+MyLibrary::SkeletonFromFile * cAssetManager::getSkeleton(const std::string & filePath)
+{
+	bool hasFound = false;
+	MyLibrary::SkeletonFromFile* skeleton = nullptr;
+	FullSkeleton *temp;
+	for (auto& skeleton : animationClips)
+	{
+		if (skeleton->getClipPath() == filePath)
+		{
+			Console.success("Found texture at, returning its value from ", filePath);
+			hasFound = true;
+			skeleton = skeleton;
+		}
+	}
+
+	if (!hasFound)
+	{
+		temp = new FullSkeleton();
+		temp->GetSkeletonFromBinary(filePath);
+		//skeletons.push_back(temp);
+		//Ta bort deleten
+		delete temp;
+	}
+
+	return skeleton;
 }
 
 AnimationClip * cAssetManager::getAnimationclip(const std::string & filePath)
