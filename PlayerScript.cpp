@@ -198,7 +198,7 @@ void PlayerScript::SelectUnits()
 				if (selectedObjects.at(i)->tag == 1 && !UnitAlreadySelected(selectedObjects, i))
 				{
 					//This is a Player Unit.
-					//Debug.Log("Player: Marked/Selected ", selectedObjects.at(i)->name, ": An Player Unit.", i);
+					//Debug.Log("Player: Marked/Selected ", selectedObjects.at(i)->name, ": A Player Unit.", i);
 					SelectedUnits.push_back(selectedObjects.at(i));
 				}
 
@@ -249,7 +249,8 @@ void PlayerScript::SelectUnits()
 		//unity har en deadzone för drag selection och att man raycastar eller selectar inte först man releasar mus. börja uppdatera mousePosRelative on mousedown och räkna ut if utanför deadzone så selection i physics else mousepick
 		RaycastHit hit;
 
-		Ray ray = Player->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(Input.mousePosition.x, Input.mousePosition.y, 0, 0));
+		Ray ray = Player->getComponent<Camera>()->\
+			calculateScreenPointToRay(DirectX::XMVectorSet(Input.mousePosition.x, Input.mousePosition.y, 0, 0));
 		gPhysics.Raycast(ray, hit);
 
 		if (hit.transform != nullptr) {
