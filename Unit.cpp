@@ -470,9 +470,9 @@ void Unit::destroyUnit()
 
 void Unit::summonWorkerCommand()
 {
-	GameObject* worker = gScene.createEmptyGameObject(DirectX::XMVectorSet(2.0, 0.0, 2.0, 0.0));//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
 	worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
-	worker->tag = 1;//gameObject->tag;
+	worker->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 	worker->addComponent(meshFilter);
 	worker->addComponent(AssetManager.getMaterial(0));
@@ -481,13 +481,19 @@ void Unit::summonWorkerCommand()
 	worker->addComponent(unitWorker);
 	playerScript->friendlyUnits.push_back(unitWorker);
 	unitWorker->setPlayerScript(playerScript);
+	
+	UnitOrders.erase(UnitOrders.begin());
+	Order tempOrder;
+	tempOrder.command = Move;
+	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	unitWorker->UnitOrders.push_back(tempOrder);
 }
 
 void Unit::summonSoldierCommand()
 {
 	GameObject* soldier = gScene.createEmptyGameObject(DirectX::XMVectorSet(2.0, 0.0, 2.0, 0.0));//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 	soldier->name = "Soldier";// +playerScript->friendlyUnits.size();
-	soldier->tag = 1;//gameObject->tag;
+	soldier->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 	soldier->addComponent(meshFilter);
 	soldier->addComponent(AssetManager.getMaterial(0));
@@ -496,6 +502,10 @@ void Unit::summonSoldierCommand()
 	soldier->addComponent(unitSoldier);
 	playerScript->friendlyUnits.push_back(unitSoldier);
 	unitSoldier->setPlayerScript(playerScript);
+
+	UnitOrders.erase(UnitOrders.begin());
+
+	//unitSoldier->RecieveOrder()
 }
 
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
@@ -529,12 +539,22 @@ void Unit::RecieveOrder(RaycastHit Values)
 			switch (type)
 			{
 			case Type::Hero:
-				tempOrder.command = Follow;
-				
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Worker || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
+				{
+					tempOrder.command = Follow;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
+				{
+					tempOrder.command = HeroGather;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 				break;
 
 			case Type::Soldier:
@@ -545,10 +565,21 @@ void Unit::RecieveOrder(RaycastHit Values)
 				break;
 
 			case Type::Worker:
-				tempOrder.command = Follow;
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
+				if (Values.transform->gameObject->getComponent<Unit>()->getType()== Hero || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
+				{
+					tempOrder.command = Follow;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+				}
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
+				{
+					tempOrder.command = Drop;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 				break;
 			}
 		}
@@ -587,14 +618,11 @@ void Unit::RecieveOrder(RaycastHit Values)
 			switch (type)
 			{
 			case Type::Hero:
-				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
-				//{
 				tempOrder.command = HeroGather;
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
 				UnitOrders.push_back(tempOrder);
 				actionTime = 2;
-				//}
 
 				break;
 
@@ -603,15 +631,6 @@ void Unit::RecieveOrder(RaycastHit Values)
 				if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
 				{
 					tempOrder.command = Gather;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-
-				if (Values.transform->gameObject->getComponent<Unit>()->type == Bank)
-				{
-					tempOrder.command = Drop;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
@@ -630,22 +649,6 @@ void Unit::RecieveOrder(RaycastHit Values)
 			//Terrain
 			//Walk 
 		}
-		else if (Input.GetKey(KeyCode::B)){
-			switch (type)
-			{
-			case Type::Hero:
-				tempOrder.command = Summon;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
-				break;
-
-			case Type::Building:
-				tempOrder.command = Summon;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
-				break;
-			}
-		}
 		else {
 			
 		}
@@ -658,6 +661,8 @@ void Unit::RecieveOrder(RaycastHit Values)
 
 		switch (type)
 		{
+		case Type::Bank:
+			break;
 
 		default:
 			tempOrder.command = Move;
@@ -676,48 +681,47 @@ void Unit::RecieveOrder(OPTIONS option)
 	pathNodes.clear();
 
 	Order tempOrder;
-	if (Input.GetKey(KeyCode::B))
+	switch (type)
 	{
-		switch (type)
+	case Type::Bank:
+		if (option == Option0)
 		{
-		case Type::Bank:
-			if (option == Option0)
-			{
-
-			}
-			else if (option == Option1)
-			{
-
-			}
-			else if (option == Option2)
-			{
-
-			}
-			else if (option == Option3)
-			{
-
-			}
-			break;
-
-		case Type::Hero:
-			if (option == Option0)
-			{
-
-			}
-			else if (option == Option1)
-			{
-
-			}
-			else if (option == Option2)
-			{
-
-			}
-			else if (option == Option3)
-			{
-
-			}
-			break;
+			tempOrder.command = SummonWorker;
+			UnitOrders.push_back(tempOrder);
 		}
+		else if (option == Option1)
+		{
+			tempOrder.command = SummonSoldier;
+			UnitOrders.push_back(tempOrder);
+		}
+		else if (option == Option2)
+		{
+
+		}
+		else if (option == Option3)
+		{
+
+		}
+		break;
+
+	case Type::Hero:
+		if (option == Option0)
+		{
+
+		}
+		else if (option == Option1)
+		{
+
+		}
+		else if (option == Option2)
+		{
+
+		}
+		else if (option == Option3)
+		{
+
+		}
+		break;
 	}
 }
 
@@ -768,8 +772,12 @@ void Unit::update()
 			FollowCommand();
 			break;
 
-		case Command::Summon: //SUMMON
+		case Command::SummonWorker: //SUMMON
 			summonWorkerCommand();
+			break;
+
+		case Command::SummonSoldier:
+			summonSoldierCommand();
 			break;
 
 		default:
@@ -777,11 +785,11 @@ void Unit::update()
 		}
 	}
 
-	if (Input.GetKeyUp(KeyCode::B)) {
-		summonWorkerCommand();
-		}
+	//if (Input.GetKeyUp(KeyCode::Alpha1)) {
+	//	summonWorkerCommand();
+	//	}
 
-	if (Input.GetKeyUp(KeyCode::N)) {
-		summonSoldierCommand();
-	}
+	//if (Input.GetKeyUp(KeyCode::Alpha2)) {
+	//	summonSoldierCommand();
+	//}
 }

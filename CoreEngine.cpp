@@ -309,18 +309,20 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0));
 		camera->addComponent(cam);
-		PlayerSelectionScript* playerSelectionScript = new PlayerSelectionScript(camera);
-		camera->addComponent(playerSelectionScript);
-
-		PlayerScript *playerscript = new PlayerScript();
+		//PlayerSelectionScript* playerSelectionScript = new PlayerSelectionScript(camera);
+		//camera->addComponent(playerSelectionScript);
+		PlayerScript* playerscript = new PlayerScript(camera);
 		camera->addComponent(playerscript);
+
+		//PlayerScript *playerscript = new PlayerScript();
+		//camera->addComponent(playerscript);
 
 
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 		cube->name = "Worker";
-		cube->tag = 2;
+		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj");
 		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 		cube->addComponent(meshFilter);
@@ -343,7 +345,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
 		cube3->name = "Bank";
-		cube3->tag = 3;
+		cube3->tag = 1;
 		cube3->addComponent(meshFilter);
 		cube3->addComponent(AssetManager.getMaterial(0));
 		Unit* unitBuilding = new Unit(Bank);

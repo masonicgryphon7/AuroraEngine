@@ -6,11 +6,17 @@
 #include "InputHandler.h"
 #include "Transform.h"
 #include "PRIMITIVE_GEOMETRY.h"
-
+#include "Unit.h"
 #include <vector>
+#include "PlayerSelectionScript.h"
+///////////////
+//#include "Component.h"
+#include "Physics.h"
+//#include "InputHandler.h"
+//#include "Unit.h"
 
 class Unit;
-
+//class PlayerSelectionScript;
 
 class PlayerScript : public Component
 {
@@ -32,10 +38,22 @@ private:
 	float yoffset;
 	float sensitivity;
 
+	//PlayerSelectionScript* playerSelectionScript;
+
+	///////////////////////////// PlayerSelectionScript
+
+	GameObject * Player;
+
+	std::vector<GameObject*> SelectedUnits;
+	Vector2 mousePosRelative;
+	int isSelectingHolding = 0;
 
 
 public:
-	PlayerScript();
+	//PlayerScript();
+	////////
+	PlayerScript(GameObject* player);
+	///////
 	~PlayerScript();
 
 	void update();
@@ -44,5 +62,16 @@ public:
 
 	std::vector<Unit*> friendlyUnits; //= std::vector<Unit*>(20);
 	std::vector<Unit*> friendlyBuildings; //= std::vector<Unit*>(10);
+
+
+	/////////////////////////////////////////// PlayerSelectionScript
+
+	std::vector<GameObject*> getSelectedUnits() { return this->SelectedUnits; };
+	void SelectUnits();
+	bool UnitAlreadySelected(std::vector<GameObject*> object, int element);
+	void EmptyUnitArr();
+
+	//void update();
+
 };
 

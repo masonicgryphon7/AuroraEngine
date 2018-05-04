@@ -21,7 +21,7 @@ public:
 	PlayerSelectionScript(GameObject* player);
 	~PlayerSelectionScript();
 
-	std::vector<GameObject*> getSelectedUnits() { return SelectedUnits; };
+	std::vector<GameObject*> getSelectedUnits() { return this->SelectedUnits; };
 	void SelectUnits();
 	bool UnitAlreadySelected(std::vector<GameObject*> object, int element);
 	void EmptyUnitArr();

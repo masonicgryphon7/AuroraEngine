@@ -78,7 +78,7 @@ void PlayerSelectionScript::SelectUnits()
 				DirectX::XMVECTOR test = DirectX::XMVectorAdd(Player->transform.getPosition(), DirectX::XMVectorScale(ray.direction, hit.distance));
 				Debug.Log("Hit", DirectX::XMVectorGetX(test), ",", DirectX::XMVectorGetY(test), ",", DirectX::XMVectorGetZ(test));
 
-				if (hit.transform->gameObject->tag == 1)
+				if (hit.transform->gameObject->tag == 1 || hit.transform->gameObject->tag == 3)
 				{
 					Debug.Log("Hit", hit.transform->gameObject->name, ": An Player Unit");
 					SelectedUnits.push_back(hit.transform->gameObject);

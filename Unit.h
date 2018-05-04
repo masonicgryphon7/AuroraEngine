@@ -27,7 +27,8 @@ class PlayerScript;
 		Drop,
 		Build,
 		Follow,
-		Summon,
+		SummonWorker,
+		SummonSoldier,
 		Idle
 	};
 
