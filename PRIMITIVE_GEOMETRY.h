@@ -27,9 +27,6 @@ struct AnimationFrame {
 	std::vector<Joint> joints;
 };
 
-struct AnimationClip {
-	std::vector<AnimationFrame> animationFrames;
-};
 
 struct Skeleton {
 	std::vector < DirectX::XMMATRIX > bindPose;

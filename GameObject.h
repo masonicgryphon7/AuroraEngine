@@ -20,6 +20,7 @@ public:
 	GameObject(int otherAssetID);
 	~GameObject();
 
+	int instanceIndex = -1;
 	int assetID, tag;
     bool isActive;
     bool hasLight;

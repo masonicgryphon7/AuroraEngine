@@ -6,6 +6,8 @@
 
 
 std::vector<Texture*> cAssetManager::textures;
+std::vector<AnimationClip*> cAssetManager::animationClips;
+
 std::vector<Material*> cAssetManager::materials;
 std::vector<Mesh*> cAssetManager::meshes;
 std::vector<ShaderProgram*> cAssetManager::shaderPrograms;
@@ -294,10 +296,58 @@ void cAssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std:
 	shaderPrograms.push_back(new ShaderProgram(devContext, device, descArr, vertexShader, hullShader, domainShader, geometryShader, pixelShader, computeShader));
 }
 
+void cAssetManager::addAnimationClipFromBinary(const std::string & filePath)
+{
+	AnimationClip* temp = nullptr;
+	bool makingSureBool = false;
+	for (auto& clip : animationClips)
+	{
+		if (clip->getClipPath() == filePath)
+		{
+			temp = clip;
+			makingSureBool = true;
+			break;
+		}
+	}
+
+	if (temp == nullptr || !makingSureBool)
+	{
+		temp = new AnimationClip();
+		temp->createClipFromBinary(filePath);
+		animationClips.push_back(temp);
+	}
+
+}
+
 void cAssetManager::Start(ID3D11Device * device, ID3D11DeviceContext * devContext)
 {
 	this->device = device;
 	this->devContext = devContext;
+}
+
+AnimationClip * cAssetManager::getAnimationclip(const std::string & filePath)
+{
+	bool hasFound = false;
+	AnimationClip* clip = nullptr;
+
+	for (auto& clip : animationClips)
+	{
+		if (clip->getClipPath() == filePath)
+		{
+			Console.success("Found texture at, returning its value from ", filePath);
+			hasFound = true;
+			clip = clip;
+		}
+	}
+
+	if (!hasFound)
+	{
+		clip = new AnimationClip();
+		clip->createClipFromBinary(filePath);
+		animationClips.push_back(clip);
+	}
+
+	return clip;
 }
 
 Texture * cAssetManager::getTexture(const std::string & path)

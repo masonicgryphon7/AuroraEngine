@@ -216,6 +216,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addTexture("Assets/ID_MAP2part4.png"); //19 // 4
 
 
+
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 
 		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());

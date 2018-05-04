@@ -3,6 +3,8 @@
 #include <vector>
 #include "PRIMITIVE_GEOMETRY.h"
 #include "Time.h"
+#include "AnimationClip.h"
+
 class Animator :
 	public Component
 {
@@ -15,7 +17,7 @@ public:
 	void Pause();
 	void addAnimationClip(AnimationClip* animClip);
 	void addAnimationClipAt(AnimationClip* animClip, int index);
-
+	std::vector<DirectX::XMMATRIX> getMatrixPalette() { return matrixPalette; };
 
 private:
 	bool isPlaying;

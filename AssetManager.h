@@ -6,6 +6,7 @@
 #include "ShaderProgram.h"
 #include "INPUT_ELEMENT_DESCRIPTION.h"
 #include "PRIMITIVE_GEOMETRY.h"
+#include "AnimationClip.h"
 
 static class cAssetManager
 {
@@ -23,9 +24,10 @@ public:
 	Mesh* AddMesh(const std::string& filePath);
 	void addMeshFromBinary(std::string filePath);
 	void addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader);
-
+	void addAnimationClipFromBinary(const std::string& filePath);
 	void Start(ID3D11Device * device, ID3D11DeviceContext * devContext);
 
+	AnimationClip* getAnimationclip(const std::string& filePath);
 	Texture* getTexture(const std::string &path);
 	Texture* getTexture(int index);
 	Material* getMaterial(int index);
@@ -41,6 +43,8 @@ public:
 
 private:
 	static std::vector<Texture*> textures;
+	static std::vector<AnimationClip*> animationClips;
+
 	static std::vector<Material*> materials;
 	static std::vector<Mesh*> meshes;
 	static std::vector<ShaderProgram*> shaderPrograms;
