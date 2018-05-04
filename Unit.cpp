@@ -475,7 +475,7 @@ void Unit::summonWorkerCommand()
 	worker->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 	worker->addComponent(meshFilter);
-	worker->addComponent(AssetManager.getMaterial(0));
+	worker->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 	Unit *unitWorker = new Unit(Worker);
 	unitWorker->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	worker->addComponent(unitWorker);
@@ -496,7 +496,7 @@ void Unit::summonSoldierCommand()
 	soldier->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 	soldier->addComponent(meshFilter);
-	soldier->addComponent(AssetManager.getMaterial(0));
+	soldier->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 	Unit *unitSoldier = new Unit(Soldier);
 	unitSoldier->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	soldier->addComponent(unitSoldier);

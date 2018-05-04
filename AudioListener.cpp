@@ -147,46 +147,49 @@ void AudioListener::update()
 	{
 		if (sceneObjects[0][i]->tag > 0) {
 			Unit* unit = sceneObjects[0][i]->getComponent<Unit>();
-			if (unit->getUnitOrders().size() > 0)
-			{
-				Order order = unit->getUnitOrders()[0];
-				if (unit != nullptr && state != AL_PLAYING) {
+			if (unit != nullptr) {
 
-					switch (order.command)
-					{
+				if (unit->getUnitOrders().size() > 0)
+				{
+					Order order = unit->getUnitOrders()[0];
+					if (unit != nullptr && state != AL_PLAYING) {
 
-					case Command::Move:
-						multiPlay++;
-						playMove(multiPlay);
-						break;
+						switch (order.command)
+						{
 
-					case Command::Attack:
-						playAttack();
-						playHurt();
-						break;
+						case Command::Move:
+							multiPlay++;
+							playMove(multiPlay);
+							break;
 
-					case Command::Gather:
-						playGather();
-						break;
+						case Command::Attack:
+							playAttack();
+							playHurt();
+							break;
 
-					case Command::Build:
-						playBuild();
-						break;
+						case Command::Gather:
+							playGather();
+							break;
 
-					case Command::Follow:
-						playFollow();
-						break;
+						case Command::Build:
+							playBuild();
+							break;
 
-					case Command::Idle:
+						case Command::Follow:
+							playFollow();
+							break;
+
+						case Command::Idle:
 						
-						break;
+							break;
 
-					case Command::SummonWorker:
-						playSummon();
-						break;
+						case Command::Summon:
+							playSummon();
+							break;
 
-					default:
-						break;
+						default:
+							break;
+						}
 					}
 				}
 			}

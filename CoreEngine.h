@@ -12,6 +12,7 @@
 #include "PRIMITIVE_GEOMETRY.h"
 #include <stdio.h>
 #include <string>
+#include "MaterialFilter.h"
 #include <ctime>
 #include <algorithm>  
 #include <vector>

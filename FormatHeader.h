@@ -11,10 +11,18 @@ namespace MyLibrary
 		 float vertex_UVCoord[2];
 		 float vertex_normal[3];
 	};
+	struct AnimatedVertex
+	{
+		float vertex_position[3];
+		float vertex_UVCoord[2];
+		float vertex_normal[3];
+		unsigned int influencing_joint[4];
+		float joint_weights[4];
+	};
 	struct Transform {
-		float transform_position[4];
-		float transform_scale[4];
-		float transform_rotation[4];
+		float transform_position[3];
+		float transform_scale[3];
+		float transform_rotation[3];
 	};
 	struct MeshHeader {
 
@@ -63,12 +71,14 @@ namespace MyLibrary
 	struct SkeletonHeader
 	{
 		unsigned int skeleton_nrOfJoints;
+		char skeletonID[MAX_FILENAME];
 	};
 
 	struct Joint
 	{
+		char joint_name[100];
 		Transform joint_transform;
-		float joint_orientation[4];
+		unsigned int parentIndex;
 	};
 
 	struct AnimationHeader
@@ -101,6 +111,25 @@ namespace MyLibrary
 		float vertex_normal[3];
 		float vertex_tangent[3];
 		float vertex_biTangent[3];
+	};
+
+	struct AnimatedVertexFromFile
+	{
+		float vertex_position[3];
+		float vertex_UVCoord[2];
+		float vertex_normal[3];
+		float vertex_tangent[3];
+		float vertex_biTangent[3];
+		unsigned int influencing_joint[4];
+		float joint_weights[4];
+	};
+
+	struct AnimatedMeshFromFile
+	{
+		unsigned int mesh_nrOfVertices;
+		char mesh_meshID[MAX_FILENAME];
+		//unsigned int mesh_materialID;
+		AnimatedVertexFromFile* mesh_vertices;
 	};
 
 	struct MeshFromFile
@@ -136,12 +165,14 @@ namespace MyLibrary
 
 	struct SkeletonFromFile
 	{
+		char skeletonID[100];
 		unsigned int skeleton_nrOfJoints;
 		Joint* skeleton_joints;
 	};
 
 	struct AnimationFromFile
 	{
-
+		unsigned int nr_of_keyframes;
+		Transform* keyframe_transformations;
 	};
 }

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iomanip>
 #include "Scene.h"
-
+#include "FullSkeleton.h"
 
 std::vector<Texture*> cAssetManager::textures;
 std::vector<AnimationClip*> cAssetManager::animationClips;
@@ -30,28 +30,36 @@ cAssetManager::~cAssetManager()
 {
 	for (int i = 0; i < meshes.size(); i++)
 	{
-		delete meshes[i];
+		if (meshes[i])
+			delete meshes[i];
+		meshes[i] = nullptr;
 	}
 
 	meshes.clear();
 
 	for (int i = 0; i < textures.size(); i++)
 	{
-		delete textures[i];
+		if (textures[i])
+			delete textures[i];
+		textures[i] = nullptr;
 	}
 
 	textures.clear();
 
 	for (int i = 0; i < materials.size(); i++)
 	{
-		delete materials[i];
+		if (materials[i])
+			delete materials[i];
+		materials[i] = nullptr;
 	}
 
 	materials.clear();
 
 	for (int i = 0; i < shaderPrograms.size(); i++)
 	{
-		delete shaderPrograms[i];
+		if (shaderPrograms[i])
+			delete shaderPrograms[i];
+		shaderPrograms[i] = nullptr;
 	}
 
 	shaderPrograms.clear();
@@ -65,6 +73,7 @@ void cAssetManager::addTexture(std::string filePath)
 
 Texture * cAssetManager::AddTexture(std::string filePath)
 {
+
 	Texture* temp = nullptr;
 	bool makingSureBool = false;
 
@@ -323,6 +332,37 @@ void cAssetManager::Start(ID3D11Device * device, ID3D11DeviceContext * devContex
 {
 	this->device = device;
 	this->devContext = devContext;
+}
+
+void cAssetManager::addSkeletonFromBinary(const std::string & filePath)
+{
+}
+
+MyLibrary::SkeletonFromFile * cAssetManager::getSkeleton(const std::string & filePath)
+{
+	bool hasFound = false;
+	MyLibrary::SkeletonFromFile* skeleton = nullptr;
+	FullSkeleton *temp;
+	for (auto& skeleton : animationClips)
+	{
+		if (skeleton->getClipPath() == filePath)
+		{
+			Console.success("Found texture at, returning its value from ", filePath);
+			hasFound = true;
+			skeleton = skeleton;
+		}
+	}
+
+	if (!hasFound)
+	{
+		temp = new FullSkeleton();
+		temp->GetSkeletonFromBinary(filePath);
+		//skeletons.push_back(temp);
+		//Ta bort deleten
+		delete temp;
+	}
+
+	return skeleton;
 }
 
 AnimationClip * cAssetManager::getAnimationclip(const std::string & filePath)

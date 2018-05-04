@@ -17,7 +17,7 @@ cbuffer MATRIX_Buffer :register (b0)
 	bool instanceDraw;
 };
 
-cbuffer INSTACEN_BUFFER :register (b1)
+cbuffer INSTANCE_Buffer :register (b1)
 {
 	matrix instanceWorld[100];
 }; 
@@ -42,7 +42,7 @@ VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 		output.Position = mul(output.Position, world);
 		output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), world);
 	}
-	else {
+	if (instanceDraw == 1) {
 		output.Position = mul(output.Position, instanceWorld[instanceID]);
 		output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), instanceWorld[instanceID]);
 	}
@@ -53,8 +53,6 @@ VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 	output.cameraPosition = cameraPosition;
 
 
-	//mul( world, mul(float3x3(input.Tangent, input.Bitangent, input.Normal), view));
-	output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), world);
 
 	return output;
 }
