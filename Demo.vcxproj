@@ -164,12 +164,8 @@
     <ClInclude Include="Editor.h" />
     <ClInclude Include="EditorMoveScript.h" />
     <ClInclude Include="EditorSceneSelectionScript.h" />
-    <ClInclude Include="FormatHeader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="formatImporter.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="FormatHeader.h" />
+    <ClInclude Include="formatImporter.h" />
     <ClInclude Include="FullSkeleton.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GUI.h" />
@@ -242,9 +238,7 @@
     <ClCompile Include="Editor.cpp" />
     <ClCompile Include="EditorMoveScript.cpp" />
     <ClCompile Include="EditorSceneSelectionScript.cpp" />
-    <ClCompile Include="formatImporter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="formatImporter.cpp" />
     <ClCompile Include="FullSkeleton.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GUI.cpp" />
