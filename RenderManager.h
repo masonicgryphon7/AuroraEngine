@@ -16,6 +16,7 @@ struct MatrixBufferStruct
 	DirectX::XMFLOAT4X4 projection;
 	DirectX::XMFLOAT4 cameraPosition;
 	bool isTerrain;
+	bool instanceDraw;
 };
 
 class RenderManager
@@ -37,8 +38,15 @@ private:
 	ID3D11DepthStencilView* m_depthStencilView = nullptr;
 	IDXGISwapChain* gSwapChain = nullptr;
 	ID3D11Buffer* matrixBuffer = nullptr;
+	ID3D11Buffer* instanceBuffer = nullptr;
 	MatrixBufferStruct matrixBufferData;
 	void CreateMatrixBuffer();
+	void CreateInstanceMatrixBuffer();
+
+	std::vector<std::vector<GameObject*>> opaqueDraw;
+	std::vector<GameObject*> translucentDraw;
+	std::vector<Mesh*> meshVector;
+	std::vector<Material*> materialVector;
 
 	// for render texture
 public:

@@ -1,14 +1,15 @@
 #pragma once
-#include "Component.h"
 #include "ShaderProgram.h"
 
-class Material : public Component
+class Material
 {
 public:
 	Material();
 	Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram* shaderProgram);
 	~Material();
 
+	void setAlpha(bool value) { hasAlpha = value; };
+	bool getAlpha() { return hasAlpha; };
 	bool isTerrain();
 	void setIsTerrain(bool YesNo);
 	void setAlbedo(ID3D11ShaderResourceView *albedo);
@@ -21,6 +22,10 @@ public:
 	void bindMaterial();
 
 	void update();
+
+
+	int renderIndex = -1;
+
 private:
 	ID3D11ShaderResourceView * ID_MAP = nullptr;
 	ID3D11ShaderResourceView * TerrainAlbedo_1 = nullptr;
@@ -34,6 +39,7 @@ private:
 	ID3D11ShaderResourceView * TerrainAORoughMet_3 = nullptr;
 	bool terrain = false;
 
+	bool hasAlpha = false;
 	ID3D11ShaderResourceView * albedo = nullptr;
 	ID3D11ShaderResourceView * normal = nullptr;
 	ID3D11ShaderResourceView * AORoughMet = nullptr;

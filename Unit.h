@@ -27,7 +27,8 @@ class PlayerScript;
 		Drop,
 		Build,
 		Follow,
-		Summon,
+		SummonWorker,
+		SummonSoldier,
 		Idle
 	};
 
@@ -104,6 +105,7 @@ public:
 	void SecondMoveCommand(DirectX::XMVECTOR *goalPos);
 	void attackCommand(Unit* targetedUnit);
 	void attackEnemy();
+	void takeDamage(int attackPoints);
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);
 	void HeroGatherCommand(Unit* targetedUnit);
@@ -111,8 +113,9 @@ public:
 	void dropCommand(Unit* targetedUnit);
 	void dropResources();
 	void destroyUnit();
-	void summonCommand();
-
+	void summonWorkerCommand();
+	void summonSoldierCommand();
+	std::vector<Order>* getUnitOrdersPointer() { return &UnitOrders; };
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	

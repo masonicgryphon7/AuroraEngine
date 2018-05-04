@@ -39,8 +39,15 @@ GameObject::GameObject(int otherAssetID)
 
 GameObject::~GameObject()
 {
-	//if (meshFilterComponent != nullptr)
-	//	delete meshFilterComponent;
+	for (int i = 0; i < components.size(); i++)
+	{
+		if (dynamic_cast<Material*>(components[i]) != nullptr)
+		{
+			delete components[i];
+
+		}
+
+	}
 }
 
 void GameObject::Destroy()
@@ -53,9 +60,9 @@ void GameObject::updateMaterialAndMeshFilterPointers() {
 	bool meshTest = false;
 
 	for (int i = 0; i < components.size(); i++) {
-		Material* temp = getComponent<Material>();
+		MaterialFilter* temp = getComponent<MaterialFilter>();
 		if (temp != nullptr) {
-			materialComponent = temp;
+			materialFilterComponent = temp;
 			matTest = true;
 
 		}

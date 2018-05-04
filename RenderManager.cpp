@@ -17,6 +17,7 @@ RenderManager::RenderManager(ID3D11Device * gDevice, ID3D11DeviceContext * gDevi
 	this->gSwapChain = swapChain;
 	this->m_depthStencilView = depth;
 	CreateMatrixBuffer();
+	CreateInstanceMatrixBuffer();
 }
 
 
@@ -25,6 +26,8 @@ RenderManager::~RenderManager()
 	m_renderTargetTexture->Release();
 	m_shaderResourceView->Release();
 	matrixBuffer->Release();
+	instanceBuffer->Release();
+
 	m_renderTargetView->Release();
 }
 
@@ -33,39 +36,141 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 	DirectX::XMMATRIX viewMatrix = cameraObject->getComponent<Camera>()->calculateViewMatrix();
 	DirectX::XMMATRIX perspectiveMatrix = cameraObject->getComponent<Camera>()->calculatePerspectiveMatrix();
 
+	//Sort Objects To Render
+	int instanceIndex = 0;
 
-	//for each 
+	//Mesh sort
 	for (int i = 0; i < objectsToRender->size(); i++)
 	{
+		Mesh* temp = objectsToRender[0][i]->getComponent<MeshFilter>()->getMesh();
+		if (temp->renderIndex == -1) {
+			objectsToRender[0][i]->instanceIndex = instanceIndex;
+			temp->renderIndex = instanceIndex;
+			instanceIndex++;
+			meshVector.push_back(temp);
+		}
+		else {
+			objectsToRender[0][i]->instanceIndex = temp->renderIndex;
+		}
+	}
 
-		objectsToRender[0][i]->materialComponent->bindMaterial();
-		objectsToRender[0][i]->meshFilterComponent->getMesh()->bindMesh();
+	//Material sort
+	for (int i = 0; i < objectsToRender->size(); i++)
+	{
+		Material* temp = objectsToRender[0][i]->getComponent<MaterialFilter>()->material;
+		if (temp->getAlpha()) {
+			if (temp->renderIndex == -1) {
+				objectsToRender[0][i]->instanceIndex = instanceIndex;
+				temp->renderIndex = instanceIndex;
+				instanceIndex++;
+				materialVector.push_back(temp);
 
+				//Seperate translucent objects
+				translucentDraw.push_back(objectsToRender[0][i]);
+				objectsToRender->erase(objectsToRender->begin() + i);
+			}
+			else {
+				objectsToRender[0][i]->instanceIndex = temp->renderIndex;
 
-		//Fill matrixbuffer
-		D3D11_MAPPED_SUBRESOURCE dataPtr;
-		gDeviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &dataPtr);
-		matrixBufferData.isTerrain = objectsToRender[0][i]->materialComponent->isTerrain();
-		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(objectsToRender[0][i]->calculateWorldMatrix()));
-		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
-		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
-		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
-		memcpy(dataPtr.pData, &matrixBufferData, sizeof(MatrixBufferStruct) + 12);
-		gDeviceContext->Unmap(matrixBuffer, 0);
-		gDeviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
-		gDeviceContext->PSSetConstantBuffers(0, 1, &matrixBuffer);
+				//Seperate translucent objects
+				translucentDraw.push_back(objectsToRender[0][i]);
+				objectsToRender->erase(objectsToRender->begin() + i);
+			}
+		}
+	}
 
+	//Create instance groups
+	for (int i = 0; i < instanceIndex; i++)
+	{
+		std::vector<GameObject*> tempInstanceGroup;
+		for (int j = 0; j < objectsToRender[0].size(); j++)
+		{
+			if (objectsToRender[0][j]->instanceIndex == i) {
+				tempInstanceGroup.push_back(objectsToRender[0][j]);
+			}
+		}
 
+		if (tempInstanceGroup.size()>0)
+			opaqueDraw.push_back(tempInstanceGroup);
+	}
 
-		// issue a draw call of 3 vertices (similar to OpenGL)
-
-		gDeviceContext->Draw(objectsToRender[0][i]->meshFilterComponent->getMesh()->getVertexCount(), 0);
+	//Back To Front Sort
+	for (int i = 0; i < translucentDraw.size(); i++)
+	{
 
 	}
 
-	/*ImGuizmo::BeginFrame();
-	ImGuizmo::SetDrawlist();*/
-	//ImGuizmo::DrawCube(cameraView, cameraProjection, objectMatrix);
+
+	//Opaque
+	for (int i = 0; i < opaqueDraw.size(); i++)
+	{
+		//Draw
+
+		//Instance Draw
+		opaqueDraw[i][0]->materialFilterComponent->material->bindMaterial();
+		opaqueDraw[i][0]->meshFilterComponent->getMesh()->bindMesh();
+
+		//Get world matricies
+		std::vector<DirectX::XMFLOAT4X4> opaqueTransforms;
+		for (int j = 0; j < opaqueDraw[i].size(); j++)
+		{
+			DirectX::XMFLOAT4X4 temp;
+			DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j]->calculateWorldMatrix()));
+			opaqueTransforms.push_back(temp);
+		}
+
+
+
+
+		//Fill matrixbuffer
+		matrixBufferData.isTerrain = opaqueDraw[i][0]->materialFilterComponent->material->isTerrain();
+		matrixBufferData.instanceDraw = true;
+		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(opaqueDraw[i][0]->calculateWorldMatrix()));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
+		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
+		gDeviceContext->UpdateSubresource(matrixBuffer, 0, nullptr, &matrixBufferData, 0, 0);
+
+
+		//instance buffer
+		gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, opaqueTransforms.data(), 0, 0);
+
+
+
+		gDeviceContext->DrawInstanced(opaqueDraw[i][0]->meshFilterComponent->getMesh()->getVertexCount(), opaqueDraw[i].size(), 0, 0);
+
+
+		
+	}
+
+	/////////////////////Animation?
+
+	//Translucent
+
+
+
+
+	//Clean
+	for (int i = 0; i < meshVector.size(); i++)
+	{
+		meshVector[i]->renderIndex = -1;
+	}
+	for (int i = 0; i < materialVector.size(); i++)
+	{
+		materialVector[i]->renderIndex = -1;
+	}
+	for (int i = 0; i < translucentDraw.size(); i++)
+	{
+		translucentDraw[i]->instanceIndex = -1;
+	}
+	for (int i = 0; i < objectsToRender->size(); i++)
+	{
+		objectsToRender[0][i]->instanceIndex = -1;
+	}
+	meshVector.clear();
+	materialVector.clear();
+	opaqueDraw.clear();
+	translucentDraw.clear();
 }
 
 void Frustum(float left, float right, float bottom, float top, float znear, float zfar, float *m16)
@@ -116,12 +221,12 @@ void RenderManager::CreateMatrixBuffer()
 {
 	// initialize the description of the buffer.
 	D3D11_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	int gg = sizeof(MatrixBufferStruct);
 	bufferDesc.ByteWidth = sizeof(MatrixBufferStruct) + 12;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	bufferDesc.MiscFlags = 0;
-	bufferDesc.StructureByteStride = 0;
+
 
 	// check if the creation failed for any reason
 	HRESULT hr = 0;
@@ -131,6 +236,31 @@ void RenderManager::CreateMatrixBuffer()
 		// handle the error, could be fatal or a warning...
 		exit(-1);
 	}
+	gDeviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
+	gDeviceContext->PSSetConstantBuffers(0, 1, &matrixBuffer);
+
+
+}
+
+void RenderManager::CreateInstanceMatrixBuffer()
+{
+	// initialize the description of the buffer.
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * 100;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+
+	// check if the creation failed for any reason
+	HRESULT hr = 0;
+	hr = gDevice->CreateBuffer(&bufferDesc, nullptr, &instanceBuffer);
+	if (FAILED(hr))
+	{
+		// handle the error, could be fatal or a warning...
+		exit(-1);
+	}
+	gDeviceContext->VSSetConstantBuffers(1, 1, &instanceBuffer);
 }
 
 void RenderManager::CreateRenderTarget(int width, int height)

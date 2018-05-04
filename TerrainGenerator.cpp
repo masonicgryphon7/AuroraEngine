@@ -83,10 +83,6 @@ void TerrainGenerator::LoadHeightMapToAttributes(char* HeightMapFileName)
 
 }
 
-void TerrainGenerator::createTerrainPatches()
-{
-}
-
 void TerrainGenerator::loadRandomTerrainHeights()
 {
 	srand(time(NULL));
@@ -163,10 +159,8 @@ void TerrainGenerator::loadRandomTerrainHeights()
 		}
 	}
 
-	for (int i = 0; i < RealVertArr.size() - 1; i += 3)
+	for (int i = 0; i < TriangleArr.size(); i += 3)
 	{
-
-
 		DirectX::XMFLOAT3 vec1 = subtract(TriangleArr[i + 1].position, TriangleArr[i].position);
 		DirectX::XMFLOAT3 vec2 = subtract(TriangleArr[i + 2].position, TriangleArr[i].position);
 
@@ -190,7 +184,7 @@ void TerrainGenerator::loadRandomTerrainHeights()
 		DirectX::XMFLOAT3 tan = subtract(dVec1, dVec2);
 		tan.x = tan.x*someFloat;
 		tan.y = tan.y*someFloat;
-		tan.y = tan.z*someFloat;
+		tan.z = tan.z*someFloat;
 
 
 		//tangent
@@ -203,6 +197,8 @@ void TerrainGenerator::loadRandomTerrainHeights()
 		DirectX::XMStoreFloat3(&TriangleArr[i].bitangent, bitangent);
 		DirectX::XMStoreFloat3(&TriangleArr[i + 1].bitangent, bitangent);
 		DirectX::XMStoreFloat3(&TriangleArr[i + 2].bitangent, bitangent);
+
+
 	}
 
 	vertCount = TriangleArr.size();

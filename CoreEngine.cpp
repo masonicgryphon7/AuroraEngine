@@ -17,6 +17,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
+#define GRAPHICS_DEBUGGER_ENABLED 1
 
 bool CoreEngine::hasResized = false;
 
@@ -62,8 +63,8 @@ CoreEngine::~CoreEngine()
 	SAFE_RELEASE(gSwapChain);
 
 	Input.~InputHandler();
-	AssetManager.~cAssetManager();
 	gScene.~Scene();
+	AssetManager.~cAssetManager();
 	SAFE_RELEASE(gDeviceContext);
 	SAFE_RELEASE(gDevice);
 	// Cleanup
@@ -191,7 +192,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
-		
+
 		//Terrain Texture.
 		assetManager.addTexture("Assets/rutTextur.png"); //3
 		assetManager.addTexture("Assets/rutNormal.png"); //4
@@ -216,6 +217,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addTexture("Assets/ID_MAP2part4.png"); //19 // 4
 
 
+
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 
 		assetManager.getMaterial(0)->setAlbedo(assetManager.getTexture(0)->getTexture());
@@ -226,8 +228,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.getMaterial(1)->setIsTerrain(true);
 		assetManager.getMaterial(1)->setTerrainMaterials(assetManager.getTexture(3)->getTexture(), assetManager.getTexture(4)->getTexture(), assetManager.getTexture(5)->getTexture(),
-		assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
-		assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(18)->getTexture()); //USE ID_PART 3
+			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
+			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(18)->getTexture()); //USE ID_PART 3
 
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
 		assetManager.getMaterial(2)->setIsTerrain(true);
@@ -256,7 +258,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part3.bmp");
 		AssetManager.addMesh(terrainGenerator1->vertCount, &terrainGenerator1->TriangleArr);
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
-		terrain1->addComponent(AssetManager.getMaterial(1));
+		terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial(1)));
 		terrain1->addComponent(meshFilterTerrain);
 
 		GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 0, 0));
@@ -266,7 +268,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part1.bmp");
 		AssetManager.addMesh(terrainGenerator2->vertCount, &terrainGenerator2->TriangleArr);
 		MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
-		terrain2->addComponent(AssetManager.getMaterial(2));
+		terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial(2)));
 		terrain2->addComponent(meshFilterTerrain2);
 
 		GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 99, 0));
@@ -276,7 +278,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part4.bmp");
 		AssetManager.addMesh(terrainGenerator3->vertCount, &terrainGenerator3->TriangleArr);
 		MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
-		terrain3->addComponent(AssetManager.getMaterial(3));
+		terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial(3)));
 		terrain3->addComponent(meshFilterTerrain3);
 
 		GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
@@ -286,7 +288,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part2.bmp");
 		AssetManager.addMesh(terrainGenerator4->vertCount, &terrainGenerator4->TriangleArr);
 		MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
-		terrain4->addComponent(AssetManager.getMaterial(4));
+		terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial(4)));
 		terrain4->addComponent(meshFilterTerrain4);
 
 		//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
@@ -307,44 +309,49 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0));
 		camera->addComponent(cam);
-		PlayerSelectionScript* playerSelectionScript = new PlayerSelectionScript(camera);
-		camera->addComponent(playerSelectionScript);
-
-		PlayerScript *playerscript = new PlayerScript();
+		PlayerScript* playerscript = new PlayerScript(camera);
 		camera->addComponent(playerscript);
 
+		//PlayerScript *playerscript = new PlayerScript();
+		//camera->addComponent(playerscript);
 
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
+
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 		cube->name = "Worker";
-		cube->tag = 2;
+		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj");
-		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
-		cube->addComponent(meshFilter);
-		cube->addComponent(AssetManager.getMaterial(0));
+		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh(4));
+		cube->addComponent(meshFilter1);
+		cube->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 		Unit *UnitHero1 = new Unit(Worker);
 		cube->addComponent(UnitHero1);
 		playerscript->friendlyUnits.push_back(UnitHero1);
 		UnitHero1->setPlayerScript(playerscript);
-		//Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
+		Order tempOrder;
+		tempOrder.command = Move;
+		tempOrder.point =DirectX::XMVectorSet(10.0, 0.0, 3.0, 0.0);//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+		//UnitHero1->UnitOrders.push_back(tempOrder);		//Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
 		cube2->name = "Goldmine";
 		cube2->tag = 3;
-		cube2->addComponent(meshFilter);
-		cube2->addComponent(AssetManager.getMaterial(0));
-		Unit *UnitSoldier1 = new Unit(Bank);
+		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh(4));
+		cube2->addComponent(meshFilter2);
+		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
+		Unit *UnitSoldier1 = new Unit(GoldMine);
 		cube2->addComponent(UnitSoldier1);
 		UnitSoldier1->setPlayerScript(playerscript);
 
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
 		cube3->name = "Bank";
-		cube3->tag = 3;
-		cube3->addComponent(meshFilter);
-		cube3->addComponent(AssetManager.getMaterial(0));
-		Unit* unitBuilding = new Unit(GoldMine);
+		cube3->tag = 1;
+		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh(4));
+		cube3->addComponent(meshFilter3);
+		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
+		Unit* unitBuilding = new Unit(Bank);
 		cube3->addComponent(unitBuilding);
 		playerscript->friendlyBuildings.push_back(unitBuilding);
 		unitBuilding->setPlayerScript(playerscript);
@@ -352,8 +359,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
 		cube4->name = "Hero";
 		cube4->tag = 1;
-		cube4->addComponent(meshFilter);
-		cube4->addComponent(AssetManager.getMaterial(0));
+		MeshFilter* meshFilter4 = new MeshFilter(AssetManager.getMesh(4));
+		cube4->addComponent(meshFilter4);
+		cube4->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 		Unit* UnitHero2 = new Unit(Hero);
 		cube4->addComponent(UnitHero2);
 		playerscript->friendlyUnits.push_back(UnitHero2);
@@ -405,7 +413,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		if (editor != nullptr)
 			delete editor;
 
-		delete cam;
 		delete renderManager;
 		DestroyWindow(wndHandle);
 	}
@@ -471,92 +478,105 @@ void CoreEngine::SetViewport(int x, int y)
 
 void CoreEngine::OnResize()
 {
-	if (!hasResized)
-		return;
+	if (!GRAPHICS_DEBUGGER_ENABLED)
+	{
+		if (!hasResized)
+			return;
 
-	hasResized = false;
+		hasResized = false;
 
-	Vector2 ns = Input.GetEngineWindowResolution();
-	Vector2 sns = Input.GetDesktopResolution();
+		Vector2 ns = Input.GetEngineWindowResolution();
+		Vector2 sns = Input.GetDesktopResolution();
 
-	Debug.Log(ns.y, "\t", sns.y);
+		Input.GetEngineWindowResolution();
 
-	Input.GetEngineWindowResolution();
+		int width = Input.GetWidth();
+		int height = Input.GetHeight();
 
-	int width = Input.GetWidth();
-	int height = Input.GetHeight();
+		gBackbufferRTV->Release();
+		gBackbufferRTV = nullptr;
+		m_depthStencilBuffer->Release();
+		m_depthStencilBuffer = nullptr;
+		m_depthStencilView->Release();
+		m_depthStencilView = nullptr;
 
-	//if (firstThing != 0)
-		//CreateDirect3DContext(wnd);
+		gSwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
-	//firstThing = 1;
+		ID3D11Texture2D* pBuffer;
+		gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer);
 
+		gDevice->CreateRenderTargetView(pBuffer, NULL, &gBackbufferRTV);
 
+		pBuffer->Release();
 
-	gBackbufferRTV->Release();
-	gBackbufferRTV = nullptr;
-	m_depthStencilBuffer->Release();
-	m_depthStencilBuffer = nullptr;
-	m_depthStencilView->Release();
-	m_depthStencilView = nullptr;
+		gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
 
-	gSwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+		SetViewport(sns.x, sns.y);
 
-	ID3D11Texture2D* pBuffer;
-	gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer);
+		CreateDepthStencilBuffer();
+		CreateDepthStencilView();
 
-	gDevice->CreateRenderTargetView(pBuffer, NULL, &gBackbufferRTV);
+		renderManager->UpdateStuff(gDevice, gDeviceContext, gBackbufferRTV, gSwapChain, m_depthStencilView);
 
-	pBuffer->Release();
+		renderManager->CreateRenderTarget(ns.x, ns.y);
 
-	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
+		ImGui_ImplDX11_InvalidateDeviceObjects();
+		ImGui_ImplDX11_CreateDeviceObjects();
+	}
+	else
+	{
+		if (!hasResized)
+			return;
 
-	SetViewport(sns.x, sns.y);
+		Vector2 ns = Input.GetEngineWindowResolution();
 
-	//DXGI_MODE_DESC dxgiModeDesc;
-	//ZeroMemory(&dxgiModeDesc, sizeof(dxgiModeDesc));
-	//dxgiModeDesc.Width = (unsigned int)ns.x;
-	//dxgiModeDesc.Height = (unsigned int)ns.y;
-	//dxgiModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//dxgiModeDesc.RefreshRate = DXGI_RATIONAL{ m_refreshRateNumerator, m_refreshRateDenominator };
-	//dxgiModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	//dxgiModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		gBackbufferRTV->Release();
+		gBackbufferRTV = nullptr;
+		m_depthStencilBuffer->Release();
+		m_depthStencilBuffer = nullptr;
+		m_depthStencilView->Release();
+		m_depthStencilView = nullptr;
 
-	//HRESULT result = gSwapChain->ResizeTarget(&dxgiModeDesc);
-	//if (FAILED(result))
-	//	Console.error("Failed to set resize swapchain");
+		DXGI_MODE_DESC dxgiModeDesc;
+		ZeroMemory(&dxgiModeDesc, sizeof(dxgiModeDesc));
+		dxgiModeDesc.Width = (unsigned int)ns.x;
+		dxgiModeDesc.Height = (unsigned int)ns.y;
+		dxgiModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		dxgiModeDesc.RefreshRate = DXGI_RATIONAL{ m_refreshRateNumerator, m_refreshRateDenominator };
+		dxgiModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		dxgiModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 
-	//result = gSwapChain->ResizeBuffers(1, (unsigned int)ns.x, (unsigned int)ns.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-	//if (FAILED(result))
-	//	Console.error("Failed to set resize buffer swapchain");
+		HRESULT result = gSwapChain->ResizeTarget(&dxgiModeDesc);
+		if (FAILED(result))
+			Console.error("Failed to set resize swapchain");
 
-	//ID3D11Texture2D* backBuffer = nullptr;
-	//result = gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBuffer));
-	//if (FAILED(result))
-	//	Console.error("Failed to get buffer swapchain");
+		result = gSwapChain->ResizeBuffers(1, (unsigned int)ns.x, (unsigned int)ns.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+		if (FAILED(result))
+			Console.error("Failed to set resize buffer swapchain");
 
-	//result = gDevice->CreateRenderTargetView(backBuffer, nullptr, &gBackbufferRTV);
+		ID3D11Texture2D* backBuffer = nullptr;
+		result = gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBuffer));
+		if (FAILED(result))
+			Console.error("Failed to get buffer swapchain");
 
-	//backBuffer->Release();
-	//backBuffer = nullptr;
+		result = gDevice->CreateRenderTargetView(backBuffer, nullptr, &gBackbufferRTV);
 
-	//if (FAILED(result))
-	//	Console.error("Failed to create render target view.");
+		backBuffer->Release();
+		backBuffer = nullptr;
 
-	CreateDepthStencilBuffer();
-	CreateDepthStencilView();
+		if (FAILED(result))
+			Console.error("Failed to create render target view.");
 
-	renderManager->UpdateStuff(gDevice, gDeviceContext, gBackbufferRTV, gSwapChain, m_depthStencilView);
+		CreateDepthStencilBuffer();
+		CreateDepthStencilView();
 
-	renderManager->CreateRenderTarget(ns.x, ns.y);
+		renderManager->UpdateStuff(gDevice, gDeviceContext, gBackbufferRTV, gSwapChain, m_depthStencilView);
 
-	ImGui_ImplDX11_InvalidateDeviceObjects();
-	ImGui_ImplDX11_CreateDeviceObjects();
+		renderManager->CreateRenderTarget(ns.x, ns.y);
 
-	/*SetViewport(ns.x, ns.y);
-	Console.success("Successfully Resized Window");
-	std::string str = "Vector2(" + std::to_string(ns.x) + ", " + std::to_string(ns.y) + ")";
-	Console.success("New Window Size: ", str);*/
+		ImGui_ImplDX11_InvalidateDeviceObjects();
+		ImGui_ImplDX11_CreateDeviceObjects();
+	}
 }
 
 HWND CoreEngine::InitWindow(HINSTANCE hInstance)

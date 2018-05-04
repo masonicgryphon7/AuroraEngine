@@ -42,6 +42,7 @@ public:
 	const std::string getMeshName() const;
 	const std::string getMeshPath() const;
 
+	int renderIndex = -1;
 private:
 	int vertexCount;
 	UINT32 vertexSize;
@@ -49,7 +50,6 @@ private:
 	ID3D11DeviceContext* gDeviceContext = nullptr;
 	std::vector<DirectX::XMVECTOR> vertexPositions;
 
-	MyLibrary::Loadera myLoader;
 
 	std::string meshName, meshPath;
 

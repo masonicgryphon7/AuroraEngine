@@ -8,7 +8,7 @@
 
 #include "Transform.h"
 #include "MeshFilter.h"
-#include "Material.h"
+#include "MaterialFilter.h"
 //#include "Light.h"
 
 
@@ -20,6 +20,7 @@ public:
 	GameObject(int otherAssetID);
 	~GameObject();
 
+	int instanceIndex = -1;
 	int assetID, tag;
     bool isActive;
     bool hasLight;
@@ -27,7 +28,7 @@ public:
 	std::string name, meshPath;
 	Transform transform;
 	std::vector<Component*> components;
-    Material *materialComponent = nullptr;
+    MaterialFilter *materialFilterComponent = nullptr;
     MeshFilter *meshFilterComponent = nullptr;
 	//Light *lightComponent;
 	bool detailedRaycast;

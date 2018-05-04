@@ -5,7 +5,6 @@ struct VS_IN
 	float3 Tangent : TANGENT;
 	float3 Bitangent : BITANGENT;
 	float3 Normal : NORMAL;
-
 };
 
 cbuffer MATRIX_Buffer :register (b0)
@@ -15,7 +14,13 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix projection;
 	float4 cameraPosition;
 	bool isTerrain;
+	bool instanceDraw;
 };
+
+cbuffer INSTANCE_Buffer :register (b1)
+{
+	matrix instanceWorld[100];
+}; 
 
 struct VS_OUT
 {
@@ -28,12 +33,19 @@ struct VS_OUT
 //-----------------------------------------------------------------------------------------
 // VertexShader: VSScene
 //-----------------------------------------------------------------------------------------
-VS_OUT VS_main(VS_IN input)
+VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 {
 	VS_OUT output = (VS_OUT)0;
 
 	output.Position = float4(input.Position, 1);
-	output.Position = mul(output.Position, world);
+	if (instanceDraw==0) {
+		output.Position = mul(output.Position, world);
+		output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), world);
+	}
+	if (instanceDraw == 1) {
+		output.Position = mul(output.Position, instanceWorld[instanceID]);
+		output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), instanceWorld[instanceID]);
+	}
 	output.worldPosition = output.Position;
 	output.Position = mul(output.Position, view);
 	output.Position = mul(output.Position, projection);
@@ -41,8 +53,6 @@ VS_OUT VS_main(VS_IN input)
 	output.cameraPosition = cameraPosition;
 
 
-	//mul( world, mul(float3x3(input.Tangent, input.Bitangent, input.Normal), view));
-	output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), world);
 
 	return output;
 }

@@ -6,7 +6,7 @@
 #include "Debug.h"
 #include <DirectXMath.h>
 
-Unit::Unit()
+Unit::Unit() :Component(-1, "Unit")
 {
 	actionTime = 10;
 
@@ -54,7 +54,7 @@ Unit::Unit()
 	}
 }
 
-Unit::Unit(Type UnitTypeSet)
+Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 {
 	actionTime = 2;
 
@@ -246,7 +246,8 @@ void Unit::attackCommand(Unit* targetedUnit)
 			//Damage enemy
 			if (actionTime > 1)
 			{
-				attackEnemy();
+				//attackEnemy();
+				targetedUnit->takeDamage(this->getAttackPoints());
 				Debug.Log("Enemy Hit!");
 				actionTime = 0;
 			}
@@ -274,6 +275,11 @@ void Unit::attackEnemy()
 	int newEnemyHealth = enemyHealth - damage;
 	UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setHealthPoints(newEnemyHealth);
 	Debug.Log("Attacking.");
+}
+
+void Unit::takeDamage(int attackPoints)
+{
+	this->setHealthPoints(this->getHealthPoints() - (attackPoints - this->getDefencePoints()));
 }
 
 void Unit::FollowCommand()
@@ -462,19 +468,44 @@ void Unit::destroyUnit()
 	UnitOrders.erase(UnitOrders.begin());
 }
 
-void Unit::summonCommand()
+void Unit::summonWorkerCommand()
 {
-	GameObject* cube = gScene.createEmptyGameObject(playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
-	cube->name = "Worker"; //+ playerScript->friendlyUnits.size();
-	cube->tag = gameObject->tag;
-	//AssetManager.AddMesh("Assets/Cube.obj");
+	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
+	worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
+	worker->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
-	cube->addComponent(meshFilter);
-	cube->addComponent(AssetManager.getMaterial(0));
+	worker->addComponent(meshFilter);
+	worker->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
 	Unit *unitWorker = new Unit(Worker);
 	unitWorker->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
-	cube->addComponent(unitWorker);
+	worker->addComponent(unitWorker);
 	playerScript->friendlyUnits.push_back(unitWorker);
+	unitWorker->setPlayerScript(playerScript);
+	
+	UnitOrders.erase(UnitOrders.begin());
+	Order tempOrder;
+	tempOrder.command = Move;
+	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
+}
+
+void Unit::summonSoldierCommand()
+{
+	GameObject* soldier = gScene.createEmptyGameObject(DirectX::XMVectorSet(2.0, 0.0, 2.0, 0.0));//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+	soldier->name = "Soldier";// +playerScript->friendlyUnits.size();
+	soldier->tag = gameObject->tag;
+	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
+	soldier->addComponent(meshFilter);
+	soldier->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
+	Unit *unitSoldier = new Unit(Soldier);
+	unitSoldier->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+	soldier->addComponent(unitSoldier);
+	playerScript->friendlyUnits.push_back(unitSoldier);
+	unitSoldier->setPlayerScript(playerScript);
+
+	UnitOrders.erase(UnitOrders.begin());
+
+	//unitSoldier->RecieveOrder()
 }
 
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
@@ -508,12 +539,22 @@ void Unit::RecieveOrder(RaycastHit Values)
 			switch (type)
 			{
 			case Type::Hero:
-				tempOrder.command = Follow;
-				
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Worker || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
+				{
+					tempOrder.command = Follow;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
+				{
+					tempOrder.command = HeroGather;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 				break;
 
 			case Type::Soldier:
@@ -524,10 +565,21 @@ void Unit::RecieveOrder(RaycastHit Values)
 				break;
 
 			case Type::Worker:
-				tempOrder.command = Follow;
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
+				if (Values.transform->gameObject->getComponent<Unit>()->getType()== Hero || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
+				{
+					tempOrder.command = Follow;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+				}
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
+				{
+					tempOrder.command = Drop;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 				break;
 			}
 		}
@@ -566,14 +618,11 @@ void Unit::RecieveOrder(RaycastHit Values)
 			switch (type)
 			{
 			case Type::Hero:
-				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
-				//{
 				tempOrder.command = HeroGather;
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
 				UnitOrders.push_back(tempOrder);
 				actionTime = 2;
-				//}
 
 				break;
 
@@ -582,15 +631,6 @@ void Unit::RecieveOrder(RaycastHit Values)
 				if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
 				{
 					tempOrder.command = Gather;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-
-				if (Values.transform->gameObject->getComponent<Unit>()->type == Bank)
-				{
-					tempOrder.command = Drop;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
@@ -609,22 +649,6 @@ void Unit::RecieveOrder(RaycastHit Values)
 			//Terrain
 			//Walk 
 		}
-		else if (Input.GetKey(KeyCode::B)){
-			switch (type)
-			{
-			case Type::Hero:
-				tempOrder.command = Summon;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
-				break;
-
-			case Type::Building:
-				tempOrder.command = Summon;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
-				break;
-			}
-		}
 		else {
 			
 		}
@@ -637,6 +661,8 @@ void Unit::RecieveOrder(RaycastHit Values)
 
 		switch (type)
 		{
+		case Type::Bank:
+			break;
 
 		default:
 			tempOrder.command = Move;
@@ -655,38 +681,47 @@ void Unit::RecieveOrder(OPTIONS option)
 	pathNodes.clear();
 
 	Order tempOrder;
+	switch (type)
+	{
+	case Type::Bank:
+		if (option == Option0)
+		{
+			tempOrder.command = SummonWorker;
+			UnitOrders.push_back(tempOrder);
+		}
+		else if (option == Option1)
+		{
+			tempOrder.command = SummonSoldier;
+			UnitOrders.push_back(tempOrder);
+		}
+		else if (option == Option2)
+		{
 
-	if (option == Option0)
-	{
-		switch (type)
-		{
-		case Type::Bank:
-			break;
 		}
-	}
-	else if (option == Option1)
-	{
-		switch (type)
+		else if (option == Option3)
 		{
-		case Type::Bank:
-			break;
+
 		}
-	}
-	else if (option == Option2)
-	{
-		switch (type)
+		break;
+
+	case Type::Hero:
+		if (option == Option0)
 		{
-		case Type::Bank:
-			break;
+
 		}
-	}
-	else if (option == Option3)
-	{
-		switch (type)
+		else if (option == Option1)
 		{
-		case Type::Bank:
-			break;
+
 		}
+		else if (option == Option2)
+		{
+
+		}
+		else if (option == Option3)
+		{
+
+		}
+		break;
 	}
 }
 
@@ -737,8 +772,12 @@ void Unit::update()
 			FollowCommand();
 			break;
 
-		case Command::Summon: //SUMMON
-			summonCommand();
+		case Command::SummonWorker: //SUMMON
+			summonWorkerCommand();
+			break;
+
+		case Command::SummonSoldier:
+			summonSoldierCommand();
 			break;
 
 		default:
@@ -746,7 +785,11 @@ void Unit::update()
 		}
 	}
 
-	if (Input.GetKeyUp(KeyCode::B)) {
-		summonCommand();
-		}
+	//if (Input.GetKeyUp(KeyCode::Alpha1)) {
+	//	summonWorkerCommand();
+	//	}
+
+	//if (Input.GetKeyUp(KeyCode::Alpha2)) {
+	//	summonSoldierCommand();
+	//}
 }
