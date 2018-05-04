@@ -193,17 +193,17 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 		
 		//Terrain Texture.
-		assetManager.addTexture("Assets/rutTextur.png"); //3
-		assetManager.addTexture("Assets/rutNormal.png"); //4
-		assetManager.addTexture("Assets/rutAoMetalRough.png"); //5
+		assetManager.addTexture("Assets/Grass_Albedo.png"); //3
+		assetManager.addTexture("Assets/Grass_Normal.png"); //4
+		assetManager.addTexture("Assets/Grass_ORM.png"); //5
 
-		assetManager.addTexture("Assets/stenTextur.png"); //6
-		assetManager.addTexture("Assets/stenNormal.png"); //7
-		assetManager.addTexture("Assets/stenAoMetalRough.png"); //8
+		assetManager.addTexture("Assets/Cliff_Albedo.png"); //6
+		assetManager.addTexture("Assets/Cliff_Normal.png"); //7
+		assetManager.addTexture("Assets/Cliff_ORM.png"); //8
 
-		assetManager.addTexture("Assets/tygTextur.png"); //9
-		assetManager.addTexture("Assets/tygNormal.png"); //10
-		assetManager.addTexture("Assets/tygAoMetalRough.png"); //11
+		assetManager.addTexture("Assets/Sand_Albedo.png"); //9
+		assetManager.addTexture("Assets/Sand_Normal.png"); //10
+		assetManager.addTexture("Assets/Sand_ORM.png"); //11
 
 		assetManager.addTexture("Assets/ID_MAP2.png"); //12
 		assetManager.addTexture("Assets/vitTextur.png"); //13
@@ -214,6 +214,11 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addTexture("Assets/ID_MAP2part2.png"); // 17 // 2
 		assetManager.addTexture("Assets/ID_MAP2part3.png"); // 18 // 3
 		assetManager.addTexture("Assets/ID_MAP2part4.png"); //19 // 4
+
+		//Tree Test
+		assetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_BaseColor.png");
+		assetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_Normal.png");
+		assetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic.png");
 
 
 		assetManager.addMaterial(assetManager.getShaderProgram(0));
@@ -247,6 +252,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture(6)->getTexture(), assetManager.getTexture(7)->getTexture(), assetManager.getTexture(8)->getTexture(), assetManager.getTexture(9)->getTexture(),
 			assetManager.getTexture(10)->getTexture(), assetManager.getTexture(11)->getTexture(), assetManager.getTexture(17)->getTexture()); //USE ID_PART 2
 
+		//TREE
+		assetManager.addMaterial(assetManager.getShaderProgram(0));
+		assetManager.getMaterial(5)->setIsTerrain(false);
+		assetManager.getMaterial(5)->setAlbedo(assetManager.getTexture(20)->getTexture());
+		assetManager.getMaterial(5)->setNormal(assetManager.getTexture(21)->getTexture());
+		assetManager.getMaterial(5)->setAORoughMet(assetManager.getTexture(22)->getTexture());
 		//----------------
 
 		GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
@@ -357,6 +368,37 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		playerscript->friendlyUnits.at(0)->setHomePos(&playerscript->friendlyBuildings.at(0)->gameObject->transform);
 
+		GameObject* TestResourceCenter = gScene.createEmptyGameObject(DirectX::XMVectorSet(
+			5, 2, 5, 0));
+		TestResourceCenter->name = "ResourceCenter";
+		TestResourceCenter->tag = 1;
+		AssetManager.addMesh("Assets/Test2ResourceSilo.obj");
+		MeshFilter* ResourceCenterTest = new MeshFilter(AssetManager.getMesh(5));
+		TestResourceCenter->addComponent(ResourceCenterTest);
+		TestResourceCenter->addComponent(AssetManager.getMaterial(0));
+		Unit* BuildingUnit = new Unit(Building);
+		TestResourceCenter->addComponent(BuildingUnit);
+
+		GameObject* TestBarracks = gScene.createEmptyGameObject(DirectX::XMVectorSet(
+			10, 2, 10, 0));
+		TestBarracks->name = "BarracksTest";
+		TestBarracks->tag = 1;
+		AssetManager.addMesh("Assets/BarracksTest1.obj");
+		MeshFilter* BarracksMeshTest = new MeshFilter(AssetManager.getMesh(6));
+		TestBarracks->addComponent(BarracksMeshTest);
+		TestBarracks->addComponent(AssetManager.getMaterial(0));
+		Unit* BuildingUnit2 = new Unit(Building);
+		TestBarracks->addComponent(BuildingUnit2);
+
+		GameObject* Tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 10, 0));
+		Tree->name = "Tree";
+		Tree->tag = 3;
+		AssetManager.addMesh("Assets/Spruce_Tree2.obj");
+		MeshFilter* treeFilter = new MeshFilter(AssetManager.getMesh(7));
+		Tree->addComponent(treeFilter);
+		Tree->addComponent(AssetManager.getMaterial(5));
+		Unit* Tree1 = new Unit(GoldMine);
+		Tree->addComponent(Tree1);
 
 		/*ClickToMove* clickToMove = new ClickToMove(cam);
 		cube->addComponent(clickToMove);*/

@@ -83,10 +83,6 @@ void TerrainGenerator::LoadHeightMapToAttributes(char* HeightMapFileName)
 
 }
 
-void TerrainGenerator::createTerrainPatches()
-{
-}
-
 void TerrainGenerator::loadRandomTerrainHeights()
 {
 	srand(time(NULL));
@@ -163,15 +159,15 @@ void TerrainGenerator::loadRandomTerrainHeights()
 		}
 	}
 
-	for (int i = 0; i < RealVertArr.size() - 1; i += 3)
+	for (int j = 0; j < RealVertArr.size() ; j++)
 	{
+		int i = 0;
 
+		DirectX::XMFLOAT3 vec1 = subtract(RealVertArr[j][i + 1].position, RealVertArr[j][i].position);
+		DirectX::XMFLOAT3 vec2 = subtract(RealVertArr[j][i + 2].position, RealVertArr[j][i].position);
 
-		DirectX::XMFLOAT3 vec1 = subtract(TriangleArr[i + 1].position, TriangleArr[i].position);
-		DirectX::XMFLOAT3 vec2 = subtract(TriangleArr[i + 2].position, TriangleArr[i].position);
-
-		DirectX::XMFLOAT2 uVec1 = subtract(TriangleArr[i + 1].uv, TriangleArr[i].uv);
-		DirectX::XMFLOAT2 uVec2 = subtract(TriangleArr[i + 2].uv, TriangleArr[i].uv);
+		DirectX::XMFLOAT2 uVec1 = subtract(RealVertArr[j][i + 1].uv, RealVertArr[j][i].uv);
+		DirectX::XMFLOAT2 uVec2 = subtract(RealVertArr[j][i + 2].uv, RealVertArr[j][i].uv);
 
 		float denominator = (uVec1.x * uVec2.y) - (uVec1.y * uVec2.x);
 		float someFloat = 1.0f / denominator;
@@ -195,14 +191,14 @@ void TerrainGenerator::loadRandomTerrainHeights()
 
 		//tangent
 		DirectX::XMVECTOR tangent = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&tan));
-		DirectX::XMStoreFloat3(&TriangleArr[i].tangent, tangent);
-		DirectX::XMStoreFloat3(&TriangleArr[i + 1].tangent, tangent);
-		DirectX::XMStoreFloat3(&TriangleArr[i + 2].tangent, tangent);
+		DirectX::XMStoreFloat3(&RealVertArr[j][i].tangent, tangent);
+		DirectX::XMStoreFloat3(&RealVertArr[j][i + 1].tangent, tangent);
+		DirectX::XMStoreFloat3(&RealVertArr[j][i + 2].tangent, tangent);
 
-		DirectX::XMVECTOR bitangent = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMLoadFloat3(&TriangleArr[i].tangent), DirectX::XMLoadFloat3(&TriangleArr[i].normal)));
-		DirectX::XMStoreFloat3(&TriangleArr[i].bitangent, bitangent);
-		DirectX::XMStoreFloat3(&TriangleArr[i + 1].bitangent, bitangent);
-		DirectX::XMStoreFloat3(&TriangleArr[i + 2].bitangent, bitangent);
+		DirectX::XMVECTOR bitangent = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMLoadFloat3(&RealVertArr[j][i].tangent), DirectX::XMLoadFloat3(&RealVertArr[j][i].normal)));
+		DirectX::XMStoreFloat3(&RealVertArr[j][i].bitangent, bitangent);
+		DirectX::XMStoreFloat3(&RealVertArr[j][i + 1].bitangent, bitangent);
+		DirectX::XMStoreFloat3(&RealVertArr[j][i + 2].bitangent, bitangent);
 	}
 
 	vertCount = TriangleArr.size();

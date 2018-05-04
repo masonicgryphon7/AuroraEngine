@@ -85,14 +85,15 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float roughness = AORoughMet.y;
 	float ao = AORoughMet.x;//met_Roug_Ao.z;
 							//float3 V = normalize( input.worldPosition);		
+		
 	if (isTerrain)
 	{
 		float3 IDcolor, colorValue;
 		IDcolor = ID_Map.Sample(sampAni, input.Uv).xyz;
 
-		colorValue.x = IDcolor.x / 1;
-		colorValue.y = IDcolor.y / 1;
-		colorValue.z = IDcolor.z / 1;
+		colorValue.x = IDcolor.x;
+		colorValue.y = IDcolor.y;
+		colorValue.z = IDcolor.z;
 
 		if (colorValue.x > Epsilon) //R
 		{
