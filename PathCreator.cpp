@@ -69,7 +69,7 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 		}
 	}
 	int i = 0;
-
+	blockGrid(DirectX::XMFLOAT3(20,1,1));
 }
 //
 ////void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions)
@@ -132,9 +132,13 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 //	//}
 //}
 
-void cPathCreator::blockGrid(float x, float y)
+void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 {
-	grid[x][y].pathable = false;
+	for (int i = 0; i < 10; i++)
+	{
+		grid[10][i].pathable = false;
+	}
+	grid[pos.x][pos.y].pathable = false;
 }
 
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)

@@ -162,6 +162,7 @@
     <ClInclude Include="Editor.h" />
     <ClInclude Include="EditorMoveScript.h" />
     <ClInclude Include="EditorSceneSelectionScript.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUI_Console.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="Editor.cpp" />
     <ClCompile Include="EditorMoveScript.cpp" />
     <ClCompile Include="EditorSceneSelectionScript.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUI_Console.cpp" />
