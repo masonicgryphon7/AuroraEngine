@@ -292,7 +292,7 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 	//std::vector<DirectX::XMFLOAT3> positions;
 	//std::vector<DirectX::XMFLOAT2> texCoords;
 	//std::vector<DirectX::XMFLOAT3> normals;
-
+	MyLibrary::Loadera myLoader;
 	MyLibrary::MeshFromFile myMesh;
 	VERTEX_POS3UV2T3B3N3 vertex;
 	std::vector<VERTEX_POS3UV2T3B3N3> vertices;

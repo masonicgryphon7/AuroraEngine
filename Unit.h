@@ -23,7 +23,8 @@ class PlayerScript;
 		Move,
 		Attack,
 		Gather,
-		//Drop,
+		HeroGather,
+		Drop,
 		Build,
 		Follow,
 		Summon,
@@ -98,18 +99,27 @@ public:
 	void setDefencePoints(int defencePoints) { this->defencePoints = defencePoints; };
 	void setAttackDistance(float attackDistance) { this->attackDistance = attackDistance; };
 	void setHomePos(Transform* homePos) { this->homePos = homePos; };
-
+	void setPlayerScript(PlayerScript* playerScript) {	this->playerScript = playerScript;};
 	void MoveCommand(DirectX::XMVECTOR *goalPos);
-	void attackCommand();
+	void SecondMoveCommand(DirectX::XMVECTOR *goalPos);
+	void attackCommand(Unit* targetedUnit);
+	void attackEnemy();
+	void takeDamage(int attackPoints);
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);
+	void HeroGatherCommand(Unit* targetedUnit);
 	void gatherResources();
+	void dropCommand(Unit* targetedUnit);
 	void dropResources();
 	void destroyUnit();
+	void summonWorkerCommand();
+	void summonSoldierCommand();
 
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
-
+	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
+	
 	void RecieveOrder(RaycastHit Values);
+	void RecieveOrder(OPTIONS option);
 	void update();
 };
 

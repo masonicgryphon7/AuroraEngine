@@ -87,21 +87,13 @@ int Scene::getSceneObjectsCount()
 	return sceneObjects.size();
 }
 
-void Scene::destroy(GameObject *gameObject)
+void Scene::destroyGameObjects()
 {
 	for (int i = 0; i < sceneObjects.size(); i++)
 	{
-		if (sceneObjects[i] == gameObject) {
+		if (sceneObjects[i]->destroyGO==true) {
 			delete sceneObjects[i];
 			sceneObjects.erase(sceneObjects.begin() + i);
-
-		}
-	}
-
-	for (int i = 0; i < frustumCulledResult.size(); i++)
-	{
-		if (frustumCulledResult[i] == gameObject) {
-			frustumCulledResult.erase(frustumCulledResult.begin() + i);
 
 		}
 	}

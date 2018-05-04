@@ -115,6 +115,7 @@ void Editor::Update()
 
 			gui->Update();
 
+
 			if (gui->GetIsWindow())
 				gui->End();
 		}
@@ -122,6 +123,7 @@ void Editor::Update()
 	}
 	else
 	{
+
 		if (onceChangeState)
 		{
 			onceChangeState = false;
