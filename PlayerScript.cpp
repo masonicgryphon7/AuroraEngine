@@ -228,7 +228,8 @@ void PlayerScript::SelectUnits()
 				if (hit.transform->gameObject->tag == 1 || hit.transform->gameObject->tag == 3)
 				{
 					//Debug.Log("Hit", hit.transform->gameObject->name, ": An Player Unit");
-					SelectedUnits.push_back(hit.transform->gameObject);
+					if(hit.transform->gameObject->getComponent<Unit>()!=nullptr)
+						SelectedUnits.push_back(hit.transform->gameObject);
 				}
 			}
 			else

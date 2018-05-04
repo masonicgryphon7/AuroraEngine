@@ -6,7 +6,7 @@
 #include "Debug.h"
 #include <DirectXMath.h>
 
-Unit::Unit()
+Unit::Unit() :Component(-1, "Unit")
 {
 	actionTime = 10;
 
@@ -54,7 +54,7 @@ Unit::Unit()
 	}
 }
 
-Unit::Unit(Type UnitTypeSet)
+Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 {
 	actionTime = 2;
 
@@ -486,7 +486,7 @@ void Unit::summonWorkerCommand()
 	Order tempOrder;
 	tempOrder.command = Move;
 	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
-	unitWorker->UnitOrders.push_back(tempOrder);
+	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
 void Unit::summonSoldierCommand()

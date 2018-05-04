@@ -115,7 +115,7 @@ public:
 	void destroyUnit();
 	void summonWorkerCommand();
 	void summonSoldierCommand();
-
+	std::vector<Order>* getUnitOrdersPointer() { return &UnitOrders; };
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	

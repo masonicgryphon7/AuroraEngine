@@ -329,7 +329,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(UnitHero1);
 		playerscript->friendlyUnits.push_back(UnitHero1);
 		UnitHero1->setPlayerScript(playerscript);
-		//Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
+		Order tempOrder;
+		tempOrder.command = Move;
+		tempOrder.point =DirectX::XMVectorSet(10.0, 0.0, 3.0, 0.0);//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+		//UnitHero1->UnitOrders.push_back(tempOrder);		//Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
 		cube2->name = "Goldmine";
