@@ -183,7 +183,7 @@ void AudioListener::update()
 						
 							break;
 
-						case Command::Summon:
+						case Command::SummonWorker:
 							playSummon();
 							break;
 
