@@ -161,8 +161,6 @@ void TerrainGenerator::loadRandomTerrainHeights()
 
 	for (int i = 0; i < TriangleArr.size(); i += 3)
 	{
-
-
 		DirectX::XMFLOAT3 vec1 = subtract(TriangleArr[i + 1].position, TriangleArr[i].position);
 		DirectX::XMFLOAT3 vec2 = subtract(TriangleArr[i + 2].position, TriangleArr[i].position);
 

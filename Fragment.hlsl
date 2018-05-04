@@ -1,5 +1,5 @@
 #define pi 3.14159265359
-#define Epsilon 0.001
+#define Epsilon 0.0001
 
 struct VS_OUT
 {
@@ -78,13 +78,14 @@ float3 fresnelSchlick(float cosTheta, float3 F0)
 
 float4 PS_main(VS_OUT input) : SV_Target
 {
+
+
 	float3 albedo = pow(Diffuse.Sample(sampAni, input.Uv).xyz, float3(2.2, 2.2, 2.2));
 	float3 N = NormalTexture.Sample(sampAni, input.Uv).xyz;
 	float3 AORoughMet = AORoughMetTexture.Sample(sampAni, input.Uv).xyz;
 	float metallic = AORoughMet.z;//met_Roug_Ao.x;
 	float roughness = AORoughMet.y;
-	float ao = AORoughMet.x;//met_Roug_Ao.z;
-							//float3 V = normalize( input.worldPosition);		
+	float ao = AORoughMet.x;//met_Roug_Ao.z;	
 		
 	if (isTerrain)
 	{
@@ -94,6 +95,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 		colorValue.x = IDcolor.x;
 		colorValue.y = IDcolor.y;
 		colorValue.z = IDcolor.z;
+
 
 		if (colorValue.x > Epsilon) //R
 		{
@@ -127,6 +129,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 			//albedo = albedo * float3(0.1f, 0.1, 1.0f);
 		}
+
 
 	}
 
