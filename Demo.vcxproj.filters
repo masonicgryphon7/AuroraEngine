@@ -61,6 +61,7 @@
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="NPC.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
@@ -132,6 +133,7 @@
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="NPC.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

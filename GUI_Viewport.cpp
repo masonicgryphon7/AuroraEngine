@@ -80,7 +80,9 @@ void GUI_Viewport::ShowEngineView()
 	m_engine->SetViewport();
 
 	Input.mousePosition = Input.GetMousePosition();
-
+	POINT mouse;
+	GetCursorPos(&mouse);
+	Input.fullscreenMousePosition = Vector2(mouse.x, mouse.y);
 
 	ImDrawList* mDrawList = ImGui::GetWindowDrawList();
 	ImVec2 size = ImVec2(width, height);

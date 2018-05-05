@@ -9,6 +9,7 @@
 #include "imgui_dock.h"
 #include "ImGuizmo.h"
 #include "Editor.h"
+#include "Player.h"
 #include "NPC.h"
 #include "Debug.h"
 
@@ -18,8 +19,11 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
+#define PLAYER_BUILD 1
 
 bool CoreEngine::hasResized = false;
+
+std::wstring s2ws(const std::string& s);
 
 CoreEngine::CoreEngine(bool includeDebugConsole)
 {
@@ -99,7 +103,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	if (wndHandle)
 	{
-		CreateDirect3DContext(wndHandle);
+		if (!PLAYER_BUILD)
+			CreateDirect3DContext(wndHandle);
+		else
+			CreatePlayerDirect3DContext(wndHandle);
 
 		SetViewport(); //3. S�tt viewport
 
@@ -120,63 +127,11 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//ImGui_ImplWin32_UpdateMouseCursor();
 
-
-		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
-			{
-				"POSITION",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				0,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},
-			{
-				"UV",
-				0,				// same slot as previous (same vertexBuffer)
-				DXGI_FORMAT_R32G32_FLOAT,
-				0,
-				12,							// offset of FIRST element (after POSITION)
-				D3D11_INPUT_PER_VERTEX_DATA,
-				0
-			},
-			{
-				"TANGENT",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				20,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},{
-				"BITANGENT",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				32,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},{
-				"NORMAL",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				44,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},
-		};
-		std::vector<D3D11_INPUT_ELEMENT_DESC> descTest;
-		descTest.push_back(inputDesc[0]);
-		descTest.push_back(inputDesc[1]);
-		descTest.push_back(inputDesc[2]);
-		descTest.push_back(inputDesc[3]);
-		descTest.push_back(inputDesc[4]);
-
 		Time.start();
 
 		renderManager = new RenderManager(gDevice, gDeviceContext, gBackbufferRTV, gSwapChain, m_depthStencilView);
-		renderManager->CreateRenderTarget(WIDTH, HEIGHT);
+		if (PLAYER_BUILD)
+			renderManager->CreateRenderTarget(WIDTH, HEIGHT);
 
 		InputHandler inputHandler = InputHandler(wndHandle); // this has memory leak
 
@@ -331,7 +286,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		UnitHero1->setPlayerScript(playerscript);
 		Order tempOrder;
 		tempOrder.command = Move;
-		tempOrder.point =DirectX::XMVectorSet(10.0, 0.0, 3.0, 0.0);//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+		tempOrder.point = DirectX::XMVectorSet(10.0, 0.0, 3.0, 0.0);//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
 		//UnitHero1->UnitOrders.push_back(tempOrder);		//Debug.Log(playerscript->friendlyUnits.at(0)->gameObject->name);
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 20, 0));
@@ -371,12 +326,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* enemy_player = gScene.createEmptyGameObject();
 		NPC* enemy_NPC = new NPC();
-		
+
 		enemy_player->addComponent(enemy_NPC);
 
 
 
-		
+
 
 		/*ClickToMove* clickToMove = new ClickToMove(cam);
 		cube->addComponent(clickToMove);*/
@@ -385,8 +340,19 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 		Editor* editor = nullptr;
-		editor = new Editor();
-		editor->Start(&wndHandle, gDevice, gDeviceContext, this);
+		Player* player = nullptr;
+
+		if (!PLAYER_BUILD)
+		{
+			editor = new Editor();
+			editor->Start(&wndHandle, gDevice, gDeviceContext, this);
+		}
+		else
+		{
+			player = new Player();
+			player->Start(&wndHandle, gDevice, gDeviceContext, this);
+			gSwapChain->SetFullscreenState(TRUE, NULL);
+		}
 
 		while (WM_QUIT != msg.message)
 		{
@@ -400,16 +366,22 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				inputHandler.updateInput();
 				Time.tick();
 
-				OnResize();
+				if (!PLAYER_BUILD)
+					OnResize();
+
 				gScene.destroyGameObjects();
 				gScene.frustumCull(camera);
 				objectsToRender = gScene.getFrustumCulledResult();
+
 				if (editor != nullptr)
 					editor->Update();
+				if (player != nullptr)
+					player->Update();
+
 				gScene.update();
 
-				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
-
+				if (!PLAYER_BUILD)
+					gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 
 				renderManager->EndFrame(); // END RENDERING
 
@@ -419,8 +391,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 		}
 
+		gSwapChain->SetFullscreenState(FALSE, NULL);
+
 		if (editor != nullptr)
 			delete editor;
+
+		if (player != nullptr)
+			delete player;
 
 		delete renderManager;
 		DestroyWindow(wndHandle);
@@ -588,6 +565,9 @@ void CoreEngine::OnResize()
 	}
 }
 
+string editorName = "Aurora Engine";
+string gameName = "AE: RTS Game";
+
 HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 {
 	WNDCLASSEX wc = { 0 };
@@ -619,12 +599,26 @@ HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 	int windowWidth = GetSystemMetrics(SM_CXSCREEN);
 	int windowHeight = GetSystemMetrics(SM_CYSCREEN);
 
-	RECT rc = { 0, 0, WIDTH, HEIGHT };
+	int x = WIDTH, y = HEIGHT;
+
+	if (PLAYER_BUILD)
+	{
+		RECT desktop;
+		const HWND hDesktop = GetDesktopWindow();
+		GetWindowRect(hDesktop, &desktop);
+		x = desktop.right;
+		y = desktop.bottom;
+	}
+
+	RECT rc = { 0, 0, x, y };
 	//AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+
+	std::wstring stemp = s2ws(PLAYER_BUILD ? gameName : editorName);
+	LPCWSTR result = stemp.c_str();
 
 	HWND handle = CreateWindow(
 		L"dSXOv9vbM1MIm5kAf4yjjw",
-		L"Aurora Engine",
+		result,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, // spawn window x
 		CW_USEDEFAULT, // spawn window y
@@ -636,6 +630,20 @@ HWND CoreEngine::InitWindow(HINSTANCE hInstance)
 		nullptr);
 
 	return handle;
+}
+
+// https://stackoverflow.com/questions/27220/how-to-convert-stdstring-to-lpcwstr-in-c-unicode
+// Able to convert string to LPCWSTR which means we can insert whatever name we want into a handle window creation event
+std::wstring s2ws(const std::string& s)
+{
+	int len;
+	int slength = (int)s.length() + 1;
+	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete[] buf;
+	return r;
 }
 
 #define ID_NEW_SCENE 1001
@@ -662,42 +670,45 @@ LRESULT CoreEngine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 	case WM_CREATE:
 	{
-		HMENU hMenubar = CreateMenu();
-		HMENU hFile = CreateMenu();
-		HMENU hEdit = CreateMenu();
-		HMENU hAssets = CreateMenu();
-		HMENU hGameObject = CreateMenu();
-		HMENU h3DObjects = CreatePopupMenu();
-		HMENU hComponent = CreateMenu();
-		HMENU hWindow = CreateMenu();
-		HMENU hHelp = CreateMenu();
+		if (!PLAYER_BUILD)
+		{
+			HMENU hMenubar = CreateMenu();
+			HMENU hFile = CreateMenu();
+			HMENU hEdit = CreateMenu();
+			HMENU hAssets = CreateMenu();
+			HMENU hGameObject = CreateMenu();
+			HMENU h3DObjects = CreatePopupMenu();
+			HMENU hComponent = CreateMenu();
+			HMENU hWindow = CreateMenu();
+			HMENU hHelp = CreateMenu();
 
-		//Creates menus
-		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hFile, L"&File");
-		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Edit");
-		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Assets");
-		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hGameObject, L"&GameObject");
-		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Component");
-		AppendMenu(hMenubar, MF_POPUP, NULL, L"&Window");
-		AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hHelp, L"&Help");
+			//Creates menus
+			AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hFile, L"&File");
+			AppendMenu(hMenubar, MF_POPUP, NULL, L"&Edit");
+			AppendMenu(hMenubar, MF_POPUP, NULL, L"&Assets");
+			AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hGameObject, L"&GameObject");
+			AppendMenu(hMenubar, MF_POPUP, NULL, L"&Component");
+			AppendMenu(hMenubar, MF_POPUP, NULL, L"&Window");
+			AppendMenu(hMenubar, MF_POPUP, (UINT_PTR)hHelp, L"&Help");
 
-		AppendMenu(hFile, MF_STRING, ID_NEW_SCENE, L"New Scene");
-		AppendMenu(hFile, MF_STRING, ID_LOAD_SCENE, L"Open Scene");
-		AppendMenu(hFile, MF_SEPARATOR, NULL, L"Separator");
-		AppendMenu(hFile, MF_STRING, ID_SAVE_SCENE, L"Save Scene");
-		AppendMenu(hFile, MF_STRING, NULL, L"Save Scene as...");
+			AppendMenu(hFile, MF_STRING, ID_NEW_SCENE, L"New Scene");
+			AppendMenu(hFile, MF_STRING, ID_LOAD_SCENE, L"Open Scene");
+			AppendMenu(hFile, MF_SEPARATOR, NULL, L"Separator");
+			AppendMenu(hFile, MF_STRING, ID_SAVE_SCENE, L"Save Scene");
+			AppendMenu(hFile, MF_STRING, NULL, L"Save Scene as...");
 
-		AppendMenu(hGameObject, MF_STRING, ID_NEW_EMPTY_GAMEOBJECT, L"Create Empty");
-		AppendMenu(hGameObject, MF_STRING | MF_POPUP, (UINT_PTR)h3DObjects, L"3D Objects");
-		AppendMenu(h3DObjects, MF_STRING, ID_CREATE_CUBE, L"Cube");
-		//AppendMenu(hGameObject, MF_SEPARATOR, NULL, L"Separator");
-
-
-		AppendMenu(hHelp, MF_STRING, ID_HELP_MEME, L"Help, I need some MEMES");
-		AppendMenu(hHelp, MF_STRING, ID_WORK_AMBITIONS, L"I need some work help");
+			AppendMenu(hGameObject, MF_STRING, ID_NEW_EMPTY_GAMEOBJECT, L"Create Empty");
+			AppendMenu(hGameObject, MF_STRING | MF_POPUP, (UINT_PTR)h3DObjects, L"3D Objects");
+			AppendMenu(h3DObjects, MF_STRING, ID_CREATE_CUBE, L"Cube");
+			//AppendMenu(hGameObject, MF_SEPARATOR, NULL, L"Separator");
 
 
-		SetMenu(hWnd, hMenubar);
+			AppendMenu(hHelp, MF_STRING, ID_HELP_MEME, L"Help, I need some MEMES");
+			AppendMenu(hHelp, MF_STRING, ID_WORK_AMBITIONS, L"I need some work help");
+
+
+			SetMenu(hWnd, hMenubar);
+		}
 	}
 	break;
 
@@ -879,8 +890,6 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 		gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
 	}
 
-	//gSwapChain->SetFullscreenState(TRUE, NULL);
-
 	SetViewport();
 
 	/*if (!CreateDepthStencilState(m_depthStencilStateEnabled, true, true))
@@ -976,6 +985,52 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 	if (FAILED(result))
 		Console.error("Error Disable Blend State");
 
+	return hr;
+}
+
+HRESULT CoreEngine::CreatePlayerDirect3DContext(HWND wndHandle)
+{
+	// create a struct to hold information about the swap chain
+	DXGI_SWAP_CHAIN_DESC scd;
+
+	// clear out the struct for use
+	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+	// fill the swap chain description struct
+	scd.BufferCount = 1;                                    // one back buffer
+	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;     // use 32-bit color
+	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;      // how swap chain is to be used
+	scd.OutputWindow = wndHandle;                           // the window to be used
+	scd.SampleDesc.Count = 4;                               // how many multisamples
+	scd.Windowed = TRUE;                                    // windowed/full-screen mode
+
+															// create a device, device context and swap chain using the information in the scd struct
+	HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL,
+		D3D_DRIVER_TYPE_HARDWARE,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		D3D11_SDK_VERSION,
+		&scd,
+		&gSwapChain,
+		&gDevice,
+		NULL,
+		&gDeviceContext);
+
+	if (SUCCEEDED(hr))
+	{
+		// get the address of the back buffer
+		ID3D11Texture2D* pBackBuffer = nullptr;
+		gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+
+		// use the back buffer address to create the render target
+		gDevice->CreateRenderTargetView(pBackBuffer, NULL, &gBackbufferRTV);
+		pBackBuffer->Release();
+
+		// set the render target as the back buffer
+		gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
+	}
 	return hr;
 }
 

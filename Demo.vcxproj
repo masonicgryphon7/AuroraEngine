@@ -196,6 +196,7 @@
     <ClInclude Include="NPC.h" />
     <ClInclude Include="PathCreator.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerMoveScript.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="PlayerSelectionScript.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="PathCreator.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerMoveScript.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="PlayerSelectionScript.cpp" />
