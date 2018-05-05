@@ -36,11 +36,6 @@ struct AnimationFrame {
 };
 
 
-struct Skeleton {
-	std::vector < DirectX::XMMATRIX > bindPose;
-	std::vector < DirectX::XMMATRIX > inverseBindPose;
-
-};
 
 
 

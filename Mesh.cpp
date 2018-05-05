@@ -4,8 +4,9 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext)
+Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
 {
+	this->vertexShader = vertexShader;
 	vertexCount = 0;
 	gDeviceContext = devContext;
 	CreateTerrainMeshData(vertCountData, TerrainInfoVector, device, devContext);
@@ -13,8 +14,10 @@ Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVect
 	this->meshPath = "Terrain";
 }
 
-Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext)
+Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
 {
+	this->vertexShader = vertexShader;
+
 	vertexCount = 0;
 	gDeviceContext = devContext;
 	CreateMeshData(filePath, device, devContext);
@@ -27,11 +30,26 @@ Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * de
 	this->meshName = meshName.substr(0, meshName.find(".", 0));
 }
 
-Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary)
+Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary, bool isAnimated, ShaderProgram* vertexShader)
 {
+	this->meshPath = filePath;
+	this->vertexShader = vertexShader;
+
+	std::reverse(filePath.begin(), filePath.end());
+	this->meshName = filePath.substr(0, filePath.find("/", 0));
+	std::reverse(this->meshName.begin(), this->meshName.end());
+	this->meshName = meshName.substr(0, meshName.find(".", 0));
+
 	gDeviceContext = devContext;
-	createMeshFromBinary(filePath, device);
-	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
+	if (!isAnimated) {
+		createMeshFromBinary(meshPath, device);
+		vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
+	}
+	else
+	{
+		createAnimatedMeshFromBinary(meshPath, device);
+		vertexSize = sizeof(VERTEX_POS3UV2T3B3N3JNT4WT4);
+	}
 }
 
 Mesh::~Mesh()
@@ -200,8 +218,8 @@ void Mesh::bindMesh()
 {
 	UINT32 offset = 0;
 	// specify which vertex buffer to use next.
+	vertexShader->ActivateShader();
 	gDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexSize, &offset);
-
 }
 
 const std::string Mesh::getMeshName() const
@@ -339,5 +357,72 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 
 	device->CreateBuffer(&vertexBufferDesc, &vertexdata, &vertexBuffer);
 	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
+	vertexCount = vertices.size();
+}
+
+
+
+void Mesh::createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * device)
+{
+	//std::vector<DirectX::XMFLOAT3> positions;
+	//std::vector<DirectX::XMFLOAT2> texCoords;
+	//std::vector<DirectX::XMFLOAT3> normals;
+	MyLibrary::Loadera myLoader;
+	MyLibrary::AnimatedMeshFromFile myMesh;
+	VERTEX_POS3UV2T3B3N3JNT4WT4 vertex;
+	std::vector<VERTEX_POS3UV2T3B3N3JNT4WT4> vertices;
+	myMesh = myLoader.readAnimatedMeshFile(fileName);
+	int gg = 0;
+	for (int i = 0; i <   myMesh.mesh_nrOfVertices; i++)
+	{
+		vertex.position.x =  myMesh.mesh_vertices[i].vertex_position[0];
+		vertex.position.y =  myMesh.mesh_vertices[i].vertex_position[1];
+		vertex.position.z =  myMesh.mesh_vertices[i].vertex_position[2];
+		vertexPositions.push_back(DirectX::XMVectorSet(vertex.position.x, vertex.position.y, vertex.position.z, 0));
+
+		vertex.normal.x =  myMesh.mesh_vertices[i].vertex_normal[0];
+		vertex.normal.y =  myMesh.mesh_vertices[i].vertex_normal[1];
+		vertex.normal.z =  myMesh.mesh_vertices[i].vertex_normal[2];
+
+		vertex.uv.x =  myMesh.mesh_vertices[i].vertex_UVCoord[0];
+		vertex.uv.y =  myMesh.mesh_vertices[i].vertex_UVCoord[1];
+
+		vertex.tangent.x =  myMesh.mesh_vertices[i].vertex_tangent[0];
+		vertex.tangent.y =  myMesh.mesh_vertices[i].vertex_tangent[1];
+		vertex.tangent.z =  myMesh.mesh_vertices[i].vertex_tangent[2];
+
+		vertex.bitangent.x =  myMesh.mesh_vertices[i].vertex_biTangent[0];
+		vertex.bitangent.y =  myMesh.mesh_vertices[i].vertex_biTangent[1];
+		vertex.bitangent.z =  myMesh.mesh_vertices[i].vertex_biTangent[2];
+
+		vertex.jointIndex.x =  myMesh.mesh_vertices[i].influencing_joint[0];
+		vertex.jointIndex.y =  myMesh.mesh_vertices[i].influencing_joint[1];
+		vertex.jointIndex.z =  myMesh.mesh_vertices[i].influencing_joint[2];
+		vertex.jointIndex.w =  myMesh.mesh_vertices[i].influencing_joint[3];
+
+		vertex.jointWeight.x =  myMesh.mesh_vertices[i].joint_weights[0];
+		vertex.jointWeight.y =  myMesh.mesh_vertices[i].joint_weights[1];
+		vertex.jointWeight.z =  myMesh.mesh_vertices[i].joint_weights[2];
+		vertex.jointWeight.w =  myMesh.mesh_vertices[i].joint_weights[3];
+
+		vertices.push_back(vertex);
+	}
+
+	D3D11_BUFFER_DESC vertexBufferDesc;
+
+	memset(&vertexBufferDesc, 0, sizeof(vertexBufferDesc));
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	vertexBufferDesc.ByteWidth = sizeof(vertices[0])  * vertices.size();
+	D3D11_SUBRESOURCE_DATA vertexdata;
+	ZeroMemory(&vertexdata, sizeof(D3D11_SUBRESOURCE_DATA));
+
+	vertexdata.pSysMem = vertices.data();
+	vertexdata.SysMemPitch = 0;
+	vertexdata.SysMemSlicePitch = 0;
+
+	device->CreateBuffer(&vertexBufferDesc, &vertexdata, &vertexBuffer);
+	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3JNT4WT4);
 	vertexCount = vertices.size();
 }

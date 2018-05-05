@@ -21,7 +21,7 @@ void AnimationClip::createClipFromBinary(std::string filePath)
 	std::reverse(this->clipName.begin(), this->clipName.end());
 	this->clipName = clipName.substr(0, clipName.find(".", 0));
 
-	MyLibrary::AnimationFromFile tempAnimation = myLoader.readAnimationFile(filePath);
+	MyLibrary::AnimationFromFile tempAnimation = myLoader.readAnimationFile(clipPath);
 	
 	for (int i = 0; i < tempAnimation.nr_of_keyframes; i++)
 	{

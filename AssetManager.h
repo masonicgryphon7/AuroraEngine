@@ -4,10 +4,15 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "ShaderProgram.h"
-#include "INPUT_ELEMENT_DESCRIPTION.h"
 #include "PRIMITIVE_GEOMETRY.h"
 #include "AnimationClip.h"
-#include "FullSkeleton.h"
+#include "Skeleton.h"
+
+enum class INPUT_ELEMENT_DESCRIPTION
+{
+	INPUT_ELEMENT_POS3UV2T3B3N3, INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4,
+};
+
 static class cAssetManager
 {
 public:
@@ -19,15 +24,17 @@ public:
 	Texture* AddTexture(std::string filePath);
 	void addMaterial(ShaderProgram * shaderProgram);
 	Material* AddMaterial(ShaderProgram* shaderProgram);
-	void addMesh(std::string filePath);
-	void addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector);
-	Mesh* AddMesh(const std::string& filePath);
-	void addMeshFromBinary(std::string filePath);
-	void addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader);
+	void addMesh(std::string filePath, ShaderProgram* vertexShader);
+	void addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ShaderProgram* vertexShader);
+	Mesh* AddMesh(const std::string& filePath, ShaderProgram* vertexShader);
+	void addMeshFromBinary(std::string filePath, ShaderProgram* vertexShader);
+	void addAnimatedMeshFromBinary(std::string filePath, ShaderProgram* vertexShader);
+	void addShaderProgram(INPUT_ELEMENT_DESCRIPTION description,  std::string filePath, SHADER_TYPE type);
+	void addShaderProgram(std::string filePath, SHADER_TYPE type);
 	void addAnimationClipFromBinary(const std::string& filePath);
 	void Start(ID3D11Device * device, ID3D11DeviceContext * devContext);
 	void addSkeletonFromBinary(const std::string &filePath);
-	MyLibrary::SkeletonFromFile* getSkeleton(const std::string& filePath);
+	Skeleton* getSkeleton(const std::string& filePath);
 	AnimationClip* getAnimationclip(const std::string& filePath);
 	Texture* getTexture(const std::string &path);
 	Texture* getTexture(int index);
@@ -35,6 +42,7 @@ public:
 	Mesh* getMesh(int index);
 	Mesh* getMesh(const std::string& name);
 	ShaderProgram* getShaderProgram(int index);
+	ShaderProgram* getShaderProgram(const std::string& filePath);
 
 	// -- GUID -- //
 	static unsigned int GenerateGUID();
@@ -45,7 +53,7 @@ public:
 private:
 	static std::vector<Texture*> textures;
 	static std::vector<AnimationClip*> animationClips;
-	static std::vector<FullSkeleton*> skeletons;
+	static std::vector<Skeleton*> skeletons;
 	static std::vector<Material*> materials;
 	static std::vector<Mesh*> meshes;
 	static std::vector<ShaderProgram*> shaderPrograms;

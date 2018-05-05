@@ -5,7 +5,7 @@ class Material
 {
 public:
 	Material();
-	Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram* shaderProgram);
+	Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram* pixelShader);
 	~Material();
 
 	void setAlpha(bool value) { hasAlpha = value; };
@@ -43,7 +43,7 @@ private:
 	ID3D11ShaderResourceView * albedo = nullptr;
 	ID3D11ShaderResourceView * normal = nullptr;
 	ID3D11ShaderResourceView * AORoughMet = nullptr;
-	ShaderProgram* shaderProgram = nullptr;
+	ShaderProgram* pixelShader = nullptr;
 	ID3D11DeviceContext* gDeviceContext = nullptr;
 };
 
