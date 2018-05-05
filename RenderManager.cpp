@@ -111,12 +111,11 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 		opaqueDraw[i][0]->meshFilterComponent->getMesh()->bindMesh();
 
 		//Get world matricies
-		std::vector<DirectX::XMFLOAT4X4> opaqueTransforms;
 		for (int j = 0; j < opaqueDraw[i].size(); j++)
 		{
 			DirectX::XMFLOAT4X4 temp;
 			DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j]->calculateWorldMatrix()));
-			opaqueTransforms.push_back(temp);
+			opaqueTransforms[j]=temp;
 		}
 
 
@@ -124,7 +123,6 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 
 		//Fill matrixbuffer
 		matrixBufferData.isTerrain = opaqueDraw[i][0]->materialFilterComponent->material->isTerrain();
-		matrixBufferData.instanceDraw = true;
 		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(opaqueDraw[i][0]->calculateWorldMatrix()));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
@@ -133,7 +131,9 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 
 
 		//instance buffer
-		gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, opaqueTransforms.data(), 0, 0);
+
+
+		gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &opaqueTransforms, 0, 0);
 
 
 
@@ -224,7 +224,7 @@ void RenderManager::CreateMatrixBuffer()
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	int gg = sizeof(MatrixBufferStruct);
-	bufferDesc.ByteWidth = sizeof(MatrixBufferStruct) + 12;
+	bufferDesc.ByteWidth = sizeof(MatrixBufferStruct);
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 

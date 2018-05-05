@@ -16,9 +16,8 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix view;
 	matrix projection;
 	float4 cameraPosition;
-	bool isTerrain;
-	bool instanceDraw;
-
+	int isTerrain;
+	int fill[3];
 };
 
 Texture2D Diffuse:register(t0);
@@ -89,7 +88,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float roughness = AORoughMet.y;
 	float ao = AORoughMet.x;//met_Roug_Ao.z;	
 		
-	if (isTerrain)
+	if (isTerrain==1)
 	{
 		float3 IDcolor, colorValue;
 		IDcolor = ID_Map.Sample(sampAni, input.Uv).xyz;

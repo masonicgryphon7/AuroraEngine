@@ -13,8 +13,8 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix view;
 	matrix projection;
 	float4 cameraPosition;
-	bool isTerrain;
-	bool instanceDraw;
+	int isTerrain;
+	int fill[3];
 };
 
 cbuffer INSTANCE_Buffer :register (b1)
@@ -38,14 +38,10 @@ VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 	VS_OUT output = (VS_OUT)0;
 
 	output.Position = float4(input.Position, 1);
-	if (instanceDraw==0) {
-		output.Position = mul(output.Position, world);
-		output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), world);
-	}
-	if (instanceDraw == 1) {
-		output.Position = mul(output.Position, instanceWorld[instanceID]);
-		output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), instanceWorld[instanceID]);
-	}
+
+	output.Position = mul(output.Position, instanceWorld[instanceID]);
+	output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), instanceWorld[instanceID]);
+
 	output.worldPosition = output.Position;
 	output.Position = mul(output.Position, view);
 	output.Position = mul(output.Position, projection);
