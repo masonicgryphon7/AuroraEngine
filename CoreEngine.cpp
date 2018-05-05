@@ -292,7 +292,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain4->addComponent(meshFilterTerrain4);
 
 		//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
-		cPathCreator* PathCreator1 = new cPathCreator(200, 200);
+		cPathCreator* PathCreator1 = new cPathCreator(450, 450); // 200x200
 
 		PathCreator1->addTerrain(terrainGenerator1->getRealVertArr(), 0, 0);
 		PathCreator1->addTerrain(terrainGenerator2->getRealVertArr(), 0, 100);

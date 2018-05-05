@@ -54,18 +54,32 @@ void cPathCreator::trumpTheBorders()
 
 void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions, int StartX, int StartY)
 {
-	for (int x = MIN; x < positions.size(); x++) //Row
+	for (int x = MIN; x < positions.size() - 2; x += 2) //Row
 	{
-		for (int y = MIN; y <positions.size(); y++) //Column
+		for (int y = MIN; y <positions.size() - 2; y += 2) //Column
 		{
 
-			grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x+ StartY, positions[x][y].position.y, positions[x][y].position.z+ StartX);
-			grid[StartY + y][StartX + x].g = 0;
-			grid[StartY + y][StartX + x].f = 0;
-			grid[StartY + y][StartX + x].h = 0;
-			grid[StartY + y][StartX + x].parentX = -999999999;
-			grid[StartY + y][StartX + x].parentZ = -999999999;
-			grid[StartY + y][StartX + x].pathable = true;
+			//grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x+ StartY, positions[x][y].position.y, positions[x][y].position.z+ StartX);
+			//grid[StartY + y][StartX + x].g = 0;
+			//grid[StartY + y][StartX + x].f = 0;
+			//grid[StartY + y][StartX + x].h = 0;
+			//grid[StartY + y][StartX + x].parentX = -999999999;
+			//grid[StartY + y][StartX + x].parentZ = -999999999;
+			//grid[StartY + y][StartX + x].pathable = true;
+
+			grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
+			grid[StartY + y][StartX + x + 1].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
+			grid[StartY + y][StartX + x + 2].position = Vec3(positions[x][y + 1].position.x + StartY, positions[x][y + 1].position.y, positions[x][y + 1].position.z + StartX);
+			
+			grid[StartY + y + 1][StartX + x].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
+			grid[StartY + y + 1][StartX + x + 1].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
+			grid[StartY + y + 1][StartX + x + 2].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
+
+			grid[StartY + y + 2][StartX + x].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
+			grid[StartY + y + 2][StartX + x + 1].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
+			grid[StartY + y + 2][StartX + x + 2].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
+
+
 		}
 	}
 	int i = 0;

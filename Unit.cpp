@@ -67,6 +67,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
+		//this->gameObject->tag = tag;
 		break;
 
 	case Type::Soldier: //SOLDIER
