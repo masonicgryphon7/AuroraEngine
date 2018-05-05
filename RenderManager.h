@@ -15,8 +15,8 @@ struct MatrixBufferStruct
 	DirectX::XMFLOAT4X4 view;
 	DirectX::XMFLOAT4X4 projection;
 	DirectX::XMFLOAT4 cameraPosition;
-	bool isTerrain;
-	bool instanceDraw;
+	int isTerrain;
+	int fill[3]{ 0 };
 };
 
 class RenderManager
@@ -47,6 +47,7 @@ private:
 	std::vector<GameObject*> translucentDraw;
 	std::vector<Mesh*> meshVector;
 	std::vector<Material*> materialVector;
+	DirectX::XMFLOAT4X4 opaqueTransforms[100]{ DirectX::XMFLOAT4X4() };
 
 	// for render texture
 public:

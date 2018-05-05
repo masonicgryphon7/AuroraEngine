@@ -78,16 +78,16 @@ private:
 	ID3D11Buffer* gVertexBuffer = nullptr;
 	ID3D11ShaderResourceView *textureview = nullptr;
 	ID3D11InputLayout* gVertexLayout = nullptr;
-	ID3D11Texture2D* m_depthStencilBuffer;
-	ID3D11DepthStencilState* m_depthStencilState;
-	ID3D11DepthStencilState* m_depthStencilStateEnabled;
-	ID3D11DepthStencilState* m_depthStencilStateDisabled;
+	ID3D11Texture2D* m_depthStencilBuffer = nullptr;
+	ID3D11DepthStencilState* m_depthStencilState = nullptr;
+	ID3D11DepthStencilState* m_depthStencilStateEnabled = nullptr;
+	ID3D11DepthStencilState* m_depthStencilStateDisabled = nullptr;
 	//ID3D11DepthStencilView* m_depthStencilView;
-	ID3D11RasterizerState* m_rasterizerState;
-	ID3D11RasterizerState* m_rasterStateCullFront;
-	ID3D11RasterizerState* m_rasterStateCullBack;
-	ID3D11RasterizerState* m_rasterStateCullNone;
-	ID3D11BlendState* m_alphaEnableBlendState, * m_alphaDisabledBlendState;
+	ID3D11RasterizerState* m_rasterizerState = nullptr;
+	ID3D11RasterizerState* m_rasterStateCullFront = nullptr;
+	ID3D11RasterizerState* m_rasterStateCullBack = nullptr;
+	ID3D11RasterizerState* m_rasterStateCullNone = nullptr;
+	ID3D11BlendState* m_alphaEnableBlendState = nullptr, * m_alphaDisabledBlendState = nullptr;
 	static bool hasResized;
 	int firstThing = 0;
 	unsigned int numModes, m_refreshRateNumerator, m_refreshRateDenominator;
@@ -105,6 +105,7 @@ private:
 	HWND InitWindow(HINSTANCE hInstance);
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	HRESULT CreateDirect3DContext(HWND wndHandle);
+	HRESULT CreatePlayerDirect3DContext(HWND wndHandle);
 	bool CreateDepthStencilBuffer();
 	bool CreateDepthStencilView();
 	bool CreateDepthStencilState(void* ds, bool enabled, bool writeEnabled);
@@ -118,7 +119,7 @@ public:
 	ID3D11DeviceContext * gDeviceContext = nullptr;
 	ID3D11RenderTargetView* gBackbufferRTV = nullptr;
 
-	ID3D11DepthStencilView * m_depthStencilView;
+	ID3D11DepthStencilView * m_depthStencilView = nullptr;
 
 	std::vector<GameObject*>*objectsToRender;
 

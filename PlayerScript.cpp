@@ -56,20 +56,20 @@ void PlayerScript::update()
 	distance = speed * Time.getDeltaTime();
 	position = DirectX::XMVectorSet(0, 0, 0, 0);
 
-	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow) || Input.GetMousePosition().x == 0.0f)
+	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow) || Input.fullscreenMousePosition.x == 0.0f)
 		//direction = DirectX::XMVectorAdd(gameObject->transform.getForward(), direction);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, 0, 1, 0)));
 
-	if (Input.GetKey(KeyCode::W) || Input.GetKey(KeyCode::UpArrow) || Input.GetMousePosition().y == 0.0f)
+	if (Input.GetKey(KeyCode::W) || Input.GetKey(KeyCode::UpArrow) || Input.fullscreenMousePosition.y == 0.0f)
 		//direction = DirectX::XMVectorScale(DirectX::XMVectorAdd(gameObject->transform.getRight(), direction), -1);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1, 0, 0, 0)));
 
 
-	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.GetMousePosition().x >= Input.GetWidth())
+	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.fullscreenMousePosition.x >= Input.GetFullscreenWindow().x - 5)
 		//direction = DirectX::XMVectorScale(DirectX::XMVectorAdd(gameObject->transform.getForward(), direction), -1);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, 0, -1, 0)));
 
-	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.GetMousePosition().y >= Input.GetHeight())
+	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.fullscreenMousePosition.y >= Input.GetFullscreenWindow().y - 5)
 		//direction = DirectX::XMVectorAdd(gameObject->transform.getRight(), direction);
 		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(-1, 0, 0, 0)));
 
@@ -122,8 +122,8 @@ void PlayerScript::update()
 		firstMouse = false;
 	}
 
-	xpos = Input.GetMousePosition().x;
-	ypos = Input.GetMousePosition().y;
+	xpos = Input.fullscreenMousePosition.x;
+	ypos = Input.fullscreenMousePosition.y;
 
 	/*if (Input.GetKey(KeyCode::RightMouse))
 	{
@@ -198,7 +198,7 @@ void PlayerScript::SelectUnits()
 				if (selectedObjects.at(i)->tag == 1 && !UnitAlreadySelected(selectedObjects, i))
 				{
 					//This is a Player Unit.
-					//Debug.Log("Player: Marked/Selected ", selectedObjects.at(i)->name, ": An Player Unit.", i);
+					//Debug.Log("Player: Marked/Selected ", selectedObjects.at(i)->name, ": A Player Unit.", i);
 					SelectedUnits.push_back(selectedObjects.at(i));
 				}
 
@@ -250,7 +250,8 @@ void PlayerScript::SelectUnits()
 		//unity har en deadzone för drag selection och att man raycastar eller selectar inte först man releasar mus. börja uppdatera mousePosRelative on mousedown och räkna ut if utanför deadzone så selection i physics else mousepick
 		RaycastHit hit;
 
-		Ray ray = Player->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(Input.mousePosition.x, Input.mousePosition.y, 0, 0));
+		Ray ray = Player->getComponent<Camera>()->\
+			calculateScreenPointToRay(DirectX::XMVectorSet(Input.mousePosition.x, Input.mousePosition.y, 0, 0));
 		gPhysics.Raycast(ray, hit);
 
 		if (hit.transform != nullptr) {

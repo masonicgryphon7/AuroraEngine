@@ -198,6 +198,8 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 	{
 		lerpValue = 0;
 		pathNodes = PathCreator.getPath(current, pointPosition); // Point position
+		if (pathNodes.at(pathNodes.size()-1).pathable == PATHABLE_CHECK)
+			pathNodes.erase(pathNodes.begin()+pathNodes.size()-1);
 	}
 
 	if (pathNodes.size() > 0) {

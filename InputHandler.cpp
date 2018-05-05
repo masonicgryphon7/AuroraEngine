@@ -3,6 +3,7 @@
 
 Vector2 InputHandler::viewportSize;
 Vector2 InputHandler::mousePosition;
+Vector2 InputHandler::fullscreenMousePosition;
 
 InputHandler::InputHandler()
 {}

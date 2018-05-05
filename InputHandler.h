@@ -26,6 +26,7 @@ public:
 	bool GetKeyUp(KeyCode key);
 
 	static Vector2 mousePosition;
+	static Vector2 fullscreenMousePosition;
 
 	Vector2 GetMousePosition();
 
@@ -52,6 +53,14 @@ public:
 		RECT rect;
 		GetClientRect(wnd, &rect);
 		return (int)(rect.bottom - rect.top);
+	}
+
+	inline Vector2 GetFullscreenWindow()
+	{
+		RECT desktop;
+		const HWND hDesktop = GetDesktopWindow();
+		GetWindowRect(hDesktop, &desktop);
+		return Vector2(desktop.right, desktop.bottom);
 	}
 
 private:
