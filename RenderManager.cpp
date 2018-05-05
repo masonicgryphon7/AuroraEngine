@@ -104,22 +104,9 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 	//Opaque
 	for (int i = 0; i < opaqueDraw.size(); i++)
 	{
-		//Draw
 
-		//Instance Draw
 		opaqueDraw[i][0]->materialFilterComponent->material->bindMaterial();
 		opaqueDraw[i][0]->meshFilterComponent->getMesh()->bindMesh();
-
-		//Get world matricies
-		for (int j = 0; j < opaqueDraw[i].size(); j++)
-		{
-			DirectX::XMFLOAT4X4 temp;
-			DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j]->calculateWorldMatrix()));
-			opaqueTransforms[j]=temp;
-		}
-
-
-
 
 		//Fill matrixbuffer
 		matrixBufferData.isTerrain = opaqueDraw[i][0]->materialFilterComponent->material->isTerrain();
@@ -129,18 +116,28 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
 		gDeviceContext->UpdateSubresource(matrixBuffer, 0, nullptr, &matrixBufferData, 0, 0);
 
+		//Instancing
+		int nrOfObjectsDrawn = 0;
+		while (nrOfObjectsDrawn!=opaqueDraw[i].size())
+		{
+			//Get world matricies
+			int nrToDraw = 0;
+			nrToDraw = opaqueDraw[i].size() - nrOfObjectsDrawn;
+			if (nrToDraw > 100)
+				nrToDraw = 100;
 
-		//instance buffer
+			for (int j = 0; j < nrToDraw; j++)
+			{
+				DirectX::XMFLOAT4X4 temp;
+				DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j+nrOfObjectsDrawn]->calculateWorldMatrix()));
+				opaqueTransforms[j]=temp;
+			}
 
+			nrOfObjectsDrawn += nrToDraw;
+			gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &opaqueTransforms, 0, 0);
+			gDeviceContext->DrawInstanced(opaqueDraw[i][0]->meshFilterComponent->getMesh()->getVertexCount(), opaqueDraw[i].size(), 0, 0);
 
-		gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &opaqueTransforms, 0, 0);
-
-
-
-		gDeviceContext->DrawInstanced(opaqueDraw[i][0]->meshFilterComponent->getMesh()->getVertexCount(), opaqueDraw[i].size(), 0, 0);
-
-
-		
+		}		
 	}
 
 	/////////////////////Animation?
