@@ -40,10 +40,10 @@ HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gD
 void GameManager::update()
 {
 	gameTime += Time.getDeltaTime();
-	if (gameTime >= 0 && ringOfFire >= 20)
+	if (gameTime >= 30 && ringOfFire >= 20)
 	{
 		Debug.Log(ringOfFire);  
-		ringOfFire -= 0.5f * Time.getDeltaTime() * gameTime;
+		ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 		devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 	}
 
