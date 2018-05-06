@@ -5,15 +5,21 @@
 Material::Material()
 {}
 
-Material::Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram * pixelShader)
+Material::Material(std::string name, ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, ShaderProgram * pixelShader)
 {
+	this->materialName = name;
 	this->gDeviceContext = gDeviceContext;
+	this->gDevice = gDevice;
 	this->pixelShader = pixelShader;
+	createSamplerState();
 }
 
 
 Material::~Material()
-{}
+{
+	//m_sampleState->Release();
+
+}
 
 bool Material::isTerrain()
 {
@@ -40,7 +46,7 @@ void Material::setAORoughMet(ID3D11ShaderResourceView * AORoughMet)
 	this->AORoughMet = AORoughMet;
 }
 
-void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11ShaderResourceView * normal1, ID3D11ShaderResourceView * AORoughMet1, ID3D11ShaderResourceView * albedo2, ID3D11ShaderResourceView * normal2, ID3D11ShaderResourceView * AORoughMet2, ID3D11ShaderResourceView * albedo3, ID3D11ShaderResourceView * normal3, ID3D11ShaderResourceView * AORoughMet3, ID3D11ShaderResourceView * ID_MAP)
+void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11ShaderResourceView * normal1, ID3D11ShaderResourceView * AORoughMet1, ID3D11ShaderResourceView * albedo2, ID3D11ShaderResourceView * normal2, ID3D11ShaderResourceView * AORoughMet2, ID3D11ShaderResourceView * albedo3, ID3D11ShaderResourceView * normal3, ID3D11ShaderResourceView * AORoughMet3, ID3D11ShaderResourceView *albedo4, ID3D11ShaderResourceView *normal4, ID3D11ShaderResourceView *AORoughMet4, ID3D11ShaderResourceView * ID_MAP)
 {
 	this->TerrainAlbedo_1 = albedo1;
 	this->TerrainNormal_1 = normal1;
@@ -54,12 +60,18 @@ void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11Sha
 	this->TerrainNormal_3 = normal3;
 	this->TerrainAORoughMet_3 = AORoughMet3;
 
+	this->TerrainAlbedo_4 = albedo4;
+	this->TerrainNormal_4 = normal4;
+	this->TerrainAORoughMet_4 = AORoughMet4;
+
 	this->ID_MAP = ID_MAP;
 }
 
 void Material::bindMaterial()
 {
 	pixelShader->ActivateShader();
+	gDeviceContext->PSSetSamplers(0, 1, &m_sampleState);
+
 	gDeviceContext->PSSetShaderResources(0, 1, &albedo);
 	gDeviceContext->PSSetShaderResources(1, 1, &normal);
 	gDeviceContext->PSSetShaderResources(2, 1, &AORoughMet);
@@ -77,10 +89,42 @@ void Material::bindMaterial()
 	gDeviceContext->PSSetShaderResources(11, 1, &TerrainAORoughMet_3);
 
 	gDeviceContext->PSSetShaderResources(12, 1, &ID_MAP);
+
+	gDeviceContext->PSSetShaderResources(13, 1, &TerrainAlbedo_4);
+	gDeviceContext->PSSetShaderResources(14, 1, &TerrainNormal_4);
+	gDeviceContext->PSSetShaderResources(15, 1, &TerrainAORoughMet_4);
 }
 
 void Material::update()
 {
+}
+
+const std::string Material::getMaterialName() const
+{
+	return materialName;
+}
+
+
+
+void Material::createSamplerState()
+{
+	D3D11_SAMPLER_DESC samplerDesc;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	gDevice->CreateSamplerState(&samplerDesc, &m_sampleState);
+
 }
 
 

@@ -16,8 +16,8 @@ TerrainGenerator::TerrainGenerator(int grid_RowPr, int grid_ColumnPr)
 
 TerrainGenerator::TerrainGenerator(int grid_RowPr, int grid_ColumnPr, char* HeightMapFileName)
 {
-	grid_Row = grid_RowPr;
-	grid_Column = grid_ColumnPr;
+	grid_Row = grid_RowPr+1;
+	grid_Column = grid_ColumnPr+1;
 	LoadHeightMapToAttributes(HeightMapFileName);
 	loadRandomTerrainHeights();
 }
@@ -100,7 +100,7 @@ void TerrainGenerator::loadRandomTerrainHeights()
 			srandNumber = (((float)rand() / float(RAND_MAX)) * 0.5f);
 
 			Vertices.position = DirectX::XMFLOAT3(i, srandNumber, j);
-			Vertices.uv = DirectX::XMFLOAT2(((float)i / grid_Row), ((float)j / grid_Column));
+			Vertices.uv = DirectX::XMFLOAT2(((float)i / (grid_Row-1)), ((float)j / (grid_Column-1)));
 			Vertices.normal = DirectX::XMFLOAT3(0, 1, 0);
 			TempVertArr.push_back(Vertices);
 		}

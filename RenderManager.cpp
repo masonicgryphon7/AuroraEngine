@@ -106,6 +106,9 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 	{
 
 		opaqueDraw[i][0]->materialFilterComponent->material->bindMaterial();
+		matrixBufferData.xMaterialTile = opaqueDraw[i][0]->materialFilterComponent->material->getXTile();
+		matrixBufferData.yMaterialTile = opaqueDraw[i][0]->materialFilterComponent->material->getYTile();
+
 		opaqueDraw[i][0]->meshFilterComponent->getMesh()->bindMesh();
 
 		//Fill matrixbuffer

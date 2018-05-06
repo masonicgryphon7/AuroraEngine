@@ -50,7 +50,23 @@ PlayerScript::~PlayerScript()
 void PlayerScript::update()
 {
 	//SelectUnits();
+	for (int i = 0; i < this->friendlyUnits.size(); i++)
+	{
+		if (this->friendlyUnits[i]->getHealthPoints() <= 0)
+		{
+			for (int j = 0; j < this->SelectedUnits.size(); j++)
+			{
+				if (this->friendlyUnits.at(i)->gameObject == this->SelectedUnits.at(j))
+				{
+					this->SelectedUnits.erase(this->SelectedUnits.begin() + j);
+				}
+			}
+			this->friendlyUnits[i]->destroyUnit();
+			this->friendlyUnits.erase(this->friendlyUnits.begin() + i);
+		}
 
+
+	}
 	///////////////////////
 
 	distance = speed * Time.getDeltaTime();
@@ -228,7 +244,7 @@ void PlayerScript::SelectUnits()
 				if (hit.transform->gameObject->tag == 1 || hit.transform->gameObject->tag == 3)
 				{
 					//Debug.Log("Hit", hit.transform->gameObject->name, ": An Player Unit");
-					if(hit.transform->gameObject->getComponent<Unit>()!=nullptr)
+					if (hit.transform->gameObject->getComponent<Unit>() != nullptr)
 						SelectedUnits.push_back(hit.transform->gameObject);
 				}
 			}
@@ -258,7 +274,7 @@ void PlayerScript::SelectUnits()
 
 			for (int i = 0; i < SelectedUnits.size(); i++)
 			{
-				SelectedUnits.at(i)->getComponent<Unit>()->RecieveOrder(hit);
+				SelectedUnits.at(i)->getComponent<Unit>()->RecieveOrder(hit, SelectedUnits.at(i)->tag);
 			}
 		}
 		else

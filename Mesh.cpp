@@ -32,8 +32,8 @@ Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * de
 
 Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary, bool isAnimated, ShaderProgram* vertexShader)
 {
-	this->meshPath = filePath;
 	this->vertexShader = vertexShader;
+	this->meshPath = filePath;
 
 	std::reverse(filePath.begin(), filePath.end());
 	this->meshName = filePath.substr(0, filePath.find("/", 0));

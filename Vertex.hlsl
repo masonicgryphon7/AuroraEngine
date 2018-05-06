@@ -14,7 +14,10 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix projection;
 	float4 cameraPosition;
 	int isTerrain;
-	int fill[3];
+	float xMaterialTile;
+	float yMaterialTile;
+
+	int fill[1];
 };
 
 cbuffer INSTANCE_Buffer :register (b1)
