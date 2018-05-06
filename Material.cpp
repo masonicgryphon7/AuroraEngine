@@ -46,7 +46,7 @@ void Material::setAORoughMet(ID3D11ShaderResourceView * AORoughMet)
 	this->AORoughMet = AORoughMet;
 }
 
-void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11ShaderResourceView * normal1, ID3D11ShaderResourceView * AORoughMet1, ID3D11ShaderResourceView * albedo2, ID3D11ShaderResourceView * normal2, ID3D11ShaderResourceView * AORoughMet2, ID3D11ShaderResourceView * albedo3, ID3D11ShaderResourceView * normal3, ID3D11ShaderResourceView * AORoughMet3, ID3D11ShaderResourceView * ID_MAP)
+void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11ShaderResourceView * normal1, ID3D11ShaderResourceView * AORoughMet1, ID3D11ShaderResourceView * albedo2, ID3D11ShaderResourceView * normal2, ID3D11ShaderResourceView * AORoughMet2, ID3D11ShaderResourceView * albedo3, ID3D11ShaderResourceView * normal3, ID3D11ShaderResourceView * AORoughMet3, ID3D11ShaderResourceView *albedo4, ID3D11ShaderResourceView *normal4, ID3D11ShaderResourceView *AORoughMet4, ID3D11ShaderResourceView * ID_MAP)
 {
 	this->TerrainAlbedo_1 = albedo1;
 	this->TerrainNormal_1 = normal1;
@@ -59,6 +59,10 @@ void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11Sha
 	this->TerrainAlbedo_3 = albedo3;
 	this->TerrainNormal_3 = normal3;
 	this->TerrainAORoughMet_3 = AORoughMet3;
+
+	this->TerrainAlbedo_4 = albedo4;
+	this->TerrainNormal_4 = normal4;
+	this->TerrainAORoughMet_4 = AORoughMet4;
 
 	this->ID_MAP = ID_MAP;
 }
@@ -85,6 +89,10 @@ void Material::bindMaterial()
 	gDeviceContext->PSSetShaderResources(11, 1, &TerrainAORoughMet_3);
 
 	gDeviceContext->PSSetShaderResources(12, 1, &ID_MAP);
+
+	gDeviceContext->PSSetShaderResources(13, 1, &TerrainAlbedo_4);
+	gDeviceContext->PSSetShaderResources(14, 1, &TerrainNormal_4);
+	gDeviceContext->PSSetShaderResources(15, 1, &TerrainAORoughMet_4);
 }
 
 void Material::update()

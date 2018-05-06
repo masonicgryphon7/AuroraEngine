@@ -18,7 +18,8 @@ public:
 	void setAORoughMet(ID3D11ShaderResourceView *AORoughMet);
 	void setTerrainMaterials(ID3D11ShaderResourceView *albedo1, ID3D11ShaderResourceView *normal1, ID3D11ShaderResourceView *AORoughMet1,
 		ID3D11ShaderResourceView *albedo2, ID3D11ShaderResourceView *normal2, ID3D11ShaderResourceView *AORoughMet2,
-		ID3D11ShaderResourceView *albedo3, ID3D11ShaderResourceView *normal3, ID3D11ShaderResourceView *AORoughMet3, ID3D11ShaderResourceView * ID_MAP);
+		ID3D11ShaderResourceView *albedo3, ID3D11ShaderResourceView *normal3, ID3D11ShaderResourceView *AORoughMet3,
+		ID3D11ShaderResourceView *albedo4, ID3D11ShaderResourceView *normal4, ID3D11ShaderResourceView *AORoughMet4, ID3D11ShaderResourceView * ID_MAP);
 
 	void bindMaterial();
 
@@ -49,6 +50,9 @@ private:
 	ID3D11ShaderResourceView * TerrainAlbedo_3 = nullptr;
 	ID3D11ShaderResourceView * TerrainNormal_3 = nullptr;
 	ID3D11ShaderResourceView * TerrainAORoughMet_3 = nullptr;
+	ID3D11ShaderResourceView * TerrainAlbedo_4 = nullptr;
+	ID3D11ShaderResourceView * TerrainNormal_4 = nullptr;
+	ID3D11ShaderResourceView * TerrainAORoughMet_4 = nullptr;
 	bool terrain = false;
 
 	bool hasAlpha = false;

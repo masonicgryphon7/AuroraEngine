@@ -46,6 +46,11 @@ Texture2D SandNormal : register(t10);
 Texture2D SandAORoughMetTexture : register(t11);
 Texture2D ID_Map : register(t12);
 
+Texture2D Lava_Albedo : register(t13);
+Texture2D Lava_Normal : register(t14);
+Texture2D Lava_OcclusionRoughnessMetallic : register(t15);
+
+
 float distributionGGX(float3 normal, float3 halfV, float roughness)
 {
 	float a = roughness * roughness;
@@ -140,8 +145,20 @@ float4 PS_main(VS_OUT input) : SV_Target
 		}
 
 		float3 middle = float3(99, 0, 99);
-		if (distance(middle, input.worldPosition) >= fireRing.x)
-			return float4(1, 0, fireRing.x, 1);
+		float ringDistance = distance(middle, input.worldPosition);
+		float diff = saturate(ringDistance - fireRing.x);
+
+		if (diff>0)
+		{
+			
+			float lavaLerp = diff;
+			//return float4(Lava_Albedo.Sample(sampAni, adjustedUV).xyz, 0);
+			albedo = lerp(albedo, Lava_Albedo.Sample(sampAni, adjustedUV).xyz,lavaLerp) ;
+			N = lerp(N, Lava_Normal.Sample(sampAni, adjustedUV).xyz, lavaLerp);
+			ao = lerp(ao, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).x, lavaLerp);
+			metallic = lerp(metallic, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).y, lavaLerp);
+			roughness = lerp(roughness, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).z, lavaLerp);
+		}
 
 	}
 

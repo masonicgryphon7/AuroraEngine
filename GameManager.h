@@ -15,6 +15,7 @@ public:
 	GameManager(ID3D11Device* gDevice, ID3D11DeviceContext*  gDeviceContext);
 	~GameManager();
 	float ringOfFire;
+
 	float gameTime;
 	float getGameTime() { return this->gameTime; };
 	float getRingRadius() { return this->ringOfFire; };

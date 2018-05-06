@@ -195,6 +195,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_Albedo")->getTexture(),
 			assetManager.getTexture("Sand_Normal")->getTexture(),
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 1
 
 		//Terrain Material 2
@@ -212,6 +215,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_Albedo")->getTexture(),
 			assetManager.getTexture("Sand_Normal")->getTexture(),
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 			assetManager.getTexture("ID_MAP2part2")->getTexture()); //USE ID_PART 2
 
 		//Terrain Material 1
@@ -229,6 +235,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_Albedo")->getTexture(),
 			assetManager.getTexture("Sand_Normal")->getTexture(),
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 			assetManager.getTexture("ID_MAP2part3")->getTexture()); //USE ID_PART 3
 
 		//Terrain Material 4
@@ -246,6 +255,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_Albedo")->getTexture(),
 			assetManager.getTexture("Sand_Normal")->getTexture(),
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 			assetManager.getTexture("ID_MAP2part4")->getTexture()); //USE ID_PART 4
 
 		//Unit Material
