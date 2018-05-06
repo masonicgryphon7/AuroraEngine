@@ -54,11 +54,18 @@ void PlayerScript::update()
 	{
 		if (this->friendlyUnits[i]->getHealthPoints() <= 0)
 		{
+			for (int j = 0; j < this->SelectedUnits.size(); j++)
+			{
+				if (this->friendlyUnits.at(i)->gameObject == this->SelectedUnits.at(j))
+				{
+					this->SelectedUnits.erase(this->SelectedUnits.begin() + j);
+				}
+			}
 			this->friendlyUnits[i]->destroyUnit();
 			this->friendlyUnits.erase(this->friendlyUnits.begin() + i);
 		}
-			
-		
+
+
 	}
 	///////////////////////
 
@@ -237,7 +244,7 @@ void PlayerScript::SelectUnits()
 				if (hit.transform->gameObject->tag == 1 || hit.transform->gameObject->tag == 3)
 				{
 					//Debug.Log("Hit", hit.transform->gameObject->name, ": An Player Unit");
-					if(hit.transform->gameObject->getComponent<Unit>()!=nullptr)
+					if (hit.transform->gameObject->getComponent<Unit>() != nullptr)
 						SelectedUnits.push_back(hit.transform->gameObject);
 				}
 			}

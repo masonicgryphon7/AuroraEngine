@@ -10,44 +10,44 @@
 
 class PlayerScript;
 #pragma once
-	/*
-	Factions
-	Stats
-	Orders
-	Resources
-	Type
-	*/
-	
-	enum Command
-	{
-		Move,
-		Attack,
-		Gather,
-		HeroGather,
-		Drop,
-		Build,
-		Follow,
-		SummonWorker,
-		SummonSoldier,
-		Idle
-	};
+/*
+Factions
+Stats
+Orders
+Resources
+Type
+*/
 
-	enum Type
-	{
-		Hero,
-		Soldier,
-		Worker,
-		Building,
-		Bank,
-		GoldMine
-	};
+enum Command
+{
+	Move,
+	Attack,
+	Gather,
+	HeroGather,
+	Drop,
+	Build,
+	Follow,
+	SummonWorker,
+	SummonSoldier,
+	Idle
+};
 
-	struct Order
-	{
-		Transform* transform;
-		DirectX::XMVECTOR point;
-		Command command;
-	};
+enum Type
+{
+	Hero,
+	Soldier,
+	Worker,
+	Building,
+	Bank,
+	GoldMine
+};
+
+struct Order
+{
+	Transform* transform;
+	DirectX::XMVECTOR point;
+	Command command;
+};
 
 class Unit : public Component
 {
@@ -106,7 +106,7 @@ public:
 	void setDefencePoints(int defencePoints) { this->defencePoints = defencePoints; };
 	void setAttackDistance(float attackDistance) { this->attackDistance = attackDistance; };
 	void setHomePos(Transform* homePos) { this->homePos = homePos; };
-	void setPlayerScript(PlayerScript* playerScript) {	this->playerScript = playerScript;};
+	void setPlayerScript(PlayerScript* playerScript) { this->playerScript = playerScript; };
 	void MoveCommand(DirectX::XMVECTOR *goalPos);
 	void SecondMoveCommand(DirectX::XMVECTOR *goalPos);
 	void attackCommand(Unit* targetedUnit);
@@ -124,10 +124,8 @@ public:
 	std::vector<Order>* getUnitOrdersPointer() { return &UnitOrders; };
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
-	
-	DirectX::XMVECTOR getSplinePoint(float t, DirectX::XMVECTOR p0, DirectX::XMVECTOR p1, DirectX::XMVECTOR p2);
 
-	void RecieveOrder(RaycastHit Values);
+	void RecieveOrder(RaycastHit Values, int unitTag);
 	void RecieveOrder(OPTIONS option);
 	void update();
 };
