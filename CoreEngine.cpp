@@ -18,8 +18,8 @@
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
-#define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 0
+#define GRAPHICS_DEBUGGER_ENABLED 0
+#define PLAYER_BUILD 1
 
 bool CoreEngine::hasResized = false;
 
@@ -249,7 +249,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain4->addComponent(meshFilterTerrain4);
 
 		//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
-		cPathCreator* PathCreator1 = new cPathCreator(200, 200);
+		cPathCreator* PathCreator1 = new cPathCreator(200, 200); // 200x200
 
 		PathCreator1->addTerrain(terrainGenerator1->getRealVertArr(), 0, 0);
 		PathCreator1->addTerrain(terrainGenerator2->getRealVertArr(), 0, 100);
@@ -272,10 +272,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//PlayerScript *playerscript = new PlayerScript();
 		//camera->addComponent(playerscript);
 
-
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
+
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		cube->name = "Worker";
 		cube->tag = 1;
 		AssetManager.AddMesh("Assets/Cube.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
@@ -343,10 +343,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		
 
 		GameObject* enemy_player = gScene.createEmptyGameObject();
-		NPC* enemy_NPC = new NPC();
-
+		NPC* enemy_NPC = new NPC(&playerscript->friendlyUnits, &playerscript->friendlyBuildings);
+		enemy_NPC->instantiate_NPC();
 		enemy_player->addComponent(enemy_NPC);
-
+		
 
 
 
