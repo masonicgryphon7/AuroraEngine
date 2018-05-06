@@ -42,7 +42,7 @@ void GameManager::update()
 	gameTime += Time.getDeltaTime();
 	if (gameTime >= 30 && ringOfFire >= 20)
 	{
-		Debug.Log(ringOfFire);  
+		//Debug.Log(ringOfFire);  
 		ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 		devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 	}
