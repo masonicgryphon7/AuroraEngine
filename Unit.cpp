@@ -5,7 +5,7 @@
 #include "GUI.h"
 #include "Debug.h"
 #include <DirectXMath.h>
-
+#include <math.h>
 Unit::Unit() :Component(-1, "Unit")
 {
 	actionTime = 10;
@@ -166,9 +166,23 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		DirectX::XMFLOAT3 goalVec;
 		DirectX::XMStoreFloat3(&goalVec, goal);
 
+		DirectX::XMVECTOR forward = gameObject->transform.getForward();
+		DirectX::XMVECTOR currentPoint = gameObject->transform.getPosition();
+		DirectX::XMVECTOR goalPoint = DirectX::XMVectorSet(goalVec.x, goalVec.y, goalVec.z, 0.0);
+		DirectX::XMVECTOR currentToGoal = DirectX::XMVectorSubtract(goalPoint, currentPoint);
 
+		float forwardLength = DirectX::XMVectorGetX(DirectX::XMVector4Length(forward));
+		float currentToGoalLength = DirectX::XMVectorGetX(DirectX::XMVector4Length(currentToGoal));
 
-
+		DirectX::XMVECTOR directionVector = DirectX::XMVectorSubtract(goalPoint, currentPoint);
+		
+		float rotation;
+		
+		rotation = DirectX::XMVectorGetX(DirectX::XMVector4Dot(DirectX::XMVector4Normalize(directionVector), DirectX::XMVectorSet(0.0, 0.0, 1.0, 1)));
+		if (goalVec.z < DirectX::XMVectorGetZ(currentPoint))
+			rotation = -rotation;
+		gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, acos(rotation) *57.2957795, 0.0, 0.0));
+	//	gameObject->transform.setForward(gameObject->transform.getForward());
 		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
 			pathNodes.erase(pathNodes.begin());
 
@@ -585,7 +599,7 @@ void Unit::RecieveOrder(RaycastHit Values)
 			case Type::Hero:
 				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Worker || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
 				{
-					tempOrder.command = Follow;
+					tempOrder.command = Move;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
@@ -602,7 +616,7 @@ void Unit::RecieveOrder(RaycastHit Values)
 				break;
 
 			case Type::Soldier:
-				tempOrder.command = Follow;
+				tempOrder.command = Move;
 				tempOrder.point = Values.point;
 				tempOrder.transform = Values.transform;
 				UnitOrders.push_back(tempOrder);
@@ -611,7 +625,7 @@ void Unit::RecieveOrder(RaycastHit Values)
 			case Type::Worker:
 				if (Values.transform->gameObject->getComponent<Unit>()->getType()== Hero || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
 				{
-					tempOrder.command = Follow;
+					tempOrder.command = Move;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
