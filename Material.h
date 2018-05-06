@@ -1,11 +1,12 @@
 #pragma once
 #include "ShaderProgram.h"
-
+#include <d3d11.h>
+#include <d3dcompiler.h>
 class Material
 {
 public:
 	Material();
-	Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram* shaderProgram);
+	Material(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, ShaderProgram* pixelShader);
 	~Material();
 
 	void setAlpha(bool value) { hasAlpha = value; };
@@ -22,11 +23,19 @@ public:
 	void bindMaterial();
 
 	void update();
+	void setXTile(float x) { xTile = x; };
+	void setYTile(float y) { yTile = y; };
+	float getXTile() { return xTile; };
+	float getYTile() { return yTile; };
 
 
 	int renderIndex = -1;
 
 private:
+	ID3D11SamplerState * m_sampleState=nullptr;
+	float xTile = 4;
+	float yTile = 4;
+
 	ID3D11ShaderResourceView * ID_MAP = nullptr;
 	ID3D11ShaderResourceView * TerrainAlbedo_1 = nullptr;
 	ID3D11ShaderResourceView * TerrainNormal_1 = nullptr;
@@ -43,7 +52,10 @@ private:
 	ID3D11ShaderResourceView * albedo = nullptr;
 	ID3D11ShaderResourceView * normal = nullptr;
 	ID3D11ShaderResourceView * AORoughMet = nullptr;
-	ShaderProgram* shaderProgram = nullptr;
+	ShaderProgram* pixelShader = nullptr;
 	ID3D11DeviceContext* gDeviceContext = nullptr;
+	ID3D11Device* gDevice = nullptr;
+
+	void createSamplerState();
 };
 

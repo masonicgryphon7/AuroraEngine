@@ -14,7 +14,7 @@
 #include "DirectXTK-master\Inc\DDSTextureLoader.h"
 #include"DirectXTK-master\Inc\Model.h"
 #include <fstream>
-
+#include "ShaderProgram.h"
 #include "formatImporter.h"
 #pragma comment(lib, "myLibrary.lib")
 
@@ -29,21 +29,22 @@ class Mesh
 {
 public:
 	Mesh();
-	Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> *TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext);
-	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext);
-	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary);
+	Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> *TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader);
+	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader);
+	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary, bool isAnimated, ShaderProgram* vertexShader);
+
 	~Mesh();
 
 	std::vector<DirectX::XMVECTOR>* getVertexPositions() { return &vertexPositions; };
 	int getVertexCount();
 	void bindMesh();
-	void createMeshFromBinary(std::string fileName, ID3D11Device * device);
 
 	const std::string getMeshName() const;
 	const std::string getMeshPath() const;
 
 	int renderIndex = -1;
 private:
+	ShaderProgram * vertexShader;
 	int vertexCount;
 	UINT32 vertexSize;
 	ID3D11Buffer *vertexBuffer;
@@ -52,7 +53,9 @@ private:
 
 
 	std::string meshName, meshPath;
+	void createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * device);
 
+	void createMeshFromBinary(std::string fileName, ID3D11Device * device);
 	HRESULT CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device *device, ID3D11DeviceContext *devContext);
 	void CreateMeshData(std::string fileName, ID3D11Device * device, ID3D11DeviceContext * devContext);
 	DirectX::XMFLOAT3 subtract(DirectX::XMFLOAT3 A, DirectX::XMFLOAT3 B);

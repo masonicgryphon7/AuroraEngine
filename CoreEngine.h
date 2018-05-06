@@ -43,6 +43,8 @@
 //#include "CharacterMovement.h"
 #include "Camera.h"
 #include "Time.h"
+#include "AnimationClip.h"
+#include "Animator.h"
 //#include "Light.h"
 //#include "LIGHT_TYPES.h"
 #include "InputHandler.h"
