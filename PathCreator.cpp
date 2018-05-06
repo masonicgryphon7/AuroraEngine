@@ -221,14 +221,14 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 
 void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 {
-	for (int i = 0; i < 10; i++)
-	{
-		grid[10][i].pathable = PATHABLE_CHECK;
-		grid[11][i].pathable = PATHABLE_CHECK;
-		grid[12][i].pathable = PATHABLE_CHECK;
-		grid[13][i].pathable = PATHABLE_CHECK;
-	}
-	grid[pos.x][pos.y].pathable = PATHABLE_CHECK;
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	grid[10][i].pathable = PATHABLE_CHECK;
+	//	grid[11][i].pathable = PATHABLE_CHECK;
+	//	grid[12][i].pathable = PATHABLE_CHECK;
+	//	grid[13][i].pathable = PATHABLE_CHECK;
+	//}
+	//grid[pos.x][pos.y].pathable = PATHABLE_CHECK;
 }
 
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
