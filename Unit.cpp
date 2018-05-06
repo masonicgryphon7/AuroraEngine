@@ -144,16 +144,29 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		{
 			lerpValue = 0;
 			pathNodes = PathCreator.getPath(current, pointPosition); // Point position
+
+			Node extraNode;
+			extraNode.position = Vec3(DirectX::XMVectorGetX(*goalPos), DirectX::XMVectorGetY(*goalPos), DirectX::XMVectorGetZ(*goalPos)); 
+			extraNode.f = 0;
+			extraNode.g = 0;
+			extraNode.h = 0;
+			extraNode.parentX = -999999999;
+			extraNode.parentZ = -999999999;
+			extraNode.pathable = PATHABLE;
+			pathNodes.push_back(extraNode);
 		}
 
 	if (pathNodes.size() > 0) {
 		lerpValue += Time.getDeltaTime() * 10;
-		if (lerpValue > 1) {
-			lerpValue = 1;
+		if ( lerpValue > 1) {
+			float mod = fmod( lerpValue,1.0f);
+			lerpValue = mod;
 		}
 		DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 		DirectX::XMFLOAT3 goalVec;
 		DirectX::XMStoreFloat3(&goalVec, goal);
+
+
 
 
 		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
@@ -169,7 +182,26 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 
 
 		}
-		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
+		////////////////////
+		//DirectX::XMVECTOR n0 = DirectX::XMVectorSet(current.x, current.y, current.z, 0.0);
+		//DirectX::XMVECTOR n1 = DirectX::XMVectorSet(goalVec.x, goalVec.y, goalVec.z, 0.0);
+		//DirectX::XMVECTOR n2 = DirectX::XMVectorSet(pathNodes.at(1).position.x, pathNodes.at(1).position.y, pathNodes.at(1).position.z, 0.0);
+		//DirectX::XMVECTOR p1 = getSplinePoint(0.33, n0, n1, n2);
+		//DirectX::XMVECTOR p2 = getSplinePoint(0.66, n0, n1, n2);
+
+		//float l1 = getDistanceBetweenUnits(n0, n1);
+		//float l2 = getDistanceBetweenUnits(n0, n2);
+		//float l3 = getDistanceBetweenUnits(n1, n2);
+
+		//float s = l2 + l2 + l3;
+
+		//float s = getDistanceBetweenUnits(n0, n1);
+		//
+		//float lerpValueTime = s / 10;
+
+		//float t = lerpValue * lerpValueTime;
+		////////////////////
+		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue)); //lerpValue
 	}
 	else
 	{
@@ -525,6 +557,15 @@ DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX
 	return normalizedDistance;
 }
 
+DirectX::XMVECTOR Unit::getSplinePoint(float t, DirectX::XMVECTOR p0, DirectX::XMVECTOR p1, DirectX::XMVECTOR p2)
+{
+	DirectX::XMVECTOR first = DirectX::XMVectorScale(p0, pow(1 - t, 2));
+	DirectX::XMVECTOR second = DirectX::XMVectorScale(p1, (1 - t) * 2*t);
+	DirectX::XMVECTOR third = DirectX::XMVectorScale(p2, pow(t, 2));
+
+	return DirectX::XMVectorAdd(DirectX::XMVectorAdd(first, second), third);
+}
+
 void Unit::RecieveOrder(RaycastHit Values)
 {
 	
@@ -631,19 +672,16 @@ void Unit::RecieveOrder(RaycastHit Values)
 
 
 			case Type::Worker:
-				if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
-				{
-					tempOrder.command = Gather;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
+				tempOrder.command = Gather;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
 
 				break;
 
 			default:
-				//walk to
+				//walk 
 				break;
 			}
 			
@@ -787,12 +825,4 @@ void Unit::update()
 			break;
 		}
 	}
-
-	//if (Input.GetKeyUp(KeyCode::Alpha1)) {
-	//	summonWorkerCommand();
-	//	}
-
-	//if (Input.GetKeyUp(KeyCode::Alpha2)) {
-	//	summonSoldierCommand();
-	//}
 }
