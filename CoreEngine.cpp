@@ -378,7 +378,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		cube->name = "Worker";
 		cube->tag = 1;
-		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("PIRATE"));
+		AssetManager.addMeshFromBinary("Assets/PIRATE.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("pose1smile"));
 		cube->addComponent(meshFilter1);
 		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
 		Unit *UnitHero1 = new Unit(Worker);
