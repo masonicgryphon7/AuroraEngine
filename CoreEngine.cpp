@@ -278,7 +278,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		winObject->addComponent(gameManager);
 
 
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 
