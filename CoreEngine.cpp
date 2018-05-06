@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 1
+#define PLAYER_BUILD 0
 
 bool CoreEngine::hasResized = false;
 
@@ -347,7 +347,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->name = "Worker";
 		cube->tag = 1;
 		AssetManager.addMeshFromBinary("Assets/PIRATE.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
-		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("PIRATE"));
+		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("pose1smile"));
 		cube->addComponent(meshFilter1);
 		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
 		Unit *UnitHero1 = new Unit(Worker);
