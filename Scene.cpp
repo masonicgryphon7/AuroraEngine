@@ -194,65 +194,65 @@ void Scene::LoadScene()
 	std::string meshPath = "", objectName = "";
 	Vector3 position = Vector3(0, 0, 0), rotation = Vector3(0, 0, 0);
 
-	while (std::getline(f, line))
-	{
-		meshPath = SetMeshPath(meshPath, line);
-		objectName = SetObjectName(objectName, line);
-		position = SetPosition(position, line);
-		rotation = SetRotation(rotation, line);
+	//while (std::getline(f, line))
+	//{
+	//	meshPath = SetMeshPath(meshPath, line);
+	//	objectName = SetObjectName(objectName, line);
+	//	position = SetPosition(position, line);
+	//	rotation = SetRotation(rotation, line);
 
-		if (objectName == "Editor Camera")
-		{
-			meshPath = "";
-			objectName = "";
-			position = Vector3(0, 0, 0);
-			rotation = Vector3(0, 0, 0);
-			continue;
-		}
+	//	if (objectName == "Editor Camera")
+	//	{
+	//		meshPath = "";
+	//		objectName = "";
+	//		position = Vector3(0, 0, 0);
+	//		rotation = Vector3(0, 0, 0);
+	//		continue;
+	//	}
 
-		if (line.find("}") != std::string::npos)
-		{
-			tempGameObject = new GameObject(position.asXMVECTOR());
-			tempGameObject->transform.setRotation(rotation.asXMVECTOR());
-			tempGameObject->name = objectName;
+	//	if (line.find("}") != std::string::npos)
+	//	{
+	//		tempGameObject = new GameObject(position.asXMVECTOR());
+	//		tempGameObject->transform.setRotation(rotation.asXMVECTOR());
+	//		tempGameObject->name = objectName;
 
-			if (meshPath != "") 
-			{
-				Mesh* t_mesh = nullptr;
-				MeshFilter* t_meshFilter = nullptr;
-				MaterialFilter* t_materialFilter = nullptr;
+	//		if (meshPath != "") 
+	//		{
+	//			Mesh* t_mesh = nullptr;
+	//			MeshFilter* t_meshFilter = nullptr;
+	//			MaterialFilter* t_materialFilter = nullptr;
 
-				// add a way to actually know if this texture is for THIS material etc. etc. 
+	//			// add a way to actually know if this texture is for THIS material etc. etc. 
 
-				AssetManager.AddTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-				AssetManager.AddTexture("Assets/STSP_ShadowTeam_Normal.png");
-				AssetManager.AddTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+	//			AssetManager.AddTexture("Assets/STSP_ShadowTeam_BaseColor.png");
+	//			AssetManager.AddTexture("Assets/STSP_ShadowTeam_Normal.png");
+	//			AssetManager.AddTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 
-				Material* t_material = AssetManager.AddMaterial(AssetManager.getShaderProgram(0));
+	//			Material* t_material = AssetManager.AddMaterial(AssetManager.getShaderProgram(0));
 
-				t_material->setAlbedo(AssetManager.getTexture(0)->getTexture());
-				t_material->setNormal(AssetManager.getTexture(1)->getTexture());
-				t_material->setAORoughMet(AssetManager.getTexture(2)->getTexture());
+	//			t_material->setAlbedo(AssetManager.getTexture(0)->getTexture());
+	//			t_material->setNormal(AssetManager.getTexture(1)->getTexture());
+	//			t_material->setAORoughMet(AssetManager.getTexture(2)->getTexture());
 
-				t_mesh = AssetManager.AddMesh(meshPath);
-				t_meshFilter = new MeshFilter(t_mesh);
+	//			t_mesh = AssetManager.AddMesh(meshPath);
+	//			t_meshFilter = new MeshFilter(t_mesh);
 
-				tempGameObject->addComponent(new MaterialFilter(t_material));
-				tempGameObject->addComponent(t_meshFilter);
-			}
+	//			tempGameObject->addComponent(new MaterialFilter(t_material));
+	//			tempGameObject->addComponent(t_meshFilter);
+	//		}
 
-			tempGameObject->transform.setPosition(position.asXMVECTOR());
-			tempGameObject->transform.setRotation(rotation.asXMVECTOR());
+	//		tempGameObject->transform.setPosition(position.asXMVECTOR());
+	//		tempGameObject->transform.setRotation(rotation.asXMVECTOR());
 
-			sceneObjects.push_back(tempGameObject);
+	//		sceneObjects.push_back(tempGameObject);
 
-			meshPath = "";
-			objectName = "";
-			position = Vector3(0, 0, 0);
-			rotation = Vector3(0, 0, 0);
-			//Debug.Log("RESET");
-		}
-	}
+	//		meshPath = "";
+	//		objectName = "";
+	//		position = Vector3(0, 0, 0);
+	//		rotation = Vector3(0, 0, 0);
+	//		//Debug.Log("RESET");
+	//	}
+	//}
 }
 
 bool Scene::ContainsGUID(std::string guid)

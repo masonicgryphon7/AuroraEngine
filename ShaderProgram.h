@@ -13,19 +13,27 @@
 #include <vector>
 #include <wrl.h>
 
+enum SHADER_TYPE {
+	VERTEX_SHADER, HULL_SHADER,DOMAIN_SHADER,GEOMETRY_SHADER,PIXEL_SHADER,COMPUTE_SHADER
+};
 
 class ShaderProgram
 {
 public:
 	ShaderProgram();
-	ShaderProgram(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader);
-
 	~ShaderProgram();
 
+	HRESULT createVertexShader(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc, std::string filePath, SHADER_TYPE type);
+	HRESULT createPixelShader(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, std::string filePath, SHADER_TYPE type);
+
+
+	const std::string getShaderName() const;
+	const std::string getShaderPath() const;
 	void ActivateShader();
 private:
-	HRESULT CreateShaderData(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader);
+	std::string shaderName, shaderPath;
 	ID3D11DeviceContext* gDeviceContext = nullptr;
+	SHADER_TYPE type;
 
 	ID3D11InputLayout* gVertexLayout = nullptr;
 	ID3D11VertexShader* gVertexShader = nullptr;

@@ -74,7 +74,7 @@ namespace MyLibrary
 	{
 		//reads the custom mesh file and stores all the data
 
-		AnimatedMeshFromFile meshToReturn;
+		AnimatedMeshFromFile meshToReturn = AnimatedMeshFromFile();
 
 		bool fileIsOpen = false;
 
@@ -240,7 +240,7 @@ namespace MyLibrary
 	{
 		//read the skeleton file
 
-		SkeletonFromFile skeleton_to_return;
+		SkeletonFromFile skeleton_to_return=SkeletonFromFile();
 
 		bool fileIsOpen = false;
 
@@ -281,7 +281,7 @@ namespace MyLibrary
 
 		std::ifstream customAnimationFile(fileName, std::ifstream::binary);
 		AnimationHeader animation_header;
-		AnimationFromFile animation_to_return;
+		AnimationFromFile animation_to_return=AnimationFromFile();
 
 		if (customAnimationFile.is_open())
 		{

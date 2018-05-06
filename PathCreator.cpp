@@ -225,6 +225,8 @@ void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 	{
 		grid[10][i].pathable = PATHABLE_CHECK;
 		grid[11][i].pathable = PATHABLE_CHECK;
+		grid[12][i].pathable = PATHABLE_CHECK;
+		grid[13][i].pathable = PATHABLE_CHECK;
 	}
 	grid[pos.x][pos.y].pathable = PATHABLE_CHECK;
 }
@@ -232,9 +234,10 @@ void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
 	std::vector<std::vector<Node>> tempGrid = grid;
-
 	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
 	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
+	int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos))))*2;
+	int iteration = 0;
 
 	if (startNode.pathable == NONE_PATHABLE) {
 		 startNode.position= goalNode.position;
@@ -263,8 +266,8 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	bool succes = false;
 	Node currentNode = Node();
 	int i = 0;
-	while (openNodes.size() > 0 && succes == false) {
-
+	while (openNodes.size() > 0 && succes == false && iteration<maxIterationsAllowed) {
+		iteration++;
 		float lowestF = -1;
 		int lowestFIndex = openNodes[0].f;
 
@@ -382,8 +385,13 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 	}
 	else {
+		if(reversePath)
+			resultNodes.push_back(startNode);
+		else
+		{
+			resultNodes.push_back(goalNode);
 
-		resultNodes.push_back(goalNode);
+		}
 	}
 
 	if (reversePath) {

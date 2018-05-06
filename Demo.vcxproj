@@ -166,7 +166,7 @@
     <ClInclude Include="EditorSceneSelectionScript.h" />
     <ClInclude Include="FormatHeader.h" />
     <ClInclude Include="formatImporter.h" />
-    <ClInclude Include="FullSkeleton.h" />
+    <ClInclude Include="Skeleton.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GUI.h" />
@@ -184,7 +184,6 @@
     <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="ImSequencer.h" />
     <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="INPUT_ELEMENT_DESCRIPTION.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="KeyCode.h" />
     <ClInclude Include="LIGHT_TYPES.h" />
@@ -242,7 +241,7 @@
     <ClCompile Include="EditorMoveScript.cpp" />
     <ClCompile Include="EditorSceneSelectionScript.cpp" />
     <ClCompile Include="formatImporter.cpp" />
-    <ClCompile Include="FullSkeleton.cpp" />
+    <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GUI.cpp" />
