@@ -18,7 +18,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
-#define GRAPHICS_DEBUGGER_ENABLED 0
+#define GRAPHICS_DEBUGGER_ENABLED 1
 #define PLAYER_BUILD 1
 
 bool CoreEngine::hasResized = false;
@@ -212,7 +212,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain1->name = "Terrain1";
 		terrain1->tag = 0;
 		terrain1->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part3.bmp");
+		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(99, 99, "Assets/BmpMap3Part3.bmp");
 		AssetManager.addMesh(terrainGenerator1->vertCount, &terrainGenerator1->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
 		terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial(1)));
@@ -222,7 +222,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain2->name = "Terrain2";
 		terrain2->tag = 0;
 		terrain2->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part1.bmp");
+		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(99, 99, "Assets/BmpMap3Part1.bmp");
 		AssetManager.addMesh(terrainGenerator2->vertCount, &terrainGenerator2->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
 		terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial(2)));
@@ -232,7 +232,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain3->name = "Terrain3";
 		terrain3->tag = 0;
 		terrain3->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part4.bmp");
+		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(99, 99, "Assets/BmpMap3Part4.bmp");
 		AssetManager.addMesh(terrainGenerator3->vertCount, &terrainGenerator3->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
 		terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial(3)));
@@ -242,7 +242,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain4->name = "Terrain4";
 		terrain4->tag = 0;
 		terrain4->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/BmpMap3Part2.bmp");
+		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(99, 99, "Assets/BmpMap3Part2.bmp");
 		AssetManager.addMesh(terrainGenerator4->vertCount, &terrainGenerator4->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
 		terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial(4)));
@@ -252,9 +252,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cPathCreator* PathCreator1 = new cPathCreator(200, 200); // 200x200
 
 		PathCreator1->addTerrain(terrainGenerator1->getRealVertArr(), 0, 0);
-		PathCreator1->addTerrain(terrainGenerator2->getRealVertArr(), 0, 100);
-		PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 100, 0);
-		PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 100, 100);
+		PathCreator1->addTerrain(terrainGenerator2->getRealVertArr(), 0, 99);
+		PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 99, 0);
+		PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 99, 99);
 		PathCreator.trumpTheBorders();
 
 		//PathCreator.createNodes();
