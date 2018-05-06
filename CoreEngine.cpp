@@ -177,11 +177,31 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addTexture("Assets/Lava_Normal.png"); //21
 		assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
 
+		//Terrain
+		int matXTile = 10;
+		int matYTile = 10;
+		//Terrain Material 1
+		assetManager.AddMaterial("TerrainMaterial1", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial1")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial1")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial1")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial1")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 1
+
 		//Terrain Material 2
 		assetManager.AddMaterial("TerrainMaterial2", assetManager.getShaderProgram("Fragment.hlsl"));
 		assetManager.getMaterial("TerrainMaterial2")->setIsTerrain(true);
-		assetManager.getMaterial("TerrainMaterial2")->setXTile(5);
-		assetManager.getMaterial("TerrainMaterial2")->setYTile(5);
+		assetManager.getMaterial("TerrainMaterial2")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial2")->setYTile(matYTile);
 		assetManager.getMaterial("TerrainMaterial2")->setTerrainMaterials(
 			assetManager.getTexture("Grass_Albedo")->getTexture(),
 			assetManager.getTexture("Grass_Normal")->getTexture(),
@@ -194,13 +214,28 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
 			assetManager.getTexture("ID_MAP2part2")->getTexture()); //USE ID_PART 2
 
-		assetManager.addMaterial(assetManager.getShaderProgram("Fragment.hlsl"));
+		//Terrain Material 1
+		assetManager.AddMaterial("TerrainMaterial3", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial3")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial3")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial3")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial3")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("ID_MAP2part3")->getTexture()); //USE ID_PART 3
 
 		//Terrain Material 4
 		assetManager.AddMaterial("TerrainMaterial4", assetManager.getShaderProgram("Fragment.hlsl"));
 		assetManager.getMaterial("TerrainMaterial4")->setIsTerrain(true);
-		assetManager.getMaterial("TerrainMaterial4")->setXTile(5);
-		assetManager.getMaterial("TerrainMaterial4")->setYTile(5);
+		assetManager.getMaterial("TerrainMaterial4")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial4")->setYTile(matYTile);
 		assetManager.getMaterial("TerrainMaterial4")->setTerrainMaterials(
 			assetManager.getTexture("Grass_Albedo")->getTexture(),
 			assetManager.getTexture("Grass_Normal")->getTexture(),
@@ -224,7 +259,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//----------------
 
 		GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
-		terrain1->name = "Terrain1";
+		terrain1->name = "Terrain3";
 		terrain1->tag = 0;
 		terrain1->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(99, 99, "Assets/BmpMap3Part3.bmp");
@@ -234,7 +269,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain1->addComponent(meshFilterTerrain);
 
 		GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 0, 0));
-		terrain2->name = "Terrain2";
+		terrain2->name = "Terrain1";
 		terrain2->tag = 0;
 		terrain2->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(99, 99, "Assets/BmpMap3Part1.bmp");
@@ -244,7 +279,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain2->addComponent(meshFilterTerrain2);
 
 		GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 99, 0));
-		terrain3->name = "Terrain3";
+		terrain3->name = "Terrain4";
 		terrain3->tag = 0;
 		terrain3->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(99, 99, "Assets/BmpMap3Part4.bmp");
@@ -254,7 +289,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain3->addComponent(meshFilterTerrain3);
 
 		GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
-		terrain4->name = "Terrain4";
+		terrain4->name = "Terrain2";
 		terrain4->tag = 0;
 		terrain4->detailedRaycast = true;
 		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(99, 99, "Assets/BmpMap3Part2.bmp");
