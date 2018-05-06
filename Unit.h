@@ -71,7 +71,8 @@ private:
 
 	PlayerScript* playerScript;
 
-	float distance;
+	float distance = 0;
+
 	DirectX::XMFLOAT3 goalPos;
 	float lerpValue;
 	std::vector<Node> pathNodes;
@@ -93,7 +94,12 @@ public:
 	int getDefencePoints() { return this->defencePoints; };
 	float getAttackDistance() { return this->attackDistance; };
 	Transform* getHomePos() { return this->homePos; };
-	
+	Transform getTargetPos() { return this->targetPos; };
+	float getUnitDistance() { return this->distance; };
+	void setDistance(float newDistance) { this->distance = newDistance; };
+	void setTargetPos(DirectX::XMVECTOR newTarget) { this->targetPos = newTarget; };
+
+
 	void setResources(int resources) { this->Resources = resources; };
 	void setHealthPoints(int healthPoints) { this->healthPoints = healthPoints; };
 	void setAttackPoints(int attackPoints) { this->attackPoints = attackPoints; };
@@ -119,7 +125,7 @@ public:
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	
-	void RecieveOrder(RaycastHit Values);
+	void RecieveOrder(RaycastHit Values, int unitTag);
 	void RecieveOrder(OPTIONS option);
 	void update();
 };

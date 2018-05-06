@@ -62,8 +62,8 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	{
 	case Type::Hero: //HERO
 		this->healthPoints = 100;
-		this->attackPoints = 13;
-		this->defencePoints = 13;
+		this->attackPoints = 20;
+		this->defencePoints = 9;
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
@@ -266,7 +266,8 @@ void Unit::attackCommand(Unit* targetedUnit)
 	}
 	else
 	{
-		destroyUnit();
+		//targetedUnit.destroyUnit();
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
@@ -466,8 +467,11 @@ void Unit::dropResources()
 
 void Unit::destroyUnit()
 {
-	UnitOrders[0].transform->gameObject->Destroy();
-	UnitOrders.erase(UnitOrders.begin());
+	//UnitOrders[0].transform->gameObject->Destroy();
+	gameObject->Destroy();
+	
+	
+
 }
 
 void Unit::summonWorkerCommand()
@@ -512,9 +516,9 @@ void Unit::summonSoldierCommand()
 
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
 {
-	DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(unitPos, targetPos);
-	distance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
-	return distance;
+	DirectX::XMVECTOR diff = DirectX::XMVectorSubtract( targetPos, unitPos);
+	float tempDistance = DirectX::XMVectorGetW(DirectX::XMVector3Length(diff));
+	return tempDistance;
 }
 
 DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
@@ -524,7 +528,7 @@ DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX
 	return normalizedDistance;
 }
 
-void Unit::RecieveOrder(RaycastHit Values)
+void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 {
 	
 	UnitOrders.clear();
@@ -534,7 +538,7 @@ void Unit::RecieveOrder(RaycastHit Values)
 	if (Values.transform->gameObject->getComponent<Unit>()!=nullptr)
 	{
 		Order tempOrder;
-		if (Values.transform->gameObject->tag == 1) {
+		if (Values.transform->gameObject->tag == unitTag) {
 			//friendly
 			//walk to
 
@@ -585,7 +589,7 @@ void Unit::RecieveOrder(RaycastHit Values)
 				break;
 			}
 		}
-		else if(Values.transform->gameObject->tag == 2){ //!=gameObject->tag){
+		else if(Values.transform->gameObject->tag != unitTag && unitTag != 3 && unitTag != 0){ //!=gameObject->tag){
 			//enemy
 			switch (type)
 			{
