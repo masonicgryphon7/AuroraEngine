@@ -173,6 +173,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addTexture("Assets/ID_MAP2part3.png"); // 18 // 3
 		assetManager.addTexture("Assets/ID_MAP2part4.png"); //19 // 4
 
+		assetManager.addTexture("Assets/Lava_Albedo.png"); //20
+		assetManager.addTexture("Assets/Lava_Normal.png"); //21
+		assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
+
 
 
 		assetManager.addMaterial(assetManager.getShaderProgram("Fragment.hlsl"));
