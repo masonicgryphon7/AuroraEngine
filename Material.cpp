@@ -5,15 +5,20 @@
 Material::Material()
 {}
 
-Material::Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram * pixelShader)
+Material::Material(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, ShaderProgram * pixelShader)
 {
 	this->gDeviceContext = gDeviceContext;
+	this->gDevice = gDevice;
 	this->pixelShader = pixelShader;
+	createSamplerState();
 }
 
 
 Material::~Material()
-{}
+{
+	//m_sampleState->Release();
+
+}
 
 bool Material::isTerrain()
 {
@@ -60,6 +65,8 @@ void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11Sha
 void Material::bindMaterial()
 {
 	pixelShader->ActivateShader();
+	gDeviceContext->PSSetSamplers(0, 1, &m_sampleState);
+
 	gDeviceContext->PSSetShaderResources(0, 1, &albedo);
 	gDeviceContext->PSSetShaderResources(1, 1, &normal);
 	gDeviceContext->PSSetShaderResources(2, 1, &AORoughMet);
@@ -81,6 +88,27 @@ void Material::bindMaterial()
 
 void Material::update()
 {
+}
+
+void Material::createSamplerState()
+{
+	D3D11_SAMPLER_DESC samplerDesc;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	gDevice->CreateSamplerState(&samplerDesc, &m_sampleState);
+
 }
 
 
