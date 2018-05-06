@@ -20,6 +20,11 @@ cbuffer MATRIX_Buffer :register (b0)
 	int fill[3];
 };
 
+cbuffer Manager_Buffer :register (b1)
+{
+	float4 fireRing;
+};
+
 Texture2D Diffuse:register(t0);
 Texture2D NormalTexture:register(t1);
 Texture2D AORoughMetTexture:register(t2);
@@ -131,6 +136,9 @@ float4 PS_main(VS_OUT input) : SV_Target
 			//albedo = albedo * float3(0.1f, 0.1, 1.0f);
 		}
 
+		float3 middle = float3(99, 0, 99);
+		if (distance(middle, input.worldPosition) >= fireRing.x)
+			return float4(1, 0, fireRing.x, 1);
 
 	}
 

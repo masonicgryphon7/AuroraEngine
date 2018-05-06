@@ -33,6 +33,7 @@
 #include"AssetManager.h"
 #include"Scene.h"
 #include "RenderManager.h"
+#include "GameManager.h"
 //#include"Transform.h"
 #include "MeshFilter.h"
 #include "Material.h"
