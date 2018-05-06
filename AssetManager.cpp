@@ -119,7 +119,7 @@ Texture * cAssetManager::AddTexture(std::string filePath)
 
 void cAssetManager::addMaterial(ShaderProgram * shaderProgram)
 {
-	materials.push_back(new Material(devContext, shaderProgram));
+	materials.push_back(new Material(devContext,device, shaderProgram));
 	//Console.success("Successfully added material");
 }
 
@@ -143,7 +143,7 @@ Material * cAssetManager::AddMaterial(ShaderProgram * shaderProgram)
 
 	if (temp == nullptr || !makingSureBool)
 	{
-		temp = new Material(devContext, shaderProgram);
+		temp = new Material(devContext,device, shaderProgram);
 		materials.push_back(temp);
 	}
 

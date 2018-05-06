@@ -272,6 +272,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//PlayerScript *playerscript = new PlayerScript();
 		//camera->addComponent(playerscript);
 
+
+		GameObject* winObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
+		GameManager *gameManager = new GameManager(gDevice, gDeviceContext);
+		winObject->addComponent(gameManager);
+
+
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 
@@ -302,7 +308,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		UnitSoldier1->setPlayerScript(playerscript);
 
 
-		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 1, 0));
+		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 10, 0));
 		cube3->name = "Bank";
 		cube3->tag = 1;
 		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh(4));

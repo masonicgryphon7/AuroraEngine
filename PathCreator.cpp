@@ -12,7 +12,7 @@ cPathCreator::cPathCreator()
 
 cPathCreator::cPathCreator(int gridWidth, int gridHeight)
 {
-	MAX = gridWidth + (gridWidth - 1);
+	MAX = gridWidth; //+ (gridWidth - 1);
 	grid = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
 
 	
@@ -54,20 +54,11 @@ void cPathCreator::trumpTheBorders()
 
 void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions, int StartX, int StartY)
 {
-	for (int x = MIN; x < positions.size()-1; x++) //Row
+	for (int x = MIN; x < positions.size(); x++) //Row
 	{
-		for (int y = MIN; y < positions.size()-1; y++) //Column
+		for (int y = MIN; y < positions.size(); y++) //Column
 		{
 
-			//grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x+ StartY, positions[x][y].position.y, positions[x][y].position.z+ StartX);
-			//grid[StartY + y][StartX + x].g = 0;
-			//grid[StartY + y][StartX + x].f = 0;
-			//grid[StartY + y][StartX + x].h = 0;
-			//grid[StartY + y][StartX + x].parentX = -999999999;
-			//grid[StartY + y][StartX + x].parentZ = -999999999;
-			//grid[StartY + y][StartX + x].pathable = PATHABLE;
-	
-			//top left
 			grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x+ StartY, positions[x][y].position.y, positions[x][y].position.z+ StartX);
 			grid[StartY + y][StartX + x].g = 0;
 			grid[StartY + y][StartX + x].f = 0;
@@ -75,83 +66,92 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 			grid[StartY + y][StartX + x].parentX = -999999999;
 			grid[StartY + y][StartX + x].parentZ = -999999999;
 			grid[StartY + y][StartX + x].pathable = PATHABLE;
+	
+			////top left
+			//grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x+ StartY, positions[x][y].position.y, positions[x][y].position.z+ StartX);
+			//grid[StartY + y][StartX + x].g = 0;
+			//grid[StartY + y][StartX + x].f = 0;
+			//grid[StartY + y][StartX + x].h = 0;
+			//grid[StartY + y][StartX + x].parentX = -999999999;
+			//grid[StartY + y][StartX + x].parentZ = -999999999;
+			//grid[StartY + y][StartX + x].pathable = PATHABLE;
 
-			//top middle, lerp
-			DirectX::XMVECTOR lerpValue1 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x][y + 1].position.x + StartY, positions[x][y + 1].position.y, positions[x][y + 1].position.z + StartX, 0.0), 0.5);
-			grid[StartY + y][StartX + x + 1].position = Vec3(DirectX::XMVectorGetX(lerpValue1), DirectX::XMVectorGetY(lerpValue1), DirectX::XMVectorGetZ(lerpValue1));
-			grid[StartY + y][StartX + x + 1].g = 0;
-			grid[StartY + y][StartX + x + 1].f = 0;
-			grid[StartY + y][StartX + x + 1].h = 0;
-			grid[StartY + y][StartX + x + 1].parentX = -999999999;
-			grid[StartY + y][StartX + x + 1].parentZ = -999999999;
-			grid[StartY + y][StartX + x + 1].pathable = PATHABLE;
-			
-			//top right
-			grid[StartY + y][StartX + x + 2].position = Vec3(positions[x][y + 1].position.x+ StartY, positions[x][y + 1].position.y, positions[x][y + 1].position.z+ StartX);
-			grid[StartY + y][StartX + x + 2].g = 0;
-			grid[StartY + y][StartX + x + 2].f = 0;
-			grid[StartY + y][StartX + x + 2].h = 0;
-			grid[StartY + y][StartX + x + 2].parentX = -999999999;
-			grid[StartY + y][StartX + x + 2].parentZ = -999999999;
-			grid[StartY + y][StartX + x + 2].pathable = PATHABLE;
+			////top middle, lerp
+			//DirectX::XMVECTOR lerpValue1 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x][y + 1].position.x + StartY, positions[x][y + 1].position.y, positions[x][y + 1].position.z + StartX, 0.0), 0.5);
+			//grid[StartY + y][StartX + x + 1].position = Vec3(DirectX::XMVectorGetX(lerpValue1), DirectX::XMVectorGetY(lerpValue1), DirectX::XMVectorGetZ(lerpValue1));
+			//grid[StartY + y][StartX + x + 1].g = 0;
+			//grid[StartY + y][StartX + x + 1].f = 0;
+			//grid[StartY + y][StartX + x + 1].h = 0;
+			//grid[StartY + y][StartX + x + 1].parentX = -999999999;
+			//grid[StartY + y][StartX + x + 1].parentZ = -999999999;
+			//grid[StartY + y][StartX + x + 1].pathable = PATHABLE;
+			//
+			////top right
+			//grid[StartY + y][StartX + x + 2].position = Vec3(positions[x][y + 1].position.x+ StartY, positions[x][y + 1].position.y, positions[x][y + 1].position.z+ StartX);
+			//grid[StartY + y][StartX + x + 2].g = 0;
+			//grid[StartY + y][StartX + x + 2].f = 0;
+			//grid[StartY + y][StartX + x + 2].h = 0;
+			//grid[StartY + y][StartX + x + 2].parentX = -999999999;
+			//grid[StartY + y][StartX + x + 2].parentZ = -999999999;
+			//grid[StartY + y][StartX + x + 2].pathable = PATHABLE;
 
-			//middle left, lerp
-			DirectX::XMVECTOR lerpValue2 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x + 1][y].position.x + StartY, positions[x + 1][y].position.y, positions[x + 1][y].position.z + StartX, 0.0), 0.5);
-			grid[StartY + y + 1][StartX + x].position = Vec3(DirectX::XMVectorGetX(lerpValue2), DirectX::XMVectorGetY(lerpValue2), DirectX::XMVectorGetZ(lerpValue2));
-			grid[StartY + y + 1][StartX + x].g = 0;
-			grid[StartY + y + 1][StartX + x].f = 0;
-			grid[StartY + y + 1][StartX + x].h = 0;
-			grid[StartY + y + 1][StartX + x].parentX = -999999999;
-			grid[StartY + y + 1][StartX + x].parentZ = -999999999;
-			grid[StartY + y + 1][StartX + x].pathable = PATHABLE;
-			
-			//middle middle, lerp
-			DirectX::XMVECTOR lerpValue3 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x + 1][y + 1].position.x + StartY, positions[x + 1][y + 1].position.y, positions[x + 1][y + 1].position.z + StartX, 0.0), 0.5);
-			grid[StartY + y + 1][StartX + x + 1].position = Vec3(DirectX::XMVectorGetX(lerpValue3), DirectX::XMVectorGetY(lerpValue3), DirectX::XMVectorGetZ(lerpValue3));
-			grid[StartY + y + 1][StartX + x + 1].g = 0;
-			grid[StartY + y + 1][StartX + x + 1].f = 0;
-			grid[StartY + y + 1][StartX + x + 1].h = 0;
-			grid[StartY + y + 1][StartX + x + 1].parentX = -999999999;
-			grid[StartY + y + 1][StartX + x + 1].parentZ = -999999999;
-			grid[StartY + y + 1][StartX + x + 1].pathable = PATHABLE;
-			
-			//middle right, lerp
-			DirectX::XMVECTOR lerpValue4 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x][y + 1].position.x + StartY, positions[x][y + 1].position.y, positions[x][y + 1].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x + 1][y + 1].position.x + StartY, positions[x + 1][y + 1].position.y, positions[x + 1][y + 1].position.z + StartX, 0.0), 0.5);
-			grid[StartY + y + 1][StartX + x + 2].position = Vec3(DirectX::XMVectorGetX(lerpValue4), DirectX::XMVectorGetY(lerpValue4), DirectX::XMVectorGetZ(lerpValue4));
-			grid[StartY + y + 1][StartX + x + 2].g = 0;
-			grid[StartY + y + 1][StartX + x + 2].f = 0;
-			grid[StartY + y + 1][StartX + x + 2].h = 0;
-			grid[StartY + y + 1][StartX + x + 2].parentX = -999999999;
-			grid[StartY + y + 1][StartX + x + 2].parentZ = -999999999;
-			grid[StartY + y + 1][StartX + x + 2].pathable = PATHABLE;
+			////middle left, lerp
+			//DirectX::XMVECTOR lerpValue2 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x + 1][y].position.x + StartY, positions[x + 1][y].position.y, positions[x + 1][y].position.z + StartX, 0.0), 0.5);
+			//grid[StartY + y + 1][StartX + x].position = Vec3(DirectX::XMVectorGetX(lerpValue2), DirectX::XMVectorGetY(lerpValue2), DirectX::XMVectorGetZ(lerpValue2));
+			//grid[StartY + y + 1][StartX + x].g = 0;
+			//grid[StartY + y + 1][StartX + x].f = 0;
+			//grid[StartY + y + 1][StartX + x].h = 0;
+			//grid[StartY + y + 1][StartX + x].parentX = -999999999;
+			//grid[StartY + y + 1][StartX + x].parentZ = -999999999;
+			//grid[StartY + y + 1][StartX + x].pathable = PATHABLE;
+			//
+			////middle middle, lerp
+			//DirectX::XMVECTOR lerpValue3 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x + 1][y + 1].position.x + StartY, positions[x + 1][y + 1].position.y, positions[x + 1][y + 1].position.z + StartX, 0.0), 0.5);
+			//grid[StartY + y + 1][StartX + x + 1].position = Vec3(DirectX::XMVectorGetX(lerpValue3), DirectX::XMVectorGetY(lerpValue3), DirectX::XMVectorGetZ(lerpValue3));
+			//grid[StartY + y + 1][StartX + x + 1].g = 0;
+			//grid[StartY + y + 1][StartX + x + 1].f = 0;
+			//grid[StartY + y + 1][StartX + x + 1].h = 0;
+			//grid[StartY + y + 1][StartX + x + 1].parentX = -999999999;
+			//grid[StartY + y + 1][StartX + x + 1].parentZ = -999999999;
+			//grid[StartY + y + 1][StartX + x + 1].pathable = PATHABLE;
+			//
+			////middle right, lerp
+			//DirectX::XMVECTOR lerpValue4 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x][y + 1].position.x + StartY, positions[x][y + 1].position.y, positions[x][y + 1].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x + 1][y + 1].position.x + StartY, positions[x + 1][y + 1].position.y, positions[x + 1][y + 1].position.z + StartX, 0.0), 0.5);
+			//grid[StartY + y + 1][StartX + x + 2].position = Vec3(DirectX::XMVectorGetX(lerpValue4), DirectX::XMVectorGetY(lerpValue4), DirectX::XMVectorGetZ(lerpValue4));
+			//grid[StartY + y + 1][StartX + x + 2].g = 0;
+			//grid[StartY + y + 1][StartX + x + 2].f = 0;
+			//grid[StartY + y + 1][StartX + x + 2].h = 0;
+			//grid[StartY + y + 1][StartX + x + 2].parentX = -999999999;
+			//grid[StartY + y + 1][StartX + x + 2].parentZ = -999999999;
+			//grid[StartY + y + 1][StartX + x + 2].pathable = PATHABLE;
 
-			//bottom left
-			grid[StartY + y + 2][StartX + x].position = Vec3(positions[x + 1][y].position.x+ StartY, positions[x + 1][y].position.y, positions[x + 1][y].position.z+ StartX);
-			grid[StartY + y + 2][StartX + x].g = 0;
-			grid[StartY + y + 2][StartX + x].f = 0;
-			grid[StartY + y + 2][StartX + x].h = 0;
-			grid[StartY + y + 2][StartX + x].parentX = -999999999;
-			grid[StartY + y + 2][StartX + x].parentZ = -999999999;
-			grid[StartY + y + 2][StartX + x].pathable = PATHABLE;
-			
-			//bottom middle, lerp
-			DirectX::XMVECTOR lerpValue5 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x + 1][y].position.x + StartY, positions[x + 1][y].position.y, positions[x + 1][y].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x + 1][y + 1].position.x + StartY, positions[x + 1][y + 1].position.y, positions[x + 1][y + 1].position.z + StartX, 0.0), 0.5);
-			grid[StartY + y + 2][StartX + x + 1].position = Vec3(DirectX::XMVectorGetX(lerpValue5), DirectX::XMVectorGetY(lerpValue5), DirectX::XMVectorGetZ(lerpValue5));
-			grid[StartY + y + 2][StartX + x + 1].g = 0;
-			grid[StartY + y + 2][StartX + x + 1].f = 0;
-			grid[StartY + y + 2][StartX + x + 1].h = 0;
-			grid[StartY + y + 2][StartX + x + 1].parentX = -999999999;
-			grid[StartY + y + 2][StartX + x + 1].parentZ = -999999999;
-			grid[StartY + y + 2][StartX + x + 1].pathable = PATHABLE;
-			
-			//bottom right
-			grid[StartY + y + 2][StartX + x + 2].position = Vec3(positions[x + 1][y + 1].position.x+ StartY, positions[x + 1][y + 1].position.y, positions[x + 1][y + 1].position.z+ StartX);
-			grid[StartY + y + 2][StartX + x + 2].g = 0;
-			grid[StartY + y + 2][StartX + x + 2].f = 0;
-			grid[StartY + y + 2][StartX + x + 2].h = 0;
-			grid[StartY + y + 2][StartX + x + 2].parentX = -999999999;
-			grid[StartY + y + 2][StartX + x + 2].parentZ = -999999999;
-			grid[StartY + y + 2][StartX + x + 2].pathable = PATHABLE;
+			////bottom left
+			//grid[StartY + y + 2][StartX + x].position = Vec3(positions[x + 1][y].position.x+ StartY, positions[x + 1][y].position.y, positions[x + 1][y].position.z+ StartX);
+			//grid[StartY + y + 2][StartX + x].g = 0;
+			//grid[StartY + y + 2][StartX + x].f = 0;
+			//grid[StartY + y + 2][StartX + x].h = 0;
+			//grid[StartY + y + 2][StartX + x].parentX = -999999999;
+			//grid[StartY + y + 2][StartX + x].parentZ = -999999999;
+			//grid[StartY + y + 2][StartX + x].pathable = PATHABLE;
+			//
+			////bottom middle, lerp
+			//DirectX::XMVECTOR lerpValue5 = DirectX::XMVectorLerp(DirectX::XMVectorSet(positions[x + 1][y].position.x + StartY, positions[x + 1][y].position.y, positions[x + 1][y].position.z + StartX, 0.0), DirectX::XMVectorSet(positions[x + 1][y + 1].position.x + StartY, positions[x + 1][y + 1].position.y, positions[x + 1][y + 1].position.z + StartX, 0.0), 0.5);
+			//grid[StartY + y + 2][StartX + x + 1].position = Vec3(DirectX::XMVectorGetX(lerpValue5), DirectX::XMVectorGetY(lerpValue5), DirectX::XMVectorGetZ(lerpValue5));
+			//grid[StartY + y + 2][StartX + x + 1].g = 0;
+			//grid[StartY + y + 2][StartX + x + 1].f = 0;
+			//grid[StartY + y + 2][StartX + x + 1].h = 0;
+			//grid[StartY + y + 2][StartX + x + 1].parentX = -999999999;
+			//grid[StartY + y + 2][StartX + x + 1].parentZ = -999999999;
+			//grid[StartY + y + 2][StartX + x + 1].pathable = PATHABLE;
+			//
+			////bottom right
+			//grid[StartY + y + 2][StartX + x + 2].position = Vec3(positions[x + 1][y + 1].position.x+ StartY, positions[x + 1][y + 1].position.y, positions[x + 1][y + 1].position.z+ StartX);
+			//grid[StartY + y + 2][StartX + x + 2].g = 0;
+			//grid[StartY + y + 2][StartX + x + 2].f = 0;
+			//grid[StartY + y + 2][StartX + x + 2].h = 0;
+			//grid[StartY + y + 2][StartX + x + 2].parentX = -999999999;
+			//grid[StartY + y + 2][StartX + x + 2].parentZ = -999999999;
+			//grid[StartY + y + 2][StartX + x + 2].pathable = PATHABLE;
 
 		}
 	}

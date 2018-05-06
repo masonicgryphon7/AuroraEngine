@@ -16,7 +16,10 @@ struct MatrixBufferStruct
 	DirectX::XMFLOAT4X4 projection;
 	DirectX::XMFLOAT4 cameraPosition;
 	int isTerrain;
-	int fill[3]{ 0 };
+	float xMaterialTile;
+	float yMaterialTile;
+
+	int fill[1]{ 0 };
 };
 
 class RenderManager
