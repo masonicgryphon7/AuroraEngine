@@ -5,8 +5,9 @@
 Material::Material()
 {}
 
-Material::Material(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, ShaderProgram * pixelShader)
+Material::Material(std::string name, ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, ShaderProgram * pixelShader)
 {
+	this->materialName = name;
 	this->gDeviceContext = gDeviceContext;
 	this->gDevice = gDevice;
 	this->pixelShader = pixelShader;
@@ -89,6 +90,13 @@ void Material::bindMaterial()
 void Material::update()
 {
 }
+
+const std::string Material::getMaterialName() const
+{
+	return materialName;
+}
+
+
 
 void Material::createSamplerState()
 {

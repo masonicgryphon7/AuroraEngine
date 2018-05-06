@@ -117,33 +117,28 @@ Texture * cAssetManager::AddTexture(std::string filePath)
 	return temp;
 }
 
-void cAssetManager::addMaterial(ShaderProgram * shaderProgram)
-{
-	materials.push_back(new Material(devContext,device, shaderProgram));
-	//Console.success("Successfully added material");
-}
 
-Material * cAssetManager::AddMaterial(ShaderProgram * shaderProgram)
+Material * cAssetManager::AddMaterial(std::string name, ShaderProgram * shaderProgram)
 {
 	Material* temp = nullptr;
 	bool makingSureBool = false;
 
 	std::string guid = GenerateGUIDAsString();
 
-	for (auto& mat : materials)
-	{
-		if (!gScene.ContainsGUID(guid))
-		{
-			temp = mat;
-			makingSureBool = true;
-			//Debug.Log("Contains!!!");
-			break;
-		}
-	}
+	//for (auto& mat : materials)
+	//{
+	//	if (!gScene.ContainsGUID(guid))
+	//	{
+	//		temp = mat;
+	//		makingSureBool = true;
+	//		//Debug.Log("Contains!!!");
+	//		break;
+	//	}
+	//}
 
 	if (temp == nullptr || !makingSureBool)
 	{
-		temp = new Material(devContext,device, shaderProgram);
+		temp = new Material(name ,devContext,device, shaderProgram);
 		materials.push_back(temp);
 	}
 
@@ -474,7 +469,7 @@ Texture * cAssetManager::getTexture(const std::string & path)
 
 	for (auto& t : textures)
 	{
-		if (t->getPath() == path)
+		if (t->getName() == path)
 		{
 			Console.success("Found texture at, returning its value from ", path);
 			hasFound = true;
@@ -499,6 +494,23 @@ Texture * cAssetManager::getTexture(int index)
 Material * cAssetManager::getMaterial(int index)
 {
 	return materials.at(index);
+}
+
+Material * cAssetManager::getMaterial(const std::string & name)
+{
+	Material* temp = nullptr;
+
+	for (auto m : materials)
+	{
+		if (m->getMaterialName() == name)
+		{
+			temp = m;
+			// can return here but might add some stuff?
+			break;
+		}
+	}
+
+	return temp;
 }
 
 Mesh * cAssetManager::getMesh(int index)

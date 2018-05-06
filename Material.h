@@ -6,7 +6,7 @@ class Material
 {
 public:
 	Material();
-	Material(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, ShaderProgram* pixelShader);
+	Material(std::string name, ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, ShaderProgram* pixelShader);
 	~Material();
 
 	void setAlpha(bool value) { hasAlpha = value; };
@@ -27,14 +27,17 @@ public:
 	void setYTile(float y) { yTile = y; };
 	float getXTile() { return xTile; };
 	float getYTile() { return yTile; };
+	const std::string getMaterialName() const;
 
 
 	int renderIndex = -1;
 
 private:
+	std::string materialName;
+
 	ID3D11SamplerState * m_sampleState=nullptr;
-	float xTile = 4;
-	float yTile = 4;
+	float xTile = 1;
+	float yTile = 1;
 
 	ID3D11ShaderResourceView * ID_MAP = nullptr;
 	ID3D11ShaderResourceView * TerrainAlbedo_1 = nullptr;

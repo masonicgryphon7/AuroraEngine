@@ -16,9 +16,12 @@ public:
 
 	ID3D11ShaderResourceView * getTexture() { return textureView; }
 	const std::string getPath()  const { return pathToTexture; }
+	const std::string getName()  const { return textureName; }
+
 private:
 	ID3D11ShaderResourceView * textureView = nullptr;
 	std::string pathToTexture;
+	std::string textureName;
 
 };
 

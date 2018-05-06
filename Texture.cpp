@@ -8,7 +8,13 @@ Texture::Texture()
 Texture::Texture(ID3D11Device * device, ID3D11DeviceContext * devContext, std::string filePath)
 {
 	this->pathToTexture = filePath;
-	createTextureData(device, devContext, filePath);
+
+	std::reverse(filePath.begin(), filePath.end());
+	this->textureName = filePath.substr(0, filePath.find("/", 0));
+	std::reverse(this->textureName.begin(), this->textureName.end());
+	this->textureName = textureName.substr(0, textureName.find(".", 0));
+
+	createTextureData(device, devContext, pathToTexture);
 }
 
 
