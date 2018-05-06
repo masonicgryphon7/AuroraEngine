@@ -4,12 +4,12 @@
 #include "PRIMITIVE_GEOMETRY.h"
 #include "Time.h"
 #include "AnimationClip.h"
-
+#include "Skeleton.h"
 class Animator :
 	public Component
 {
 public:
-	Animator();
+	Animator(Skeleton* skeleton);
 	~Animator();
 
 	void update();
@@ -25,5 +25,6 @@ private:
 	int currentClipIndex;
 	std::vector<DirectX::XMMATRIX> matrixPalette;
 	std::vector<AnimationClip*> animationclips;
+	Skeleton* skeleton;
 };
 

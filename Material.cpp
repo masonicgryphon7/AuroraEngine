@@ -5,10 +5,10 @@
 Material::Material()
 {}
 
-Material::Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram * shaderProgram) 
+Material::Material(ID3D11DeviceContext* gDeviceContext, ShaderProgram * pixelShader)
 {
 	this->gDeviceContext = gDeviceContext;
-	this->shaderProgram = shaderProgram;
+	this->pixelShader = pixelShader;
 }
 
 
@@ -59,7 +59,7 @@ void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11Sha
 
 void Material::bindMaterial()
 {
-	shaderProgram->ActivateShader();
+	pixelShader->ActivateShader();
 	gDeviceContext->PSSetShaderResources(0, 1, &albedo);
 	gDeviceContext->PSSetShaderResources(1, 1, &normal);
 	gDeviceContext->PSSetShaderResources(2, 1, &AORoughMet);

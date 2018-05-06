@@ -3,10 +3,12 @@
 #include <algorithm>
 #include <iomanip>
 #include "Scene.h"
-#include "FullSkeleton.h"
+#include "Skeleton.h"
+#include "Debug.h"
 
 std::vector<Texture*> cAssetManager::textures;
 std::vector<AnimationClip*> cAssetManager::animationClips;
+std::vector<Skeleton*> cAssetManager::skeletons;
 
 std::vector<Material*> cAssetManager::materials;
 std::vector<Mesh*> cAssetManager::meshes;
@@ -28,6 +30,24 @@ cAssetManager::cAssetManager(ID3D11Device * device, ID3D11DeviceContext * devCon
 // Apparently this gets called multiple times.... why???
 cAssetManager::~cAssetManager()
 {
+
+	for (int i = 0; i < skeletons.size(); i++)
+	{
+		if (skeletons[i])
+			delete skeletons[i];
+		skeletons[i] = nullptr;
+	}
+
+	skeletons.clear();
+
+	for (int i = 0; i < animationClips.size(); i++)
+	{
+		if (animationClips[i])
+			delete animationClips[i];
+		animationClips[i] = nullptr;
+	}
+
+	animationClips.clear();
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		if (meshes[i])
@@ -130,23 +150,28 @@ Material * cAssetManager::AddMaterial(ShaderProgram * shaderProgram)
 	return temp;
 }
 
-void cAssetManager::addMesh(std::string filePath)
+void cAssetManager::addMesh(std::string filePath, ShaderProgram* vertexShader)
 {
-	meshes.push_back(new Mesh(filePath, device, devContext));
+	meshes.push_back(new Mesh(filePath, device, devContext, vertexShader));
 }
 
 
-void cAssetManager::addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector)
+void cAssetManager::addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ShaderProgram* vertexShader)
 {
-	meshes.push_back(new Mesh(vertCountData, TerrainInfoVector, device, devContext));
+	meshes.push_back(new Mesh(vertCountData, TerrainInfoVector, device, devContext, vertexShader));
 }
 
-void cAssetManager::addMeshFromBinary(std::string filePath)
+void cAssetManager::addMeshFromBinary(std::string filePath, ShaderProgram* vertexShader)
 {
-	meshes.push_back(new Mesh(filePath, device, devContext, true));
+	meshes.push_back(new Mesh(filePath, device, devContext, true, false, vertexShader));
 }
 
-Mesh * cAssetManager::AddMesh(const std::string & filePath)
+void cAssetManager::addAnimatedMeshFromBinary(std::string filePath, ShaderProgram* vertexShader)
+{
+	meshes.push_back(new Mesh(filePath, device, devContext, true,true, vertexShader));
+}
+
+Mesh * cAssetManager::AddMesh(const std::string & filePath, ShaderProgram* vertexShader)
 {
 	Mesh* temp = nullptr;
 	bool makingSureBool = false;
@@ -162,149 +187,199 @@ Mesh * cAssetManager::AddMesh(const std::string & filePath)
 
 	if (temp == nullptr || !makingSureBool)
 	{
-		temp = new Mesh(filePath, device, devContext);
+		temp = new Mesh(filePath, device, devContext, vertexShader);
 		meshes.push_back(temp);
 	}
 
 	return temp;
 }
 
-void cAssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader)
+void cAssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std::string filePath, SHADER_TYPE type)
 {
-	std::vector<D3D11_INPUT_ELEMENT_DESC> descArr;
 
-	switch (description)
+	switch (type)
 	{
-	case INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3:
-		{
-			D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+	case VERTEX_SHADER: {
+		std::vector<D3D11_INPUT_ELEMENT_DESC> descArr;
+		switch (description)
+			{
+			case INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3:
 				{
-					"POSITION",		// "semantic" name in shader
-					0,				// "semantic" index (not used)
-					DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-					0,							 // input slot
-					0,							 // offset of first element
-					D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-					0							 // used for INSTANCING (ignore)
-				},
-				{
-					"UV",
-					0,				// same slot as previous (same vertexBuffer)
-					DXGI_FORMAT_R32G32_FLOAT,
-					0,
-					12,							// offset of FIRST element (after POSITION)
-					D3D11_INPUT_PER_VERTEX_DATA,
-					0
-				},
-				{
-					"TANGENT",		// "semantic" name in shader
-					0,				// "semantic" index (not used)
-					DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-					0,							 // input slot
-					20,							 // offset of first element
-					D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-					0							 // used for INSTANCING (ignore)
-				},{
-					"BITANGENT",		// "semantic" name in shader
-					0,				// "semantic" index (not used)
-					DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-					0,							 // input slot
-					32,							 // offset of first element
-					D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-					0							 // used for INSTANCING (ignore)
-				},{
-					"NORMAL",		// "semantic" name in shader
-					0,				// "semantic" index (not used)
-					DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-					0,							 // input slot
-					44,							 // offset of first element
-					D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-					0							 // used for INSTANCING (ignore)
+					D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+						{
+							"POSITION",		// "semantic" name in shader
+							0,				// "semantic" index (not used)
+							DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+							0,							 // input slot
+							0,							 // offset of first element
+							D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+							0							 // used for INSTANCING (ignore)
+						},
+						{
+							"UV",
+							0,				// same slot as previous (same vertexBuffer)
+							DXGI_FORMAT_R32G32_FLOAT,
+							0,
+							12,							// offset of FIRST element (after POSITION)
+							D3D11_INPUT_PER_VERTEX_DATA,
+							0
+						},
+						{
+							"TANGENT",		// "semantic" name in shader
+							0,				// "semantic" index (not used)
+							DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+							0,							 // input slot
+							20,							 // offset of first element
+							D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+							0							 // used for INSTANCING (ignore)
+						},{
+							"BITANGENT",		// "semantic" name in shader
+							0,				// "semantic" index (not used)
+							DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+							0,							 // input slot
+							32,							 // offset of first element
+							D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+							0							 // used for INSTANCING (ignore)
+						},{
+							"NORMAL",		// "semantic" name in shader
+							0,				// "semantic" index (not used)
+							DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+							0,							 // input slot
+							44,							 // offset of first element
+							D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+							0							 // used for INSTANCING (ignore)
+						}
+					};
+					descArr.push_back(inputDesc[0]);
+					descArr.push_back(inputDesc[1]);
+					descArr.push_back(inputDesc[2]);
+					descArr.push_back(inputDesc[3]);
+					descArr.push_back(inputDesc[4]);
+					break;
 				}
-			};
-			descArr.push_back(inputDesc[0]);
-			descArr.push_back(inputDesc[1]);
-			descArr.push_back(inputDesc[2]);
-			descArr.push_back(inputDesc[3]);
-			descArr.push_back(inputDesc[4]);
-			break;
-		}
-	case INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4:
+			case INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4:
 
-		D3D11_INPUT_ELEMENT_DESC inputDesc1[] = {
-			{
-				"POSITION",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				0,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},
-			{
-				"UV",
-				0,				// same slot as previous (same vertexBuffer)
-				DXGI_FORMAT_R32G32_FLOAT,
-				0,
-				12,							// offset of FIRST element (after POSITION)
-				D3D11_INPUT_PER_VERTEX_DATA,
-				0
-			},
-			{
-				"TANGENT",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				20,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},{
-				"BITANGENT",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				32,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},{
-				"NORMAL",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				44,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},{
-				"JOINTINDEX",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32A32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				56,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
-			},{
-				"WEIGHT",		// "semantic" name in shader
-				0,				// "semantic" index (not used)
-				DXGI_FORMAT_R32G32B32A32_FLOAT, // size of ONE element (3 floats)
-				0,							 // input slot
-				72,							 // offset of first element
-				D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-				0							 // used for INSTANCING (ignore)
+				D3D11_INPUT_ELEMENT_DESC inputDesc1[] = {
+					{
+						"POSITION",		// "semantic" name in shader
+						0,				// "semantic" index (not used)
+						DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+						0,							 // input slot
+						0,							 // offset of first element
+						D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+						0							 // used for INSTANCING (ignore)
+					},
+					{
+						"UV",
+						0,				// same slot as previous (same vertexBuffer)
+						DXGI_FORMAT_R32G32_FLOAT,
+						0,
+						12,							// offset of FIRST element (after POSITION)
+						D3D11_INPUT_PER_VERTEX_DATA,
+						0
+					},
+					{
+						"TANGENT",		// "semantic" name in shader
+						0,				// "semantic" index (not used)
+						DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+						0,							 // input slot
+						20,							 // offset of first element
+						D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+						0							 // used for INSTANCING (ignore)
+					},{
+						"BITANGENT",		// "semantic" name in shader
+						0,				// "semantic" index (not used)
+						DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+						0,							 // input slot
+						32,							 // offset of first element
+						D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+						0							 // used for INSTANCING (ignore)
+					},{
+						"NORMAL",		// "semantic" name in shader
+						0,				// "semantic" index (not used)
+						DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
+						0,							 // input slot
+						44,							 // offset of first element
+						D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+						0							 // used for INSTANCING (ignore)
+					},{
+						"JOINTINDEX",		// "semantic" name in shader
+						0,				// "semantic" index (not used)
+						DXGI_FORMAT_R32G32B32A32_FLOAT, // size of ONE element (3 floats)
+						0,							 // input slot
+						56,							 // offset of first element
+						D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+						0							 // used for INSTANCING (ignore)
+					},{
+						"WEIGHT",		// "semantic" name in shader
+						0,				// "semantic" index (not used)
+						DXGI_FORMAT_R32G32B32A32_FLOAT, // size of ONE element (3 floats)
+						0,							 // input slot
+						72,							 // offset of first element
+						D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
+						0							 // used for INSTANCING (ignore)
+					}
+				};
+				descArr.push_back(inputDesc1[0]);
+				descArr.push_back(inputDesc1[1]);
+				descArr.push_back(inputDesc1[2]);
+				descArr.push_back(inputDesc1[3]);
+				descArr.push_back(inputDesc1[4]);
+				descArr.push_back(inputDesc1[5]);
+				descArr.push_back(inputDesc1[6]);
+				break;
 			}
-		};
-		descArr.push_back(inputDesc1[0]);
-		descArr.push_back(inputDesc1[1]);
-		descArr.push_back(inputDesc1[2]);
-		descArr.push_back(inputDesc1[3]);
-		descArr.push_back(inputDesc1[4]);
-		descArr.push_back(inputDesc1[5]);
-		descArr.push_back(inputDesc1[6]);
+		ShaderProgram * program = new ShaderProgram();
+		program->createVertexShader(devContext, device, descArr, filePath, type);
+		shaderPrograms.push_back(program);
+	}
+		break;
+	case HULL_SHADER:
+		break;
+	case DOMAIN_SHADER:
+		break;
+	case GEOMETRY_SHADER:
+		break;
+	case PIXEL_SHADER:
+	{
+		ShaderProgram * program = new ShaderProgram();
+		program->createPixelShader(devContext, device, filePath, type);
+		shaderPrograms.push_back(program);
+	}
+		break;
+	case COMPUTE_SHADER:
+		break;
+	default:
 		break;
 	}
 
-	shaderPrograms.push_back(new ShaderProgram(devContext, device, descArr, vertexShader, hullShader, domainShader, geometryShader, pixelShader, computeShader));
 }
+void cAssetManager::addShaderProgram(std::string filePath, SHADER_TYPE type)
+{
 
+	switch (type)
+	{
+	case HULL_SHADER:
+		break;
+	case DOMAIN_SHADER:
+		break;
+	case GEOMETRY_SHADER:
+		break;
+	case PIXEL_SHADER:
+	{
+		ShaderProgram * program = new ShaderProgram();
+		program->createPixelShader(devContext, device, filePath, type);
+		shaderPrograms.push_back(program);
+	}
+	break;
+	case COMPUTE_SHADER:
+		break;
+	default:
+		Debug.Log("VERTEX SHADER NEED A DESCRIPTION");
+		break;
+	}
+
+}
 void cAssetManager::addAnimationClipFromBinary(const std::string & filePath)
 {
 	AnimationClip* temp = nullptr;
@@ -336,18 +411,20 @@ void cAssetManager::Start(ID3D11Device * device, ID3D11DeviceContext * devContex
 
 void cAssetManager::addSkeletonFromBinary(const std::string & filePath)
 {
+	Skeleton* temp = new Skeleton();
+	temp->createSkeletonFromBinary(filePath);
+	skeletons.push_back(temp);
 }
 
-MyLibrary::SkeletonFromFile * cAssetManager::getSkeleton(const std::string & filePath)
+Skeleton * cAssetManager::getSkeleton(const std::string & filePath)
 {
 	bool hasFound = false;
-	MyLibrary::SkeletonFromFile* skeleton = nullptr;
-	FullSkeleton *temp;
+	Skeleton *temp;
 	for (auto& skeleton : animationClips)
 	{
 		if (skeleton->getClipPath() == filePath)
 		{
-			Console.success("Found texture at, returning its value from ", filePath);
+			Console.success("Found skeleton at, returning its value from ", filePath);
 			hasFound = true;
 			skeleton = skeleton;
 		}
@@ -355,14 +432,14 @@ MyLibrary::SkeletonFromFile * cAssetManager::getSkeleton(const std::string & fil
 
 	if (!hasFound)
 	{
-		temp = new FullSkeleton();
-		temp->GetSkeletonFromBinary(filePath);
+		temp = new Skeleton();
+		temp->createSkeletonFromBinary(filePath);
 		//skeletons.push_back(temp);
 		//Ta bort deleten
 		delete temp;
 	}
 
-	return skeleton;
+	return temp;
 }
 
 AnimationClip * cAssetManager::getAnimationclip(const std::string & filePath)
@@ -451,7 +528,28 @@ ShaderProgram * cAssetManager::getShaderProgram(int index)
 {
 	return shaderPrograms.at(index);
 }
+ShaderProgram * cAssetManager::getShaderProgram(const std::string& filePath)
+{
+	ShaderProgram* temp = nullptr;
+	bool makingSureBool = false;
+	for (auto& shaderProgram : shaderPrograms)
+	{
+		if (shaderProgram->getShaderPath() == filePath)
+		{
+			temp = shaderProgram;
+			makingSureBool = true;
+			break;
+		}
+	}
 
+	//if (temp == nullptr || !makingSureBool)
+	//{
+	//	temp = new Mesh(filePath, device, devContext, vertexShader);
+	//	meshes.push_back(temp);
+	//}
+
+	return temp;
+}
 unsigned int cAssetManager::GenerateGUID()
 {
 	hash<std::string> hasher;

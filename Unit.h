@@ -125,7 +125,9 @@ public:
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	
-	void RecieveOrder(RaycastHit Values, int unitTag);
+	DirectX::XMVECTOR getSplinePoint(float t, DirectX::XMVECTOR p0, DirectX::XMVECTOR p1, DirectX::XMVECTOR p2);
+
+	void RecieveOrder(RaycastHit Values);
 	void RecieveOrder(OPTIONS option);
 	void update();
 };

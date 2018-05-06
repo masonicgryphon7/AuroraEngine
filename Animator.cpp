@@ -2,13 +2,15 @@
 
 
 
-Animator::Animator():Component(-1, "Animator")
+
+
+Animator::Animator(Skeleton* skeleton) :Component(-1, "Animator")
 {
 	isPlaying = false;
 	currentClipIndex = 0;
 	playTime = 0;
+	this->skeleton = skeleton;
 }
-
 
 Animator::~Animator()
 {

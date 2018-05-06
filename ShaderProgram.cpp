@@ -5,10 +5,6 @@
 ShaderProgram::ShaderProgram()
 {}
 
-ShaderProgram::ShaderProgram(ID3D11DeviceContext * gDeviceContext, ID3D11Device * gDevice, std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader)
-{
-	CreateShaderData(gDeviceContext, gDevice, inputDesc, vertexShader, hullShader, domainShader, geometryShader, pixelShader, computeShader);
-}
 
 ShaderProgram::~ShaderProgram()
 {
@@ -19,6 +15,13 @@ ShaderProgram::~ShaderProgram()
 	SAFE_RELEASE(gGeometryShader);
 	SAFE_RELEASE(gPixelShader);
 	SAFE_RELEASE(gComputeShader);
+}
+
+const std::string ShaderProgram::getShaderName()const {
+	return this->shaderName;
+}
+const std::string ShaderProgram::getShaderPath()const {
+	return this->shaderPath;
 }
 
 std::wstring ShaderProgram::s2ws(const std::string& s)
@@ -34,24 +37,28 @@ std::wstring ShaderProgram::s2ws(const std::string& s)
 }
 
 
-HRESULT ShaderProgram::CreateShaderData(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc, std::string vertexShader, std::string hullShader, std::string domainShader, std::string geometryShader, std::string pixelShader, std::string computeShader)
+HRESULT ShaderProgram::createVertexShader(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, std::vector<D3D11_INPUT_ELEMENT_DESC> inputDesc, std::string filePath, SHADER_TYPE type)
 {
+	this->shaderPath = filePath;
+	this->type = type;
+	std::reverse(filePath.begin(), filePath.end());
+	this->shaderName = filePath.substr(0, filePath.find("/", 0));
+	std::reverse(this->shaderName.begin(), this->shaderName.end());
+	this->shaderName = shaderName.substr(0, shaderName.find(".", 0));
+
 	this->gDeviceContext = gDeviceContext;
 
 	// Binary Large OBject (BLOB), for compiled shader, and errors.
 	ID3DBlob* errorBlob = nullptr;
 	HRESULT result;
 
-	std::wstring stemp = s2ws(vertexShader);
+	std::wstring stemp = s2ws(shaderPath);
 	LPCWSTR sResult = stemp.c_str();
 
 
-	if (vertexShader != "")
-	{
+
 		ID3DBlob* pVS = nullptr;
 
-		stemp = s2ws(vertexShader);
-		sResult = stemp.c_str();
 
 		// https://msdn.microsoft.com/en-us/library/windows/desktop/hh968107(v=vs.85).aspx
 		result = D3DCompileFromFile(
@@ -98,17 +105,39 @@ HRESULT ShaderProgram::CreateShaderData(ID3D11DeviceContext* gDeviceContext, ID3
 
 		// we do not need anymore this COM object, so we release it.
 		pVS->Release();
-	}
+	
 
-	if (pixelShader != "")
-	{
+
+
+}
+
+HRESULT ShaderProgram::createPixelShader(ID3D11DeviceContext* gDeviceContext, ID3D11Device* gDevice, std::string filePath, SHADER_TYPE type)
+{
+	this->shaderPath = filePath;
+	this->type = type;
+
+	std::reverse(filePath.begin(), filePath.end());
+	this->shaderName = filePath.substr(0, filePath.find("/", 0));
+	std::reverse(this->shaderName.begin(), this->shaderName.end());
+	this->shaderName = shaderName.substr(0, shaderName.find(".", 0));
+
+	this->gDeviceContext = gDeviceContext;
+
+	// Binary Large OBject (BLOB), for compiled shader, and errors.
+	ID3DBlob* errorBlob = nullptr;
+	HRESULT result;
+
+	std::wstring stemp = s2ws(shaderPath);
+	LPCWSTR sResult = stemp.c_str();
+
+
+
+
 		//create pixel shader
 		ID3DBlob* pPS = nullptr;
 		if (errorBlob) errorBlob->Release();
 		errorBlob = nullptr;
 
-		stemp = s2ws(pixelShader);
-		sResult = stemp.c_str();
 		result = D3DCompileFromFile(
 			sResult, // filename
 			nullptr,		// optional macros
@@ -139,7 +168,7 @@ HRESULT ShaderProgram::CreateShaderData(ID3D11DeviceContext* gDeviceContext, ID3
 		// we do not need anymore this COM object, so we release it.
 		pPS->Release();
 
-	}
+	
 
 
 }
@@ -149,14 +178,33 @@ void ShaderProgram::ActivateShader()
 
 	// specifying NULL or nullptr we are disabling that stage
 	// in the pipeline
-	gDeviceContext->VSSetShader(gVertexShader, nullptr, 0);
-	gDeviceContext->HSSetShader(nullptr, nullptr, 0);
-	gDeviceContext->DSSetShader(nullptr, nullptr, 0);
-	gDeviceContext->GSSetShader(nullptr, nullptr, 0);
-	gDeviceContext->PSSetShader(gPixelShader, nullptr, 0);
+	switch (type)
+	{
+	case VERTEX_SHADER:
+		// specify the topology to use when drawing
+		// specify the IA Layout (how is data passed)
+		gDeviceContext->VSSetShader(gVertexShader, nullptr, 0);
+		gDeviceContext->IASetInputLayout(gVertexLayout);
+		gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		break;
+	case HULL_SHADER:
+		gDeviceContext->HSSetShader(nullptr, nullptr, 0);
+		break;
+	case DOMAIN_SHADER:
+		gDeviceContext->DSSetShader(nullptr, nullptr, 0);
+		break;
+	case GEOMETRY_SHADER:
+		gDeviceContext->GSSetShader(nullptr, nullptr, 0);
+		break;
+	case PIXEL_SHADER:
+		gDeviceContext->PSSetShader(gPixelShader, nullptr, 0);
+		break;
+	case COMPUTE_SHADER:
+		gDeviceContext->CSSetShader(nullptr, nullptr, 0);
 
-	// specify the topology to use when drawing
-	gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	// specify the IA Layout (how is data passed)
-	gDeviceContext->IASetInputLayout(gVertexLayout);
+		break;
+	default:
+		break;
+	}
+
 }
