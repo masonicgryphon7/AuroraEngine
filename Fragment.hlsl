@@ -150,7 +150,6 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 		if (diff>0)
 		{
-			
 			float lavaLerp = diff;
 			//return float4(Lava_Albedo.Sample(sampAni, adjustedUV).xyz, 0);
 			albedo = lerp(albedo, Lava_Albedo.Sample(sampAni, adjustedUV).xyz,lavaLerp) ;
