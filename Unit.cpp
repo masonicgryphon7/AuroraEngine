@@ -589,7 +589,7 @@ void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 				break;
 			}
 		}
-		else if (Values.transform->gameObject->tag != unitTag && unitTag != 3 && unitTag != 0) { //!=gameObject->tag){
+		else if (Values.transform->gameObject->tag != unitTag && Values.transform->gameObject->tag != 3 && Values.transform->gameObject->tag != 0) { //!=gameObject->tag){
 																								 //enemy
 			switch (type)
 			{
@@ -634,14 +634,14 @@ void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 
 
 			case Type::Worker:
-				if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
-				{
+				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
+				//{
 					tempOrder.command = Gather;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
 					actionTime = 2;
-				}
+				//}
 
 				break;
 
