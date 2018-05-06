@@ -14,7 +14,7 @@ Unit::Unit() :Component(-1, "Unit")
 	{
 	case Type::Hero: //HERO
 		this->healthPoints = 100;
-		this->attackPoints = 13;
+		this->attackPoints = 15;
 		this->defencePoints = 13;
 		this->attackDistance = 2;
 		this->Resources = 10;
@@ -63,7 +63,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	case Type::Hero: //HERO
 		this->healthPoints = 100;
 		this->attackPoints = 20;
-		this->defencePoints = 20;
+		this->defencePoints = 10;
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
@@ -692,6 +692,9 @@ void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 		switch (type)
 		{
 		case Type::Bank:
+			break;
+
+		case Type::GoldMine:
 			break;
 
 		default:
