@@ -32,6 +32,7 @@ void NPC::instantiate_NPC()
 	enemy_unit->addComponent(enemy_unit_hero);
 	enemy_units.push_back(enemy_unit_hero);
 	
+	
 }
 
 void NPC::findNewEnemies()
