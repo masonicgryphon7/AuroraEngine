@@ -173,22 +173,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addTexture("Assets/ID_MAP2part3.png"); // 18 // 3
 		assetManager.addTexture("Assets/ID_MAP2part4.png"); //19 // 4
 
-		//Terrain Material 1
-		assetManager.AddMaterial("TerrainMaterial1", assetManager.getShaderProgram("Fragment.hlsl"));
-		assetManager.getMaterial("TerrainMaterial1")->setIsTerrain(true);
-		assetManager.getMaterial("TerrainMaterial1")->setXTile(5);
-		assetManager.getMaterial("TerrainMaterial1")->setYTile(5);
-		assetManager.getMaterial("TerrainMaterial1")->setTerrainMaterials(
-			assetManager.getTexture("Grass_Albedo")->getTexture(),
-			assetManager.getTexture("Grass_Normal")->getTexture(),
-			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
-			assetManager.getTexture("Cliff_Albedo")->getTexture(),
-			assetManager.getTexture("Cliff_Normal")->getTexture(),
-			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
-			assetManager.getTexture("Sand_Albedo")->getTexture(),
-			assetManager.getTexture("Sand_Normal")->getTexture(),
-			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 1
+		assetManager.addTexture("Assets/Lava_Albedo.png"); //20
+		assetManager.addTexture("Assets/Lava_Normal.png"); //21
+		assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
 
 		//Terrain Material 2
 		assetManager.AddMaterial("TerrainMaterial2", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -207,22 +194,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
 			assetManager.getTexture("ID_MAP2part2")->getTexture()); //USE ID_PART 2
 
-		//Terrain Material 3
-		assetManager.AddMaterial("TerrainMaterial3" ,assetManager.getShaderProgram("Fragment.hlsl"));
-		assetManager.getMaterial("TerrainMaterial3")->setIsTerrain(true);
-		assetManager.getMaterial("TerrainMaterial3")->setXTile(5);
-		assetManager.getMaterial("TerrainMaterial3")->setYTile(5);
-		assetManager.getMaterial("TerrainMaterial3")->setTerrainMaterials(
-			assetManager.getTexture("Grass_Albedo")->getTexture(), 
-			assetManager.getTexture("Grass_Normal")->getTexture(),
-			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
-			assetManager.getTexture("Cliff_Albedo")->getTexture(),
-			assetManager.getTexture("Cliff_Normal")->getTexture(),
-			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
-			assetManager.getTexture("Sand_Albedo")->getTexture(),
-			assetManager.getTexture("Sand_Normal")->getTexture(),
-			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-			assetManager.getTexture("ID_MAP2part3")->getTexture()); //USE ID_PART 3
+		assetManager.addMaterial(assetManager.getShaderProgram("Fragment.hlsl"));
 
 		//Terrain Material 4
 		assetManager.AddMaterial("TerrainMaterial4", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -327,8 +299,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		cube->name = "Worker";
 		cube->tag = 1;
-		AssetManager.AddMesh("Assets/Cube.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
-		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh(4));
+		AssetManager.addMeshFromBinary("Assets/PIRATE.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("PIRATE"));
 		cube->addComponent(meshFilter1);
 		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
 		Unit *UnitHero1 = new Unit(Worker);
@@ -351,7 +323,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		UnitSoldier1->setPlayerScript(playerscript);
 
 
-		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 10, 0));
+		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 0, 10, 0));
 		cube3->name = "Bank";
 		cube3->tag = 1;
 		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh(4));
