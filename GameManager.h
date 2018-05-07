@@ -7,8 +7,14 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include "CoreEngine.h"
+#include "Unit.h"
 
-class GameManager : public Component
+enum GAME_STATE
+{
+	MAIN_MENU,START_STATE,LARGE_CIRCEL_STATE, MEDIUM_CIRCEL_STATE, SMALL_CIRCEL_STATE,END_STATE,GAME_OVER_MENU
+};
+class Unit;
+static class GameManager
 {
 public:
 	GameManager();
@@ -27,9 +33,12 @@ public:
 	struct Manager_Buffer {
 		DirectX::XMVECTOR fireRing;
 	};
-
 	HRESULT createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext);
 	void setResources(float radius) { this->ringOfFire = radius; };
 	void update();
-};
+
+	static GAME_STATE gameState;
+	static std::vector<std::vector<Unit*>> unitLists;
+} gamemanager;
+//Ovanför
 

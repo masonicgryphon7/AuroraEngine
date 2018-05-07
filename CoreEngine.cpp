@@ -313,6 +313,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.getMaterial("TreeMaterial")->setAORoughMet(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic")->getTexture());
 
 		//----------------
+		GameManager gameManager = GameManager(gDevice, gDeviceContext);
+
 
 		GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 		terrain1->name = "Terrain3";
@@ -398,10 +400,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 
-		GameObject* winObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
-		GameManager *gameManager = new GameManager(gDevice, gDeviceContext);
-		winObject->addComponent(gameManager);
-
+	
 
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
@@ -426,6 +425,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
 		Unit *UnitSoldier1 = new Unit(GoldMine);
 		cube2->addComponent(UnitSoldier1);
+		UnitSoldier1->setPlayerScript(playerscript);
+		playerscript->friendlyBuildings.push_back(UnitSoldier1);
 		UnitSoldier1->setPlayerScript(playerscript);
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
@@ -523,7 +524,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			{
 				inputHandler.updateInput();
 				Time.tick();
-
+				gameManager.update();
 				if (!PLAYER_BUILD)
 					OnResize();
 
@@ -1161,12 +1162,15 @@ HRESULT CoreEngine::CreatePlayerDirect3DContext(HWND wndHandle)
 	scd.OutputWindow = wndHandle;                           // the window to be used
 	scd.SampleDesc.Count = 4;                               // how many multisamples
 	scd.Windowed = TRUE;                                    // windowed/full-screen mode
-
+	UINT deviceFlags = 0;
+#if defined(DEBUG) || defined(_DEBUG)
+	deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif		
 															// create a device, device context and swap chain using the information in the scd struct
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
-		NULL,
+		deviceFlags,
 		NULL,
 		NULL,
 		D3D11_SDK_VERSION,
