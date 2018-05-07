@@ -15,7 +15,7 @@ Unit::Unit() :Component(-1, "Unit")
 	case Type::Hero: //HERO
 		this->healthPoints = 100;
 		this->attackPoints = 15;
-		this->defencePoints = 15;
+		this->defencePoints = 5;
 		this->attackDistance = 2;
 		this->Resources = 10;
 		break;
