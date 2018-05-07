@@ -521,6 +521,8 @@ void Unit::summonWorkerCommand()
 	worker->addComponent(unitWorker);
 	playerScript->friendlyUnits.push_back(unitWorker);
 	unitWorker->setPlayerScript(playerScript);
+	gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
+	
 
 	UnitOrders.erase(UnitOrders.begin());
 	Order tempOrder;
@@ -567,6 +569,7 @@ void Unit::summonSoldierCommand()
 	soldier->addComponent(unitSoldier);
 	playerScript->friendlyUnits.push_back(unitSoldier);
 	unitSoldier->setPlayerScript(playerScript);
+	gamemanager.unitLists[gameObject->tag].push_back(unitSoldier);
 
 	UnitOrders.erase(UnitOrders.begin());
 	Order tempOrder;
@@ -738,14 +741,14 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 
 
 			case Type::Worker:
-				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
-				//{
-				tempOrder.command = Gather;
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
-				//}
+				if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
+				{
+					tempOrder.command = Gather;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 
 				break;
 
