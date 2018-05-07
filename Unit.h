@@ -30,6 +30,7 @@ enum Command
 	SummonWorker,
 	SummonSoldier,
 	convertToSoldier,
+	takeBuilding,
 	Idle
 };
 
@@ -123,6 +124,7 @@ public:
 	void summonWorkerCommand();
 	void convertToSoldierCommand(Unit* targetedUnit);
 	void summonSoldierCommand();
+	void takeBuildingCommand(Unit* targetedUnit);
 	std::vector<Order>* getUnitOrdersPointer() { return &UnitOrders; };
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);

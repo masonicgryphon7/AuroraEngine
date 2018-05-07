@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 1
+#define PLAYER_BUILD 0
 
 bool CoreEngine::hasResized = false;
 
@@ -420,7 +420,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 5, 0));
 		cube2->name = "Goldmine";
-		cube2->tag = 3;
+		cube2->tag = 0;
 		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
 		cube2->addComponent(meshFilter2);
 		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
@@ -430,7 +430,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
 		cube3->name = "Bank";
-		cube3->tag = 1;
+		cube3->tag = 0;
 		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
 		cube3->addComponent(meshFilter3);
 		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));

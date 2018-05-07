@@ -63,7 +63,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	case Type::Hero: //HERO
 		this->healthPoints = 100;
 		this->attackPoints = 20;
-		this->defencePoints = 10;
+		this->defencePoints = 20;
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
@@ -565,6 +565,31 @@ void Unit::summonSoldierCommand()
 	unitSoldier->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
+void Unit::takeBuildingCommand(Unit * targetedUnit)
+{
+	targetPos = UnitOrders.at(0).transform->getPosition();
+	unitPos = gameObject->transform.getPosition();
+
+	if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
+	{
+		actionTime += Time.getDeltaTime();
+		//Damage enemy
+		if (actionTime > 1)
+		{
+			//attackEnemy();
+			targetedUnit->gameObject->tag = gameObject->tag;
+			//Debug.Log("Enemy Hit!");
+			actionTime = 0;
+
+			UnitOrders.erase(UnitOrders.begin());
+		}
+	}
+	else
+	{
+		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+	}
+}
+
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
 {
 	DirectX::XMVECTOR diff = DirectX::XMVectorSubtract(targetPos, unitPos);
@@ -676,30 +701,40 @@ void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 				break;
 			}
 		}
-		else if (Values.transform->gameObject->tag == 3) {
-			//Resource
-			//Gather
+		else if (Values.transform->gameObject->tag == 0) {
+			//Terrain
+			//Walk 
 
 			switch (type)
 			{
 			case Type::Hero:
-				tempOrder.command = HeroGather;
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
-
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == GoldMine)
+				{
+					tempOrder.command = HeroGather;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
+				{
+					tempOrder.command = takeBuilding;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 				break;
 
 
 			case Type::Worker:
 				//if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
 				//{
-					tempOrder.command = Gather;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
+				tempOrder.command = Gather;
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				actionTime = 2;
 				//}
 
 				break;
@@ -708,14 +743,6 @@ void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 				//walk to
 				break;
 			}
-
-		}
-		else if (Values.transform->gameObject->tag == 0) {
-			//Terrain
-			//Walk 
-		}
-		else {
-
 		}
 
 	}
@@ -857,16 +884,15 @@ void Unit::update()
 		}
 		break;
 
+		case Command::takeBuilding:
+		{
+			Unit * targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+			takeBuildingCommand(targetedUnit);
+		}
+		break;
+
 		default:
 			break;
 		}
 	}
-
-	//if (Input.GetKeyUp(KeyCode::Alpha1)) {
-	//	summonWorkerCommand();
-	//	}
-
-	//if (Input.GetKeyUp(KeyCode::Alpha2)) {
-	//	summonSoldierCommand();
-	//}
 }
