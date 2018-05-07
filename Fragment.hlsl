@@ -158,6 +158,10 @@ float4 PS_main(VS_OUT input) : SV_Target
 			metallic = lerp(metallic, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).y, lavaLerp);
 			roughness = lerp(roughness, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).z, lavaLerp);
 		}
+		if (distance(input.worldPosition, float4(22, 0, 5, 0)) <= 3)
+		{
+			return float4(1, 0, 1, 0);
+		}
 
 	}
 

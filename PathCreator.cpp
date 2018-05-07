@@ -156,7 +156,7 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 		}
 	}
 	int i = 0;
-	//blockGrid(DirectX::XMFLOAT3(20,1,1));
+	blockGrid(DirectX::XMFLOAT3(20,1,1));
 }
 //
 ////void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions)
@@ -221,14 +221,19 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 
 void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 {
-	//for (int i = 0; i < 10; i++)
+	//for (int i = 3; i < 5; i++)
 	//{
-	//	grid[10][i].pathable = PATHABLE_CHECK;
-	//	grid[11][i].pathable = PATHABLE_CHECK;
-	//	grid[12][i].pathable = PATHABLE_CHECK;
-	//	grid[13][i].pathable = PATHABLE_CHECK;
+	//	grid[3][i].pathable = PATHABLE_CHECK;
+	//	grid[3][i].pathable = PATHABLE_CHECK;
 	//}
-	//grid[pos.x][pos.y].pathable = PATHABLE_CHECK;
+	grid[20][3].pathable = PATHABLE_CHECK;
+	grid[20][4].pathable = PATHABLE_CHECK;
+	grid[20][5].pathable = PATHABLE_CHECK;
+	
+	grid[21][3].pathable = PATHABLE_CHECK;
+	grid[21][4].pathable = PATHABLE_CHECK;
+	grid[21][5].pathable = PATHABLE_CHECK;
+	
 }
 
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
@@ -266,7 +271,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	bool succes = false;
 	Node currentNode = Node();
 	int i = 0;
-	while (openNodes.size() > 0 && succes == false && iteration<maxIterationsAllowed) {
+	while (openNodes.size() > 0 && succes == false) {
 		iteration++;
 		float lowestF = -1;
 		int lowestFIndex = openNodes[0].f;
@@ -304,7 +309,6 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 			}
 			if (tempGrid[x][z].pathable == PATHABLE_CHECK && tempGrid[x][z].position!=goalNode.position) {
 				isViableNeighbor = false;
-
 			}
 			for (int j = 0; j < closedNodes.size(); j++)
 			{
