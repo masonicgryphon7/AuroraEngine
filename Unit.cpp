@@ -71,8 +71,8 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::Soldier: //SOLDIER
 		this->healthPoints = 20;
-		this->attackPoints = 4;
-		this->defencePoints = 8;
+		this->attackPoints = 8;
+		this->defencePoints = 4;
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Soldier;
@@ -87,13 +87,13 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->type = Worker;
 		break;
 
-	case Type::Building: //BUILDING
+	case Type::Barrack: //BUILDING
 		this->healthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 20;
 		this->attackDistance = 0;
 		this->Resources = 0;
-		this->type = Building;
+		this->type = Barrack;
 		break;
 
 	case Type::Bank: //Bank
@@ -112,7 +112,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
-		this->Resources = 1000;
+		this->Resources = 100000;
 		this->type = GoldMine;
 		break;
 
@@ -503,11 +503,11 @@ void Unit::summonWorkerCommand()
 	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
 	worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
 	worker->tag = gameObject->tag;
-	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
+	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
 	worker->addComponent(meshFilter);
-	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
+	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 	Unit *unitWorker = new Unit(Worker);
-	unitWorker->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+	unitWorker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	worker->addComponent(unitWorker);
 	playerScript->friendlyUnits.push_back(unitWorker);
 	unitWorker->setPlayerScript(playerScript);
@@ -519,23 +519,50 @@ void Unit::summonWorkerCommand()
 	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
+void Unit::convertToSoldierCommand(Unit* targetedUnit)
+{
+	targetPos = UnitOrders.at(0).transform->getPosition();
+	unitPos = gameObject->transform.getPosition();
+
+	if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
+	{
+		gameObject->name = "Soldier";
+		gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("PIRATE"));
+		gameObject->getComponent<MaterialFilter>()->setMaterialFilter(AssetManager.getMaterial("SoldierMaterial"));
+		gameObject->getComponent<Unit>()->type = Soldier;
+		gameObject->getComponent<Unit>()->healthPoints = 20;
+		gameObject->getComponent<Unit>()->attackDistance = 2;
+		gameObject->getComponent<Unit>()->attackPoints = 8;
+		gameObject->getComponent<Unit>()->defencePoints = 4;
+		gameObject->getComponent<Unit>()->Resources = 0;
+
+		UnitOrders.erase(UnitOrders.begin());
+	}
+	else
+	{
+		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+	}
+}
+
 void Unit::summonSoldierCommand()
 {
-	GameObject* soldier = gScene.createEmptyGameObject(DirectX::XMVectorSet(2.0, 0.0, 2.0, 0.0));//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+	GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 	soldier->name = "Soldier";// +playerScript->friendlyUnits.size();
 	soldier->tag = gameObject->tag;
-	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
+	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("PIRATE"));
 	soldier->addComponent(meshFilter);
-	soldier->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
+	soldier->addComponent(new MaterialFilter(AssetManager.getMaterial("SoldierMaterial")));
 	Unit *unitSoldier = new Unit(Soldier);
-	unitSoldier->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+	unitSoldier->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	soldier->addComponent(unitSoldier);
 	playerScript->friendlyUnits.push_back(unitSoldier);
 	unitSoldier->setPlayerScript(playerScript);
 
 	UnitOrders.erase(UnitOrders.begin());
-
-	//unitSoldier->RecieveOrder()
+	Order tempOrder;
+	tempOrder.command = Move;
+	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	unitSoldier->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
@@ -605,6 +632,14 @@ void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
 				{
 					tempOrder.command = Drop;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
+				{
+					tempOrder.command = convertToSoldier;
 					tempOrder.point = Values.point;
 					tempOrder.transform = Values.transform;
 					UnitOrders.push_back(tempOrder);
@@ -697,6 +732,8 @@ void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 		case Type::GoldMine:
 			break;
 
+		case Type::Barrack:
+			break;
 		default:
 			tempOrder.command = Move;
 
@@ -724,8 +761,7 @@ void Unit::RecieveOrder(OPTIONS option)
 		}
 		else if (option == Option1)
 		{
-			tempOrder.command = SummonSoldier;
-			UnitOrders.push_back(tempOrder);
+
 		}
 		else if (option == Option2)
 		{
@@ -737,10 +773,11 @@ void Unit::RecieveOrder(OPTIONS option)
 		}
 		break;
 
-	case Type::Hero:
+	case Type::Barrack:
 		if (option == Option0)
 		{
-
+			tempOrder.command = SummonSoldier;
+			UnitOrders.push_back(tempOrder);
 		}
 		else if (option == Option1)
 		{
@@ -812,6 +849,13 @@ void Unit::update()
 		case Command::SummonSoldier:
 			summonSoldierCommand();
 			break;
+
+		case Command::convertToSoldier:
+		{
+			Unit * targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+			convertToSoldierCommand(targetedUnit);
+		}
+		break;
 
 		default:
 			break;

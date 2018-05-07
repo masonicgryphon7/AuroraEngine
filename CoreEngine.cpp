@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 1
+#define PLAYER_BUILD 0
 
 bool CoreEngine::hasResized = false;
 
@@ -270,10 +270,41 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic.png");
 
 		//Unit Material
-		assetManager.AddMaterial("UnitMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-		assetManager.getMaterial("UnitMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
-		assetManager.getMaterial("UnitMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
-		assetManager.getMaterial("UnitMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+		assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
+		assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
+		assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+
+		//Soldier material
+		assetManager.AddMaterial("SoldierMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("SoldierMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
+		assetManager.getMaterial("SoldierMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
+		assetManager.getMaterial("SoldierMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+
+		//Hero material
+		assetManager.AddMaterial("HeroMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("HeroMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
+		assetManager.getMaterial("HeroMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
+		assetManager.getMaterial("HeroMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+
+		//Bank material
+		assetManager.AddMaterial("BankMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("BankMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
+		assetManager.getMaterial("BankMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
+		assetManager.getMaterial("BankMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+
+		//Goldmine material
+		assetManager.AddMaterial("GoldmineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("GoldmineMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
+		assetManager.getMaterial("GoldmineMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
+		assetManager.getMaterial("GoldmineMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+
+		//Barrack material
+		assetManager.AddMaterial("BarrackMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("BarrackMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
+		assetManager.getMaterial("BarrackMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
+		assetManager.getMaterial("BarrackMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+
 
 		//Tree Material
 		assetManager.AddMaterial("TreeMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -381,7 +412,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("pose1smile"));
 		cube->addComponent(meshFilter1);
-		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
+		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 		Unit *UnitHero1 = new Unit(Worker);
 		cube->addComponent(UnitHero1);
 		playerscript->friendlyUnits.push_back(UnitHero1);
@@ -392,7 +423,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube2->tag = 3;
 		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
 		cube2->addComponent(meshFilter2);
-		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
+		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
 		Unit *UnitSoldier1 = new Unit(GoldMine);
 		cube2->addComponent(UnitSoldier1);
 		UnitSoldier1->setPlayerScript(playerscript);
@@ -402,7 +433,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube3->tag = 1;
 		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
 		cube3->addComponent(meshFilter3);
-		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
+		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
 		Unit* unitBuilding = new Unit(Bank);
 		cube3->addComponent(unitBuilding);
 		playerscript->friendlyBuildings.push_back(unitBuilding);
@@ -413,8 +444,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		barrack->tag = 1;
 		MeshFilter* meshFilterBarracks = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
 		barrack->addComponent(meshFilterBarracks);
-		barrack->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
-		Unit* unitBuilding2 = new Unit(Bank);
+		barrack->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+		Unit* unitBuilding2 = new Unit(Barrack);
 		barrack->addComponent(unitBuilding2);
 		playerscript->friendlyBuildings.push_back(unitBuilding2);
 		unitBuilding2->setPlayerScript(playerscript);
@@ -424,7 +455,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube4->tag = 1;
 		MeshFilter* meshFilter4 = new MeshFilter(AssetManager.getMesh("PIRATE"));
 		cube4->addComponent(meshFilter4);
-		cube4->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
+		cube4->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
 		Unit* UnitHero2 = new Unit(Hero);
 		cube4->addComponent(UnitHero2);
 		playerscript->friendlyUnits.push_back(UnitHero2);
@@ -446,7 +477,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addAnimationClipFromBinary("Assets/ANIMATION_ANIMATION.bin");
 		animator->addAnimationClip(AssetManager.getAnimationclip("ANIMATION_ANIMATION"));
 
-		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
+		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 
 		//
 		

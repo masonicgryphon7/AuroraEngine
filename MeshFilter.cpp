@@ -8,7 +8,18 @@ MeshFilter::MeshFilter()
 
 MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 {
-	this->mesh = mesh;
+	setMesh(mesh);
+
+}
+
+
+MeshFilter::~MeshFilter()
+{
+}
+
+void MeshFilter::setMesh(Mesh * in_setMesh)
+{
+	this->mesh = in_setMesh;
 
 	std::vector<DirectX::XMVECTOR>* temp = mesh->getVertexPositions();
 	boundingBox.isActive = true;
@@ -21,7 +32,7 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 	float minZ = DirectX::XMVectorGetZ(temp[0][0]);
 
 
-	for (int i = 1; i < temp->size() ; i++)
+	for (int i = 1; i < temp->size(); i++)
 	{
 		float tempX = DirectX::XMVectorGetX(temp[0][i]);
 		if (tempX < minX)
@@ -46,13 +57,13 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 	float centerY = (maxY + minY) / 2;
 	float centerZ = (maxZ + minZ) / 2;
 
-	boundingBox.centre = DirectX::XMVectorSet(centerX,centerY,centerZ,0);
+	boundingBox.centre = DirectX::XMVectorSet(centerX, centerY, centerZ, 0);
 
 	float hx = (maxX - minX) / 2;
 	float hy = (maxY - minY) / 2;
 	float hz = (maxZ - minZ) / 2;
 
-	boundingBox.x_hx = DirectX::XMVectorSet(1,0,0,hx);
+	boundingBox.x_hx = DirectX::XMVectorSet(1, 0, 0, hx);
 	boundingBox.y_hy = DirectX::XMVectorSet(0, 1, 0, hy);
 	boundingBox.z_hz = DirectX::XMVectorSet(0, 0, 1, hz);
 
@@ -71,8 +82,8 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 				DirectX::XMVectorScale(
 					boundingBox.z_hz,
 					DirectX::XMVectorGetW(boundingBox.z_hz))),
-				boundingBox.centre
-				);
+			boundingBox.centre
+		);
 
 	boundingBox.corners[1] =
 		DirectX::XMVectorAdd(
@@ -87,8 +98,8 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 				DirectX::XMVectorScale(
 					boundingBox.z_hz,
 					-1.0f*DirectX::XMVectorGetW(boundingBox.z_hz))),
-				boundingBox.centre
-				);
+			boundingBox.centre
+		);
 	boundingBox.corners[2] =
 		DirectX::XMVectorAdd(
 			DirectX::XMVectorAdd(
@@ -102,7 +113,7 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 				DirectX::XMVectorScale(
 					boundingBox.z_hz,
 					-1.0f*DirectX::XMVectorGetW(boundingBox.z_hz))),
-				boundingBox.centre);
+			boundingBox.centre);
 	boundingBox.corners[3] =
 		DirectX::XMVectorAdd(
 			DirectX::XMVectorAdd(
@@ -116,7 +127,7 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 				DirectX::XMVectorScale(
 					boundingBox.z_hz,
 					DirectX::XMVectorGetW(boundingBox.z_hz))),
-				boundingBox.centre);
+			boundingBox.centre);
 	boundingBox.corners[4] =
 		DirectX::XMVectorAdd(
 			DirectX::XMVectorAdd(
@@ -130,7 +141,7 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 				DirectX::XMVectorScale(
 					boundingBox.z_hz,
 					DirectX::XMVectorGetW(boundingBox.z_hz))),
-				boundingBox.centre);
+			boundingBox.centre);
 	boundingBox.corners[5] =
 		DirectX::XMVectorAdd(
 			DirectX::XMVectorAdd(
@@ -144,7 +155,7 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 				DirectX::XMVectorScale(
 					boundingBox.z_hz,
 					-1.0f*DirectX::XMVectorGetW(boundingBox.z_hz))),
-				boundingBox.centre);
+			boundingBox.centre);
 	boundingBox.corners[6] =
 		DirectX::XMVectorAdd(
 			DirectX::XMVectorAdd(
@@ -158,7 +169,7 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 				DirectX::XMVectorScale(
 					boundingBox.z_hz,
 					-1.0f*DirectX::XMVectorGetW(boundingBox.z_hz))),
-				boundingBox.centre);
+			boundingBox.centre);
 	boundingBox.corners[7] =
 		DirectX::XMVectorAdd(
 			DirectX::XMVectorAdd(
@@ -172,18 +183,8 @@ MeshFilter::MeshFilter(Mesh * mesh):Component(-1, "Mesh Filter")
 				DirectX::XMVectorScale(
 					boundingBox.z_hz,
 					DirectX::XMVectorGetW(boundingBox.z_hz))),
-				boundingBox.centre);
+			boundingBox.centre);
 
-
-}
-
-
-MeshFilter::~MeshFilter()
-{
-}
-
-void MeshFilter::setMesh(Mesh * in_setMesh)
-{
 }
 
 void MeshFilter::update()
