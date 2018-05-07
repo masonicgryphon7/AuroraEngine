@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include "CoreEngine.h"
+#include "JGUI.h"
 
 class Player
 {
@@ -20,6 +21,7 @@ protected:
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;
 	CoreEngine* coreEngine;
+	JGUI* jGUI = nullptr;
 
 	Camera* mc;
 };
