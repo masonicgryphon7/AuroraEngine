@@ -57,11 +57,21 @@ void GameManager::update()
 	case START_STATE:
 		break;
 	case LARGE_CIRCEL_STATE:
-		if (gameTime >= 30)
+		if (gameTime >= 3)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+		
+			for (int j = 0; j < unitLists[2].size(); j++)
+			{
+				if (unit->getDistanceBetweenUnits(unitLists[2][j]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+				{
+					Debug.Log("eeeeeeeeeeey");
+					unitLists[2][j]->takeDamage(100);
+				}
+			}
+
 		}
 		if (ringOfFire < 100) {
 			gameState = GAME_STATE::MEDIUM_CIRCEL_STATE;
