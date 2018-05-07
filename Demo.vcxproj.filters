@@ -62,6 +62,7 @@
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Skeleton.cpp" />
+    <ClCompile Include="JGUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
@@ -133,6 +134,7 @@
     <ClInclude Include="NPC.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Skeleton.h" />
+    <ClInclude Include="JGUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

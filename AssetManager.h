@@ -22,8 +22,7 @@ public:
 
 	void addTexture(std::string filePath);
 	Texture* AddTexture(std::string filePath);
-	void addMaterial(ShaderProgram * shaderProgram);
-	Material* AddMaterial(ShaderProgram* shaderProgram);
+	Material* AddMaterial(std::string name, ShaderProgram* shaderProgram);
 	void addMesh(std::string filePath, ShaderProgram* vertexShader);
 	void addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ShaderProgram* vertexShader);
 	Mesh* AddMesh(const std::string& filePath, ShaderProgram* vertexShader);
@@ -39,6 +38,7 @@ public:
 	Texture* getTexture(const std::string &path);
 	Texture* getTexture(int index);
 	Material* getMaterial(int index);
+	Material* getMaterial(const std::string& name);
 	Mesh* getMesh(int index);
 	Mesh* getMesh(const std::string& name);
 	ShaderProgram* getShaderProgram(int index);

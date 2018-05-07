@@ -166,6 +166,7 @@
     <ClInclude Include="EditorSceneSelectionScript.h" />
     <ClInclude Include="FormatHeader.h" />
     <ClInclude Include="formatImporter.h" />
+    <ClInclude Include="JGUI.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="EditorMoveScript.cpp" />
     <ClCompile Include="EditorSceneSelectionScript.cpp" />
     <ClCompile Include="formatImporter.cpp" />
+    <ClCompile Include="JGUI.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />

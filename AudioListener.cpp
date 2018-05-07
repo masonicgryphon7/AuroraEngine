@@ -20,7 +20,7 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 
 	alGetError();
 
-	sBuffer[0] = alutCreateBufferFromFile("Assets/sound/Main.wav");
+	sBuffer[0] = alutCreateBufferFromFile("Assets/sound/birbSong.wav");
 	sBuffer[1] = alutCreateBufferFromFile("Assets/sound/Hurt.wav");
 	sBuffer[2] = alutCreateBufferFromFile("Assets/sound/Attack.wav");
 	sBuffer[3] = alutCreateBufferFromFile("Assets/sound/Gather.wav");
