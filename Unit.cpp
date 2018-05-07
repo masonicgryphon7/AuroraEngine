@@ -535,7 +535,7 @@ void Unit::summonSoldierCommand()
 
 	UnitOrders.erase(UnitOrders.begin());
 
-	//unitSoldier->RecieveOrder()
+	//unitSoldier->ReceiveOrder()
 }
 
 float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
@@ -552,7 +552,7 @@ DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX
 	return normalizedDistance;
 }
 
-void Unit::RecieveOrder(RaycastHit Values, int unitTag)
+void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 {
 
 	UnitOrders.clear();
@@ -708,7 +708,7 @@ void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 	}
 }
 
-void Unit::RecieveOrder(OPTIONS option)
+void Unit::ReceiveOrder(OPTIONS option)
 {
 	UnitOrders.clear();
 	pathNodes.clear();

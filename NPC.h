@@ -20,13 +20,15 @@ private:
 	std::vector<Unit*> *player_units;
 	std::vector<Unit*> *player_buildings;
 
-	std::vector<Unit*> enemy_units;
+	std::vector<Unit*> npc_units;
+
+	bool wantsToAttackHero;
 
 	void gather();
 	void findNewSource();
-	void findNewEnemies();
-	void attack();
-	void loiter();
+	void findNewEnemies(Unit* unit);
+	void attack(Unit* unit);
+	void standAbout(Unit* unit);
 
 	
 
