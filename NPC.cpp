@@ -7,6 +7,7 @@ NPC::NPC(std::vector<Unit*> *player_units, std::vector<Unit*> *player_buildings)
 	this->player_units = player_units;
 	this->player_buildings = player_buildings;
 	wantsToAttackHero = false;
+
 }
 
 NPC::~NPC()
@@ -58,7 +59,7 @@ void NPC::instantiate_NPC()
 	enemy_unit->addComponent(enemy_unit_hero);
 	npc_units.push_back(enemy_unit_hero);
 	this->npc_units[0]->setResources(0);
-	int i = 0;
+	gamemanager.unitLists[this->npc_units[0]->gameObject->tag].push_back(this->npc_units[0]);
 	
 }
 

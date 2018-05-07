@@ -3,7 +3,7 @@
 
 
 
-std::vector<std::vector<GameManager*>> GameManager::unitLists;
+std::vector<std::vector<Unit*>> GameManager::unitLists;
 GAME_STATE GameManager::gameState;
 
 
@@ -20,7 +20,7 @@ GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceCont
 	devCon = gDeviceContext;
 	createBuffer(gDevice, gDeviceContext);
 
-	unitLists = std::vector<std::vector<GameManager*>>(2, std::vector<GameManager*>());
+	unitLists = std::vector<std::vector<Unit*>>(3, std::vector<Unit*>());
 	gameState = GAME_STATE::LARGE_CIRCEL_STATE;
 }
 

@@ -7,7 +7,7 @@
 #include <vector>
 #include "PRIMITIVE_GEOMETRY.h"
 #include "Node.h"
-
+#include "GameManager.h"
 class PlayerScript;
 #pragma once
 /*

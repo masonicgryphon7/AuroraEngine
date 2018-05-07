@@ -7,13 +7,13 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include "CoreEngine.h"
-
+#include "Unit.h"
 
 enum GAME_STATE
 {
 	MAIN_MENU,START_STATE,LARGE_CIRCEL_STATE, MEDIUM_CIRCEL_STATE, SMALL_CIRCEL_STATE,END_STATE,GAME_OVER_MENU
 };
-
+class Unit;
 static class GameManager
 {
 public:
@@ -38,6 +38,7 @@ public:
 	void update();
 
 	static GAME_STATE gameState;
-	static std::vector<std::vector<GameManager*>> unitLists;
-};
+	static std::vector<std::vector<Unit*>> unitLists;
+} gamemanager;
+//Ovanför
 
