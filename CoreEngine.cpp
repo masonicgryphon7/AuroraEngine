@@ -282,6 +282,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.getMaterial("TreeMaterial")->setAORoughMet(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic")->getTexture());
 
 		//----------------
+		GameManager gameManager = GameManager(gDevice, gDeviceContext);
+
 
 		GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 		terrain1->name = "Terrain3";
@@ -367,10 +369,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 
-		GameObject* winObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
-		GameManager *gameManager = new GameManager(gDevice, gDeviceContext);
-		winObject->addComponent(gameManager);
-
+	
 
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
@@ -494,7 +493,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			{
 				inputHandler.updateInput();
 				Time.tick();
-
+				gameManager.update();
 				if (!PLAYER_BUILD)
 					OnResize();
 
