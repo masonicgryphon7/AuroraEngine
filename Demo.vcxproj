@@ -152,7 +152,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\topresent%4007-05-2018\AuroraEngine\JGUI.h" />
     <ClInclude Include="AnimationClip.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AssetManager.h" />
@@ -167,6 +166,7 @@
     <ClInclude Include="EditorSceneSelectionScript.h" />
     <ClInclude Include="FormatHeader.h" />
     <ClInclude Include="formatImporter.h" />
+    <ClInclude Include="JGUI.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
@@ -230,7 +230,6 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\topresent%4007-05-2018\AuroraEngine\JGUI.cpp" />
     <ClCompile Include="AnimationClip.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="AssetManager.cpp" />
@@ -243,6 +242,7 @@
     <ClCompile Include="EditorMoveScript.cpp" />
     <ClCompile Include="EditorSceneSelectionScript.cpp" />
     <ClCompile Include="formatImporter.cpp" />
+    <ClCompile Include="JGUI.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />

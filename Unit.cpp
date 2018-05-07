@@ -505,7 +505,7 @@ void Unit::summonWorkerCommand()
 	worker->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh(4));
 	worker->addComponent(meshFilter);
-	worker->addComponent(new MaterialFilter(AssetManager.getMaterial(0)));
+	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
 	Unit *unitWorker = new Unit(Worker);
 	unitWorker->setHomePos(&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	worker->addComponent(unitWorker);

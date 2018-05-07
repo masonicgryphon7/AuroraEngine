@@ -387,7 +387,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		playerscript->friendlyUnits.push_back(UnitHero1);
 		UnitHero1->setPlayerScript(playerscript);
 
-		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 10, 0));
+		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 5, 0));
 		cube2->name = "Goldmine";
 		cube2->tag = 3;
 		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
@@ -408,7 +408,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		playerscript->friendlyBuildings.push_back(unitBuilding);
 		unitBuilding->setPlayerScript(playerscript);
 
-		GameObject* barrack = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 10, 0));
+		GameObject* barrack = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 5, 0));
 		barrack->name = "Barrack";
 		barrack->tag = 1;
 		MeshFilter* meshFilterBarracks = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
