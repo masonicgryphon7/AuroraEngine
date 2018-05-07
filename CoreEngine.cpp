@@ -171,7 +171,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		assetManager.addTexture("Assets/ID_MAP2part3.png"); // 18 // 3
 		assetManager.addTexture("Assets/ID_MAP2part4.png"); //19 // 4
 
-		assetManager.addTexture("Assets/Lava_Albedo.png"); //20
+		assetManager.addTexture("Assets/Lava_Albedo2.png"); //20
 		assetManager.addTexture("Assets/Lava_Normal.png"); //21
 		assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
 
@@ -193,7 +193,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_Albedo")->getTexture(),
 			assetManager.getTexture("Sand_Normal")->getTexture(),
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-			assetManager.getTexture("Lava_Albedo")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 1
@@ -213,7 +213,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_Albedo")->getTexture(),
 			assetManager.getTexture("Sand_Normal")->getTexture(),
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-			assetManager.getTexture("Lava_Albedo")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 			assetManager.getTexture("ID_MAP2part2")->getTexture()); //USE ID_PART 2
@@ -233,7 +233,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_Albedo")->getTexture(),
 			assetManager.getTexture("Sand_Normal")->getTexture(),
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-			assetManager.getTexture("Lava_Albedo")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 			assetManager.getTexture("ID_MAP2part3")->getTexture()); //USE ID_PART 3
@@ -253,7 +253,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Sand_Albedo")->getTexture(),
 			assetManager.getTexture("Sand_Normal")->getTexture(),
 			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-			assetManager.getTexture("Lava_Albedo")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 			assetManager.getTexture("ID_MAP2part4")->getTexture()); //USE ID_PART 4
