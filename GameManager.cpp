@@ -49,7 +49,7 @@ HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gD
 
 void GameManager::update()
 {
-
+	gameTime += Time.getDeltaTime();
 	switch (gameState)
 	{
 	case MAIN_MENU:
@@ -57,30 +57,34 @@ void GameManager::update()
 	case START_STATE:
 		break;
 	case LARGE_CIRCEL_STATE:
-		gameTime += Time.getDeltaTime();
-		if (gameTime >= 20)
+		if (gameTime >= 30)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 		}
-		if (gameTime > 40) {
+		if (ringOfFire < 100) {
 			gameState = GAME_STATE::MEDIUM_CIRCEL_STATE;
 		}
 		break;
 	case MEDIUM_CIRCEL_STATE:
-		gameTime += Time.getDeltaTime();
 		if (gameTime >= 60)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 		}
-		if (gameTime > 70) {
+		if (ringOfFire < 70) {
 			gameState = GAME_STATE::SMALL_CIRCEL_STATE;
 		}
 		break;
 	case SMALL_CIRCEL_STATE:
+		if (gameTime >= 90 && ringOfFire >= 20)
+		{
+			//Debug.Log(ringOfFire);  
+			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
+			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+		}
 		break;
 	case END_STATE:
 		break;
