@@ -79,7 +79,6 @@ void NPC::findNewEnemies(Unit* unit)
 				RaycastHit hit;
 				hit.transform = &player_units[0][i]->gameObject->transform;
 				unit->ReceiveOrder(hit, unit->gameObject->tag);
-
 			}
 
 		
