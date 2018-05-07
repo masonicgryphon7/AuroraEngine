@@ -1131,12 +1131,15 @@ HRESULT CoreEngine::CreatePlayerDirect3DContext(HWND wndHandle)
 	scd.OutputWindow = wndHandle;                           // the window to be used
 	scd.SampleDesc.Count = 4;                               // how many multisamples
 	scd.Windowed = TRUE;                                    // windowed/full-screen mode
-
+	UINT deviceFlags = 0;
+#if defined(DEBUG) || defined(_DEBUG)
+	deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif		
 															// create a device, device context and swap chain using the information in the scd struct
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
-		NULL,
+		deviceFlags,
 		NULL,
 		NULL,
 		D3D11_SDK_VERSION,

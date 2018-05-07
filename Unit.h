@@ -88,7 +88,8 @@ public:
 	Type getType() { return this->type; };
 	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
 
-	Command getUnitCommand() { return this->UnitOrders[0].command; };
+	Command getUnitCommand();
+
 	void clearUnitOrder() { this->UnitOrders.erase(UnitOrders.begin()); }
 
 	int getUnitOrdersSize() { return this->UnitOrders.size(); };

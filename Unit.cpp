@@ -15,7 +15,7 @@ Unit::Unit() :Component(-1, "Unit")
 	case Type::Hero: //HERO
 		this->healthPoints = 100;
 		this->attackPoints = 15;
-		this->defencePoints = 13;
+		this->defencePoints = 15;
 		this->attackDistance = 2;
 		this->Resources = 10;
 		break;
@@ -122,6 +122,16 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 Unit::~Unit()
 {
 
+}
+
+Command Unit::getUnitCommand()
+{
+	if (this->UnitOrders.size() > 0)
+		return this->UnitOrders[0].command;
+	else
+	{ 
+		return Idle; 
+	};
 }
 
 void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
