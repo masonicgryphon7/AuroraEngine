@@ -88,6 +88,8 @@ public:
 	Type getType() { return this->type; };
 	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
 
+	int getUnitOrdersSize() { return this->UnitOrders.size(); };
+
 	int getResources() { return this->Resources; };
 	int getHealthPoints() { return this->healthPoints; };
 	int getAttackPoints() { return this->attackPoints; };
@@ -125,8 +127,8 @@ public:
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 
-	void RecieveOrder(RaycastHit Values, int unitTag);
-	void RecieveOrder(OPTIONS option);
+	void ReceiveOrder(RaycastHit Values, int unitTag);
+	void ReceiveOrder(OPTIONS option);
 	void update();
 };
 

@@ -91,10 +91,10 @@ void PlayerScript::update()
 
 	if (Input.GetKeyUp(KeyCode::Alpha1))
 	{
-		//for each unit recieveorder
+		//for each unit ReceiveOrder
 		for (int i = 0; i < getSelectedUnits().size(); i++)
 		{
-			getSelectedUnits().at(i)->getComponent<Unit>()->RecieveOrder(Option0);
+			getSelectedUnits().at(i)->getComponent<Unit>()->ReceiveOrder(Option0);
 		}
 	}
 
@@ -103,7 +103,7 @@ void PlayerScript::update()
 		//for each unit recieveope
 		for (int i = 0; i < getSelectedUnits().size(); i++)
 		{
-			getSelectedUnits().at(i)->getComponent<Unit>()->RecieveOrder(Option1);
+			getSelectedUnits().at(i)->getComponent<Unit>()->ReceiveOrder(Option1);
 		}
 	}
 
@@ -112,7 +112,7 @@ void PlayerScript::update()
 		//for each unit recieveope
 		for (int i = 0; i < getSelectedUnits().size(); i++)
 		{
-			getSelectedUnits().at(i)->getComponent<Unit>()->RecieveOrder(Option2);
+			getSelectedUnits().at(i)->getComponent<Unit>()->ReceiveOrder(Option2);
 		}
 	}
 
@@ -121,7 +121,7 @@ void PlayerScript::update()
 		//for each unit recieveope
 		for (int i = 0; i < getSelectedUnits().size(); i++)
 		{
-			getSelectedUnits().at(i)->getComponent<Unit>()->RecieveOrder(Option3);
+			getSelectedUnits().at(i)->getComponent<Unit>()->ReceiveOrder(Option3);
 		}
 	}
 
@@ -274,7 +274,7 @@ void PlayerScript::SelectUnits()
 
 			for (int i = 0; i < SelectedUnits.size(); i++)
 			{
-				SelectedUnits.at(i)->getComponent<Unit>()->RecieveOrder(hit, SelectedUnits.at(i)->tag);
+				SelectedUnits.at(i)->getComponent<Unit>()->ReceiveOrder(hit, SelectedUnits.at(i)->tag);
 			}
 		}
 		else
