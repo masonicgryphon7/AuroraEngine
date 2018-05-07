@@ -502,9 +502,6 @@ void Unit::destroyUnit()
 {
 	//UnitOrders[0].transform->gameObject->Destroy();
 	gameObject->Destroy();
-	
-	
-
 }
 
 void Unit::summonWorkerCommand()
@@ -570,7 +567,7 @@ DirectX::XMVECTOR Unit::getSplinePoint(float t, DirectX::XMVECTOR p0, DirectX::X
 	return DirectX::XMVectorAdd(DirectX::XMVectorAdd(first, second), third);
 }
 
-void Unit::RecieveOrder(RaycastHit Values)
+void Unit::RecieveOrder(RaycastHit Values, int unitTag)
 {
 	
 	UnitOrders.clear();

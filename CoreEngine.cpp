@@ -342,12 +342,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//
 		
 
-		GameObject* enemy_player = gScene.createEmptyGameObject();
+	/*	GameObject* enemy_player = gScene.createEmptyGameObject();
 		NPC* enemy_NPC = new NPC(&playerscript->friendlyUnits, &playerscript->friendlyBuildings);
 		enemy_NPC->instantiate_NPC();
 		enemy_player->addComponent(enemy_NPC);
 		
-
+*/
 
 
 
