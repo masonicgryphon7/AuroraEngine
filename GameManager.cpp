@@ -1,5 +1,12 @@
 #include "GameManager.h"
 
+
+
+
+std::vector<std::vector<GameManager*>> GameManager::unitLists;
+GAME_STATE GameManager::gameState;
+
+
 GameManager::GameManager()
 {
 
@@ -12,6 +19,9 @@ GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceCont
 	dev = gDevice;
 	devCon = gDeviceContext;
 	createBuffer(gDevice, gDeviceContext);
+
+	unitLists = std::vector<std::vector<GameManager*>>(2, std::vector<GameManager*>());
+	gameState = GAME_STATE::LARGE_CIRCEL_STATE;
 }
 
 
@@ -39,13 +49,47 @@ HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gD
 
 void GameManager::update()
 {
-	gameTime += Time.getDeltaTime();
-	if (gameTime >= 30 && ringOfFire >= 20)
+
+	switch (gameState)
 	{
-		//Debug.Log(ringOfFire);  
-		ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
-		devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+	case MAIN_MENU:
+		break;
+	case START_STATE:
+		break;
+	case LARGE_CIRCEL_STATE:
+		gameTime += Time.getDeltaTime();
+		if (gameTime >= 20)
+		{
+			//Debug.Log(ringOfFire);  
+			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
+			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+		}
+		if (gameTime > 40) {
+			gameState = GAME_STATE::MEDIUM_CIRCEL_STATE;
+		}
+		break;
+	case MEDIUM_CIRCEL_STATE:
+		gameTime += Time.getDeltaTime();
+		if (gameTime >= 60)
+		{
+			//Debug.Log(ringOfFire);  
+			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
+			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+		}
+		if (gameTime > 70) {
+			gameState = GAME_STATE::SMALL_CIRCEL_STATE;
+		}
+		break;
+	case SMALL_CIRCEL_STATE:
+		break;
+	case END_STATE:
+		break;
+	case GAME_OVER_MENU:
+		break;
+	default:
+		break;
 	}
+
 
 	//DirectX::XMVECTOR middle = DirectX::XMVectorSet(99, 0, 99, 0);
 	//DirectX::XMVECTOR eyy = DirectX::XMVectorSet(200, 0, 200, 0);
