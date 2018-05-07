@@ -35,7 +35,7 @@ void GameManager::dmgRing()
 	{
 		if (unit->getDistanceBetweenUnits(unitLists[2][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
 		{
-			Debug.Log("eeeeeeeeeeey");
+			//Debug.Log("eeeeeeeeeeey");
 			unitLists[2][i]->takeDamage(100);
 		}
 	}
@@ -43,7 +43,7 @@ void GameManager::dmgRing()
 	{
 		if (unit->getDistanceBetweenUnits(unitLists[1][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
 		{
-			Debug.Log("eeeeeeeeeeey");
+			//Debug.Log("eeeeeeeeeeey");
 			unitLists[1][i]->takeDamage(100);
 		}
 	}
