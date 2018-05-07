@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 0
+#define PLAYER_BUILD 1
 
 bool CoreEngine::hasResized = false;
 
@@ -412,10 +412,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("pose1smile"));
 		cube->addComponent(meshFilter1);
 		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
-		Unit *UnitHero1 = new Unit(Worker);
-		cube->addComponent(UnitHero1);
-		playerscript->friendlyUnits.push_back(UnitHero1);
-		UnitHero1->setPlayerScript(playerscript);
+		Unit *unitWorker = new Unit(Worker);
+		cube->addComponent(unitWorker);
+		playerscript->friendlyUnits.push_back(unitWorker);
+		unitWorker->setPlayerScript(playerscript);
+		gamemanager.unitLists[cube->tag].push_back(unitWorker);
+
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 5, 0));
 		cube2->name = "Goldmine";
@@ -423,11 +425,11 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
 		cube2->addComponent(meshFilter2);
 		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
-		Unit *UnitSoldier1 = new Unit(GoldMine);
-		cube2->addComponent(UnitSoldier1);
-		UnitSoldier1->setPlayerScript(playerscript);
-		playerscript->friendlyBuildings.push_back(UnitSoldier1);
-		UnitSoldier1->setPlayerScript(playerscript);
+		Unit *goldMine = new Unit(GoldMine);
+		cube2->addComponent(goldMine);
+		goldMine->setPlayerScript(playerscript);
+		playerscript->friendlyBuildings.push_back(goldMine);
+		goldMine->setPlayerScript(playerscript);
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
 		cube3->name = "Bank";
@@ -457,11 +459,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilter4 = new MeshFilter(AssetManager.getMesh("PIRATE"));
 		cube4->addComponent(meshFilter4);
 		cube4->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
-		Unit* UnitHero2 = new Unit(Hero);
-		cube4->addComponent(UnitHero2);
-		playerscript->friendlyUnits.push_back(UnitHero2);
-		UnitHero2->setPlayerScript(playerscript);
+		Unit* UnitHero = new Unit(Hero);
+		cube4->addComponent(UnitHero);
+		playerscript->friendlyUnits.push_back(UnitHero);
+		UnitHero->setPlayerScript(playerscript);
 		playerscript->friendlyUnits.at(0)->setHomePos(&playerscript->friendlyBuildings.at(0)->gameObject->transform);
+		gamemanager.unitLists[cube4->tag].push_back(UnitHero);
 
 		//
 		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 5, 0));

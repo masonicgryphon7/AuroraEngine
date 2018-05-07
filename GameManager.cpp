@@ -63,12 +63,12 @@ void GameManager::update()
 			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 		
-			for (int j = 0; j < unitLists[2].size(); j++)
+			for (int j = 0; j < unitLists[1].size(); j++)
 			{
-				if (unit->getDistanceBetweenUnits(unitLists[2][j]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+				if (unit->getDistanceBetweenUnits(unitLists[1][j]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
 				{
 					Debug.Log("eeeeeeeeeeey");
-					unitLists[2][j]->takeDamage(100);
+					unitLists[1][j]->takeDamage(100);
 				}
 			}
 
