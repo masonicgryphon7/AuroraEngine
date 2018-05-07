@@ -109,7 +109,7 @@ void PlayerSelectionScript::SelectUnits()
 
 			for (int i = 0; i < SelectedUnits.size(); i++)
 			{
-				SelectedUnits.at(i)->getComponent<Unit>()->RecieveOrder(hit, SelectedUnits.at(i)->tag);
+				SelectedUnits.at(i)->getComponent<Unit>()->ReceiveOrder(hit, SelectedUnits.at(i)->tag);
 			}
 		}
 		else
