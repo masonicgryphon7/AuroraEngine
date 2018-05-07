@@ -9,6 +9,8 @@ public:
 	MaterialFilter(Material* material);
 	~MaterialFilter();
 
+	void setMaterialFilter(Material* material);
+
 	Material* material;
 };
 

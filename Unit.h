@@ -29,6 +29,8 @@ enum Command
 	Follow,
 	SummonWorker,
 	SummonSoldier,
+	convertToSoldier,
+	takeBuilding,
 	Idle
 };
 
@@ -37,7 +39,7 @@ enum Type
 	Hero,
 	Soldier,
 	Worker,
-	Building,
+	Barrack,
 	Bank,
 	GoldMine
 };
@@ -126,7 +128,9 @@ public:
 	void dropResources();
 	void destroyUnit();
 	void summonWorkerCommand();
+	void convertToSoldierCommand(Unit* targetedUnit);
 	void summonSoldierCommand();
+	void takeBuildingCommand(Unit* targetedUnit);
 	std::vector<Order>* getUnitOrdersPointer() { return &UnitOrders; };
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);

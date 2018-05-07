@@ -21,10 +21,12 @@ public:
 	GameManager(ID3D11Device* gDevice, ID3D11DeviceContext*  gDeviceContext);
 	~GameManager();
 	float ringOfFire;
+	DirectX::XMVECTOR middlePoint = DirectX::XMVectorSet(99.0, 0.0, 99.0, 0.0);
 
 	float gameTime;
 	float getGameTime() { return this->gameTime; };
 	float getRingRadius() { return this->ringOfFire; };
+	void dmgRing();
 
 	ID3D11Buffer * GameManagerBuffer;
 	ID3D11DeviceContext * devCon = nullptr;
@@ -39,6 +41,8 @@ public:
 
 	static GAME_STATE gameState;
 	static std::vector<std::vector<Unit*>> unitLists;
+	Unit* unit;
+
 } gamemanager;
 //Ovanför
 
