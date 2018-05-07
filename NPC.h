@@ -29,6 +29,7 @@ private:
 	void findNewEnemies(Unit* unit);
 	void attack(Unit* unit);
 	void standAbout(Unit* unit);
+	void summonWorker(Unit* building);
 
 	
 
