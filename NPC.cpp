@@ -15,12 +15,17 @@ NPC::~NPC()
 
 void NPC::update()
 {
-	
+	if (npc_units[0]->getResources() >= 100 && npc_units[0]->getUnitCommand() == HeroGather)
+	{
+		wantsToAttackHero = true;
+		npc_units[0]->clearUnitOrder();
+	}
+		
 	for (int i = 0; i < npc_units.size(); i++)
 	{
-		if ( npc_units[i]->getUnitOrdersSize() < 1)
+		if (npc_units[i]->getUnitOrdersSize() < 1)
 		{
-			
+
 			
 			if (wantsToAttackHero)
 			{
@@ -52,7 +57,8 @@ void NPC::instantiate_NPC()
 	Unit* enemy_unit_hero = new Unit(Hero);
 	enemy_unit->addComponent(enemy_unit_hero);
 	npc_units.push_back(enemy_unit_hero);
-	
+	this->npc_units[0]->setResources(0);
+	int i = 0;
 	
 }
 

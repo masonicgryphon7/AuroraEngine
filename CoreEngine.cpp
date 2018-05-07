@@ -396,6 +396,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Unit *UnitSoldier1 = new Unit(GoldMine);
 		cube2->addComponent(UnitSoldier1);
 		UnitSoldier1->setPlayerScript(playerscript);
+		playerscript->friendlyBuildings.push_back(UnitSoldier1);
+		UnitSoldier1->setPlayerScript(playerscript);
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
 		cube3->name = "Bank";
