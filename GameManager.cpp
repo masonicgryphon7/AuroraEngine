@@ -29,6 +29,26 @@ GameManager::~GameManager()
 {
 }
 
+void GameManager::dmgRing()
+{
+	for (int i = 0; i < unitLists[2].size(); i++)
+	{
+		if (unit->getDistanceBetweenUnits(unitLists[2][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+		{
+			Debug.Log("eeeeeeeeeeey");
+			unitLists[2][i]->takeDamage(100);
+		}
+	}
+	for (int i = 0; i < unitLists[1].size(); i++)
+	{
+		if (unit->getDistanceBetweenUnits(unitLists[1][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+		{
+			Debug.Log("eeeeeeeeeeey");
+			unitLists[1][i]->takeDamage(100);
+		}
+	}
+}
+
 HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext)
 {
 	HRESULT hr = S_OK;
@@ -62,16 +82,7 @@ void GameManager::update()
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
-		
-			for (int j = 0; j < unitLists[1].size(); j++)
-			{
-				if (unit->getDistanceBetweenUnits(unitLists[1][j]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
-				{
-					Debug.Log("eeeeeeeeeeey");
-					unitLists[1][j]->takeDamage(100);
-				}
-			}
-
+			dmgRing();
 		}
 		if (ringOfFire < 100) {
 			gameState = GAME_STATE::MEDIUM_CIRCEL_STATE;
@@ -83,6 +94,7 @@ void GameManager::update()
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			dmgRing();
 		}
 		if (ringOfFire < 70) {
 			gameState = GAME_STATE::SMALL_CIRCEL_STATE;
@@ -95,6 +107,7 @@ void GameManager::update()
 			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 		}
+		dmgRing();
 		break;
 	case END_STATE:
 		break;

@@ -26,6 +26,7 @@ public:
 	float gameTime;
 	float getGameTime() { return this->gameTime; };
 	float getRingRadius() { return this->ringOfFire; };
+	void dmgRing();
 
 	ID3D11Buffer * GameManagerBuffer;
 	ID3D11DeviceContext * devCon = nullptr;
