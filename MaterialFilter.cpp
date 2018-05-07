@@ -15,3 +15,8 @@ MaterialFilter::MaterialFilter(Material * material) : Component(-1, "Material Fi
 MaterialFilter::~MaterialFilter()
 {
 }
+
+void MaterialFilter::setMaterialFilter(Material * material)
+{
+	this->material = material;
+}
