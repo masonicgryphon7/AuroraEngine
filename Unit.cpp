@@ -62,17 +62,17 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	{
 	case Type::Hero: //HERO
 		this->healthPoints = 100;
-		this->attackPoints = 20;
-		this->defencePoints = 20;
+		this->attackPoints = 16;
+		this->defencePoints = 20; // 10
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->healthPoints = 20;
-		this->attackPoints = 8;
-		this->defencePoints = 4;
+		this->healthPoints = 30;
+		this->attackPoints = 13;
+		this->defencePoints = 7;
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Soldier;
@@ -80,7 +80,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::Worker: //WORKER
 		this->healthPoints = 15;
-		this->attackPoints = 1;
+		this->attackPoints = 11;
 		this->defencePoints = 5;
 		this->attackDistance = 2;
 		this->Resources = 0;
@@ -290,17 +290,11 @@ void Unit::attackCommand(Unit* targetedUnit)
 		}
 		else
 		{
-			//DirectX::XMVECTOR pathOffset = calculateOffsetInPath(unitPos, targetPos);
-			//Order tempOrder;
-			//tempOrder.command = Command::Move;
-			//tempOrder.point = targetedUnit->gameObject->transform.getPosition();//DirectX::XMVectorAdd(targetedUnit->gameObject->transform.getPosition(), DirectX::XMVectorSet(0.5, 0.0, 0.5, 0.0));
-			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
 	else
 	{
-		//targetedUnit.destroyUnit();
 		UnitOrders.erase(UnitOrders.begin());
 	}
 }
@@ -389,10 +383,6 @@ void Unit::gatherCommand(Unit* targetedUnit)
 		}
 		else
 		{
-			//Order tempOrder;
-			//tempOrder.command = Command::Move;
-			//tempOrder.point = targetedUnit->gameObject->transform.getPosition();
-			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
@@ -404,10 +394,6 @@ void Unit::gatherCommand(Unit* targetedUnit)
 		}
 		else
 		{
-			//Order tempOrder;
-			//tempOrder.command = Command::Move;
-			//tempOrder.point = this->homePos->getPosition();
-			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
 			SecondMoveCommand(&this->homePos->getPosition());
 		}
 	}
@@ -438,10 +424,6 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 	}
 	else
 	{
-		//Order tempOrder;
-		//tempOrder.command = Command::Move;
-		//tempOrder.point = targetedUnit->gameObject->transform.getPosition();
-		//UnitOrders.insert(UnitOrders.begin(), tempOrder);
 		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 	}
 }
@@ -503,9 +485,6 @@ void Unit::destroyUnit()
 {
 	//UnitOrders[0].transform->gameObject->Destroy();
 	gameObject->Destroy();
-
-
-
 }
 
 void Unit::summonWorkerCommand()
@@ -600,6 +579,17 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 	else
 	{
 		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+	}
+}
+
+void Unit::dieCommand()
+{
+	actionTime += Time.getDeltaTime();
+	if (actionTime > 1)
+	{
+		//play death animation
+		Debug.Log("Play death animation here");
+		actionTime = 0;
 	}
 }
 
