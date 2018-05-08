@@ -18,12 +18,15 @@ Animator::~Animator()
 
 void Animator::update()
 {
-	playTime += Time.getDeltaTime();
+	if (isPlaying) {
+		playTime += Time.getDeltaTime();
+	}
 }
 
 void Animator::Play(int clipIndex)
 {
 	isPlaying = true;
+	playTime = 0;
 	currentClipIndex = clipIndex;
 }
 
@@ -40,4 +43,60 @@ void Animator::addAnimationClip(AnimationClip* animClip)
 void Animator::addAnimationClipAt(AnimationClip* animClip, int index)
 {
 	animationclips.insert(animationclips.begin() + index, animClip);
+}
+
+void Animator::calculateMatrixPalette()
+{
+	matrixPalette.clear();
+
+	float currentFrame = playTime * animationclips[currentClipIndex]->getFramesPerSecond();
+	int firstFrameIndex = std::floor(currentFrame);
+	int secondFrameIndex = std::ceil(currentFrame);
+	float lerpValue = currentFrame - firstFrameIndex;
+
+	firstFrameIndex = firstFrameIndex % animationclips[currentClipIndex]->nrOfKeyFrames;
+	secondFrameIndex = secondFrameIndex % animationclips[currentClipIndex]->nrOfKeyFrames;
+
+
+
+	for (int i = 0; i < skeleton->getNrOfJoints(); i++)
+	{
+		DirectX::XMVECTOR position1 = animationclips[currentClipIndex]->getAnimationFrames()[0][firstFrameIndex].joints[i].position;
+		DirectX::XMVECTOR rotation1 = animationclips[currentClipIndex]->getAnimationFrames()[0][firstFrameIndex].joints[i].rotation;
+		DirectX::XMVECTOR quaternion1 = DirectX::XMQuaternionRotationRollPitchYawFromVector(rotation1);
+		//DirectX::XMVECTOR scale1 = animationclips[currentClipIndex]->getAnimationFrames()[0][firstFrameIndex].joints[i].scale;
+
+		DirectX::XMVECTOR position2 = animationclips[currentClipIndex]->getAnimationFrames()[0][secondFrameIndex].joints[i].position;
+		DirectX::XMVECTOR rotation2 = animationclips[currentClipIndex]->getAnimationFrames()[0][secondFrameIndex].joints[i].rotation;
+		DirectX::XMVECTOR quaternion2 = DirectX::XMQuaternionRotationRollPitchYawFromVector(rotation2);
+		//DirectX::XMVECTOR scale2 = animationclips[currentClipIndex]->getAnimationFrames()[0][secondFrameIndex].joints[i].scale;
+
+
+		//LERP SLERP LERP
+
+
+		//DirectX::XMMATRIX scaleMatrix = DirectX::XMMatrixScalingFromVector(scale1);
+		DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationQuaternion(quaternion1);
+		DirectX::XMMATRIX animationClipMatrix = DirectX::XMMatrixTranslationFromVector(position1);
+		//rotationMatrix = DirectX::XMMatrixMultiply(scaleMatrix, rotationMatrix);
+		animationClipMatrix = DirectX::XMMatrixMultiply(rotationMatrix, animationClipMatrix);
+
+
+		//isolatedRotation
+		DirectX::XMMATRIX resultMatrix = DirectX::XMMatrixMultiply(skeleton->getSkeletonJoints()[0][i].jointMatrix,animationClipMatrix);
+		
+
+		//worldSpaceRotation
+		if (i == 0) {
+
+		}
+		else
+		{
+			resultMatrix = DirectX::XMMatrixMultiply(skeleton->getSkeletonJoints()[0][skeleton->getSkeletonJoints()[0][i].parentIndex].jointMatrix, resultMatrix);
+			resultMatrix = DirectX::XMMatrixMultiply(skeleton->getInverseSkeletonJoints()[0][skeleton->getInverseSkeletonJoints()[0][i].parentIndex].jointMatrix, resultMatrix);
+
+		}
+		resultMatrix = DirectX::XMMatrixTranspose(resultMatrix);
+		matrixPalette.push_back(resultMatrix);
+	}
 }

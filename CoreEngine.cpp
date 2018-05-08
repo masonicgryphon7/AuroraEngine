@@ -18,8 +18,8 @@
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
-#define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 1
+#define GRAPHICS_DEBUGGER_ENABLED 0
+#define PLAYER_BUILD 0
 
 bool CoreEngine::hasResized = false;
 
@@ -139,6 +139,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
 		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", SHADER_TYPE::VERTEX_SHADER);
+		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4, "VertexAnimation.hlsl", SHADER_TYPE::VERTEX_SHADER);
 		AssetManager.addShaderProgram("Fragment.hlsl", SHADER_TYPE::PIXEL_SHADER);
 
 
@@ -433,7 +434,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//
 		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 5, 0));
 		animatedGO->name = "Animator";
-		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
 		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
 		MeshFilter* animMeshFilter = new MeshFilter(animMesh);
 		animatedGO->addComponent(animMeshFilter);
@@ -442,8 +443,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Animator* animator = new Animator(assetManager.getSkeleton("First_JOint_Skeleton"));
 		animatedGO->addComponent(animator);
 		
-		AssetManager.addAnimationClipFromBinary("Assets/ANIMATION_ANIMATION.bin");
-		animator->addAnimationClip(AssetManager.getAnimationclip("ANIMATION_ANIMATION"));
+		AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("First_JOint_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
+		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("First_JOint_Skeleton"), "ANIMATION_ANIMATION"));
+		animator->Play(0);
+
+
+
 
 		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
 
