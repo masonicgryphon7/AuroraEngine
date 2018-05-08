@@ -42,7 +42,12 @@ public:
 	// Draw a filled circle and with anchors of resolution (def. 1920x1080)
 	void CircleFilled(Vector2 centre, float radius, unsigned int segments = 12, ImColor color = ImColor(255, 255, 255, 255), Vector2 resolution = Vector2(1920, 1080));
 	// Draw a filled circle and with NDC coordinates of any resolution. Values between "0.0f - 1.0f"
-	static void CircleFilled(float x, float y, float radius, unsigned int segments = 12, ImColor color = ImColor(255, 255, 255, 255));
+	void CircleFilled(float x, float y, float radius, unsigned int segments = 12, ImColor color = ImColor(255, 255, 255, 255));
+
+	// Draw an image and with anchors of resolution (def. 1920x1080)
+	void Image(Vector2 start, Vector2 end, ID3D11ShaderResourceView* image, Vector2 resolution = Vector2(1920, 1080));
+	// Draw an image with NDC coordinates of any resolution. Values between "0.0f - 1.0f"
+	void Image(float ndcMinX, float ndcMinY, float ndcMaxX, float ndcMaxY, ID3D11ShaderResourceView* image);
 
 	// Draw a text with anchors of resolution (def. 1920x1080)
 	void Text(Vector2 position, const std::string text = "", float fontScale = 1.0f, ImColor color = ImColor(255, 255, 255, 255), Vector2 resolution = Vector2(1920, 1080));
@@ -50,6 +55,10 @@ public:
 	void Text(float x, float y, const std::string text = "", float fontScale = 1.0f, ImColor color = ImColor(255, 255, 255, 255));
 
 	//END GUI
+
+	float Lerp(float a, float b, float f);
+
+	DirectX::XMVECTOR WorldToScreen(Camera* c, DirectX::XMVECTOR worldPos, DirectX::XMMATRIX worldMatrix);
 
 protected:
 	Vector2 m_cursorPos;
