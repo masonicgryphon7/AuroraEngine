@@ -42,6 +42,7 @@ public:
 
 	static GAME_STATE gameState;
 	static std::vector<std::vector<Unit*>> unitLists;
+	static std::vector<std::vector<Unit*>> buildingLists;
 	Unit* unit;
 
 } gamemanager;

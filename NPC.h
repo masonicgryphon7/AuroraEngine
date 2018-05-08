@@ -10,16 +10,13 @@
 class NPC : public Component
 {
 public:
-	NPC(std::vector<Unit*> *player_units, std::vector<Unit*> *player_buildings);
+	NPC();
 	~NPC();
 	void update();
 	void instantiate_NPC();
 	
 
 private:
-	std::vector<Unit*> *player_units;
-	std::vector<Unit*> *player_buildings;
-
 	std::vector<Unit*> npc_units;
 	std::vector<Unit*> npc_buildings;
 

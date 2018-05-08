@@ -498,7 +498,7 @@ void Unit::summonWorkerCommand()
 	Unit *unitWorker = new Unit(Worker);
 	unitWorker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	worker->addComponent(unitWorker);
-	playerScript->friendlyUnits.push_back(unitWorker);
+	//playerScript->friendlyUnits.push_back(unitWorker);
 	unitWorker->setPlayerScript(playerScript);
 	gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
 	
@@ -546,7 +546,7 @@ void Unit::summonSoldierCommand()
 	Unit *unitSoldier = new Unit(Soldier);
 	unitSoldier->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	soldier->addComponent(unitSoldier);
-	playerScript->friendlyUnits.push_back(unitSoldier);
+	//playerScript->friendlyUnits.push_back(unitSoldier);
 	unitSoldier->setPlayerScript(playerScript);
 	gamemanager.unitLists[gameObject->tag].push_back(unitSoldier);
 
@@ -569,11 +569,19 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 		if (actionTime > 1)
 		{
 			//attackEnemy();
-			targetedUnit->gameObject->tag = gameObject->tag;
+			for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
+			{
+				if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
+				{
+					gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
+					targetedUnit->gameObject->tag = gameObject->tag;
+					gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
+					UnitOrders.erase(UnitOrders.begin());
+					break;
+				}
+			}
 			//Debug.Log("Enemy Hit!");
 			actionTime = 0;
-
-			UnitOrders.erase(UnitOrders.begin());
 		}
 	}
 	else
@@ -677,17 +685,26 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 			}
 		}
 		else if (Values.transform->gameObject->tag != unitTag && Values.transform->gameObject->tag != 3 && Values.transform->gameObject->tag != 0) { //!=gameObject->tag){
-																								 //enemy
+			//enemy
 			switch (type)
 			{
 			case Type::Hero:
-				tempOrder.command = Attack;
-				//tempOrder.command = Move;
-
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
+				{
+					tempOrder.command = takeBuilding;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
+				else
+				{
+					tempOrder.command = Attack;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 				break;
 
 			case Type::Soldier:

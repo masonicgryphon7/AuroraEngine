@@ -4,6 +4,7 @@
 
 
 std::vector<std::vector<Unit*>> GameManager::unitLists;
+std::vector<std::vector<Unit*>> GameManager::buildingLists;
 GAME_STATE GameManager::gameState;
 
 
@@ -21,6 +22,7 @@ GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceCont
 	createBuffer(gDevice, gDeviceContext);
 
 	unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
+	buildingLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 	gameState = GAME_STATE::LARGE_CIRCEL_STATE;
 }
 
@@ -90,7 +92,7 @@ void GameManager::update()
 	case START_STATE:
 		break;
 	case LARGE_CIRCEL_STATE:
-		if (gameTime >= 3)
+		if (gameTime >= 3000000)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;

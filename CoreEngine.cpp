@@ -482,7 +482,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 		Unit *unitWorker = new Unit(Worker);
 		cube->addComponent(unitWorker);
-		playerscript->friendlyUnits.push_back(unitWorker);
+		//playerscript->friendlyUnits.push_back(unitWorker);
 		unitWorker->setPlayerScript(playerscript);
 		gamemanager.unitLists[cube->tag].push_back(unitWorker);
 
@@ -496,8 +496,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Unit *goldMine = new Unit(GoldMine);
 		cube2->addComponent(goldMine);
 		goldMine->setPlayerScript(playerscript);
-		gamemanager.unitLists[3].push_back(goldMine);
-		goldMine->setPlayerScript(playerscript);
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
 		cube3->name = "Bank";
@@ -507,8 +505,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
 		Unit* unitBuilding = new Unit(Bank);
 		cube3->addComponent(unitBuilding);
-		playerscript->friendlyBuildings.push_back(unitBuilding);
+		//playerscript->friendlyBuildings.push_back(unitBuilding);
 		unitBuilding->setPlayerScript(playerscript);
+		gamemanager.buildingLists[cube3->tag].push_back(unitBuilding);
 
 		GameObject* barrack = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 5, 0));
 		barrack->name = "Barrack";
@@ -518,8 +517,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		barrack->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
 		Unit* unitBuilding2 = new Unit(Barrack);
 		barrack->addComponent(unitBuilding2);
-		playerscript->friendlyBuildings.push_back(unitBuilding2);
+		//playerscript->friendlyBuildings.push_back(unitBuilding2);
 		unitBuilding2->setPlayerScript(playerscript);
+		gamemanager.buildingLists[barrack->tag].push_back(unitBuilding2);
 
 
 		//
@@ -543,7 +543,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		
 
 		GameObject* enemy_player = gScene.createEmptyGameObject();
-		NPC* enemy_NPC = new NPC(&playerscript->friendlyUnits, &playerscript->friendlyBuildings);
+		NPC* enemy_NPC = new NPC();
 		enemy_NPC->instantiate_NPC();
 		enemy_player->addComponent(enemy_NPC);
 		

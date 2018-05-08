@@ -62,8 +62,8 @@ public:
 
 	//std::vector<GameObject*>*objectsToRender;
 
-	std::vector<Unit*> friendlyUnits;
-	std::vector<Unit*> friendlyBuildings;
+	//std::vector<Unit*> friendlyUnits;
+	//std::vector<Unit*> friendlyBuildings;
 
 
 	/////////////////////////////////////////// PlayerSelectionScript
