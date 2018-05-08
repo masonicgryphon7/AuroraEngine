@@ -144,7 +144,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 			//albedo = albedo * float3(0.1f, 0.1, 1.0f);
 		}
 
-		float3 middle = float3(99, 0, 99);
+		float3 middle = float3(149, 0, 149);
 		float ringDistance = distance(middle, input.worldPosition);
 		float diff = saturate(ringDistance - fireRing.x);
 
@@ -157,6 +157,10 @@ float4 PS_main(VS_OUT input) : SV_Target
 			ao = lerp(ao, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).x, lavaLerp);
 			metallic = lerp(metallic, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).y, lavaLerp);
 			roughness = lerp(roughness, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).z, lavaLerp);
+		}
+		if (distance(input.worldPosition, float4(22, 0, 5, 0)) <= 3)
+		{
+			return float4(1, 0, 1, 0);
 		}
 
 	}

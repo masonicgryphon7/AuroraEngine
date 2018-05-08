@@ -7,7 +7,7 @@
 #include <vector>
 #include "PRIMITIVE_GEOMETRY.h"
 #include "Node.h"
-
+#include "GameManager.h"
 class PlayerScript;
 #pragma once
 /*
@@ -29,6 +29,8 @@ enum Command
 	Follow,
 	SummonWorker,
 	SummonSoldier,
+	convertToSoldier,
+	takeBuilding,
 	Idle
 };
 
@@ -37,7 +39,7 @@ enum Type
 	Hero,
 	Soldier,
 	Worker,
-	Building,
+	Barrack,
 	Bank,
 	GoldMine
 };
@@ -88,6 +90,10 @@ public:
 	Type getType() { return this->type; };
 	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
 
+	Command getUnitCommand();
+
+	void clearUnitOrder() { this->UnitOrders.erase(UnitOrders.begin()); }
+
 	int getUnitOrdersSize() { return this->UnitOrders.size(); };
 
 	int getResources() { return this->Resources; };
@@ -122,7 +128,10 @@ public:
 	void dropResources();
 	void destroyUnit();
 	void summonWorkerCommand();
+	void convertToSoldierCommand(Unit* targetedUnit);
 	void summonSoldierCommand();
+	void takeBuildingCommand(Unit* targetedUnit);
+	void dieCommand();
 	std::vector<Order>* getUnitOrdersPointer() { return &UnitOrders; };
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);

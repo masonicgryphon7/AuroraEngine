@@ -3,7 +3,7 @@
 
 
 
-std::vector<std::vector<GameManager*>> GameManager::unitLists;
+std::vector<std::vector<Unit*>> GameManager::unitLists;
 GAME_STATE GameManager::gameState;
 
 
@@ -14,19 +14,39 @@ GameManager::GameManager()
 
 GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext)
 {
-	ringOfFire = 150;
+	ringOfFire = 220;
 	gameTime = 0;
 	dev = gDevice;
 	devCon = gDeviceContext;
 	createBuffer(gDevice, gDeviceContext);
 
-	unitLists = std::vector<std::vector<GameManager*>>(2, std::vector<GameManager*>());
+	unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 	gameState = GAME_STATE::LARGE_CIRCEL_STATE;
 }
 
 
 GameManager::~GameManager()
 {
+}
+
+void GameManager::dmgRing()
+{
+	for (int i = 0; i < unitLists[2].size(); i++)
+	{
+		if (unit->getDistanceBetweenUnits(unitLists[2][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+		{
+			//Debug.Log("eeeeeeeeeeey");
+			unitLists[2][i]->takeDamage(100);
+		}
+	}
+	for (int i = 0; i < unitLists[1].size(); i++)
+	{
+		if (unit->getDistanceBetweenUnits(unitLists[1][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+		{
+			//Debug.Log("eeeeeeeeeeey");
+			unitLists[1][i]->takeDamage(100);
+		}
+	}
 }
 
 HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext)
@@ -47,9 +67,22 @@ HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gD
 	return hr;
 }
 
+void GameManager::winCondition()
+{
+	if (unitLists[1][0]->getHealthPoints() <= 0)
+	{
+		gameState = GAME_STATE::GAME_OVER_MENU;
+	}
+	if (unitLists[2][0]->getHealthPoints() <= 0)
+	{
+		gameState = GAME_STATE::GAME_OVER_MENU;
+	}
+}
+
 void GameManager::update()
 {
-
+	gameTime += Time.getDeltaTime();
+	//winCondition();
 	switch (gameState)
 	{
 	case MAIN_MENU:
@@ -57,34 +90,42 @@ void GameManager::update()
 	case START_STATE:
 		break;
 	case LARGE_CIRCEL_STATE:
-		gameTime += Time.getDeltaTime();
-		if (gameTime >= 20)
+		if (gameTime >= 120)
 		{
 			//Debug.Log(ringOfFire);  
-			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
-		if (gameTime > 40) {
+		if (ringOfFire < 150) {
 			gameState = GAME_STATE::MEDIUM_CIRCEL_STATE;
 		}
+		dmgRing();
 		break;
 	case MEDIUM_CIRCEL_STATE:
-		gameTime += Time.getDeltaTime();
-		if (gameTime >= 60)
+		if (gameTime >= 180)
 		{
 			//Debug.Log(ringOfFire);  
-			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
-		if (gameTime > 70) {
+		if (ringOfFire < 80) {
 			gameState = GAME_STATE::SMALL_CIRCEL_STATE;
 		}
+		dmgRing();
 		break;
 	case SMALL_CIRCEL_STATE:
+		if (gameTime >= 240 && ringOfFire > 28)
+		{
+			Debug.Log(ringOfFire);  
+			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
+		}
+		dmgRing();
 		break;
 	case END_STATE:
 		break;
 	case GAME_OVER_MENU:
+		Debug.Log("END BOOIOII");
 		break;
 	default:
 		break;
