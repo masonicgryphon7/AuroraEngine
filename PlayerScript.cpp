@@ -61,6 +61,7 @@ void PlayerScript::update()
 					this->SelectedUnits.erase(this->SelectedUnits.begin() + j);
 				}
 			}
+			this->friendlyUnits[i]->dieCommand();
 			this->friendlyUnits[i]->destroyUnit();
 			this->friendlyUnits.erase(this->friendlyUnits.begin() + i);
 		}

@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 1
+#define PLAYER_BUILD 0
 
 bool CoreEngine::hasResized = false;
 
@@ -532,6 +532,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 					OnResize();
 
 				gScene.destroyGameObjects();
+				gScene.update();
 				gScene.frustumCull(camera);
 				objectsToRender = gScene.getFrustumCulledResult();
 
@@ -540,7 +541,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				if (player != nullptr)
 					player->Update();
 
-				gScene.update();
 
 				if (!PLAYER_BUILD)
 					gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);

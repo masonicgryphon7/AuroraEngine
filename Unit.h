@@ -131,6 +131,7 @@ public:
 	void convertToSoldierCommand(Unit* targetedUnit);
 	void summonSoldierCommand();
 	void takeBuildingCommand(Unit* targetedUnit);
+	void dieCommand();
 	std::vector<Order>* getUnitOrdersPointer() { return &UnitOrders; };
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
