@@ -30,11 +30,11 @@ public:
 	void addAnimatedMeshFromBinary(std::string filePath, ShaderProgram* vertexShader);
 	void addShaderProgram(INPUT_ELEMENT_DESCRIPTION description,  std::string filePath, SHADER_TYPE type);
 	void addShaderProgram(std::string filePath, SHADER_TYPE type);
-	void addAnimationClipFromBinary(const std::string& filePath);
+	void addAnimationClipFromBinary(Skeleton* skeleton, const std::string& filePath);
 	void Start(ID3D11Device * device, ID3D11DeviceContext * devContext);
 	void addSkeletonFromBinary(const std::string &filePath);
 	Skeleton* getSkeleton(const std::string& filePath);
-	AnimationClip* getAnimationclip(const std::string& filePath);
+	AnimationClip* getAnimationclip(Skeleton* skeleton, const std::string& filePath);
 	Texture* getTexture(const std::string &path);
 	Texture* getTexture(int index);
 	Material* getMaterial(int index);

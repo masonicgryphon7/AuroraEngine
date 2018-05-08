@@ -155,14 +155,3 @@ DirectX::XMMATRIX GameObject::calculateWorldMatrix()
 }
 
 
-
-void GameObject::uniformWorldMatrix(unsigned int othershaderProgram)
-{
-	//Tranformation
-	//Matrices
-
-	//GLuint uniformLoc = glGetUniformLocation(othershaderProgram, "world_matrix");
-	//glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, glm::value_ptr(calculateWorldMatrix()));
-
-
-}
