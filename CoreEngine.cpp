@@ -12,7 +12,7 @@
 #include "Player.h"
 #include "NPC.h"
 #include "Debug.h"
-
+#include "GameManager.h"
 #include <crtdbg.h>
 #include "PathCreator.h"
 #pragma comment(lib, "dxgi.lib")
@@ -428,7 +428,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Unit *goldMine = new Unit(GoldMine);
 		cube2->addComponent(goldMine);
 		goldMine->setPlayerScript(playerscript);
-		playerscript->friendlyBuildings.push_back(goldMine);
+		gamemanager.unitLists[3].push_back(goldMine);
 		goldMine->setPlayerScript(playerscript);
 
 		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));

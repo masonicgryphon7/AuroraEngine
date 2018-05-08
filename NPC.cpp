@@ -125,23 +125,42 @@ void NPC::standAbout(Unit * unit)
 
 void NPC::summonWorker(Unit * building)
 {
-	//GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
-	//worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
-	//worker->tag = gameObject->tag;
-	//MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
-	//worker->addComponent(meshFilter);
-	//worker->addComponent(new MaterialFilter(AssetManager.getMaterial("UnitMaterial")));
-	//Unit *unitWorker = new Unit(Worker);
-	//unitWorker->setHomePos(&building->gameObject->transform);
-	//worker->addComponent(unitWorker);
-	//npc_units.push_back(unitWorker);
-	//
+	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
+	worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
+	worker->tag = gameObject->tag;
+	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
+	worker->addComponent(meshFilter);
+	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+	Unit *unitWorker = new Unit(Worker);
+	unitWorker->setHomePos(&building->gameObject->transform);
+	worker->addComponent(unitWorker);
+	npc_units.push_back(unitWorker);
+	
+	gamemanager.unitLists[2].push_back(unitWorker);
 
-	//UnitOrders.erase(UnitOrders.begin());
-	//Order tempOrder;
-	//tempOrder.command = Move;
-	//tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
-	//unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
+
+	building->clearUnitOrder();
+	
+	float tempDistance = 100;
+	int temp;
+	if (npc_buildings.size() > 0)
+	{
+		for (int i = 0; i < npc_buildings.size(); i++)
+		{
+			float distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMVectorSubtract(npc_units[npc_units.size()]->gameObject->transform.getPosition(), npc_buildings[i]->gameObject->transform.getPosition())));
+
+			if (distance < tempDistance)
+			{
+				npc_units[npc_units.size()]->setDistance(distance);
+				temp = i;
+			}
+
+		}
+	}
+	
+	npc_units[npc_units.size()]->gatherCommand(npc_buildings[temp]);
+//	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	
 }
 
 

@@ -21,6 +21,7 @@ private:
 	std::vector<Unit*> *player_buildings;
 
 	std::vector<Unit*> npc_units;
+	std::vector<Unit*> npc_buildings;
 
 	bool wantsToAttackHero;
 
