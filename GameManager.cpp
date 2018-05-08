@@ -159,13 +159,13 @@ void GameManager::addBuildings()
 	unsigned char* bitMapImage_Info;
 	int mapSize, bitMapIndx = 0, index;
 	DirectX::XMFLOAT3 tempXMFLOAT3 = DirectX::XMFLOAT3(0, 0, 0);
-	bool HeightMapLoaded = true;
 
-	tmpFile = fopen("Assets/7.bmp", "rb");
+
+	tmpFile = fopen("Assets/shouldwork.bmp", "rb");
 	if (!tmpFile)
 	{
 		std::cout << "Error: Couldn't find HeightMap." << std::endl;
-		HeightMapLoaded = false;
+		
 	}
 
 	//Initiate BitMap Headers (File, Info).
@@ -174,10 +174,6 @@ void GameManager::addBuildings()
 	HeightMapVariables.Height_Row = InfoHeader.biHeight;
 	HeightMapVariables.Width_Columns = InfoHeader.biWidth;
 
-	//if (HeightMapVariables.Height_Row < grid_Row && HeightMapVariables.Width_Columns < grid_Column)
-	//{
-		bool HeightmapWithinBoundsOfGrid = true;
-	//}
 	//RGB size (r-byte, g-byte, b-byte).
 	mapSize = HeightMapVariables.Height_Row * HeightMapVariables.Width_Columns * 3;
 
@@ -188,30 +184,79 @@ void GameManager::addBuildings()
 	fclose(tmpFile);
 	int a = HeightMapVariables.Height_Row;
 	int b = HeightMapVariables.Width_Columns;
-	for (int i = 25; i < 275; i+= 50)
+	for (int i = 0; i < HeightMapVariables.Height_Row +1; i++)
 	{
 		std::vector<DirectX::XMFLOAT3> tempHeightVert;
 
-		for (int j = 25; j <275; j+=50)
+		for (int j = 0; j < HeightMapVariables.Width_Columns +1; j++)
 		{
 
 			tempXMFLOAT3 = DirectX::XMFLOAT3((float)i, ((float)bitMapImage_Info[bitMapIndx] / 10.0f /*Smoothing Value.*/), (float)j);
 			bitMapIndx += 3;
 			tempHeightVert.push_back(tempXMFLOAT3);
-
-			GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(tempXMFLOAT3.x, tempXMFLOAT3.y, tempXMFLOAT3.z, 0));
-			goldMineGameObject->name = "Goldmine";
-			goldMineGameObject->tag = 0;
-			MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
-			goldMineGameObject->addComponent(meshFilter2);
-			goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
-			Unit *goldMine = new Unit(GoldMine);
-			goldMineGameObject->addComponent(goldMine);
-			gamemanager.unitLists[0].push_back(goldMine);
 		}
 
 		HeightMapVariables.VertInfo.push_back(tempHeightVert);
 
+	}
+
+	int x = 0;
+	for (int i = 25; i < HeightMapVariables.VertInfo[0].size(); i += 50)
+	{
+		
+		if(i < 100 || i > 200)
+		for (int j = 25; j < HeightMapVariables.VertInfo.size(); j += 50)
+		{
+			if (j < 100 || j > 200)
+			{
+				if (x == 0)
+				{
+					GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+					goldMineGameObject->name = "Goldmine";
+					goldMineGameObject->tag = 0;
+					MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+					goldMineGameObject->addComponent(meshFilter2);
+					goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
+					Unit *goldMine = new Unit(GoldMine);
+					goldMineGameObject->addComponent(goldMine);
+					gamemanager.unitLists[0].push_back(goldMine);
+					x++;
+					continue;
+				}
+				
+				if (x == 1)
+				{
+					GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+					goldMineGameObject->name = "Bank";
+					goldMineGameObject->tag = 0;
+					MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
+					goldMineGameObject->addComponent(meshFilter2);
+					goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+					Unit *bank = new Unit(Bank);
+					goldMineGameObject->addComponent(bank);
+					gamemanager.unitLists[0].push_back(bank);
+					x++;
+					continue;
+				}
+				if (x == 2)
+				{
+					GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+					goldMineGameObject->name = "Barrack";
+					goldMineGameObject->tag = 0;
+					MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+					goldMineGameObject->addComponent(meshFilter2);
+					goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+					Unit *bank = new Unit(Barrack);
+					goldMineGameObject->addComponent(bank);
+					gamemanager.unitLists[0].push_back(bank);
+					x = 0;
+					continue;
+				}
+			
+			
+			}
+			
+		}
 	}
 
 	delete[] bitMapImage_Info;
