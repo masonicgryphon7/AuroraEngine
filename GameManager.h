@@ -21,7 +21,7 @@ public:
 	GameManager(ID3D11Device* gDevice, ID3D11DeviceContext*  gDeviceContext);
 	~GameManager();
 	float ringOfFire;
-	DirectX::XMVECTOR middlePoint = DirectX::XMVectorSet(99.0, 0.0, 99.0, 0.0);
+	DirectX::XMVECTOR middlePoint = DirectX::XMVectorSet(149, 0.0, 149, 0.0);
 
 	float gameTime;
 	float getGameTime() { return this->gameTime; };
@@ -36,6 +36,7 @@ public:
 		DirectX::XMVECTOR fireRing;
 	};
 	HRESULT createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext);
+	void winCondition();
 	void setResources(float radius) { this->ringOfFire = radius; };
 	void update();
 
