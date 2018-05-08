@@ -74,7 +74,7 @@ namespace MyLibrary
 	{
 		//reads the custom mesh file and stores all the data
 
-		AnimatedMeshFromFile meshToReturn = AnimatedMeshFromFile();
+		AnimatedMeshFromFile meshToReturn;
 
 		bool fileIsOpen = false;
 
@@ -240,7 +240,7 @@ namespace MyLibrary
 	{
 		//read the skeleton file
 
-		SkeletonFromFile skeleton_to_return=SkeletonFromFile();
+		SkeletonFromFile skeleton_to_return;
 
 		bool fileIsOpen = false;
 
@@ -264,6 +264,7 @@ namespace MyLibrary
 				for(int j = 0; j < MAX_FILENAME; j++)
 				skeleton_to_return.skeleton_joints[i].joint_name[j] = joints[i].joint_name[j];
 				skeleton_to_return.skeleton_joints[i].joint_transform = joints[i].joint_transform;
+				skeleton_to_return.skeleton_joints[i].parentIndex = joints[i].parentIndex;
 
 			}
 			skeleton_to_return.skeleton_nrOfJoints = skeleton_header.skeleton_nrOfJoints;
@@ -281,7 +282,7 @@ namespace MyLibrary
 
 		std::ifstream customAnimationFile(fileName, std::ifstream::binary);
 		AnimationHeader animation_header;
-		AnimationFromFile animation_to_return=AnimationFromFile();
+		AnimationFromFile animation_to_return;
 
 		if (customAnimationFile.is_open())
 		{

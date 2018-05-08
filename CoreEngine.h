@@ -117,9 +117,10 @@ private:
 	//void SetViewport(int x = WIDTH, int y = HEIGHT);
 
 	void CreateTriangleData();
+	void addMaterials();
+	void createTerrain();
 
-
-	void addBuildings();
+	
 
 public:
 	ID3D11DeviceContext * gDeviceContext = nullptr;
