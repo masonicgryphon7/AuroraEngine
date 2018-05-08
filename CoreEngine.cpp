@@ -643,7 +643,204 @@ void CoreEngine::createTerrain()
 	PathCreator1->addTerrain(terrainGenerator8->getRealVertArr(), 198, 99);
 	PathCreator1->addTerrain(terrainGenerator9->getRealVertArr(), 198, 198);
 
-	PathCreator.trumpTheBorders();
+		PathCreator.trumpTheBorders();
+
+		//PathCreator.createNodes();
+
+		// Create a Main Camera
+		Camera* cam = nullptr;
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 35, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera->name = "Main Camera";
+		cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
+		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
+		camera->addComponent(cam);
+		PlayerScript* playerscript = new PlayerScript(camera);
+		camera->addComponent(playerscript);
+
+		//PlayerScript *playerscript = new PlayerScript();
+		//camera->addComponent(playerscript);
+
+		//Tree
+		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
+		tree->name = "Tree";
+		tree->tag = 0;
+		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+		tree->addComponent(meshFilterTree);
+		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+		//Barrack
+
+
+
+		AssetManager.addMeshFromBinary("Assets/COLLECTOR.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+	
+
+		AudioListener* audioListener = new AudioListener();
+		camera->addComponent(audioListener);
+
+		playerscript->instantiate_Player();
+
+		//GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 10, 0));
+		//cube4->name = "Hero";
+		//cube4->tag = 1;
+		//MeshFilter* meshFilter4 = new MeshFilter(AssetManager.getMesh("PIRATE"));
+		//cube4->addComponent(meshFilter4);
+		//cube4->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
+		//Unit* UnitHero = new Unit(Hero);
+		//cube4->addComponent(UnitHero);
+		//playerscript->friendlyUnits.push_back(UnitHero);
+		//UnitHero->setPlayerScript(playerscript);
+		//playerscript->friendlyUnits.at(0)->setHomePos(&playerscript->friendlyBuildings.at(0)->gameObject->transform);
+		//gamemanager.unitLists[cube4->tag].push_back(UnitHero);
+
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
+		cube->name = "Worker";
+		cube->tag = 1;
+		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("pose1smile"));
+		cube->addComponent(meshFilter1);
+		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+		Unit *unitWorker = new Unit(Worker);
+		cube->addComponent(unitWorker);
+		//playerscript->friendlyUnits.push_back(unitWorker);
+		unitWorker->setPlayerScript(playerscript);
+		gamemanager.unitLists[cube->tag].push_back(unitWorker);
+
+
+		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 5, 0));
+		cube2->name = "Goldmine";
+		cube2->tag = 0;
+		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+		cube2->addComponent(meshFilter2);
+		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
+		Unit *goldMine = new Unit(GoldMine);
+		cube2->addComponent(goldMine);
+		goldMine->setPlayerScript(playerscript);
+
+		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
+		cube3->name = "Bank";
+		cube3->tag = 0;
+		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
+		cube3->addComponent(meshFilter3);
+		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+		Unit* unitBuilding = new Unit(Bank);
+		cube3->addComponent(unitBuilding);
+		//playerscript->friendlyBuildings.push_back(unitBuilding);
+		unitBuilding->setPlayerScript(playerscript);
+		gamemanager.buildingLists[cube3->tag].push_back(unitBuilding);
+
+		GameObject* barrack = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 5, 0));
+		barrack->name = "Barrack";
+		barrack->tag = 1;
+		MeshFilter* meshFilterBarracks = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+		barrack->addComponent(meshFilterBarracks);
+		barrack->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+		Unit* unitBuilding2 = new Unit(Barrack);
+		barrack->addComponent(unitBuilding2);
+		//playerscript->friendlyBuildings.push_back(unitBuilding2);
+		unitBuilding2->setPlayerScript(playerscript);
+		gamemanager.buildingLists[barrack->tag].push_back(unitBuilding2);
+
+
+		//
+		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 5, 0));
+		animatedGO->name = "Animator";
+		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
+		MeshFilter* animMeshFilter = new MeshFilter(animMesh);
+		animatedGO->addComponent(animMeshFilter);
+
+		AssetManager.addSkeletonFromBinary("Assets/First_JOint_Skeleton.bin");
+		Animator* animator = new Animator(assetManager.getSkeleton("First_JOint_Skeleton"));
+		animatedGO->addComponent(animator);
+		
+		AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("First_JOint_Skeleton"),"Assets/ANIMATION_ANIMATION.bin");
+		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("First_JOint_Skeleton"),"ANIMATION_ANIMATION"));
+
+		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+
+		//
+		
+
+		GameObject* enemy_player = gScene.createEmptyGameObject();
+		NPC* enemy_NPC = new NPC();
+		enemy_NPC->instantiate_NPC();
+		enemy_player->addComponent(enemy_NPC);
+		
+
+
+
+
+		/*ClickToMove* clickToMove = new ClickToMove(cam);
+		cube->addComponent(clickToMove);*/
+
+
+
+
+		Editor* editor = nullptr;
+		Player* player = nullptr;
+
+		if (!PLAYER_BUILD)
+		{
+			editor = new Editor();
+			editor->Start(&wndHandle, gDevice, gDeviceContext, this);
+		}
+		else
+		{
+			player = new Player();
+			player->Start(&wndHandle, gDevice, gDeviceContext, this);
+			gSwapChain->SetFullscreenState(TRUE, NULL);
+		}
+
+		while (WM_QUIT != msg.message)
+		{
+			if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			else
+			{
+				inputHandler.updateInput();
+				Time.tick();
+				gameManager.update();
+				if (!PLAYER_BUILD)
+					OnResize();
+
+				gScene.destroyGameObjects();
+				gScene.update();
+				gScene.frustumCull(camera);
+				objectsToRender = gScene.getFrustumCulledResult();
+
+				if (editor != nullptr)
+					editor->Update();
+				if (player != nullptr)
+					player->Update();
+
+
+				if (!PLAYER_BUILD)
+					gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
+
+				renderManager->EndFrame(); // END RENDERING
+
+				objectsToRender[0].clear();
+
+				hasResized = false;
+			}
+		}
+
+		gSwapChain->SetFullscreenState(FALSE, NULL);
+
+		if (editor != nullptr)
+			delete editor;
+
+		if (player != nullptr)
+			delete player;
+
+		delete renderManager;
+		DestroyWindow(wndHandle);
+	}
+	return msg;
 }
 
 

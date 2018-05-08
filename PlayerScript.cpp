@@ -49,7 +49,7 @@ PlayerScript::~PlayerScript()
 
 void PlayerScript::instantiate_Player()
 {
-	GameObject* friendly_Hero = gScene.createEmptyGameObject(DirectX::XMVectorSet(50, 0, 10, 0));
+	GameObject* friendly_Hero = gScene.createEmptyGameObject(DirectX::XMVectorSet(15, 0, 10, 0));
 	friendly_Hero->name = "Hero";
 	friendly_Hero->tag = 1;
 
@@ -58,7 +58,7 @@ void PlayerScript::instantiate_Player()
 	friendly_Hero->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
 	Unit* friendly_unit_hero = new Unit(Hero);
 	friendly_Hero->addComponent(friendly_unit_hero);
-	friendlyUnits.push_back(friendly_unit_hero);
+	//friendlyUnits.push_back(friendly_unit_hero);
 	
 	gamemanager.unitLists[friendly_Hero->tag].push_back(friendly_unit_hero);
 
@@ -67,20 +67,20 @@ void PlayerScript::instantiate_Player()
 void PlayerScript::update()
 {
 	//SelectUnits();
-	for (int i = 0; i < this->friendlyUnits.size(); i++)
+	for (int i = 0; i < gamemanager.unitLists[1].size(); i++)
 	{
-		if (this->friendlyUnits[i]->getHealthPoints() <= 0)
+		if (gamemanager.unitLists[1][i]->getHealthPoints() <= 0)
 		{
 			for (int j = 0; j < this->SelectedUnits.size(); j++)
 			{
-				if (this->friendlyUnits.at(i)->gameObject == this->SelectedUnits.at(j))
+				if (gamemanager.unitLists[1][i]->gameObject == this->SelectedUnits.at(j))
 				{
 					this->SelectedUnits.erase(this->SelectedUnits.begin() + j);
 				}
 			}
-			this->friendlyUnits[i]->dieCommand();
-			this->friendlyUnits[i]->destroyUnit();
-			this->friendlyUnits.erase(this->friendlyUnits.begin() + i);
+			gamemanager.unitLists[1][i]->dieCommand();
+			gamemanager.unitLists[1][i]->destroyUnit();
+			gamemanager.unitLists[1].erase(gamemanager.unitLists[1].begin() + i);
 		}
 
 

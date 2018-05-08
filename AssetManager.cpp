@@ -298,7 +298,7 @@ void cAssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std:
 						D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
 						0							 // used for INSTANCING (ignore)
 					},{
-						"JOINTINDEX",		// "semantic" name in shader
+						"JOINT_INDICES",		// "semantic" name in shader
 						0,				// "semantic" index (not used)
 						DXGI_FORMAT_R32G32B32A32_FLOAT, // size of ONE element (3 floats)
 						0,							 // input slot
@@ -306,7 +306,7 @@ void cAssetManager::addShaderProgram(INPUT_ELEMENT_DESCRIPTION description, std:
 						D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
 						0							 // used for INSTANCING (ignore)
 					},{
-						"WEIGHT",		// "semantic" name in shader
+						"JOINT_WEIGHTS",		// "semantic" name in shader
 						0,				// "semantic" index (not used)
 						DXGI_FORMAT_R32G32B32A32_FLOAT, // size of ONE element (3 floats)
 						0,							 // input slot
@@ -375,7 +375,7 @@ void cAssetManager::addShaderProgram(std::string filePath, SHADER_TYPE type)
 	}
 
 }
-void cAssetManager::addAnimationClipFromBinary(const std::string & filePath)
+void cAssetManager::addAnimationClipFromBinary(Skeleton* skeleton, const std::string & filePath)
 {
 	AnimationClip* temp = nullptr;
 	bool makingSureBool = false;
@@ -391,8 +391,7 @@ void cAssetManager::addAnimationClipFromBinary(const std::string & filePath)
 
 	if (temp == nullptr || !makingSureBool)
 	{
-		temp = new AnimationClip();
-		temp->createClipFromBinary(filePath);
+		temp = new AnimationClip(skeleton, filePath);
 		animationClips.push_back(temp);
 	}
 
@@ -414,14 +413,14 @@ void cAssetManager::addSkeletonFromBinary(const std::string & filePath)
 Skeleton * cAssetManager::getSkeleton(const std::string & filePath)
 {
 	bool hasFound = false;
-	Skeleton *temp;
-	for (auto& skeleton : animationClips)
+	Skeleton *temp=nullptr;
+	for (auto& skeleton : skeletons)
 	{
-		if (skeleton->getClipPath() == filePath)
+		if (skeleton->getSkeletonName() == filePath)
 		{
 			Console.success("Found skeleton at, returning its value from ", filePath);
 			hasFound = true;
-			skeleton = skeleton;
+			temp = skeleton;
 		}
 	}
 
@@ -437,29 +436,28 @@ Skeleton * cAssetManager::getSkeleton(const std::string & filePath)
 	return temp;
 }
 
-AnimationClip * cAssetManager::getAnimationclip(const std::string & filePath)
+AnimationClip * cAssetManager::getAnimationclip(Skeleton* skeleton, const std::string & filePath)
 {
 	bool hasFound = false;
-	AnimationClip* clip = nullptr;
+	AnimationClip* temp = nullptr;
 
 	for (auto& clip : animationClips)
 	{
-		if (clip->getClipPath() == filePath)
+		if (clip->getClipName() == filePath)
 		{
 			Console.success("Found texture at, returning its value from ", filePath);
 			hasFound = true;
-			clip = clip;
+			temp = clip;
 		}
 	}
 
 	if (!hasFound)
 	{
-		clip = new AnimationClip();
-		clip->createClipFromBinary(filePath);
-		animationClips.push_back(clip);
+		temp = new AnimationClip(skeleton, filePath);
+		animationClips.push_back(temp);
 	}
 
-	return clip;
+	return temp;
 }
 
 Texture * cAssetManager::getTexture(const std::string & path)

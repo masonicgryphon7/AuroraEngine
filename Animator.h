@@ -17,8 +17,9 @@ public:
 	void Pause();
 	void addAnimationClip(AnimationClip* animClip);
 	void addAnimationClipAt(AnimationClip* animClip, int index);
-	std::vector<DirectX::XMMATRIX> getMatrixPalette() { return matrixPalette; };
-
+	std::vector<DirectX::XMMATRIX> getMatrixPalette() {
+		calculateMatrixPalette();
+		return matrixPalette; };
 private:
 	bool isPlaying;
 	float playTime;
@@ -26,5 +27,7 @@ private:
 	std::vector<DirectX::XMMATRIX> matrixPalette;
 	std::vector<AnimationClip*> animationclips;
 	Skeleton* skeleton;
+	void calculateMatrixPalette();
+
 };
 
