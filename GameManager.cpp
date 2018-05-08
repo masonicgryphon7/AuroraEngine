@@ -4,7 +4,6 @@
 
 
 std::vector<std::vector<Unit*>> GameManager::unitLists;
-std::vector<std::vector<Unit*>> GameManager::buildingLists;
 GAME_STATE GameManager::gameState;
 
 
@@ -15,14 +14,13 @@ GameManager::GameManager()
 
 GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext)
 {
-	ringOfFire = 150;
+	ringOfFire = 220;
 	gameTime = 0;
 	dev = gDevice;
 	devCon = gDeviceContext;
 	createBuffer(gDevice, gDeviceContext);
 
 	unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
-	buildingLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 	gameState = GAME_STATE::LARGE_CIRCEL_STATE;
 }
 
@@ -84,7 +82,7 @@ void GameManager::winCondition()
 void GameManager::update()
 {
 	gameTime += Time.getDeltaTime();
-	winCondition();
+	//winCondition();
 	switch (gameState)
 	{
 	case MAIN_MENU:
@@ -92,35 +90,35 @@ void GameManager::update()
 	case START_STATE:
 		break;
 	case LARGE_CIRCEL_STATE:
-		if (gameTime >= 3000000)
+		if (gameTime >= 120)
 		{
 			//Debug.Log(ringOfFire);  
-			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
-			dmgRing();
+			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
-		if (ringOfFire < 100) {
+		if (ringOfFire < 150) {
 			gameState = GAME_STATE::MEDIUM_CIRCEL_STATE;
 		}
+		dmgRing();
 		break;
 	case MEDIUM_CIRCEL_STATE:
-		if (gameTime >= 60)
+		if (gameTime >= 180)
 		{
 			//Debug.Log(ringOfFire);  
-			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
-			dmgRing();
+			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
-		if (ringOfFire < 70) {
+		if (ringOfFire < 80) {
 			gameState = GAME_STATE::SMALL_CIRCEL_STATE;
 		}
+		dmgRing();
 		break;
 	case SMALL_CIRCEL_STATE:
-		if (gameTime >= 90 && ringOfFire >= 20)
+		if (gameTime >= 240 && ringOfFire > 28)
 		{
-			//Debug.Log(ringOfFire);  
-			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
+			Debug.Log(ringOfFire);  
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
 		dmgRing();
 		break;
