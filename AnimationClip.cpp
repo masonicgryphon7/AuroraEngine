@@ -26,7 +26,7 @@ void AnimationClip::createClipFromBinary(std::string filePath)
 	std::reverse(this->clipName.begin(), this->clipName.end());
 	this->clipName = clipName.substr(0, clipName.find(".", 0));
 
-	MyLibrary::AnimationFromFile tempAnimation = myLoader.readAnimationFile(clipPath);
+	MyLibrary::AnimationFromFile tempAnimation = myLoader.readAnimationFile(clipPath, skeleton->getNrOfJoints());
 	
 	nrOfKeyFrames = tempAnimation.nr_of_keyframes;
 
@@ -34,7 +34,6 @@ void AnimationClip::createClipFromBinary(std::string filePath)
 	for (int i = 0; i < nrOfKeyFrames; i++)
 	{
 		AnimationFrame animFrame = AnimationFrame();
-		animFrame.joints = std::vector<JointTransform>();
 
 		for (int j = 0; j < skeleton->getNrOfJoints(); j++)
 		{

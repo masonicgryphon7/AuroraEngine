@@ -81,9 +81,9 @@ void Animator::calculateMatrixPalette()
 		//rotationMatrix = DirectX::XMMatrixMultiply(scaleMatrix, rotationMatrix);
 		animationClipMatrix = DirectX::XMMatrixMultiply(rotationMatrix, animationClipMatrix);
 
-
+		DirectX::XMMATRIX skeletonTransform = skeleton->getSkeletonJoints()[0][i].jointMatrix;
 		//isolatedRotation
-		DirectX::XMMATRIX resultMatrix = DirectX::XMMatrixMultiply(skeleton->getSkeletonJoints()[0][i].jointMatrix,animationClipMatrix);
+		DirectX::XMMATRIX resultMatrix = DirectX::XMMatrixMultiply(skeletonTransform,animationClipMatrix);
 		
 
 		//worldSpaceRotation
@@ -92,7 +92,7 @@ void Animator::calculateMatrixPalette()
 		}
 		else
 		{
-			resultMatrix = DirectX::XMMatrixMultiply(skeleton->getSkeletonJoints()[0][skeleton->getSkeletonJoints()[0][i].parentIndex].jointMatrix, resultMatrix);
+			//resultMatrix = DirectX::XMMatrixMultiply(skeleton->getSkeletonJoints()[0][skeleton->getSkeletonJoints()[0][i].parentIndex].jointMatrix, resultMatrix);
 			resultMatrix = DirectX::XMMatrixMultiply(skeleton->getInverseSkeletonJoints()[0][skeleton->getInverseSkeletonJoints()[0][i].parentIndex].jointMatrix, resultMatrix);
 
 		}

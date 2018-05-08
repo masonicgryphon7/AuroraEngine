@@ -139,6 +139,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//assetManager = cAssetManager(gDevice, gDeviceContext); // this has memory leak
 		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3, "Vertex.hlsl", SHADER_TYPE::VERTEX_SHADER);
+		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4, "VertexAnimation.hlsl", SHADER_TYPE::VERTEX_SHADER);
+
 		AssetManager.addShaderProgram("Fragment.hlsl", SHADER_TYPE::PIXEL_SHADER);
 
 
@@ -525,7 +527,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//
 		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 5, 0));
 		animatedGO->name = "Animator";
-		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
 		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
 		MeshFilter* animMeshFilter = new MeshFilter(animMesh);
 		animatedGO->addComponent(animMeshFilter);
@@ -536,7 +538,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		
 		AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("First_JOint_Skeleton"),"Assets/ANIMATION_ANIMATION.bin");
 		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("First_JOint_Skeleton"),"ANIMATION_ANIMATION"));
-
+		animator->Play(0);
 		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 
 		//
