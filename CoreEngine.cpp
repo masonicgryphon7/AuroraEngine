@@ -411,12 +411,18 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.AddMesh("Assets/Test2ResourceSilo.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
-		cPathCreator* PathCreator1 = new cPathCreator(200, 200); // 200x200
+		cPathCreator* PathCreator1 = new cPathCreator(300, 300); // 200x200
 
 		PathCreator1->addTerrain(terrainGenerator1->getRealVertArr(), 0, 0);
 		PathCreator1->addTerrain(terrainGenerator2->getRealVertArr(), 0, 99);
-		PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 99, 0);
-		PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 99, 99);
+		PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 0, 198);
+		PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 99, 0);
+		PathCreator1->addTerrain(terrainGenerator5->getRealVertArr(), 99, 99);
+		PathCreator1->addTerrain(terrainGenerator6->getRealVertArr(), 99, 198);
+		PathCreator1->addTerrain(terrainGenerator7->getRealVertArr(), 198, 0);
+		PathCreator1->addTerrain(terrainGenerator8->getRealVertArr(), 198, 99);
+		PathCreator1->addTerrain(terrainGenerator9->getRealVertArr(), 198, 198);
+
 		PathCreator.trumpTheBorders();
 
 		//PathCreator.createNodes();
