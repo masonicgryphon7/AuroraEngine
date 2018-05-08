@@ -9,6 +9,7 @@
 #include "Unit.h"
 #include <vector>
 #include "PlayerSelectionScript.h"
+#include "GameManager.h"
 ///////////////
 //#include "Component.h"
 #include "Physics.h"
@@ -60,8 +61,8 @@ public:
 
 	//std::vector<GameObject*>*objectsToRender;
 
-	std::vector<Unit*> friendlyUnits; //= std::vector<Unit*>(20);
-	std::vector<Unit*> friendlyBuildings; //= std::vector<Unit*>(10);
+	std::vector<Unit*> friendlyUnits;
+	std::vector<Unit*> friendlyBuildings;
 
 
 	/////////////////////////////////////////// PlayerSelectionScript
