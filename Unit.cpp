@@ -234,7 +234,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		if (pathNodes.at(pathNodes.size() - 1).pathable == PATHABLE_CHECK)
 			pathNodes.erase(pathNodes.begin() + pathNodes.size() - 1);
 	}
-
+	
 	if (pathNodes.size() > 0) {
 		lerpValue += Time.getDeltaTime() * 10;
 		if (lerpValue > 1) {
