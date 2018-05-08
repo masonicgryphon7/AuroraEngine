@@ -20,7 +20,7 @@ GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceCont
 	devCon = gDeviceContext;
 	createBuffer(gDevice, gDeviceContext);
 
-	unitLists = std::vector<std::vector<Unit*>>(3, std::vector<Unit*>());
+	unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 	gameState = GAME_STATE::LARGE_CIRCEL_STATE;
 }
 
@@ -67,9 +67,22 @@ HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gD
 	return hr;
 }
 
+void GameManager::winCondition()
+{
+	if (unitLists[1][0]->getHealthPoints() <= 0)
+	{
+		gameState = GAME_STATE::GAME_OVER_MENU;
+	}
+	if (unitLists[2][0]->getHealthPoints() <= 0)
+	{
+		gameState = GAME_STATE::GAME_OVER_MENU;
+	}
+}
+
 void GameManager::update()
 {
 	gameTime += Time.getDeltaTime();
+	winCondition();
 	switch (gameState)
 	{
 	case MAIN_MENU:
@@ -112,6 +125,7 @@ void GameManager::update()
 	case END_STATE:
 		break;
 	case GAME_OVER_MENU:
+		Debug.Log("END BOOIOII");
 		break;
 	default:
 		break;

@@ -16,8 +16,8 @@ TerrainGenerator::TerrainGenerator(int grid_RowPr, int grid_ColumnPr)
 
 TerrainGenerator::TerrainGenerator(int grid_RowPr, int grid_ColumnPr, char* HeightMapFileName)
 {
-	grid_Row = grid_RowPr+1;
-	grid_Column = grid_ColumnPr+1;
+	grid_Row = grid_RowPr;
+	grid_Column = grid_ColumnPr;
 	LoadHeightMapToAttributes(HeightMapFileName);
 	loadRandomTerrainHeights();
 }
@@ -61,7 +61,8 @@ void TerrainGenerator::LoadHeightMapToAttributes(char* HeightMapFileName)
 	fseek(tmpFile, FileHeader.bfOffBits, SEEK_SET); //Pointer is set to the beginning of data.
 	fread(bitMapImage_Info, 1, mapSize, tmpFile); //Store data in bitMapImage_Info.
 	fclose(tmpFile);
-
+	int a = HeightMapVariables.Height_Row;
+	int b = HeightMapVariables.Width_Columns;
 	for (int i = 0; i < HeightMapVariables.Height_Row; i++)
 	{
 		std::vector<DirectX::XMFLOAT3> tempHeightVert;
@@ -69,7 +70,7 @@ void TerrainGenerator::LoadHeightMapToAttributes(char* HeightMapFileName)
 		for (int j = 0; j < HeightMapVariables.Width_Columns; j++)
 		{
 
-			tempXMFLOAT3 = DirectX::XMFLOAT3((float)i, ((float)bitMapImage_Info[bitMapIndx] / 20.0f /*Smoothing Value.*/), (float)j);
+			tempXMFLOAT3 = DirectX::XMFLOAT3((float)i, ((float)bitMapImage_Info[bitMapIndx] / 10.0f /*Smoothing Value.*/), (float)j);
 			bitMapIndx += 3;
 			tempHeightVert.push_back(tempXMFLOAT3);
 		}

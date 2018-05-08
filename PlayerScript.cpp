@@ -47,6 +47,23 @@ PlayerScript::PlayerScript(GameObject * player) :Component(-1, "Editor Move Scri
 PlayerScript::~PlayerScript()
 {}
 
+void PlayerScript::instantiate_Player()
+{
+	GameObject* friendly_Hero = gScene.createEmptyGameObject(DirectX::XMVectorSet(50, 0, 10, 0));
+	friendly_Hero->name = "Hero";
+	friendly_Hero->tag = 1;
+
+	MeshFilter* friendly_hero_meshFilter = new MeshFilter(AssetManager.getMesh("COLLECTOR"));
+	friendly_Hero->addComponent(friendly_hero_meshFilter);
+	friendly_Hero->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
+	Unit* friendly_unit_hero = new Unit(Hero);
+	friendly_Hero->addComponent(friendly_unit_hero);
+	friendlyUnits.push_back(friendly_unit_hero);
+	
+	gamemanager.unitLists[friendly_Hero->tag].push_back(friendly_unit_hero);
+
+}
+
 void PlayerScript::update()
 {
 	//SelectUnits();

@@ -57,6 +57,7 @@ public:
 	///////
 	~PlayerScript();
 
+	void instantiate_Player();
 	void update();
 
 	//std::vector<GameObject*>*objectsToRender;
