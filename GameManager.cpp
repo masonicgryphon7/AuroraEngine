@@ -23,7 +23,6 @@ GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceCont
 
 	unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 	buildingLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
-	gameState = GAME_STATE::LARGE_CIRCEL_STATE;
 	gameState = GAME_STATE::START_STATE;
 }
 
