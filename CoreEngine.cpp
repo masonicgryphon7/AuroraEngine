@@ -534,8 +534,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Animator* animator = new Animator(assetManager.getSkeleton("First_JOint_Skeleton"));
 		animatedGO->addComponent(animator);
 		
-		AssetManager.addAnimationClipFromBinary("Assets/ANIMATION_ANIMATION.bin");
-		animator->addAnimationClip(AssetManager.getAnimationclip("ANIMATION_ANIMATION"));
+		AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("First_JOint_Skeleton"),"Assets/ANIMATION_ANIMATION.bin");
+		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("First_JOint_Skeleton"),"ANIMATION_ANIMATION"));
 
 		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 
