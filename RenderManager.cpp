@@ -363,5 +363,5 @@ void RenderManager::EndFrame()
 	// VSYNC_1_FRAME == vsync (1frame) { 60FPS }
 	// VSYNC_2_FRAME == vsync (2frame) { 30FPS }
 
-	gSwapChain->Present(VSYNC_1_FRAME, 0);
+	gSwapChain->Present(NO_VSYNC, 0);
 }

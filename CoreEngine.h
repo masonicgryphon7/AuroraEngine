@@ -118,6 +118,9 @@ private:
 
 	void CreateTriangleData();
 
+
+	void addBuildings();
+
 public:
 	ID3D11DeviceContext * gDeviceContext = nullptr;
 	ID3D11RenderTargetView* gBackbufferRTV = nullptr;

@@ -88,6 +88,7 @@ void GameManager::update()
 	case MAIN_MENU:
 		break;
 	case START_STATE:
+
 		break;
 	case LARGE_CIRCEL_STATE:
 		if (gameTime >= 3)

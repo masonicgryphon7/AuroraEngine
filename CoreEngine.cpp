@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 0
+#define PLAYER_BUILD 1
 
 bool CoreEngine::hasResized = false;
 
@@ -317,7 +317,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain1->name = "Terrain1";
 		terrain1->tag = 0;
 		terrain1->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/7.bmp"); //BMP SKA VARA 298 I STORLEK.
+		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/7.bmp"); //7
 		AssetManager.addMesh(terrainGenerator1->vertCount, &terrainGenerator1->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
 		terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial3")));
@@ -327,7 +327,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain2->name = "Terrain2";
 		terrain2->tag = 0;
 		terrain2->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/4.bmp");
+		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/4.bmp");//4
 		AssetManager.addMesh(terrainGenerator2->vertCount, &terrainGenerator2->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
 		terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -337,7 +337,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain3->name = "Terrain3";
 		terrain3->tag = 0;
 		terrain3->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/1.bmp");
+		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/1.bmp");//1
 		AssetManager.addMesh(terrainGenerator3->vertCount, &terrainGenerator3->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
 		terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial4")));
@@ -347,7 +347,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain4->name = "Terrain4";
 		terrain4->tag = 0;
 		terrain4->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/8.bmp");
+		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/8.bmp");//8
 		AssetManager.addMesh(terrainGenerator4->vertCount, &terrainGenerator4->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
 		terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
@@ -357,7 +357,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain5->name = "Terrain5";
 		terrain5->tag = 0;
 		terrain5->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator5 = new TerrainGenerator(100, 100, "Assets/5.bmp");
+		TerrainGenerator* terrainGenerator5 = new TerrainGenerator(100, 100, "Assets/5.bmp");//5
 		AssetManager.addMesh(terrainGenerator5->vertCount, &terrainGenerator5->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain5 = new MeshFilter(AssetManager.getMesh(4));
 		terrain5->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
@@ -367,7 +367,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain6->name = "Terrain6";
 		terrain6->tag = 0;
 		terrain6->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator6 = new TerrainGenerator(100, 100, "Assets/2.bmp");
+		TerrainGenerator* terrainGenerator6 = new TerrainGenerator(100, 100, "Assets/2.bmp");//2
 		AssetManager.addMesh(terrainGenerator6->vertCount, &terrainGenerator6->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain6 = new MeshFilter(AssetManager.getMesh(5));
 		terrain6->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
@@ -377,7 +377,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain7->name = "Terrain7";
 		terrain7->tag = 0;
 		terrain7->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator7 = new TerrainGenerator(100, 100, "Assets/9.bmp");
+		TerrainGenerator* terrainGenerator7 = new TerrainGenerator(100, 100, "Assets/9.bmp");//9
 		AssetManager.addMesh(terrainGenerator7->vertCount, &terrainGenerator7->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain7 = new MeshFilter(AssetManager.getMesh(6));
 		terrain7->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
@@ -387,7 +387,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain8->name = "Terrain8";
 		terrain8->tag = 0;
 		terrain8->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator8 = new TerrainGenerator(100, 100, "Assets/6.bmp");
+		TerrainGenerator* terrainGenerator8 = new TerrainGenerator(100, 100, "Assets/6.bmp");//6
 		AssetManager.addMesh(terrainGenerator8->vertCount, &terrainGenerator8->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain8 = new MeshFilter(AssetManager.getMesh(7));
 		terrain8->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
@@ -397,7 +397,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		terrain9->name = "Terrain9";
 		terrain9->tag = 0;
 		terrain9->detailedRaycast = true;
-		TerrainGenerator* terrainGenerator9 = new TerrainGenerator(100, 100, "Assets/3.bmp");
+		TerrainGenerator* terrainGenerator9 = new TerrainGenerator(100, 100, "Assets/3.bmp");//3
 		AssetManager.addMesh(terrainGenerator9->vertCount, &terrainGenerator9->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
 		MeshFilter* meshFilterTerrain9 = new MeshFilter(AssetManager.getMesh(8));
 		terrain9->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
@@ -429,9 +429,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 35, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
-		cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
+		cam = new Camera(HEIGHT, WIDTH, 35.0f, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
 		camera->addComponent(cam);
 		PlayerScript* playerscript = new PlayerScript(camera);
@@ -487,39 +487,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		gamemanager.unitLists[cube->tag].push_back(unitWorker);
 
 
-		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 5, 0));
-		cube2->name = "Goldmine";
-		cube2->tag = 0;
-		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
-		cube2->addComponent(meshFilter2);
-		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
-		Unit *goldMine = new Unit(GoldMine);
-		cube2->addComponent(goldMine);
-		goldMine->setPlayerScript(playerscript);
-		gamemanager.unitLists[3].push_back(goldMine);
-		goldMine->setPlayerScript(playerscript);
-
-		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
-		cube3->name = "Bank";
-		cube3->tag = 0;
-		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
-		cube3->addComponent(meshFilter3);
-		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
-		Unit* unitBuilding = new Unit(Bank);
-		cube3->addComponent(unitBuilding);
-		playerscript->friendlyBuildings.push_back(unitBuilding);
-		unitBuilding->setPlayerScript(playerscript);
-
-		GameObject* barrack = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 5, 0));
-		barrack->name = "Barrack";
-		barrack->tag = 1;
-		MeshFilter* meshFilterBarracks = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
-		barrack->addComponent(meshFilterBarracks);
-		barrack->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
-		Unit* unitBuilding2 = new Unit(Barrack);
-		barrack->addComponent(unitBuilding2);
-		playerscript->friendlyBuildings.push_back(unitBuilding2);
-		unitBuilding2->setPlayerScript(playerscript);
+		addBuildings();
 
 
 		//
@@ -548,7 +516,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		enemy_player->addComponent(enemy_NPC);
 		
 
-
+		
 
 
 		/*ClickToMove* clickToMove = new ClickToMove(cam);
@@ -666,6 +634,50 @@ void CoreEngine::CreateTriangleData()
 	// create a Vertex Buffer
 	gDevice->CreateBuffer(&bufferDesc, &data, &gVertexBuffer);
 
+}
+
+void CoreEngine::addBuildings()
+{
+
+	for (int i = 0; i < 275; i += 50)
+	{
+		for (int j = 25; j < 275; j += 50)
+		{
+			GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, 15, j, 0));
+			goldMineGameObject->name = "Goldmine";
+			goldMineGameObject->tag = 0;
+			MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+			goldMineGameObject->addComponent(meshFilter2);
+			goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
+			Unit *goldMine = new Unit(GoldMine);
+			goldMineGameObject->addComponent(goldMine);
+			gamemanager.unitLists[0].push_back(goldMine);
+		}
+	}
+	
+	
+
+	//GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
+	//cube3->name = "Bank";
+	//cube3->tag = 0;
+	//MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
+	//cube3->addComponent(meshFilter3);
+	//cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	//Unit* unitBuilding = new Unit(Bank);
+	//cube3->addComponent(unitBuilding);
+	//playerscript->friendlyBuildings.push_back(unitBuilding);
+	//unitBuilding->setPlayerScript(playerscript);
+
+	//GameObject* barrack = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 5, 0));
+	//barrack->name = "Barrack";
+	//barrack->tag = 1;
+	//MeshFilter* meshFilterBarracks = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+	//barrack->addComponent(meshFilterBarracks);
+	//barrack->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+	//Unit* unitBuilding2 = new Unit(Barrack);
+	//barrack->addComponent(unitBuilding2);
+	//playerscript->friendlyBuildings.push_back(unitBuilding2);
+	//unitBuilding2->setPlayerScript(playerscript);
 }
 
 void CoreEngine::SetViewport(int x, int y)
