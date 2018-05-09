@@ -32,6 +32,7 @@ Texture2D Diffuse:register(t0);
 Texture2D NormalTexture:register(t1);
 Texture2D AORoughMetTexture:register(t2);
 SamplerState sampAni;
+SamplerState IDsampler;
 
 Texture2D Grass : register(t3);
 Texture2D GrassNormal : register(t4);
@@ -130,7 +131,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 			metallic = lerp(metallic, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.y);
 			roughness = lerp(roughness, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.y);
 
-			//albedo = albedo * float3(0.1f, 1.0, 0.1f);
+			albedo = albedo * float3(0.9f, 1.0, 0.1f);
 		}
 
 		if (colorValue.z > Epsilon) //B
@@ -141,7 +142,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 			metallic = lerp(metallic, SandAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.z);
 			roughness = lerp(roughness, SandAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.z);
 
-			//albedo = albedo * float3(0.1f, 0.1, 1.0f);
+			albedo = albedo * float3(0.1f, 0.1, 1.0f);
 		}
 
 		float3 middle = float3(149, 0, 149);
