@@ -374,30 +374,31 @@ void Unit::FollowCommand()
 void Unit::gatherCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
-
-	if (this->Resources < 100 && e == 0) // worker is not full
+	if (targetedUnit != nullptr)
 	{
-		if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
+		if (this->Resources < 100 && e == 0) // worker is not full
 		{
-			gatherResources();
+			if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
+			{
+				gatherResources();
+			}
+			else
+			{
+				SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+			}
 		}
-		else
+		else if (this->Resources > 0 && e == 1) // worker has gold
 		{
-			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+			{
+				dropResources();
+			}
+			else
+			{
+				SecondMoveCommand(&this->homePos->getPosition());
+			}
 		}
 	}
-	else if (this->Resources > 0 && e == 1) // worker has gold
-	{
-		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
-		{
-			dropResources();
-		}
-		else
-		{
-			SecondMoveCommand(&this->homePos->getPosition());
-		}
-	}
-
 }
 
 void Unit::HeroGatherCommand(Unit * targetedUnit)

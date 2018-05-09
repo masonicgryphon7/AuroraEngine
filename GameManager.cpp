@@ -38,7 +38,7 @@ void GameManager::dmgRing()
 		if (unit->getDistanceBetweenUnits(unitLists[2][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
 		{
 			//Debug.Log("eeeeeeeeeeey");
-			unitLists[2][i]->takeDamage(100);
+			unitLists[2][i]->takeDamage(0.05);
 		}
 	}
 	for (int i = 0; i < unitLists[1].size(); i++)
@@ -46,7 +46,7 @@ void GameManager::dmgRing()
 		if (unit->getDistanceBetweenUnits(unitLists[1][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
 		{
 			//Debug.Log("eeeeeeeeeeey");
-			unitLists[1][i]->takeDamage(100);
+			unitLists[1][i]->takeDamage(0.05);
 		}
 	}
 }
@@ -94,11 +94,11 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 0)
 		{
 			//Debug.Log(ringOfFire);  
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
-			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
+			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 		}
 		if (ringOfFire < 150) {
 			gameState = GAME_STATE::MEDIUM_CIRCLE_STATE;
