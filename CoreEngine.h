@@ -52,7 +52,7 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_internal.h"
 #include <math.h>
-
+#include <thread>
 #define WIDTH 800
 #define HEIGHT 600
 
@@ -70,6 +70,8 @@ protected:
 	bool consoleInitialized = false;
 
 private:
+	
+
 	HINSTANCE hInstance;
 	HWND wnd;
 	int nCmdShow;

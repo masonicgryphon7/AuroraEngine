@@ -10,6 +10,7 @@
 #include <DirectXMath.h>
 #include "PRIMITIVE_GEOMETRY.h"
 #include <algorithm>
+#include <thread>
 
 /*#define MAX 200
 #define MIN 0

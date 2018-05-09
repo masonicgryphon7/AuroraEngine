@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 0
+#define PLAYER_BUILD 1
 
 bool CoreEngine::hasResized = false;
 
@@ -39,6 +39,7 @@ CoreEngine::CoreEngine(bool includeDebugConsole)
 			std::cout << " -- CONSOLE LAUNCHED -- " << std::endl << std::endl << std::endl;
 		}
 	}
+	
 }
 
 CoreEngine::~CoreEngine()
@@ -163,9 +164,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 80, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
-		cam = new Camera(HEIGHT, WIDTH, 35, 0.01f, 1000.0f);
+		cam = new Camera(HEIGHT, WIDTH, 25, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
 		camera->addComponent(cam);
 		PlayerScript* playerscript = new PlayerScript(camera);
@@ -174,13 +175,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//PlayerScript *playerscript = new PlayerScript();
 		//camera->addComponent(playerscript);
 
-		//Tree
-		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
-		tree->name = "Tree";
-		tree->tag = 0;
-		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
-		tree->addComponent(meshFilterTree);
-		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+		////Tree
+		//GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
+		//tree->name = "Tree";
+		//tree->tag = 0;
+		//MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+		//tree->addComponent(meshFilterTree);
+		//tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
 
 		//Barrack
 
@@ -248,7 +249,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		Editor* editor = nullptr;
 		Player* player = nullptr;
-
+		
 		if (!PLAYER_BUILD)
 		{
 			editor = new Editor();
@@ -285,13 +286,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				if (player != nullptr)
 					player->Update();
 
-
+			
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 
 				renderManager->EndFrame(); // END RENDERING
 
 				objectsToRender[0].clear();
-
+				
 				hasResized = false;
 			}
 		}
@@ -686,7 +687,7 @@ void CoreEngine::createTerrain()
 	PathCreator1->addTerrain(terrainGenerator9->getRealVertArr(), 198, 198);
 
 	PathCreator.trumpTheBorders();
-
+	
 	//PathCreator.createNodes();
 
 }

@@ -62,8 +62,8 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	{
 	case Type::Hero: //HERO
 		this->healthPoints = this->maxHealthPoints = 100;
-		this->attackPoints = 16;
-		this->defencePoints = 20; // 10
+		this->attackPoints = 160;
+		this->defencePoints = 10; // 10
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
@@ -293,7 +293,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
-	else
+	if ( targetedUnit->healthPoints < 0)
 	{
 		UnitOrders.erase(UnitOrders.begin());
 	}
@@ -506,7 +506,7 @@ void Unit::summonWorkerCommand()
 	UnitOrders.erase(UnitOrders.begin());
 	Order tempOrder;
 	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));
+	tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 8.0, 0.0));
 	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
@@ -553,7 +553,7 @@ void Unit::summonSoldierCommand()
 	UnitOrders.erase(UnitOrders.begin());
 	Order tempOrder;
 	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
 	unitSoldier->getUnitOrdersPointer()->push_back(tempOrder);
 }
 

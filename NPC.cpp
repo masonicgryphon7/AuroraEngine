@@ -14,29 +14,39 @@ NPC::~NPC()
 
 void NPC::update()
 {
-	if (npc_units[0]->getResources() >= 100 && npc_units[0]->getUnitCommand() == HeroGather)
+	for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+	{
+		if (gamemanager.unitLists[2][i]->getHealthPoints() <= 0)
+		{
+			gamemanager.unitLists[2][i]->dieCommand();
+			gamemanager.unitLists[2][i]->destroyUnit();
+			gamemanager.unitLists[2].erase(gamemanager.unitLists[2].begin() + i);
+		}
+	}
+
+	/*if (gamemanager.unitLists[2][0]->getResources() >= 100 && gamemanager.unitLists[2][0]->getUnitCommand() == HeroGather)
 	{
 		wantsToAttackHero = true;
-		npc_units[0]->clearUnitOrder();
+		gamemanager.unitLists[2][0]->clearUnitOrder();
 	}
 		
-	for (int i = 0; i < npc_units.size(); i++)
+	for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 	{
-		if (npc_units[i]->getUnitOrdersSize() < 1)
+		if (gamemanager.unitLists[2][i]->getUnitOrdersSize() < 1)
 		{
 
 			
 			if (wantsToAttackHero)
 			{
-				attack(npc_units[i]);
+				attack(gamemanager.unitLists[2][i]);
 			}
 			else
 			{
-				standAbout(npc_units[i]);
+				standAbout(gamemanager.unitLists[2][i]);
 
 			}
 		}
-	}
+	}*/
 	
 
 	//CODE GOES HERE
@@ -55,9 +65,9 @@ void NPC::instantiate_NPC()
 	enemy_unit->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 	Unit* enemy_unit_hero = new Unit(Hero);
 	enemy_unit->addComponent(enemy_unit_hero);
-	npc_units.push_back(enemy_unit_hero);
-	this->npc_units[0]->setResources(0);
-	gamemanager.unitLists[this->npc_units[0]->gameObject->tag].push_back(this->npc_units[0]);
+	//npc_units.push_back(enemy_unit_hero);
+	//this->npc_units[0]->setResources(0);
+	gamemanager.unitLists[enemy_unit->tag].push_back(enemy_unit_hero);
 	
 }
 
@@ -132,7 +142,7 @@ void NPC::summonWorker(Unit * building)
 	Unit *unitWorker = new Unit(Worker);
 	unitWorker->setHomePos(&building->gameObject->transform);
 	worker->addComponent(unitWorker);
-	npc_units.push_back(unitWorker);
+	//npc_units.push_back(unitWorker);
 	
 	gamemanager.unitLists[2].push_back(unitWorker);
 
@@ -141,22 +151,22 @@ void NPC::summonWorker(Unit * building)
 	
 	float tempDistance = 100;
 	int temp;
-	if (npc_buildings.size() > 0)
+	if (gamemanager.buildingLists[2].size() > 0)
 	{
-		for (int i = 0; i < npc_buildings.size(); i++)
+		for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
 		{
-			float distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMVectorSubtract(npc_units[npc_units.size()]->gameObject->transform.getPosition(), npc_buildings[i]->gameObject->transform.getPosition())));
+			float distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMVectorSubtract(worker->transform.getPosition(), gamemanager.buildingLists[2][i]->gameObject->transform.getPosition())));
 
 			if (distance < tempDistance)
 			{
-				npc_units[npc_units.size()]->setDistance(distance);
+				gamemanager.unitLists[2][gamemanager.unitLists[2].size()]->setDistance(distance);
 				temp = i;
 			}
 
 		}
 	}
 	
-	npc_units[npc_units.size()]->gatherCommand(npc_buildings[temp]);
+	gamemanager.unitLists[2][gamemanager.unitLists[2].size()]->gatherCommand(gamemanager.buildingLists[2][temp]);
 //	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
 	
 }

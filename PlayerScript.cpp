@@ -81,8 +81,6 @@ void PlayerScript::update()
 			gamemanager.unitLists[1][i]->destroyUnit();
 			gamemanager.unitLists[1].erase(gamemanager.unitLists[1].begin() + i);
 		}
-
-
 	}
 	///////////////////////
 	//Movement
