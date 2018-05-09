@@ -198,7 +198,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 1
+			assetManager.getTexture("id1")->getTexture()); //USE ID_PART 1
 
 		//Terrain Material 2
 		assetManager.AddMaterial("TerrainMaterial2", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -218,7 +218,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 2
+			assetManager.getTexture("id2")->getTexture()); //USE ID_PART 2
 
 		//Terrain Material 3
 		assetManager.AddMaterial("TerrainMaterial3", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -238,7 +238,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 3
+			assetManager.getTexture("id3")->getTexture()); //USE ID_PART 3
 
 		//Terrain Material 4
 		assetManager.AddMaterial("TerrainMaterial4", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -258,7 +258,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 4
+			assetManager.getTexture("id4")->getTexture()); //USE ID_PART 4
 
 		//Terrain Material 5
 		assetManager.AddMaterial("TerrainMaterial5", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -278,7 +278,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 5
+			assetManager.getTexture("id5")->getTexture()); //USE ID_PART 5
 
 		//Terrain Material 6
 		assetManager.AddMaterial("TerrainMaterial6", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -298,7 +298,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 6
+			assetManager.getTexture("id6")->getTexture()); //USE ID_PART 6
 
 		//Terrain Material 7
 		assetManager.AddMaterial("TerrainMaterial7", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -318,7 +318,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 7
+			assetManager.getTexture("id7")->getTexture()); //USE ID_PART 7
 
 		 //Terrain Material 8
 		assetManager.AddMaterial("TerrainMaterial8", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -338,7 +338,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 8
+			assetManager.getTexture("id8")->getTexture()); //USE ID_PART 8
 
 	    //Terrain Material 9
 		assetManager.AddMaterial("TerrainMaterial9", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -358,7 +358,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			assetManager.getTexture("Lava_Albedo2")->getTexture(),
 			assetManager.getTexture("Lava_Normal")->getTexture(),
 			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-			assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 9
+			assetManager.getTexture("id9")->getTexture()); //USE ID_PART 9
 		//------------------------------------------------------------------------------
 
 		//Unit & Tree textures
@@ -530,8 +530,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Camera* cam = nullptr;
 		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
-		cam = new Camera(HEIGHT, WIDTH, 100, 0.01f, 1000.0f);
-		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
+		cam = new Camera(HEIGHT, WIDTH, 70, 0.01f, 1000.0f);
+		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 35, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
 		camera->addComponent(cam);
 		PlayerScript* playerscript = new PlayerScript(camera);
 		camera->addComponent(playerscript);
@@ -539,17 +539,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//PlayerScript *playerscript = new PlayerScript();
 		//camera->addComponent(playerscript);
 
-		//Tree
-		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
-		tree->name = "Tree";
-		tree->tag = 0;
-		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
-		tree->addComponent(meshFilterTree);
-		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
-
-		AudioListener* audioListener = new AudioListener();
-		camera->addComponent(audioListener);
-
+	
 		//
 		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 5, 0));
 		animatedGO->name = "Animator";
