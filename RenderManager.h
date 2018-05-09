@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include "Camera.h"
+#include "Animator.h"
 
 #define NO_VSYNC 0
 #define VSYNC_1_FRAME 1
@@ -19,7 +20,7 @@ struct MatrixBufferStruct
 	float xMaterialTile;
 	float yMaterialTile;
 
-	int fill[1]{ 0 };
+	int animate;
 };
 
 class RenderManager
@@ -42,15 +43,18 @@ private:
 	IDXGISwapChain* gSwapChain = nullptr;
 	ID3D11Buffer* matrixBuffer = nullptr;
 	ID3D11Buffer* instanceBuffer = nullptr;
+	ID3D11Buffer* skeletonBuffer = nullptr;
 	MatrixBufferStruct matrixBufferData;
 	void CreateMatrixBuffer();
 	void CreateInstanceMatrixBuffer();
+	void CreateSkeletonBuffer();
 
 	std::vector<std::vector<GameObject*>> opaqueDraw;
 	std::vector<GameObject*> translucentDraw;
 	std::vector<Mesh*> meshVector;
 	std::vector<Material*> materialVector;
 	DirectX::XMFLOAT4X4 opaqueTransforms[100]{ DirectX::XMFLOAT4X4() };
+	DirectX::XMFLOAT4X4 skeleton[20]{ DirectX::XMFLOAT4X4() };
 
 	// for render texture
 public:

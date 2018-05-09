@@ -18,6 +18,8 @@ RenderManager::RenderManager(ID3D11Device * gDevice, ID3D11DeviceContext * gDevi
 	this->m_depthStencilView = depth;
 	CreateMatrixBuffer();
 	CreateInstanceMatrixBuffer();
+	CreateSkeletonBuffer();
+	matrixBufferData.animate = 0;
 }
 
 
@@ -27,7 +29,7 @@ RenderManager::~RenderManager()
 	m_shaderResourceView->Release();
 	matrixBuffer->Release();
 	instanceBuffer->Release();
-
+	skeletonBuffer->Release();
 	m_renderTargetView->Release();
 }
 
@@ -117,6 +119,22 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
 		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
+		Animator* animator = opaqueDraw[i][0]->getComponent<Animator>();
+		if (animator) {
+			matrixBufferData.animate = 1;
+			std::vector<DirectX::XMMATRIX> skel = animator->getMatrixPalette();
+			for (int j = 0; j < skel.size(); j++)
+			{
+				DirectX::XMStoreFloat4x4( &skeleton[j], skel[j]);
+				//DirectX::XMStoreFloat4x4( &skeleton[j], DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+			}
+			gDeviceContext->UpdateSubresource(skeletonBuffer, 0, nullptr, &matrixBufferData, 0, 0);
+
+		}
+		else
+		{
+			matrixBufferData.animate = 0;
+		}
 		gDeviceContext->UpdateSubresource(matrixBuffer, 0, nullptr, &matrixBufferData, 0, 0);
 
 		//Instancing
@@ -138,6 +156,11 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 
 			nrOfObjectsDrawn += nrToDraw;
 			gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &opaqueTransforms, 0, 0);
+			
+			
+			
+			//Get skeleton
+			
 			gDeviceContext->DrawInstanced(opaqueDraw[i][0]->meshFilterComponent->getMesh()->getVertexCount(), opaqueDraw[i].size(), 0, 0);
 
 		}		
@@ -261,6 +284,27 @@ void RenderManager::CreateInstanceMatrixBuffer()
 		exit(-1);
 	}
 	gDeviceContext->VSSetConstantBuffers(1, 1, &instanceBuffer);
+}
+
+void RenderManager::CreateSkeletonBuffer()
+{
+	// initialize the description of the buffer.
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * 20;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+
+	// check if the creation failed for any reason
+	HRESULT hr = 0;
+	hr = gDevice->CreateBuffer(&bufferDesc, nullptr, &skeletonBuffer);
+	if (FAILED(hr))
+	{
+		// handle the error, could be fatal or a warning...
+		exit(-1);
+	}
+	gDeviceContext->VSSetConstantBuffers(2, 1, &skeletonBuffer);
 }
 
 void RenderManager::CreateRenderTarget(int width, int height)

@@ -13,7 +13,7 @@ Unit::Unit() :Component(-1, "Unit")
 	switch (type)
 	{
 	case Type::Hero: //HERO
-		this->healthPoints = 100;
+		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 15;
 		this->defencePoints = 5;
 		this->attackDistance = 2;
@@ -21,7 +21,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->healthPoints = 20;
+		this->healthPoints = this->maxHealthPoints = 20;
 		this->attackPoints = 4;
 		this->defencePoints = 8;
 		this->attackDistance = 1;
@@ -29,7 +29,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case Type::Worker: //WORKER
-		this->healthPoints = 15;
+		this->healthPoints = this->maxHealthPoints = 15;
 		this->attackPoints = 1;
 		this->defencePoints = 5;
 		this->attackDistance = 1;
@@ -37,7 +37,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case 3: //BUILDING
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 20;
 		this->attackDistance = 0;
@@ -61,26 +61,26 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	switch (UnitTypeSet)
 	{
 	case Type::Hero: //HERO
-		this->healthPoints = 100;
-		this->attackPoints = 20;
-		this->defencePoints = 20;
+		this->healthPoints = this->maxHealthPoints = 100;
+		this->attackPoints = 16;
+		this->defencePoints = 20; // 10
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->healthPoints = 20;
-		this->attackPoints = 8;
-		this->defencePoints = 4;
+		this->healthPoints = this->maxHealthPoints = 30;
+		this->attackPoints = 13;
+		this->defencePoints = 7;
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Soldier;
 		break;
 
 	case Type::Worker: //WORKER
-		this->healthPoints = 15;
-		this->attackPoints = 1;
+		this->healthPoints = this->maxHealthPoints = 15;
+		this->attackPoints = 11;
 		this->defencePoints = 5;
 		this->attackDistance = 2;
 		this->Resources = 0;
@@ -88,7 +88,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	case Type::Barrack: //BUILDING
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 20;
 		this->attackDistance = 0;
@@ -98,7 +98,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::Bank: //Bank
 
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
@@ -108,7 +108,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::GoldMine: //NATURE TREES, MINES, ETC
 
-		this->healthPoints = 10000;
+		this->healthPoints = this->maxHealthPoints = 10000;
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
@@ -234,7 +234,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		if (pathNodes.at(pathNodes.size() - 1).pathable == PATHABLE_CHECK)
 			pathNodes.erase(pathNodes.begin() + pathNodes.size() - 1);
 	}
-
+	
 	if (pathNodes.size() > 0) {
 		lerpValue += Time.getDeltaTime() * 10;
 		if (lerpValue > 1) {
@@ -290,17 +290,11 @@ void Unit::attackCommand(Unit* targetedUnit)
 		}
 		else
 		{
-			//DirectX::XMVECTOR pathOffset = calculateOffsetInPath(unitPos, targetPos);
-			//Order tempOrder;
-			//tempOrder.command = Command::Move;
-			//tempOrder.point = targetedUnit->gameObject->transform.getPosition();//DirectX::XMVectorAdd(targetedUnit->gameObject->transform.getPosition(), DirectX::XMVectorSet(0.5, 0.0, 0.5, 0.0));
-			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
 	else
 	{
-		//targetedUnit.destroyUnit();
 		UnitOrders.erase(UnitOrders.begin());
 	}
 }
@@ -389,10 +383,6 @@ void Unit::gatherCommand(Unit* targetedUnit)
 		}
 		else
 		{
-			//Order tempOrder;
-			//tempOrder.command = Command::Move;
-			//tempOrder.point = targetedUnit->gameObject->transform.getPosition();
-			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
@@ -404,10 +394,6 @@ void Unit::gatherCommand(Unit* targetedUnit)
 		}
 		else
 		{
-			//Order tempOrder;
-			//tempOrder.command = Command::Move;
-			//tempOrder.point = this->homePos->getPosition();
-			//UnitOrders.insert(UnitOrders.begin(), tempOrder);
 			SecondMoveCommand(&this->homePos->getPosition());
 		}
 	}
@@ -438,10 +424,6 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 	}
 	else
 	{
-		//Order tempOrder;
-		//tempOrder.command = Command::Move;
-		//tempOrder.point = targetedUnit->gameObject->transform.getPosition();
-		//UnitOrders.insert(UnitOrders.begin(), tempOrder);
 		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 	}
 }
@@ -503,23 +485,20 @@ void Unit::destroyUnit()
 {
 	//UnitOrders[0].transform->gameObject->Destroy();
 	gameObject->Destroy();
-
-
-
 }
 
 void Unit::summonWorkerCommand()
 {
-	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
-	worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
+	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());
+	worker->name = "Worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 	worker->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
 	worker->addComponent(meshFilter);
 	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 	Unit *unitWorker = new Unit(Worker);
-	unitWorker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+	unitWorker->setHomePos(&gameObject->transform);
 	worker->addComponent(unitWorker);
-	playerScript->friendlyUnits.push_back(unitWorker);
+	//playerScript->friendlyUnits.push_back(unitWorker);
 	unitWorker->setPlayerScript(playerScript);
 	gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
 	
@@ -527,7 +506,7 @@ void Unit::summonWorkerCommand()
 	UnitOrders.erase(UnitOrders.begin());
 	Order tempOrder;
 	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));
 	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
@@ -538,7 +517,7 @@ void Unit::convertToSoldierCommand(Unit* targetedUnit)
 
 	if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 	{
-		gameObject->name = "Soldier";
+		gameObject->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 		gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("PIRATE"));
 		gameObject->getComponent<MaterialFilter>()->setMaterialFilter(AssetManager.getMaterial("SoldierMaterial"));
 		gameObject->getComponent<Unit>()->type = Soldier;
@@ -559,7 +538,7 @@ void Unit::convertToSoldierCommand(Unit* targetedUnit)
 void Unit::summonSoldierCommand()
 {
 	GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
-	soldier->name = "Soldier";// +playerScript->friendlyUnits.size();
+	soldier->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 	soldier->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("PIRATE"));
 	soldier->addComponent(meshFilter);
@@ -567,7 +546,7 @@ void Unit::summonSoldierCommand()
 	Unit *unitSoldier = new Unit(Soldier);
 	unitSoldier->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	soldier->addComponent(unitSoldier);
-	playerScript->friendlyUnits.push_back(unitSoldier);
+	//playerScript->friendlyUnits.push_back(unitSoldier);
 	unitSoldier->setPlayerScript(playerScript);
 	gamemanager.unitLists[gameObject->tag].push_back(unitSoldier);
 
@@ -590,16 +569,35 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 		if (actionTime > 1)
 		{
 			//attackEnemy();
-			targetedUnit->gameObject->tag = gameObject->tag;
+			for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
+			{
+				if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
+				{
+					gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
+					targetedUnit->gameObject->tag = gameObject->tag;
+					gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
+					UnitOrders.erase(UnitOrders.begin());
+					break;
+				}
+			}
 			//Debug.Log("Enemy Hit!");
 			actionTime = 0;
-
-			UnitOrders.erase(UnitOrders.begin());
 		}
 	}
 	else
 	{
 		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+	}
+}
+
+void Unit::dieCommand()
+{
+	actionTime += Time.getDeltaTime();
+	if (actionTime > 1)
+	{
+		//play death animation
+		Debug.Log("Play death animation here");
+		actionTime = 0;
 	}
 }
 
@@ -687,17 +685,26 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 			}
 		}
 		else if (Values.transform->gameObject->tag != unitTag && Values.transform->gameObject->tag != 3 && Values.transform->gameObject->tag != 0) { //!=gameObject->tag){
-																								 //enemy
+			//enemy
 			switch (type)
 			{
 			case Type::Hero:
-				tempOrder.command = Attack;
-				//tempOrder.command = Move;
-
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
+				{
+					tempOrder.command = takeBuilding;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
+				else
+				{
+					tempOrder.command = Attack;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 				break;
 
 			case Type::Soldier:

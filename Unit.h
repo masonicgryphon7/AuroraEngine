@@ -58,7 +58,7 @@ private:
 	int Resources;
 	Type type;
 	std::vector<Order> UnitOrders;
-	int healthPoints;
+	int healthPoints, maxHealthPoints;
 	int attackPoints;
 	int defencePoints;
 	float attackDistance;
@@ -98,6 +98,7 @@ public:
 
 	int getResources() { return this->Resources; };
 	int getHealthPoints() { return this->healthPoints; };
+	int getMaxHealthPoints() { return this->maxHealthPoints; };
 	int getAttackPoints() { return this->attackPoints; };
 	int getDefencePoints() { return this->defencePoints; };
 	float getAttackDistance() { return this->attackDistance; };
@@ -131,6 +132,7 @@ public:
 	void convertToSoldierCommand(Unit* targetedUnit);
 	void summonSoldierCommand();
 	void takeBuildingCommand(Unit* targetedUnit);
+	void dieCommand();
 	std::vector<Order>* getUnitOrdersPointer() { return &UnitOrders; };
 	float getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);
 	DirectX::XMVECTOR calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos);

@@ -21,7 +21,7 @@ namespace MyLibrary
 		LightFromFile readLightFile(std::string fileName);
 		bool readMorphAnimationFile(std::string fileName);
 		SkeletonFromFile readSkeletonFile(std::string fileName);
-		AnimationFromFile readAnimationFile(std::string fileName);
+		AnimationFromFile readAnimationFile(std::string fileName, int nrOfJoints);
 		bool readGroupFile(std::string fileName);
 		
 	private:

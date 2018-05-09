@@ -11,7 +11,7 @@
 
 enum GAME_STATE
 {
-	MAIN_MENU,START_STATE,LARGE_CIRCEL_STATE, MEDIUM_CIRCEL_STATE, SMALL_CIRCEL_STATE,END_STATE,GAME_OVER_MENU
+	MAIN_MENU,START_STATE,LARGE_CIRCLE_STATE, MEDIUM_CIRCLE_STATE, SMALL_CIRCLE_STATE,END_STATE,GAME_OVER_MENU
 };
 class Unit;
 static class GameManager
@@ -21,7 +21,7 @@ public:
 	GameManager(ID3D11Device* gDevice, ID3D11DeviceContext*  gDeviceContext);
 	~GameManager();
 	float ringOfFire;
-	DirectX::XMVECTOR middlePoint = DirectX::XMVectorSet(99.0, 0.0, 99.0, 0.0);
+	DirectX::XMVECTOR middlePoint = DirectX::XMVectorSet(149, 0.0, 149, 0.0);
 
 	float gameTime;
 	float getGameTime() { return this->gameTime; };
@@ -36,12 +36,17 @@ public:
 		DirectX::XMVECTOR fireRing;
 	};
 	HRESULT createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext);
+	void winCondition();
 	void setResources(float radius) { this->ringOfFire = radius; };
 	void update();
 
 	static GAME_STATE gameState;
 	static std::vector<std::vector<Unit*>> unitLists;
+	static std::vector<std::vector<Unit*>> buildingLists;
+	
 	Unit* unit;
+
+	void addBuildings();
 
 } gamemanager;
 //Ovanför

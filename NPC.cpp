@@ -2,10 +2,8 @@
 
 
 
-NPC::NPC(std::vector<Unit*> *player_units, std::vector<Unit*> *player_buildings) : Component(-1, "NPC")
+NPC::NPC() : Component(-1, "NPC")
 {
-	this->player_units = player_units;
-	this->player_buildings = player_buildings;
 	wantsToAttackHero = false;
 
 }
@@ -66,18 +64,18 @@ void NPC::instantiate_NPC()
 void NPC::findNewEnemies(Unit* unit)
 {
 	float temp_distance;
-	for (int i = 0; i < player_units->size(); i++)
+	for (int i = 0; i < gamemanager.unitLists[1].size(); i++)
 	{
 		
-			temp_distance = unit->getDistanceBetweenUnits(unit->gameObject->transform.getPosition(), player_units[0][i]->gameObject->transform.getPosition());
+			temp_distance = unit->getDistanceBetweenUnits(unit->gameObject->transform.getPosition(), gamemanager.unitLists[1][i]->gameObject->transform.getPosition());
 			
 			
 			if (temp_distance < unit->getUnitDistance() || unit->getUnitDistance() == 0)
 			{
 				unit->setDistance(temp_distance);
-				unit->setTargetPos(player_units[0][i]->gameObject->transform.getPosition());
+				unit->setTargetPos(gamemanager.unitLists[1][i]->gameObject->transform.getPosition());
 				RaycastHit hit;
-				hit.transform = &player_units[0][i]->gameObject->transform;
+				hit.transform = &gamemanager.unitLists[1][i]->gameObject->transform;
 				unit->ReceiveOrder(hit, unit->gameObject->tag);
 			}
 
@@ -88,18 +86,18 @@ void NPC::findNewEnemies(Unit* unit)
 void NPC::attack(Unit * unit)
 {
 	float temp_distance;
-	for (int i = 0; i < player_units->size(); i++)
+	for (int i = 0; i <  gamemanager.unitLists[1].size(); i++)
 	{
 
-		temp_distance = unit->getDistanceBetweenUnits(unit->gameObject->transform.getPosition(), player_units[0][i]->gameObject->transform.getPosition());
+		temp_distance = unit->getDistanceBetweenUnits(unit->gameObject->transform.getPosition(), gamemanager.unitLists[1][i]->gameObject->transform.getPosition());
 
 
 		if (temp_distance < unit->getUnitDistance() || unit->getUnitDistance() == 0)
 		{
 			unit->setDistance(temp_distance);
-			unit->setTargetPos(player_units[0][i]->gameObject->transform.getPosition());
+			unit->setTargetPos(gamemanager.unitLists[1][i]->gameObject->transform.getPosition());
 			RaycastHit hit;
-			hit.transform = &player_units[0][i]->gameObject->transform;
+			hit.transform = &gamemanager.unitLists[1][i]->gameObject->transform;
 			unit->ReceiveOrder(hit, unit->gameObject->tag);
 
 		}
@@ -110,7 +108,7 @@ void NPC::attack(Unit * unit)
 
 void NPC::standAbout(Unit * unit)
 {
-	for (int i = 0; i < player_buildings->size(); i++)
+	/*for (int i = 0; i < player_buildings->size(); i++)
 	{
 		if (player_buildings[0][i]->getType() == GoldMine)
 		{
@@ -119,7 +117,48 @@ void NPC::standAbout(Unit * unit)
 			hit.transform = &player_buildings[0][i]->gameObject->transform;
 			unit->ReceiveOrder(hit, unit->gameObject->tag);
 		}
+	}*/
+	
+}
+
+void NPC::summonWorker(Unit * building)
+{
+	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
+	worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
+	worker->tag = gameObject->tag;
+	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
+	worker->addComponent(meshFilter);
+	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+	Unit *unitWorker = new Unit(Worker);
+	unitWorker->setHomePos(&building->gameObject->transform);
+	worker->addComponent(unitWorker);
+	npc_units.push_back(unitWorker);
+	
+	gamemanager.unitLists[2].push_back(unitWorker);
+
+
+	building->clearUnitOrder();
+	
+	float tempDistance = 100;
+	int temp;
+	if (npc_buildings.size() > 0)
+	{
+		for (int i = 0; i < npc_buildings.size(); i++)
+		{
+			float distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMVectorSubtract(npc_units[npc_units.size()]->gameObject->transform.getPosition(), npc_buildings[i]->gameObject->transform.getPosition())));
+
+			if (distance < tempDistance)
+			{
+				npc_units[npc_units.size()]->setDistance(distance);
+				temp = i;
+			}
+
+		}
 	}
+	
+	npc_units[npc_units.size()]->gatherCommand(npc_buildings[temp]);
+//	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	
 }
 
 
