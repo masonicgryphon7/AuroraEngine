@@ -371,94 +371,206 @@ void CoreEngine::addMaterials()
 	assetManager.addTexture("Assets/Lava_Normal.png"); //21
 	assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
 
-																		   //Terrain
-	int matXTile = 10;
-	int matYTile = 10;
-	//Terrain Material 1
-	assetManager.AddMaterial("TerrainMaterial1", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("TerrainMaterial1")->setIsTerrain(true);
-	assetManager.getMaterial("TerrainMaterial1")->setXTile(matXTile);
-	assetManager.getMaterial("TerrainMaterial1")->setYTile(matYTile);
-	assetManager.getMaterial("TerrainMaterial1")->setTerrainMaterials(
-		assetManager.getTexture("Grass_Albedo")->getTexture(),
-		assetManager.getTexture("Grass_Normal")->getTexture(),
-		assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Cliff_Albedo")->getTexture(),
-		assetManager.getTexture("Cliff_Normal")->getTexture(),
-		assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Sand_Albedo")->getTexture(),
-		assetManager.getTexture("Sand_Normal")->getTexture(),
-		assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Lava_Albedo2")->getTexture(),
-		assetManager.getTexture("Lava_Normal")->getTexture(),
-		assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-		assetManager.getTexture("ID_MAP2part1")->getTexture()); //USE ID_PART 1
-
-																//Terrain Material 2
-	assetManager.AddMaterial("TerrainMaterial2", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("TerrainMaterial2")->setIsTerrain(true);
-	assetManager.getMaterial("TerrainMaterial2")->setXTile(matXTile);
-	assetManager.getMaterial("TerrainMaterial2")->setYTile(matYTile);
-	assetManager.getMaterial("TerrainMaterial2")->setTerrainMaterials(
-		assetManager.getTexture("Grass_Albedo")->getTexture(),
-		assetManager.getTexture("Grass_Normal")->getTexture(),
-		assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Cliff_Albedo")->getTexture(),
-		assetManager.getTexture("Cliff_Normal")->getTexture(),
-		assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Sand_Albedo")->getTexture(),
-		assetManager.getTexture("Sand_Normal")->getTexture(),
-		assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Lava_Albedo2")->getTexture(),
-		assetManager.getTexture("Lava_Normal")->getTexture(),
-		assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-		assetManager.getTexture("ID_MAP2part2")->getTexture()); //USE ID_PART 2
-
-																//Terrain Material 1
-	assetManager.AddMaterial("TerrainMaterial3", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("TerrainMaterial3")->setIsTerrain(true);
-	assetManager.getMaterial("TerrainMaterial3")->setXTile(matXTile);
-	assetManager.getMaterial("TerrainMaterial3")->setYTile(matYTile);
-	assetManager.getMaterial("TerrainMaterial3")->setTerrainMaterials(
-		assetManager.getTexture("Grass_Albedo")->getTexture(),
-		assetManager.getTexture("Grass_Normal")->getTexture(),
-		assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Cliff_Albedo")->getTexture(),
-		assetManager.getTexture("Cliff_Normal")->getTexture(),
-		assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Sand_Albedo")->getTexture(),
-		assetManager.getTexture("Sand_Normal")->getTexture(),
-		assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Lava_Albedo2")->getTexture(),
-		assetManager.getTexture("Lava_Normal")->getTexture(),
-		assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-		assetManager.getTexture("ID_MAP2part3")->getTexture()); //USE ID_PART 3
-
-																//Terrain Material 4
-	assetManager.AddMaterial("TerrainMaterial4", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("TerrainMaterial4")->setIsTerrain(true);
-	assetManager.getMaterial("TerrainMaterial4")->setXTile(matXTile);
-	assetManager.getMaterial("TerrainMaterial4")->setYTile(matYTile);
-	assetManager.getMaterial("TerrainMaterial4")->setTerrainMaterials(
-		assetManager.getTexture("Grass_Albedo")->getTexture(),
-		assetManager.getTexture("Grass_Normal")->getTexture(),
-		assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Cliff_Albedo")->getTexture(),
-		assetManager.getTexture("Cliff_Normal")->getTexture(),
-		assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Sand_Albedo")->getTexture(),
-		assetManager.getTexture("Sand_Normal")->getTexture(),
-		assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
-		assetManager.getTexture("Lava_Albedo2")->getTexture(),
-		assetManager.getTexture("Lava_Normal")->getTexture(),
-		assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
-		assetManager.getTexture("ID_MAP2part4")->getTexture()); //USE ID_PART 4
+		assetManager.addTexture("Assets/id1.png");
+		assetManager.addTexture("Assets/id2.png");
+		assetManager.addTexture("Assets/id3.png");
+		assetManager.addTexture("Assets/id4.png");
+		assetManager.addTexture("Assets/id5.png");
+		assetManager.addTexture("Assets/id6.png");
+		assetManager.addTexture("Assets/id7.png");
+		assetManager.addTexture("Assets/id8.png");
+		assetManager.addTexture("Assets/id9.png");
+		assetManager.addTexture("Assets/ID_MAP2part1.png");
 
 
-																//Unit & Tree textures
-	AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-	AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
-	AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+		//Terrain
+		int matXTile = 10;
+		int matYTile = 10;
+		//Terrain Material 1
+		assetManager.AddMaterial("TerrainMaterial1", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial1")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial1")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial1")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial1")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id1")->getTexture()); //USE ID_PART 1
+
+		//Terrain Material 2
+		assetManager.AddMaterial("TerrainMaterial2", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial2")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial2")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial2")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial2")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id2")->getTexture()); //USE ID_PART 2
+
+		//Terrain Material 3
+		assetManager.AddMaterial("TerrainMaterial3", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial3")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial3")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial3")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial3")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id3")->getTexture()); //USE ID_PART 3
+
+		//Terrain Material 4
+		assetManager.AddMaterial("TerrainMaterial4", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial4")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial4")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial4")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial4")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id4")->getTexture()); //USE ID_PART 4
+
+		//Terrain Material 5
+		assetManager.AddMaterial("TerrainMaterial5", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial5")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial5")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial5")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial5")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id5")->getTexture()); //USE ID_PART 5
+
+		//Terrain Material 6
+		assetManager.AddMaterial("TerrainMaterial6", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial6")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial6")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial6")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial6")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id6")->getTexture()); //USE ID_PART 6
+
+		//Terrain Material 7
+		assetManager.AddMaterial("TerrainMaterial7", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial7")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial7")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial7")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial7")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id7")->getTexture()); //USE ID_PART 7
+
+		 //Terrain Material 8
+		assetManager.AddMaterial("TerrainMaterial8", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial8")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial8")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial8")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial8")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id8")->getTexture()); //USE ID_PART 8
+
+	    //Terrain Material 9
+		assetManager.AddMaterial("TerrainMaterial9", assetManager.getShaderProgram("Fragment.hlsl"));
+		assetManager.getMaterial("TerrainMaterial9")->setIsTerrain(true);
+		assetManager.getMaterial("TerrainMaterial9")->setXTile(matXTile);
+		assetManager.getMaterial("TerrainMaterial9")->setYTile(matYTile);
+		assetManager.getMaterial("TerrainMaterial9")->setTerrainMaterials(
+			assetManager.getTexture("Grass_Albedo")->getTexture(),
+			assetManager.getTexture("Grass_Normal")->getTexture(),
+			assetManager.getTexture("Grass_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Cliff_Albedo")->getTexture(),
+			assetManager.getTexture("Cliff_Normal")->getTexture(),
+			assetManager.getTexture("Cliff_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Sand_Albedo")->getTexture(),
+			assetManager.getTexture("Sand_Normal")->getTexture(),
+			assetManager.getTexture("Sand_AoMetalRough")->getTexture(),
+			assetManager.getTexture("Lava_Albedo2")->getTexture(),
+			assetManager.getTexture("Lava_Normal")->getTexture(),
+			assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+			assetManager.getTexture("id9")->getTexture()); //USE ID_PART 9
+		//------------------------------------------------------------------------------
+
+		//Unit & Tree textures
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
+		AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 
 
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_BaseColor.png");
@@ -510,57 +622,56 @@ void CoreEngine::addMaterials()
 
 }
 
-void CoreEngine::createTerrain()
-{
-	GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
-	terrain1->name = "Terrain1";
-	terrain1->tag = 0;
-	terrain1->detailedRaycast = true;
-	TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/7.bmp"); //BMP SKA VARA 298 I STORLEK.
-	AssetManager.addMesh(terrainGenerator1->vertCount, &terrainGenerator1->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
-	terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial3")));
-	terrain1->addComponent(meshFilterTerrain);
 
-	GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 0, 0));
-	terrain2->name = "Terrain2";
-	terrain2->tag = 0;
-	terrain2->detailedRaycast = true;
-	TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/4.bmp");
-	AssetManager.addMesh(terrainGenerator2->vertCount, &terrainGenerator2->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
-	terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
-	terrain2->addComponent(meshFilterTerrain2);
+		GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
+		terrain1->name = "Terrain1";
+		terrain1->tag = 0;
+		terrain1->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator1 = new TerrainGenerator(100, 100, "Assets/7.bmp"); //BMP SKA VARA 298 I STORLEK.
+		AssetManager.addMesh(terrainGenerator1->vertCount, &terrainGenerator1->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
+		terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial3")));
+		terrain1->addComponent(meshFilterTerrain);
 
-	GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(198, 0, 0, 0));
-	terrain3->name = "Terrain3";
-	terrain3->tag = 0;
-	terrain3->detailedRaycast = true;
-	TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/1.bmp");
-	AssetManager.addMesh(terrainGenerator3->vertCount, &terrainGenerator3->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
-	terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial4")));
-	terrain3->addComponent(meshFilterTerrain3);
+		GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 0, 0));
+		terrain2->name = "Terrain2";
+		terrain2->tag = 0;
+		terrain2->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator2 = new TerrainGenerator(100, 100, "Assets/4.bmp");
+		AssetManager.addMesh(terrainGenerator2->vertCount, &terrainGenerator2->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
+		terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
+		terrain2->addComponent(meshFilterTerrain2);
 
-	GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 99, 0));
-	terrain4->name = "Terrain4";
-	terrain4->tag = 0;
-	terrain4->detailedRaycast = true;
-	TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/8.bmp");
-	AssetManager.addMesh(terrainGenerator4->vertCount, &terrainGenerator4->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
-	terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
-	terrain4->addComponent(meshFilterTerrain4);
+		GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(198, 0, 0, 0));
+		terrain3->name = "Terrain3";
+		terrain3->tag = 0;
+		terrain3->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator3 = new TerrainGenerator(100, 100, "Assets/1.bmp");
+		AssetManager.addMesh(terrainGenerator3->vertCount, &terrainGenerator3->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
+		terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial4")));
+		terrain3->addComponent(meshFilterTerrain3);
 
-	GameObject* terrain5 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
-	terrain5->name = "Terrain5";
-	terrain5->tag = 0;
-	terrain5->detailedRaycast = true;
-	TerrainGenerator* terrainGenerator5 = new TerrainGenerator(100, 100, "Assets/5.bmp");
-	AssetManager.addMesh(terrainGenerator5->vertCount, &terrainGenerator5->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain5 = new MeshFilter(AssetManager.getMesh(4));
-	terrain5->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
-	terrain5->addComponent(meshFilterTerrain5);
+		GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 99, 0));
+		terrain4->name = "Terrain4";
+		terrain4->tag = 0;
+		terrain4->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator4 = new TerrainGenerator(100, 100, "Assets/8.bmp");
+		AssetManager.addMesh(terrainGenerator4->vertCount, &terrainGenerator4->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
+		terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
+		terrain4->addComponent(meshFilterTerrain4);
+
+		GameObject* terrain5 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 99, 0));
+		terrain5->name = "Terrain5";
+		terrain5->tag = 0;
+		terrain5->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator5 = new TerrainGenerator(100, 100, "Assets/5.bmp");
+		AssetManager.addMesh(terrainGenerator5->vertCount, &terrainGenerator5->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilterTerrain5 = new MeshFilter(AssetManager.getMesh(4));
+		terrain5->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
+		terrain5->addComponent(meshFilterTerrain5);
 
 	GameObject* terrain6 = gScene.createEmptyGameObject(DirectX::XMVectorSet(198, 0, 99, 0));
 	terrain6->name = "Terrain6";
@@ -572,37 +683,45 @@ void CoreEngine::createTerrain()
 	terrain6->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
 	terrain6->addComponent(meshFilterTerrain6);
 
-	GameObject* terrain7 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 198, 0));
-	terrain7->name = "Terrain7";
-	terrain7->tag = 0;
-	terrain7->detailedRaycast = true;
-	TerrainGenerator* terrainGenerator7 = new TerrainGenerator(100, 100, "Assets/9.bmp");
-	AssetManager.addMesh(terrainGenerator7->vertCount, &terrainGenerator7->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain7 = new MeshFilter(AssetManager.getMesh(6));
-	terrain7->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
-	terrain7->addComponent(meshFilterTerrain7);
+		GameObject* terrain7 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 198, 0));
+		terrain7->name = "Terrain7";
+		terrain7->tag = 0;
+		terrain7->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator7 = new TerrainGenerator(100, 100, "Assets/9.bmp");
+		AssetManager.addMesh(terrainGenerator7->vertCount, &terrainGenerator7->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilterTerrain7 = new MeshFilter(AssetManager.getMesh(6));
+		terrain7->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
+		terrain7->addComponent(meshFilterTerrain7);
 
-	GameObject* terrain8 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 198, 0));
-	terrain8->name = "Terrain8";
-	terrain8->tag = 0;
-	terrain8->detailedRaycast = true;
-	TerrainGenerator* terrainGenerator8 = new TerrainGenerator(100, 100, "Assets/6.bmp");
-	AssetManager.addMesh(terrainGenerator8->vertCount, &terrainGenerator8->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain8 = new MeshFilter(AssetManager.getMesh(7));
-	terrain8->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
-	terrain8->addComponent(meshFilterTerrain8);
+		GameObject* terrain8 = gScene.createEmptyGameObject(DirectX::XMVectorSet(99, 0, 198, 0));
+		terrain8->name = "Terrain8";
+		terrain8->tag = 0;
+		terrain8->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator8 = new TerrainGenerator(100, 100, "Assets/6.bmp");
+		AssetManager.addMesh(terrainGenerator8->vertCount, &terrainGenerator8->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilterTerrain8 = new MeshFilter(AssetManager.getMesh(7));
+		terrain8->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
+		terrain8->addComponent(meshFilterTerrain8);
 
-	GameObject* terrain9 = gScene.createEmptyGameObject(DirectX::XMVectorSet(198, 0, 198, 0));
-	terrain9->name = "Terrain9";
-	terrain9->tag = 0;
-	terrain9->detailedRaycast = true;
-	TerrainGenerator* terrainGenerator9 = new TerrainGenerator(100, 100, "Assets/3.bmp");
-	AssetManager.addMesh(terrainGenerator9->vertCount, &terrainGenerator9->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain9 = new MeshFilter(AssetManager.getMesh(8));
-	terrain9->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
-	terrain9->addComponent(meshFilterTerrain9);
-	//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
-	cPathCreator* PathCreator1 = new cPathCreator(300, 300); // 200x200
+		GameObject* terrain9 = gScene.createEmptyGameObject(DirectX::XMVectorSet(198, 0, 198, 0));
+		terrain9->name = "Terrain9";
+		terrain9->tag = 0;
+		terrain9->detailedRaycast = true;
+		TerrainGenerator* terrainGenerator9 = new TerrainGenerator(100, 100, "Assets/3.bmp");
+		AssetManager.addMesh(terrainGenerator9->vertCount, &terrainGenerator9->TriangleArr, AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilterTerrain9 = new MeshFilter(AssetManager.getMesh(8));
+		terrain9->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial2")));
+		terrain9->addComponent(meshFilterTerrain9);
+
+		//Meshes
+		AssetManager.addMeshFromBinary("Assets/PIRATE.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/BarracksTest1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMeshFromBinary("Assets/QuarryTwo1_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Spruce_Tree2.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Test2ResourceSilo.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+
+		//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
+		cPathCreator* PathCreator1 = new cPathCreator(200, 200); // 200x200
 
 	PathCreator1->addTerrain(terrainGenerator1->getRealVertArr(), 0, 0);
 	PathCreator1->addTerrain(terrainGenerator2->getRealVertArr(), 0, 99);
@@ -618,7 +737,147 @@ void CoreEngine::createTerrain()
 
 	//PathCreator.createNodes();
 
-}
+		// Create a Main Camera
+		Camera* cam = nullptr;
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 35, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera->name = "Main Camera";
+		cam = new Camera(HEIGHT, WIDTH, 70.0f, 0.01f, 1000.0f);
+		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
+		camera->addComponent(cam);
+		PlayerScript* playerscript = new PlayerScript(camera);
+		camera->addComponent(playerscript);
+
+		//PlayerScript *playerscript = new PlayerScript();
+		//camera->addComponent(playerscript);
+
+		//Tree
+		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
+		tree->name = "Tree";
+		tree->tag = 0;
+		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+		tree->addComponent(meshFilterTree);
+		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+		//Barrack
+
+
+
+
+	
+
+		AudioListener* audioListener = new AudioListener();
+		camera->addComponent(audioListener);
+
+		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
+		cube->name = "Worker";
+		cube->tag = 1;
+		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("pose1smile"));
+		cube->addComponent(meshFilter1);
+		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+		Unit *unitWorker = new Unit(Worker);
+		cube->addComponent(unitWorker);
+		playerscript->friendlyUnits.push_back(unitWorker);
+		unitWorker->setPlayerScript(playerscript);
+		gamemanager.unitLists[cube->tag].push_back(unitWorker);
+
+
+		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 5, 0));
+		cube2->name = "Goldmine";
+		cube2->tag = 0;
+		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+		cube2->addComponent(meshFilter2);
+		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
+		Unit *goldMine = new Unit(GoldMine);
+		cube2->addComponent(goldMine);
+		goldMine->setPlayerScript(playerscript);
+		playerscript->friendlyBuildings.push_back(goldMine);
+		goldMine->setPlayerScript(playerscript);
+
+		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
+		cube3->name = "Bank";
+		cube3->tag = 0;
+		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
+		cube3->addComponent(meshFilter3);
+		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+		Unit* unitBuilding = new Unit(Bank);
+		cube3->addComponent(unitBuilding);
+		playerscript->friendlyBuildings.push_back(unitBuilding);
+		unitBuilding->setPlayerScript(playerscript);
+
+		GameObject* barrack = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 5, 0));
+		barrack->name = "Barrack";
+		barrack->tag = 1;
+		MeshFilter* meshFilterBarracks = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+		barrack->addComponent(meshFilterBarracks);
+		barrack->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+		Unit* unitBuilding2 = new Unit(Barrack);
+		barrack->addComponent(unitBuilding2);
+		playerscript->friendlyBuildings.push_back(unitBuilding2);
+		unitBuilding2->setPlayerScript(playerscript);
+
+		GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 10, 0));
+		cube4->name = "Hero";
+		cube4->tag = 1;
+		MeshFilter* meshFilter4 = new MeshFilter(AssetManager.getMesh("PIRATE"));
+		cube4->addComponent(meshFilter4);
+		cube4->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
+		Unit* UnitHero = new Unit(Hero);
+		cube4->addComponent(UnitHero);
+		playerscript->friendlyUnits.push_back(UnitHero);
+		UnitHero->setPlayerScript(playerscript);
+		playerscript->friendlyUnits.at(0)->setHomePos(&playerscript->friendlyBuildings.at(0)->gameObject->transform);
+		gamemanager.unitLists[cube4->tag].push_back(UnitHero);
+
+		//
+		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 5, 0));
+		animatedGO->name = "Animator";
+		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
+		MeshFilter* animMeshFilter = new MeshFilter(animMesh);
+		animatedGO->addComponent(animMeshFilter);
+
+		AssetManager.addSkeletonFromBinary("Assets/First_JOint_Skeleton.bin");
+		Animator* animator = new Animator(assetManager.getSkeleton("First_JOint_Skeleton"));
+		animatedGO->addComponent(animator);
+		
+		AssetManager.addAnimationClipFromBinary("Assets/ANIMATION_ANIMATION.bin");
+		animator->addAnimationClip(AssetManager.getAnimationclip("ANIMATION_ANIMATION"));
+
+		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+
+		//
+		
+
+		GameObject* enemy_player = gScene.createEmptyGameObject();
+		NPC* enemy_NPC = new NPC(&playerscript->friendlyUnits, &playerscript->friendlyBuildings);
+		enemy_NPC->instantiate_NPC();
+		enemy_player->addComponent(enemy_NPC);
+		
+
+
+
+
+		/*ClickToMove* clickToMove = new ClickToMove(cam);
+		cube->addComponent(clickToMove);*/
+
+
+
+
+		Editor* editor = nullptr;
+		Player* player = nullptr;
+
+		if (!PLAYER_BUILD)
+		{
+			editor = new Editor();
+			editor->Start(&wndHandle, gDevice, gDeviceContext, this);
+		}
+		else
+		{
+			player = new Player();
+			player->Start(&wndHandle, gDevice, gDeviceContext, this);
+			gSwapChain->SetFullscreenState(TRUE, NULL);
+		}
 
 
 void CoreEngine::SetViewport(int x, int y)
