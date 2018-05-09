@@ -28,6 +28,9 @@ public:
 	void blockGrid(DirectX::XMFLOAT3 pos);
 	std::vector<Node> getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos);
 
+	void loadBlockMap();
+
+
 private:
 	static int MAX;
 	static int MIN;
