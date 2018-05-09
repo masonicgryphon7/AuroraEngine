@@ -378,7 +378,7 @@ void RenderManager::SetRenderTarget(ID3D11DepthStencilView * depthStencilView)
 
 void RenderManager::ClearRenderTarget(ID3D11DepthStencilView * depthStencilView)
 {
-	float clearColor[] = { 1.0f, 0.28f, 0.28f, 1.0f };
+	float clearColor[] = { 0.2f, 0.2f, 0.2f, 1.0f };
 
 	gDeviceContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	gDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);

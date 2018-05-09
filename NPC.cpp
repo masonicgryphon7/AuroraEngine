@@ -14,17 +14,18 @@ NPC::~NPC()
 
 void NPC::update()
 {
-	for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+	standAbout(gamemanager.unitLists[2][0]);
+	/*for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 	{
-		if (gamemanager.unitLists[2][i]->getHealthPoints() <= 0)
+		if (gamemanager.unitLists[2][i]->getHealthPoints() <= 0 && gamemanager.unitLists[2][i]->getUnitOrders().size() <= 0)
 		{
-			gamemanager.unitLists[2][i]->dieCommand();
+			//gamemanager.unitLists[2][i]->dieCommand();
 			gamemanager.unitLists[2][i]->destroyUnit();
 			gamemanager.unitLists[2].erase(gamemanager.unitLists[2].begin() + i);
 		}
 	}
 
-	/*if (gamemanager.unitLists[2][0]->getResources() >= 100 && gamemanager.unitLists[2][0]->getUnitCommand() == HeroGather)
+	if (gamemanager.unitLists[2][0]->getResources() >= 100 && gamemanager.unitLists[2][0]->getUnitCommand() == HeroGather)
 	{
 		wantsToAttackHero = true;
 		gamemanager.unitLists[2][0]->clearUnitOrder();
@@ -118,15 +119,14 @@ void NPC::attack(Unit * unit)
 
 void NPC::standAbout(Unit * unit)
 {
-	/*for (int i = 0; i < player_buildings->size(); i++)
+	/*for (int i = 0; i < gamemanager.buildingLists[0].size(); i++)
 	{
-		if (player_buildings[0][i]->getType() == GoldMine)
-		{
-			unit->setTargetPos(player_buildings[0][i]->gameObject->transform.getPosition());
+		
+			unit->setTargetPos(gamemanager.buildingLists[0][i]->gameObject->transform.getPosition());
 			RaycastHit hit;
-			hit.transform = &player_buildings[0][i]->gameObject->transform;
+			hit.transform = &gamemanager.buildingLists[0][i]->gameObject->transform;
 			unit->ReceiveOrder(hit, unit->gameObject->tag);
-		}
+		
 	}*/
 	
 }

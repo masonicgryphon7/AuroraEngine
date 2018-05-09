@@ -11,7 +11,8 @@
 #include "PRIMITIVE_GEOMETRY.h"
 #include <algorithm>
 #include <thread>
-
+#include <time.h>
+#include <ctime>
 /*#define MAX 200
 #define MIN 0
 #define GRID 200*/ // spannet mellan min till max
