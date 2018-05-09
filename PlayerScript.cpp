@@ -68,7 +68,7 @@ void PlayerScript::update()
 	//SelectUnits();
 	for (int i = 0; i < gamemanager.unitLists[1].size(); i++)
 	{
-		if (gamemanager.unitLists[1][i]->getHealthPoints() <= 0)
+		if (gamemanager.unitLists[1][i]->getHealthPoints() <= 0 && gamemanager.unitLists[1][i]->getUnitOrders().size() <= 0)
 		{
 			for (int j = 0; j < this->SelectedUnits.size(); j++)
 			{
@@ -77,7 +77,7 @@ void PlayerScript::update()
 					this->SelectedUnits.erase(this->SelectedUnits.begin() + j);
 				}
 			}
-			gamemanager.unitLists[1][i]->dieCommand();
+			//gamemanager.unitLists[1][i]->dieCommand();
 			gamemanager.unitLists[1][i]->destroyUnit();
 			gamemanager.unitLists[1].erase(gamemanager.unitLists[1].begin() + i);
 		}

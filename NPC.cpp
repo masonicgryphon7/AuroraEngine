@@ -17,9 +17,9 @@ void NPC::update()
 	standAbout(gamemanager.unitLists[2][0]);
 	/*for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 	{
-		if (gamemanager.unitLists[2][i]->getHealthPoints() <= 0)
+		if (gamemanager.unitLists[2][i]->getHealthPoints() <= 0 && gamemanager.unitLists[2][i]->getUnitOrders().size() <= 0)
 		{
-			gamemanager.unitLists[2][i]->dieCommand();
+			//gamemanager.unitLists[2][i]->dieCommand();
 			gamemanager.unitLists[2][i]->destroyUnit();
 			gamemanager.unitLists[2].erase(gamemanager.unitLists[2].begin() + i);
 		}

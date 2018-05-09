@@ -57,6 +57,7 @@ Unit::Unit() :Component(-1, "Unit")
 Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 {
 	actionTime = 2;
+	dieTime = 0;
 
 	switch (UnitTypeSet)
 	{
@@ -302,6 +303,13 @@ void Unit::attackCommand(Unit* targetedUnit)
 	if ( targetedUnit->healthPoints < 0)
 	{
 		UnitOrders.erase(UnitOrders.begin());
+		Order tempOrder;
+		tempOrder.command = Die;
+		if (targetedUnit->UnitOrders.size() > 0)
+		{
+			targetedUnit->UnitOrders.erase(targetedUnit->UnitOrders.begin());
+		}
+		targetedUnit->UnitOrders.push_back(tempOrder);
 	}
 }
 
@@ -598,12 +606,15 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 
 void Unit::dieCommand()
 {
-	actionTime += Time.getDeltaTime();
-	if (actionTime > 1)
+	dieTime += Time.getDeltaTime();
+	if(dieTime > 1)
+		gameObject->transform.setPosition(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, dieTime*0.01, 0, 0)));
+	if (dieTime > 3)
 	{
 		//play death animation
 		Debug.Log("Play death animation here");
-		actionTime = 0;
+		dieTime = 0;
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
@@ -915,6 +926,10 @@ void Unit::update()
 			Unit * targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
 			takeBuildingCommand(targetedUnit);
 		}
+		break;
+
+		case Command::Die:
+			dieCommand();
 		break;
 
 		default:

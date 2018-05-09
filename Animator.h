@@ -28,6 +28,6 @@ private:
 	std::vector<AnimationClip*> animationclips;
 	Skeleton* skeleton;
 	void calculateMatrixPalette();
-
+	void transformToWorldSpace(int jointChildIndex,int firstFrameIndex, int secondFrameIndex, float lerpValue, DirectX::XMMATRIX parentMatrix);
 };
 

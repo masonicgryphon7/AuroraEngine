@@ -23,6 +23,12 @@ struct MatrixBufferStruct
 	int animate;
 };
 
+struct InstanceMatrixStruct
+{
+	DirectX::XMFLOAT4X4 opaqueTransforms[100]{ DirectX::XMFLOAT4X4() };
+	DirectX::XMINT4 unitTag[100] = { DirectX::XMINT4(0,0,0,0) };
+};
+
 class RenderManager
 {
 public:
@@ -45,6 +51,7 @@ private:
 	ID3D11Buffer* instanceBuffer = nullptr;
 	ID3D11Buffer* skeletonBuffer = nullptr;
 	MatrixBufferStruct matrixBufferData;
+	InstanceMatrixStruct InstanceMatrixData;
 	void CreateMatrixBuffer();
 	void CreateInstanceMatrixBuffer();
 	void CreateSkeletonBuffer();
@@ -53,8 +60,6 @@ private:
 	std::vector<GameObject*> translucentDraw;
 	std::vector<Mesh*> meshVector;
 	std::vector<Material*> materialVector;
-	DirectX::XMFLOAT4X4 opaqueTransforms[100]{ DirectX::XMFLOAT4X4() };
-	DirectX::XMFLOAT4 unitTag;
 	DirectX::XMFLOAT4X4 skeleton[20]{ DirectX::XMFLOAT4X4() };
 
 	// for render texture

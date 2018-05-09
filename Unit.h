@@ -31,6 +31,7 @@ enum Command
 	SummonSoldier,
 	convertToSoldier,
 	takeBuilding,
+	Die,
 	Idle
 };
 
@@ -63,6 +64,7 @@ private:
 	int defencePoints;
 	float attackDistance;
 	float actionTime;
+	float dieTime;
 	Transform* homePos;
 
 	int e = 0;
