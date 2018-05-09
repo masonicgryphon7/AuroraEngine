@@ -226,13 +226,9 @@ void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 	//	grid[3][i].pathable = PATHABLE_CHECK;
 	//	grid[3][i].pathable = PATHABLE_CHECK;
 	//}
-	grid[20][3].pathable = PATHABLE_CHECK;
-	grid[20][4].pathable = PATHABLE_CHECK;
-	grid[20][5].pathable = PATHABLE_CHECK;
-	
-	grid[21][3].pathable = PATHABLE_CHECK;
-	grid[21][4].pathable = PATHABLE_CHECK;
-	grid[21][5].pathable = PATHABLE_CHECK;
+	//grid[(int)pos.x][(int)pos.z].pathable = PATHABLE_CHECK;
+
+
 	
 }
 
