@@ -157,6 +157,7 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 	}
 	int i = 0;
 	blockGrid(DirectX::XMFLOAT3(20,1,1));
+	loadBlockMap();
 }
 //
 ////void cPathCreator::createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions)
@@ -224,6 +225,12 @@ void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 	grid[20][3].pathable = PATHABLE_CHECK;
 	grid[20][5].pathable = PATHABLE_CHECK;
 	grid[20][4].pathable = PATHABLE_CHECK;
+	grid[20][5].pathable = PATHABLE_CHECK;
+	grid[20][6].pathable = PATHABLE_CHECK;
+	grid[20][7].pathable = PATHABLE_CHECK;
+	grid[20][8].pathable = PATHABLE_CHECK;
+	grid[20][9].pathable = PATHABLE_CHECK;
+	grid[20][10].pathable = PATHABLE_CHECK;
 	
 	grid[21][3].pathable = PATHABLE_CHECK;
 	grid[21][4].pathable = PATHABLE_CHECK;
@@ -232,61 +239,72 @@ void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 
 void cPathCreator::loadBlockMap()
 {
+
+	struct HeightMapAttributes
+	{
+		int Width_Columns;
+		int Height_Row;
+		std::vector<std::vector<DirectX::XMFLOAT3>> VertInfo;
+	};
+	HeightMapAttributes HeightMapVariables;
 	FILE *tmpFile;
-	
 	BITMAPFILEHEADER FileHeader;
 	BITMAPINFOHEADER InfoHeader;
 	unsigned char* bitMapImage_Info;
-	int mapSize = 0, bitMapIndx = 0, index;
+	int mapSize, bitMapIndx = 0, index;
 	DirectX::XMFLOAT3 tempXMFLOAT3 = DirectX::XMFLOAT3(0, 0, 0);
 
-	tmpFile = fopen("Assets/Block_Map2.bmp", "rb");
+
+	tmpFile = fopen("Assets/Block_Map.bmp", "rb");
 	if (!tmpFile)
 	{
 		std::cout << "Error: Couldn't find HeightMap." << std::endl;
+
 	}
 
 	//Initiate BitMap Headers (File, Info).
 	fread(&FileHeader, sizeof(BITMAPFILEHEADER), 1, tmpFile);
 	fread(&InfoHeader, sizeof(BITMAPINFOHEADER), 1, tmpFile);
-	int height = InfoHeader.biHeight;
-	int width = InfoHeader.biWidth;
+	HeightMapVariables.Height_Row = InfoHeader.biHeight;
+	HeightMapVariables.Width_Columns = InfoHeader.biWidth;
 
 	//RGB size (r-byte, g-byte, b-byte).
-	mapSize = height * width * 3;
+	mapSize = HeightMapVariables.Height_Row * HeightMapVariables.Width_Columns * 3;
 
 	//Store Image Data.
 	bitMapImage_Info = new unsigned char[mapSize]; //Set fitting size for array that will contain data.
 	fseek(tmpFile, FileHeader.bfOffBits, SEEK_SET); //Pointer is set to the beginning of data.
 	fread(bitMapImage_Info, 1, mapSize, tmpFile); //Store data in bitMapImage_Info.
 	fclose(tmpFile);
-	int a = height;
-	int b = width;
-	for (int i = 0; i < height; i++)
+	int a = HeightMapVariables.Height_Row;
+	int b = HeightMapVariables.Width_Columns;
+	for (int i = 0; i < HeightMapVariables.Height_Row; i++)
 	{
-		for (int j = 0; j < width; j++)
+		std::vector<DirectX::XMFLOAT3> tempHeightVert;
+
+		for (int j = 0; j < HeightMapVariables.Width_Columns; j++)
 		{
 
- 			tempXMFLOAT3 = DirectX::XMFLOAT3(float(bitMapImage_Info[bitMapIndx]), float(bitMapImage_Info[bitMapIndx]), float(bitMapImage_Info[bitMapIndx]));
-			float et = float(bitMapImage_Info[bitMapIndx]);
+			tempXMFLOAT3 = DirectX::XMFLOAT3((float)i, ((float)bitMapImage_Info[bitMapIndx] / 10.0f /*Smoothing Value.*/), (float)j);
 			bitMapIndx += 3;
-			if (et == 255)
-			{
-				int opo = 0;
-			//	grid[i][j].pathable = NONE_PATHABLE;
-			}
-			if (et == 0)
-			{
-				int opo = 0;
-				//	grid[i][j].pathable = NONE_PATHABLE;
-			}
-			//else if(tempXMFLOAT3.x == 1)
-			//{
-			//	i = i;
-			//	j = j;
-			//	//grid[i][j].pathable = PATHABLE_CHECK;
-			//}
+			tempHeightVert.push_back(tempXMFLOAT3);
 		}
+
+		HeightMapVariables.VertInfo.push_back(tempHeightVert);
+
+	}
+
+	for (int i = 0; i < HeightMapVariables.Height_Row; i++)
+	{
+
+
+		for (int j = 0; j < HeightMapVariables.Width_Columns; j++)
+		{
+			int e = HeightMapVariables.VertInfo[i][j].y;
+			if(e == 0)
+				grid[i][299-j].pathable = NONE_PATHABLE;
+		}
+
 
 	}
 
