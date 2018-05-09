@@ -24,7 +24,7 @@ void NPC::update()
 		}
 	}
 
-	if (gamemanager.unitLists[2][0]->getResources() >= 100 && gamemanager.unitLists[2][0]->getUnitCommand() == HeroGather)
+	/*if (gamemanager.unitLists[2][0]->getResources() >= 100 && gamemanager.unitLists[2][0]->getUnitCommand() == HeroGather)
 	{
 		wantsToAttackHero = true;
 		gamemanager.unitLists[2][0]->clearUnitOrder();
@@ -47,7 +47,7 @@ void NPC::update()
 			}
 		}
 	}
-	
+	*/
 
 	//CODE GOES HERE
 
