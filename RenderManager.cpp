@@ -152,6 +152,7 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 				DirectX::XMFLOAT4X4 temp;
 				DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j+nrOfObjectsDrawn]->calculateWorldMatrix()));
 				opaqueTransforms[j]=temp;
+				unitTag.x = opaqueDraw[i][j + nrOfObjectsDrawn]->tag;
 			}
 
 			nrOfObjectsDrawn += nrToDraw;

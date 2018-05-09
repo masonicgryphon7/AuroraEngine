@@ -15,8 +15,6 @@ cPathCreator::cPathCreator(int gridWidth, int gridHeight)
 	MAX = gridWidth; //+ (gridWidth - 1);
 	grid = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
 
-	loadBlockMap();
-
 }
 
 cPathCreator::~cPathCreator()
@@ -222,19 +220,7 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 
 void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 {
-	grid[20][3].pathable = PATHABLE_CHECK;
-	grid[20][5].pathable = PATHABLE_CHECK;
-	grid[20][4].pathable = PATHABLE_CHECK;
-	grid[20][5].pathable = PATHABLE_CHECK;
-	grid[20][6].pathable = PATHABLE_CHECK;
-	grid[20][7].pathable = PATHABLE_CHECK;
-	grid[20][8].pathable = PATHABLE_CHECK;
-	grid[20][9].pathable = PATHABLE_CHECK;
-	grid[20][10].pathable = PATHABLE_CHECK;
-	
-	grid[21][3].pathable = PATHABLE_CHECK;
-	grid[21][4].pathable = PATHABLE_CHECK;
-	grid[21][5].pathable = PATHABLE_CHECK;
+	//grid[(int)pos.x][(int)pos.z].pathable = PATHABLE_CHECK;
 }
 
 void cPathCreator::loadBlockMap()
@@ -302,7 +288,7 @@ void cPathCreator::loadBlockMap()
 		{
 			int e = HeightMapVariables.VertInfo[i][j].y;
 			if(e == 0)
-				grid[i][299-j].pathable = NONE_PATHABLE;
+				grid[i][j].pathable = NONE_PATHABLE;
 		}
 
 

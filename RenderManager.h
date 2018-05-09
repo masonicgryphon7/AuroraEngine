@@ -54,6 +54,7 @@ private:
 	std::vector<Mesh*> meshVector;
 	std::vector<Material*> materialVector;
 	DirectX::XMFLOAT4X4 opaqueTransforms[100]{ DirectX::XMFLOAT4X4() };
+	DirectX::XMFLOAT4 unitTag;
 	DirectX::XMFLOAT4X4 skeleton[20]{ DirectX::XMFLOAT4X4() };
 
 	// for render texture
