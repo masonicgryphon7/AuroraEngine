@@ -1,4 +1,4 @@
-#include "CoreEngine.h"
+﻿#include "CoreEngine.h"
 #include "GUI.h"
 #include "GUI_Viewport.h"
 #include "GUI_MenuBar.h"
@@ -97,20 +97,16 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 	MSG msg = { 0 };
-	HWND wndHandle = InitWindow(hInstance); //1. Skapa f nster
+	HWND wndHandle = InitWindow(hInstance); //1. Skapa f�nster
 
 	this->wnd = wndHandle;
 
 	if (wndHandle)
 	{
-		if (!PLAYER_BUILD)
-			CreateDirect3DContext(wndHandle);
-		else
-			CreatePlayerDirect3DContext(wndHandle);
+		CreateDirect3DContext(wndHandle);
 
-		SetViewport(); //3. S tt viewport
+		SetViewport(); //3. S�tt viewport
 
-		CreateTriangleData(); //5. Definiera triangelvertiser, 6. Skapa vertex buffer, 7. Skapa input layout
 
 		ShowWindow(wndHandle, SW_MAXIMIZE);//nCmdShow);
 		UpdateWindow(wndHandle);
@@ -250,7 +246,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//
 		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 5, 0));
 		animatedGO->name = "Animator";
-		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
+		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
 		MeshFilter* animMeshFilter = new MeshFilter(animMesh);
 		animatedGO->addComponent(animMeshFilter);
@@ -259,11 +255,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Animator* animator = new Animator(assetManager.getSkeleton("First_JOint_Skeleton"));
 		animatedGO->addComponent(animator);
 
-			AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("First_JOint_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
-		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("First_JOint_Skeleton"), "ANIMATION_ANIMATION"));
-		animator->Play(0);
-
-			AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("First_JOint_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
+		AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("First_JOint_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
 		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("First_JOint_Skeleton"), "ANIMATION_ANIMATION"));
 
 		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
@@ -313,8 +305,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				inputHandler.updateInput();
 				Time.tick();
 				gameManager.update();
-				if (!PLAYER_BUILD)
-					OnResize();
+				OnResize();
 
 				gScene.destroyGameObjects();
 				gScene.update();
@@ -327,8 +318,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 					player->Update();
 
 
-				if (!PLAYER_BUILD)
-					gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
+				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 
 				renderManager->EndFrame(); // END RENDERING
 
@@ -352,50 +342,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	return msg;
 }
 
-void CoreEngine::CreateTriangleData()
-{
-	// Array of Structs (AoS)
-	VERTEX_POS3UV2 triangleVertices[6] =
-	{
-		DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f),	//v0 pos
-		DirectX::XMFLOAT2(1.0f, 1.0f), 	//v0 color
-
-		DirectX::XMFLOAT3(0.5f, -0.5f, 0.0f),	//v1
-		DirectX::XMFLOAT2(1.0f, 0.0f), 	//v1 color
-
-		DirectX::XMFLOAT3(-0.5f, -0.5f, 0.0f), //v2
-		DirectX::XMFLOAT2(0.0f, 0.0f), 	//v2 color
-
-
-		DirectX::XMFLOAT3(-0.5f, -0.5f, 0.0f),	//v0 pos
-		DirectX::XMFLOAT2(0.0f, 0.0f), 	//v0 color
-
-		DirectX::XMFLOAT3(-0.5f, 0.5f, 0.0f),	//v1
-		DirectX::XMFLOAT2(0.0f, 1.0f), 	//v1 color
-
-		DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f), //v2
-		DirectX::XMFLOAT2(1.0f, 1.0f), 	//v2 color
-	};
-
-	// Describe the Vertex Buffer
-	D3D11_BUFFER_DESC bufferDesc;
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	// what type of buffer will this be?
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	// what type of usage (press F1, read the docs)
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	// how big in bytes each element in the buffer is.
-	bufferDesc.ByteWidth = sizeof(triangleVertices);
-
-	// this struct is created just to set a pointer to the
-	// data containing the vertices.
-	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = triangleVertices;
-
-	// create a Vertex Buffer
-	gDevice->CreateBuffer(&bufferDesc, &data, &gVertexBuffer);
-
-}
 
 void CoreEngine::addMaterials()
 {
@@ -669,7 +615,11 @@ void CoreEngine::createTerrain()
 	PathCreator1->addTerrain(terrainGenerator9->getRealVertArr(), 198, 198);
 
 	PathCreator.trumpTheBorders();
+
+	//PathCreator.createNodes();
+
 }
+
 
 void CoreEngine::SetViewport(int x, int y)
 {
@@ -1206,55 +1156,6 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 	if (FAILED(result))
 		Console.error("Error Disable Blend State");
 
-	return hr;
-}
-
-HRESULT CoreEngine::CreatePlayerDirect3DContext(HWND wndHandle)
-{
-	// create a struct to hold information about the swap chain
-	DXGI_SWAP_CHAIN_DESC scd;
-
-	// clear out the struct for use
-	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
-
-	// fill the swap chain description struct
-	scd.BufferCount = 1;                                    // one back buffer
-	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;     // use 32-bit color
-	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;      // how swap chain is to be used
-	scd.OutputWindow = wndHandle;                           // the window to be used
-	scd.SampleDesc.Count = 4;                               // how many multisamples
-	scd.Windowed = TRUE;                                    // windowed/full-screen mode
-	UINT deviceFlags = 0;
-#if defined(DEBUG) || defined(_DEBUG)
-	deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif		
-	// create a device, device context and swap chain using the information in the scd struct
-	HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL,
-		D3D_DRIVER_TYPE_HARDWARE,
-		NULL,
-		deviceFlags,
-		NULL,
-		NULL,
-		D3D11_SDK_VERSION,
-		&scd,
-		&gSwapChain,
-		&gDevice,
-		NULL,
-		&gDeviceContext);
-
-	if (SUCCEEDED(hr))
-	{
-		// get the address of the back buffer
-		ID3D11Texture2D* pBackBuffer = nullptr;
-		gSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-
-		// use the back buffer address to create the render target
-		gDevice->CreateRenderTargetView(pBackBuffer, NULL, &gBackbufferRTV);
-		pBackBuffer->Release();
-
-		// set the render target as the back buffer
-		gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTV, NULL);
-	}
 	return hr;
 }
 
