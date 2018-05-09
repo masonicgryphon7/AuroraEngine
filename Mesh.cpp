@@ -4,7 +4,7 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
+Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
 {
 	this->vertexShader = vertexShader;
 	vertexCount = 0;
@@ -233,11 +233,11 @@ const std::string Mesh::getMeshPath() const
 }
 
 
-HRESULT Mesh::CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext)
+HRESULT Mesh::CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext)
 {
-	for (int i = 0; i < TerrainInfoVector[0].size(); i++)
+	for (int i = 0; i < TerrainInfoVector.size(); i++)
 	{
-		vertexPositions.push_back(DirectX::XMLoadFloat3(&TerrainInfoVector[0][i].position));
+		vertexPositions.push_back(DirectX::XMLoadFloat3(&TerrainInfoVector[i].position));
 		int gg = 0;
 	}
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
@@ -256,7 +256,7 @@ HRESULT Mesh::CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV
 	vertexBufferDesc.StructureByteStride = 0;
 
 	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = TerrainInfoVector->data();
+	vertexData.pSysMem = TerrainInfoVector.data();
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
@@ -270,7 +270,7 @@ HRESULT Mesh::CreateTerrainMeshData(int vertCountData, std::vector<VERTEX_POS3UV
 	}
 
 	vertexSize = sizeof(VERTEX_POS3UV2T3B3N3);
-	vertexCount = TerrainInfoVector->size();
+	vertexCount = TerrainInfoVector.size();
 }
 
 int Mesh::getVertexCount()

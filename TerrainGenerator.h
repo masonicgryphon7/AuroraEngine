@@ -13,10 +13,6 @@
 
 class TerrainGenerator
 {
-
-	//Include the possibility that other meshes cannot intersect with terrain.
-	//Collision, so to speak. Search more info about how on the internet. (Usage of intersect function?)
-
 private:
 
 	struct HeightMapAttributes
@@ -34,6 +30,7 @@ public:
 	std::vector<VERTEX_POS3UV2T3B3N3> TriangleArr;
 	HeightMapAttributes HeightMapVariables;
 	int vertCount;
+	int vertpatchCount;
 
 	TerrainGenerator();
 	TerrainGenerator(int grid_RowPr, int grid_ColumnPr);
@@ -41,8 +38,6 @@ public:
 	~TerrainGenerator();
 
 	void LoadHeightMapToAttributes(char* HeightMapFileName);
-	void createTerrainPatches();
-
 
 	int getVertCount() {return vertCount;};
 	int getGrid_Row() { return grid_Row; };
@@ -53,6 +48,10 @@ public:
 	DirectX::XMFLOAT2 subtract(DirectX::XMFLOAT2 A, DirectX::XMFLOAT2 B);
 
 	std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> getRealVertArr();
+
+	std::vector<VERTEX_POS3UV2T3B3N3> getPatchTriangleArr(int StartX, int StartY, int endX, int endY);
+	std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> PatchRealVertArr(int StartX, int StartY, int endX, int endY);
+	int getPatchVertCount();
 
 };
 #endif

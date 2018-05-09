@@ -233,3 +233,100 @@ std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> TerrainGenerator::getRealVertArr(
 {
 	return RealVertArr;
 }
+
+std::vector<VERTEX_POS3UV2T3B3N3> TerrainGenerator::getPatchTriangleArr(int StartX, int StartY, int endX, int endY)
+{
+	bool limiterX = 0, limiterY = 0;
+	std::vector<VERTEX_POS3UV2T3B3N3> returnTriangleArr;
+
+	if (endX == 300)
+		limiterX = 1;
+	if (endY == 300)
+		limiterY = 1;
+
+	for (int indexX = StartX; indexX < (endX - limiterX); indexX++)
+	{
+		for (int indexZ = StartY; indexZ < (endY - limiterY); indexZ++)
+		{
+			returnTriangleArr.push_back(RealVertArr[indexX + 1][indexZ]);
+
+			returnTriangleArr.push_back(RealVertArr[indexX + 1][indexZ + 1]);
+			returnTriangleArr.push_back(RealVertArr[indexX][indexZ]);
+
+			returnTriangleArr.push_back(RealVertArr[indexX + 1][indexZ + 1]);
+			returnTriangleArr.push_back(RealVertArr[indexX][indexZ + 1]);
+			returnTriangleArr.push_back(RealVertArr[indexX][indexZ]);
+		}
+	}
+
+	for (int i = 0; i < returnTriangleArr.size(); i += 3)
+	{
+		DirectX::XMFLOAT3 vec1 = subtract(returnTriangleArr[i + 1].position, returnTriangleArr[i].position);
+		DirectX::XMFLOAT3 vec2 = subtract(returnTriangleArr[i + 2].position, returnTriangleArr[i].position);
+
+		DirectX::XMFLOAT2 uVec1 = subtract(returnTriangleArr[i + 1].uv, returnTriangleArr[i].uv);
+		DirectX::XMFLOAT2 uVec2 = subtract(returnTriangleArr[i + 2].uv, returnTriangleArr[i].uv);
+
+		float denominator = (uVec1.x * uVec2.y) - (uVec1.y * uVec2.x);
+		float someFloat = 1.0f / denominator;
+
+		DirectX::XMFLOAT3 dVec1;
+		DirectX::XMFLOAT3 dVec2;
+
+		dVec1.x = vec1.x*uVec2.y;
+		dVec1.y = vec1.y*uVec2.y;
+		dVec1.z = vec1.z*uVec2.y;
+
+		dVec2.x = vec2.x*uVec1.y;
+		dVec2.y = vec2.y*uVec1.y;
+		dVec2.z = vec2.z*uVec1.y;
+
+		DirectX::XMFLOAT3 tan = subtract(dVec1, dVec2);
+		tan.x = tan.x*someFloat;
+		tan.y = tan.y*someFloat;
+		tan.z = tan.z*someFloat;
+
+
+		//tangent
+		DirectX::XMVECTOR tangent = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&tan));
+		DirectX::XMStoreFloat3(&returnTriangleArr[i].tangent, tangent);
+		DirectX::XMStoreFloat3(&returnTriangleArr[i + 1].tangent, tangent);
+		DirectX::XMStoreFloat3(&returnTriangleArr[i + 2].tangent, tangent);
+
+		DirectX::XMVECTOR bitangent = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMLoadFloat3(&returnTriangleArr[i].tangent), DirectX::XMLoadFloat3(&returnTriangleArr[i].normal)));
+		DirectX::XMStoreFloat3(&returnTriangleArr[i].bitangent, bitangent);
+		DirectX::XMStoreFloat3(&returnTriangleArr[i + 1].bitangent, bitangent);
+		DirectX::XMStoreFloat3(&returnTriangleArr[i + 2].bitangent, bitangent);
+
+
+	}
+
+	vertpatchCount = returnTriangleArr.size();
+
+	return returnTriangleArr;
+}
+
+std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> TerrainGenerator::PatchRealVertArr(int startX, int startY, int endX, int endY)
+{
+	std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> returnValue;
+	int i = 0, j = 0;
+
+	for (int indexX = startX; indexX < (grid_Row); indexX++)
+	{
+		
+		for (int indexZ = startY; indexZ < (grid_Column); indexZ++)
+		{
+			returnValue[i][j] = RealVertArr[indexX][indexZ];
+			j++;
+		}
+
+		i++;
+	}
+
+	return returnValue;
+}
+
+int TerrainGenerator::getPatchVertCount()
+{
+	return vertpatchCount;
+}

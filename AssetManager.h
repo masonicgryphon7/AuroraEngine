@@ -24,7 +24,7 @@ public:
 	Texture* AddTexture(std::string filePath);
 	Material* AddMaterial(std::string name, ShaderProgram* shaderProgram);
 	void addMesh(std::string filePath, ShaderProgram* vertexShader);
-	void addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ShaderProgram* vertexShader);
+	void addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ShaderProgram* vertexShader);
 	Mesh* AddMesh(const std::string& filePath, ShaderProgram* vertexShader);
 	void addMeshFromBinary(std::string filePath, ShaderProgram* vertexShader);
 	void addAnimatedMeshFromBinary(std::string filePath, ShaderProgram* vertexShader);

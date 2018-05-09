@@ -151,7 +151,7 @@ void cAssetManager::addMesh(std::string filePath, ShaderProgram* vertexShader)
 }
 
 
-void cAssetManager::addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3>* TerrainInfoVector, ShaderProgram* vertexShader)
+void cAssetManager::addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ShaderProgram* vertexShader)
 {
 	meshes.push_back(new Mesh(vertCountData, TerrainInfoVector, device, devContext, vertexShader));
 }
