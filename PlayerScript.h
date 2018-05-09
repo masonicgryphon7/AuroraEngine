@@ -8,7 +8,7 @@
 #include "PRIMITIVE_GEOMETRY.h"
 #include "Unit.h"
 #include <vector>
-#include "PlayerSelectionScript.h"
+
 #include "GameManager.h"
 ///////////////
 //#include "Component.h"
