@@ -53,7 +53,7 @@ void PlayerScript::instantiate_Player()
 	friendly_Hero->name = "Hero";
 	friendly_Hero->tag = 1;
 
-	MeshFilter* friendly_hero_meshFilter = new MeshFilter(AssetManager.getMesh("COLLECTOR"));
+	MeshFilter* friendly_hero_meshFilter = new MeshFilter(AssetManager.getMesh("COLLECTOR_Mesh"));
 	friendly_Hero->addComponent(friendly_hero_meshFilter);
 	friendly_Hero->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
 	Unit* friendly_unit_hero = new Unit(Hero);
