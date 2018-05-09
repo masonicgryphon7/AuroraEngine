@@ -300,17 +300,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
-	if ( targetedUnit->healthPoints < 0)
-	{
-		UnitOrders.erase(UnitOrders.begin());
-		Order tempOrder;
-		tempOrder.command = Die;
-		if (targetedUnit->UnitOrders.size() > 0)
-		{
-			targetedUnit->UnitOrders.erase(targetedUnit->UnitOrders.begin());
-		}
-		targetedUnit->UnitOrders.push_back(tempOrder);
-	}
+
 }
 
 void Unit::attackEnemy()
@@ -326,11 +316,30 @@ void Unit::takeDamage(int attackPoints)
 {
 	if(attackPoints > this->getDefencePoints())
 		this->setHealthPoints(this->getHealthPoints() - (attackPoints - this->getDefencePoints()));
+
+	if (healthPoints <= 0)
+	{
+		UnitOrders.erase(UnitOrders.begin());
+		Order tempOrder;
+		tempOrder.command = Die;
+		if (UnitOrders.size() > 0)
+		{
+			UnitOrders.erase(UnitOrders.begin());
+		}
+		UnitOrders.push_back(tempOrder);
+	}
 }
 
 void Unit::takeFireDamage(float attackPoints)
 {
 	this->setHealthPoints(this->getHealthPoints() - attackPoints);
+	if (healthPoints <= 0)
+	{
+		Order tempOrder;
+		tempOrder.command = Die;
+
+		UnitOrders.insert(UnitOrders.begin(), tempOrder);
+	}
 }
 
 void Unit::FollowCommand()
@@ -622,6 +631,7 @@ void Unit::dieCommand()
 		Debug.Log("Play death animation here");
 		dieTime = 0;
 		UnitOrders.erase(UnitOrders.begin());
+		destroyUnit();
 	}
 }
 
