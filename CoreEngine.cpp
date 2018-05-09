@@ -453,6 +453,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 	
 
 		AudioListener* audioListener = new AudioListener();
@@ -460,31 +461,17 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		playerscript->instantiate_Player();
 
-		//GameObject* cube4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 0, 10, 0));
-		//cube4->name = "Hero";
-		//cube4->tag = 1;
-		//MeshFilter* meshFilter4 = new MeshFilter(AssetManager.getMesh("PIRATE"));
-		//cube4->addComponent(meshFilter4);
-		//cube4->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
-		//Unit* UnitHero = new Unit(Hero);
-		//cube4->addComponent(UnitHero);
-		//playerscript->friendlyUnits.push_back(UnitHero);
-		//UnitHero->setPlayerScript(playerscript);
-		//playerscript->friendlyUnits.at(0)->setHomePos(&playerscript->friendlyBuildings.at(0)->gameObject->transform);
-		//gamemanager.unitLists[cube4->tag].push_back(UnitHero);
-
-		GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
-		cube->name = "Worker";
-		cube->tag = 1;
-		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
-		MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("pose1smile"));
-		cube->addComponent(meshFilter1);
-		cube->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
-		Unit *unitWorker = new Unit(Worker);
-		cube->addComponent(unitWorker);
-		//playerscript->friendlyUnits.push_back(unitWorker);
-		unitWorker->setPlayerScript(playerscript);
-		gamemanager.unitLists[cube->tag].push_back(unitWorker);
+		//GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
+		//cube->name = "Worker";
+		//cube->tag = 1;
+		//MeshFilter* meshFilter1 = new MeshFilter(AssetManager.getMesh("pose1smile"));
+		//cube->addComponent(meshFilter1);
+		//cube->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+		//Unit *unitWorker = new Unit(Worker);
+		//cube->addComponent(unitWorker);
+		////playerscript->friendlyUnits.push_back(unitWorker);
+		//unitWorker->setPlayerScript(playerscript);
+		//gamemanager.unitLists[cube->tag].push_back(unitWorker);
 
 
 		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 5, 0));
@@ -1356,7 +1343,7 @@ bool CoreEngine::CreateRasterizerState(D3D11_CULL_MODE cullMode, D3D11_FILL_MODE
 	D3D11_RASTERIZER_DESC desc = {};
 	desc.FillMode = fillMode;
 	desc.CullMode = cullMode;
-	desc.FrontCounterClockwise = FALSE;
+	desc.FrontCounterClockwise = FALSE; 
 	desc.DepthBias = 0;
 	desc.DepthBiasClamp = 0.0f;
 	desc.SlopeScaledDepthBias = 0.0f;

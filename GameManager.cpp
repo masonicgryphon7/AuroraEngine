@@ -92,7 +92,7 @@ void GameManager::update()
 	case START_STATE:
 		break;
 	case LARGE_CIRCEL_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 12000) //120
 		{
 			//Debug.Log(ringOfFire);  
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);

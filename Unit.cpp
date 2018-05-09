@@ -489,14 +489,14 @@ void Unit::destroyUnit()
 
 void Unit::summonWorkerCommand()
 {
-	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
-	worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
+	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());
+	worker->name = "Worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 	worker->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
 	worker->addComponent(meshFilter);
 	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 	Unit *unitWorker = new Unit(Worker);
-	unitWorker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+	unitWorker->setHomePos(&gameObject->transform);
 	worker->addComponent(unitWorker);
 	//playerScript->friendlyUnits.push_back(unitWorker);
 	unitWorker->setPlayerScript(playerScript);
@@ -506,7 +506,7 @@ void Unit::summonWorkerCommand()
 	UnitOrders.erase(UnitOrders.begin());
 	Order tempOrder;
 	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));
 	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
@@ -517,7 +517,7 @@ void Unit::convertToSoldierCommand(Unit* targetedUnit)
 
 	if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 	{
-		gameObject->name = "Soldier";
+		gameObject->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 		gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("PIRATE"));
 		gameObject->getComponent<MaterialFilter>()->setMaterialFilter(AssetManager.getMaterial("SoldierMaterial"));
 		gameObject->getComponent<Unit>()->type = Soldier;
@@ -538,7 +538,7 @@ void Unit::convertToSoldierCommand(Unit* targetedUnit)
 void Unit::summonSoldierCommand()
 {
 	GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
-	soldier->name = "Soldier";// +playerScript->friendlyUnits.size();
+	soldier->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 	soldier->tag = gameObject->tag;
 	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("PIRATE"));
 	soldier->addComponent(meshFilter);
