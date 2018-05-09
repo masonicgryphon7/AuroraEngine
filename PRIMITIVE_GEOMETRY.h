@@ -29,6 +29,7 @@ enum OPTIONS
 struct SkeletonJoint {
 	std::string name;
 	int parentIndex;
+	std::vector<int> childIndices;
 	DirectX::XMMATRIX jointMatrix;
 };
 

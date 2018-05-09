@@ -8,6 +8,7 @@ struct VS_OUT
 	float4 worldPosition : WPOSITION;
 	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
+	uint instanceID : InstanceID;
 };
 
 cbuffer MATRIX_Buffer :register (b0)
@@ -26,6 +27,12 @@ cbuffer MATRIX_Buffer :register (b0)
 cbuffer Manager_Buffer :register (b1)
 {
 	float4 fireRing;
+};
+
+cbuffer INSTANCE_Buffer :register (b2)
+{
+	matrix instanceWorld[100];
+	int4 unitTag[100];
 };
 
 Texture2D Diffuse:register(t0);
@@ -101,7 +108,18 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float metallic = AORoughMet.z;//met_Roug_Ao.x;
 	float roughness = AORoughMet.y;
 	float ao = AORoughMet.x;//met_Roug_Ao.z;	
-		
+
+	if (unitTag[input.instanceID].x == 1)
+	{
+		if (roughness >= 0.5)
+			return float4(0, 0, 1, 0);
+	}
+	if (unitTag[input.instanceID].x == 2)
+	{
+		if(roughness >= 0.5)
+			return float4(1, 0, 0, 0);
+	}
+
 	if (isTerrain==1)
 	{
 		float3 IDcolor, colorValue;

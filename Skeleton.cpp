@@ -44,7 +44,7 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 
 
 		if (temp.parentIndex != -1) {
-			currentJointInverseTransform = (tempSkeleton, temp, currentJointInverseTransform);
+			currentJointInverseTransform = getMultipliedJointHierarchyTransform(tempSkeleton, temp, currentJointInverseTransform);
 
 		}
 
@@ -59,19 +59,14 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 
 	for (int i = 0; i < inverseSkeletonJoints.size(); i++)
 	{
-		DirectX::XMMATRIX matrix = inverseSkeletonJoints[i].jointMatrix;
-		DirectX::XMVECTOR det = ( DirectX::XMMatrixDeterminant(matrix));
-		matrix = DirectX::XMMatrixInverse( &det, matrix);
-
-
-		SkeletonJoint skeletonJoint = SkeletonJoint();
-		skeletonJoint.name= inverseSkeletonJoints[i].name;
-		skeletonJoint.name = skeletonJoint.name.erase(0, 8);
-		skeletonJoint.jointMatrix = matrix;
-		skeletonJoint.parentIndex = inverseSkeletonJoints[i].parentIndex / 256;
-		skeletonJoints.push_back(skeletonJoint);
-
+		for (int j = 0; j < inverseSkeletonJoints.size(); j++)
+		{
+			if (inverseSkeletonJoints[j].parentIndex == i) {
+				inverseSkeletonJoints[i].childIndices.push_back(j);
+			}
+		}
 	}
+
 }
 
 const std::string Skeleton::getSkeletonName() const {

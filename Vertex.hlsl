@@ -23,6 +23,7 @@ cbuffer MATRIX_Buffer :register (b0)
 cbuffer INSTANCE_Buffer :register (b1)
 {
 	matrix instanceWorld[100];
+	float4 unitTag;
 }; 
 
 struct VS_OUT
@@ -32,6 +33,7 @@ struct VS_OUT
 	float4 worldPosition : WPOSITION;
 	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
+	uint instanceID : InstanceID;
 };
 //-----------------------------------------------------------------------------------------
 // VertexShader: VSScene
@@ -39,7 +41,7 @@ struct VS_OUT
 VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 {
 	VS_OUT output = (VS_OUT)0;
-
+	output.instanceID = instanceID;
 	output.Position = float4(input.Position, 1);
 
 	output.Position = mul(output.Position, instanceWorld[instanceID]);
