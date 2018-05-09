@@ -208,39 +208,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//gamemanager.unitLists[cube->tag].push_back(unitWorker);
 
 
-		GameObject* cube2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(40, 0, 5, 0));
-		cube2->name = "Goldmine";
-		cube2->tag = 0;
-		MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
-		cube2->addComponent(meshFilter2);
-		cube2->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
-		Unit *goldMine = new Unit(GoldMine);
-		cube2->addComponent(goldMine);
-		goldMine->setPlayerScript(playerscript);
-
-		GameObject* cube3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 30, 0));
-		cube3->name = "Bank";
-		cube3->tag = 0;
-		MeshFilter* meshFilter3 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
-		cube3->addComponent(meshFilter3);
-		cube3->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
-		Unit* unitBuilding = new Unit(Bank);
-		cube3->addComponent(unitBuilding);
-		//playerscript->friendlyBuildings.push_back(unitBuilding);
-		unitBuilding->setPlayerScript(playerscript);
-		gamemanager.buildingLists[cube3->tag].push_back(unitBuilding);
-
-		GameObject* barrack = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 5, 0));
-		barrack->name = "Barrack";
-		barrack->tag = 1;
-		MeshFilter* meshFilterBarracks = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
-		barrack->addComponent(meshFilterBarracks);
-		barrack->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
-		Unit* unitBuilding2 = new Unit(Barrack);
-		barrack->addComponent(unitBuilding2);
-		//playerscript->friendlyBuildings.push_back(unitBuilding2);
-		unitBuilding2->setPlayerScript(playerscript);
-		gamemanager.buildingLists[barrack->tag].push_back(unitBuilding2);
+		
 
 
 		//
