@@ -569,7 +569,7 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 		if (actionTime > 1)
 		{
 			//attackEnemy();
-			for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
+			for (int i = 0; i < gamemanager.buildingLists[targetedUnit->gameObject->tag].size(); i++)
 			{
 				if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
 				{
