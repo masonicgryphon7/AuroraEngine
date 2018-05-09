@@ -45,12 +45,12 @@ private:
 
 	GameObject * Player;
 
-	std::vector<GameObject*> SelectedUnits;
-	Vector2 mousePosRelative;
-	int isSelectingHolding = 0;
 
 
 public:
+	std::vector<GameObject*> SelectedUnits;
+	Vector2 mousePosRelative;
+	int isSelectingHolding = 0;
 	//PlayerScript();
 	////////
 	PlayerScript(GameObject* player);

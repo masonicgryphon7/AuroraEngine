@@ -90,7 +90,7 @@ private:
 	ID3D11RasterizerState* m_rasterStateCullFront = nullptr;
 	ID3D11RasterizerState* m_rasterStateCullBack = nullptr;
 	ID3D11RasterizerState* m_rasterStateCullNone = nullptr;
-	ID3D11BlendState* m_alphaEnableBlendState = nullptr, * m_alphaDisabledBlendState = nullptr;
+	ID3D11BlendState* m_alphaEnableBlendState = nullptr, *m_alphaDisabledBlendState = nullptr;
 	static bool hasResized;
 	int firstThing = 0;
 	unsigned int numModes, m_refreshRateNumerator, m_refreshRateDenominator;
@@ -108,7 +108,6 @@ private:
 	HWND InitWindow(HINSTANCE hInstance);
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	HRESULT CreateDirect3DContext(HWND wndHandle);
-	HRESULT CreatePlayerDirect3DContext(HWND wndHandle);
 	bool CreateDepthStencilBuffer();
 	bool CreateDepthStencilView();
 	bool CreateDepthStencilState(void* ds, bool enabled, bool writeEnabled);
@@ -116,7 +115,10 @@ private:
 
 	//void SetViewport(int x = WIDTH, int y = HEIGHT);
 
-	void CreateTriangleData();
+	void addMaterials();
+	void createTerrain();
+
+
 
 public:
 	ID3D11DeviceContext * gDeviceContext = nullptr;

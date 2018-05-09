@@ -126,6 +126,7 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 			for (int j = 0; j < skel.size(); j++)
 			{
 				DirectX::XMStoreFloat4x4( &skeleton[j], skel[j]);
+				//DirectX::XMStoreFloat4x4( &skeleton[j], DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
 			}
 			gDeviceContext->UpdateSubresource(skeletonBuffer, 0, nullptr, &matrixBufferData, 0, 0);
 
@@ -406,5 +407,5 @@ void RenderManager::EndFrame()
 	// VSYNC_1_FRAME == vsync (1frame) { 60FPS }
 	// VSYNC_2_FRAME == vsync (2frame) { 30FPS }
 
-	gSwapChain->Present(VSYNC_1_FRAME, 0);
+	gSwapChain->Present(NO_VSYNC, 0);
 }
