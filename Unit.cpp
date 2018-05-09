@@ -13,7 +13,7 @@ Unit::Unit() :Component(-1, "Unit")
 	switch (type)
 	{
 	case Type::Hero: //HERO
-		this->healthPoints = 100;
+		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 15;
 		this->defencePoints = 5;
 		this->attackDistance = 2;
@@ -21,7 +21,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->healthPoints = 20;
+		this->healthPoints = this->maxHealthPoints = 20;
 		this->attackPoints = 4;
 		this->defencePoints = 8;
 		this->attackDistance = 1;
@@ -29,7 +29,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case Type::Worker: //WORKER
-		this->healthPoints = 15;
+		this->healthPoints = this->maxHealthPoints = 15;
 		this->attackPoints = 1;
 		this->defencePoints = 5;
 		this->attackDistance = 1;
@@ -37,7 +37,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case 3: //BUILDING
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 20;
 		this->attackDistance = 0;
@@ -61,7 +61,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	switch (UnitTypeSet)
 	{
 	case Type::Hero: //HERO
-		this->healthPoints = 100;
+		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 16;
 		this->defencePoints = 20; // 10
 		this->attackDistance = 2;
@@ -70,7 +70,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->healthPoints = 30;
+		this->healthPoints = this->maxHealthPoints = 30;
 		this->attackPoints = 13;
 		this->defencePoints = 7;
 		this->attackDistance = 2;
@@ -79,7 +79,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	case Type::Worker: //WORKER
-		this->healthPoints = 15;
+		this->healthPoints = this->maxHealthPoints = 15;
 		this->attackPoints = 11;
 		this->defencePoints = 5;
 		this->attackDistance = 2;
@@ -88,7 +88,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	case Type::Barrack: //BUILDING
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 20;
 		this->attackDistance = 0;
@@ -98,7 +98,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::Bank: //Bank
 
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
@@ -108,7 +108,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::GoldMine: //NATURE TREES, MINES, ETC
 
-		this->healthPoints = 10000;
+		this->healthPoints = this->maxHealthPoints = 10000;
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
