@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 1
+#define PLAYER_BUILD 0
 
 bool CoreEngine::hasResized = false;
 
@@ -186,7 +186,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 
-		AssetManager.addMeshFromBinary("Assets/COLLECTOR.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 
