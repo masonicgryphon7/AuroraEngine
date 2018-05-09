@@ -123,6 +123,7 @@ public:
 	void attackCommand(Unit* targetedUnit);
 	void attackEnemy();
 	void takeDamage(int attackPoints);
+	void takeFireDamage(float attackPoints);
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);
 	void HeroGatherCommand(Unit* targetedUnit);

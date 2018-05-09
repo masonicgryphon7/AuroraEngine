@@ -89,7 +89,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	case Type::Barrack: //BUILDING
-		this->healthPoints = this->maxHealthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 20;
 		this->attackPoints = 0;
 		this->defencePoints = 20;
 		this->attackDistance = 0;
@@ -99,7 +99,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::Bank: //Bank
 
-		this->healthPoints = this->maxHealthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 20;
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
@@ -109,7 +109,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::GoldMine: //NATURE TREES, MINES, ETC
 
-		this->healthPoints = this->maxHealthPoints = 10000;
+		this->healthPoints = this->maxHealthPoints = 20;
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
@@ -324,7 +324,13 @@ void Unit::attackEnemy()
 
 void Unit::takeDamage(int attackPoints)
 {
-	this->setHealthPoints(this->getHealthPoints() - (attackPoints - this->getDefencePoints()));
+	if(attackPoints > this->getDefencePoints())
+		this->setHealthPoints(this->getHealthPoints() - (attackPoints - this->getDefencePoints()));
+}
+
+void Unit::takeFireDamage(float attackPoints)
+{
+	this->setHealthPoints(this->getHealthPoints() - attackPoints);
 }
 
 void Unit::FollowCommand()

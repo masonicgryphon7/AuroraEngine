@@ -34,22 +34,39 @@ GameManager::~GameManager()
 
 void GameManager::dmgRing()
 {
-	for (int i = 0; i < unitLists[2].size(); i++)
+	for (int i = 0; i < unitLists.size(); i++)
 	{
-		if (unit->getDistanceBetweenUnits(unitLists[2][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+
+		for (int j = 0; j < unitLists[i].size(); j++)
 		{
-			//Debug.Log("eeeeeeeeeeey");
-			unitLists[2][i]->takeDamage(0.05);
+			if (unit->getDistanceBetweenUnits(unitLists[i][j]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+			{
+				//Debug.Log("eeeeeeeeeeey");
+				unitLists[i][j]->takeFireDamage(1 * Time.getDeltaTime());
+			}
+		}
+	
+	}
+	for (int i = 0; i < buildingLists.size(); i++)
+	{
+		for (int j = 0; j < buildingLists[i].size(); j++)
+		{
+			if (unit->getDistanceBetweenUnits(buildingLists[i][j]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+			{
+				buildingLists[i][j]->takeFireDamage(1 * Time.getDeltaTime());
+			}
 		}
 	}
-	for (int i = 0; i < unitLists[1].size(); i++)
-	{
-		if (unit->getDistanceBetweenUnits(unitLists[1][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
-		{
-			//Debug.Log("eeeeeeeeeeey");
-			unitLists[1][i]->takeDamage(0.05);
-		}
-	}
+	//for (int i = 0; i < unitLists[1].size(); i++)
+	//{
+	//	if (unit->getDistanceBetweenUnits(unitLists[1][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+	//	{
+	//		//Debug.Log("eeeeeeeeeeey");
+	//		unitLists[1][i]->takeFireDamage(1 * Time.getDeltaTime());
+	//		
+	//	}
+	//}
+	
 }
 
 HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext)
