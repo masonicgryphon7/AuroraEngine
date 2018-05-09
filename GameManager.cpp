@@ -23,6 +23,7 @@ GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceCont
 
 	unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 	buildingLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
+
 	gameState = GAME_STATE::START_STATE;
 }
 
@@ -353,7 +354,33 @@ void GameManager::addBuildings()
 	 barrackGameObject->addComponent(barrack);
 	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
 
+	 i = 10;
+	 j = 75;
 
+	 GameObject* bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 bankGameObject->name = "Bank";
+	 bankGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
+	 bankGameObject->addComponent(meshFilter2);
+	 bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 Unit *bank = new Unit(Bank);
+	 bankGameObject->addComponent(bank);
+	 gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+
+	 i = 75;
+	 j = 10;
+
+	 bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 bankGameObject->name = "Bank";
+	 bankGameObject->tag = 1;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
+	 bankGameObject->addComponent(meshFilter2);
+	 bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 bank = new Unit(Bank);
+	 bankGameObject->addComponent(bank);
+	 gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+
+	
 	/*int x = 0;
 	for (int i = 25; i < HeightMapVariables.VertInfo[0].size(); i += 50)
 	{

@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "AssetManager.h"
 #include "Debug.h"
+class Unit;
 class NPC : public Component
 {
 public:

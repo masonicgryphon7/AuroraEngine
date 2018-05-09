@@ -8,7 +8,7 @@
 #include <d3dcompiler.h>
 #include "CoreEngine.h"
 #include "Unit.h"
-
+#include "NPC.h"
 enum GAME_STATE
 {
 	MAIN_MENU,START_STATE,LARGE_CIRCLE_STATE, MEDIUM_CIRCLE_STATE, SMALL_CIRCLE_STATE,END_STATE,GAME_OVER_MENU

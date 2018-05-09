@@ -301,6 +301,8 @@ void cPathCreator::loadBlockMap()
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
 	
+	std::clock_t start;
+	start = std::clock();
 
 	std::vector<std::vector<Node>> tempGrid = grid;
 	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
@@ -316,6 +318,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 		startNode.position = startNode.position;
 	}
 
+	
 	//direction help test
 	bool reversePath = false;
 	DirectX::XMVECTOR direction = DirectX::XMVectorSubtract(DirectX::XMVectorSet(goalNode.position.x, goalNode.position.y, goalNode.position.z, 0), DirectX::XMVectorSet(startNode.position.x, startNode.position.y, startNode.position.z, 0));
@@ -326,20 +329,25 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 		reversePath = true;
 	}
 
-
-	//
+	
+	
 	std::vector<Node> resultNodes = std::vector<Node>();
 	std::vector<Node> openNodes = std::vector<Node>();
 	std::vector<Node> closedNodes = std::vector<Node>();
 	openNodes.push_back(startNode);
 	bool succes = false;
 	Node currentNode = Node();
-	int i = 0;
+	int iterations = 0;
+
+	
+	
+
+
 	while (openNodes.size() > 0 && succes == false) {
 		iteration++;
 		float lowestF = -1;
 		int lowestFIndex = openNodes[0].f;
-
+		
 		for (int i = 0; i < openNodes.size(); i++)
 		{
 
@@ -349,6 +357,8 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 			}
 		}
+		
+	
 		closedNodes.push_back(openNodes.at(lowestFIndex));
 		currentNode = closedNodes.back();
 		openNodes.erase(openNodes.begin() + lowestFIndex);
@@ -357,10 +367,14 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 			succes = true;
 			break;
 		}
-
+		
 		//for each neighbor
 		for (int i = 0; i < 9; i++)
 		{
+			if (i == 5) continue;
+
+			iterations++;
+
 			//neighbor index
 			int x = currentNode.position.x + xArr[i];
 			int z = currentNode.position.z + zArr[i];
@@ -430,11 +444,12 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 
 			}
-
+			
+			
 		}
-		i++;
 	}
 	//Debug.Log("AStar Iterations:", i);
+
 	int gg = 0;
 	if (succes == true) {
 
@@ -449,7 +464,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 			gg++;
 
 		}
-
+		
 
 	}
 	else {
@@ -465,7 +480,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	if (reversePath) {
 		std::reverse(resultNodes.begin(), resultNodes.end());
 	}
-	
+	Debug.Log("NINELOOP7: ", ((std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000)));
 	return resultNodes;
 }
 

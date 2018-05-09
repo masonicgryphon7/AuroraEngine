@@ -152,7 +152,13 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 	if (pathNodes.size() == 0)
 	{
 		lerpValue = 0;
+		std::clock_t start;
+		start = std::clock();
+
 		pathNodes = PathCreator.getPath(current, pointPosition); // Point position
+		float time = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
+		Debug.Log(" after astar time ", time);
+
 	}
 
 	if (pathNodes.size() > 0) {
@@ -506,7 +512,7 @@ void Unit::summonWorkerCommand()
 	UnitOrders.erase(UnitOrders.begin());
 	Order tempOrder;
 	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 8.0, 0.0));
+	tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 15.0, 0.0));
 	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
