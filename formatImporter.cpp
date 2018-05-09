@@ -74,7 +74,7 @@ namespace MyLibrary
 	{
 		//reads the custom mesh file and stores all the data
 
-		AnimatedMeshFromFile meshToReturn = AnimatedMeshFromFile();
+		AnimatedMeshFromFile meshToReturn;
 
 		bool fileIsOpen = false;
 
@@ -240,7 +240,7 @@ namespace MyLibrary
 	{
 		//read the skeleton file
 
-		SkeletonFromFile skeleton_to_return=SkeletonFromFile();
+		SkeletonFromFile skeleton_to_return;
 
 		bool fileIsOpen = false;
 
@@ -264,6 +264,7 @@ namespace MyLibrary
 				for(int j = 0; j < MAX_FILENAME; j++)
 				skeleton_to_return.skeleton_joints[i].joint_name[j] = joints[i].joint_name[j];
 				skeleton_to_return.skeleton_joints[i].joint_transform = joints[i].joint_transform;
+				skeleton_to_return.skeleton_joints[i].parentIndex = joints[i].parentIndex;
 
 			}
 			skeleton_to_return.skeleton_nrOfJoints = skeleton_header.skeleton_nrOfJoints;
@@ -275,13 +276,13 @@ namespace MyLibrary
 		return skeleton_to_return;
 	}
 
-	AnimationFromFile Loadera::readAnimationFile(std::string fileName)
+	AnimationFromFile Loadera::readAnimationFile(std::string fileName, int nrOfJoints)
 	{
 		bool fileIsOpen = false;
 
 		std::ifstream customAnimationFile(fileName, std::ifstream::binary);
 		AnimationHeader animation_header;
-		AnimationFromFile animation_to_return=AnimationFromFile();
+		AnimationFromFile animation_to_return;
 
 		if (customAnimationFile.is_open())
 		{
@@ -289,11 +290,11 @@ namespace MyLibrary
 			fileIsOpen = true;
 			customAnimationFile.read((char*)&animation_header, sizeof(AnimationHeader));
 			animation_to_return.nr_of_keyframes = animation_header.anim_nrOfKeys;
-			Transform* keyframes = new Transform[animation_header.anim_nrOfKeys];
-			customAnimationFile.read((char*)keyframes, animation_header.anim_nrOfKeys * sizeof(Transform));
+			Transform* keyframes = new Transform[animation_header.anim_nrOfKeys*nrOfJoints];
+			customAnimationFile.read((char*)keyframes, animation_header.anim_nrOfKeys * nrOfJoints * sizeof(Transform));
 
-			animation_to_return.keyframe_transformations = new Transform[animation_header.anim_nrOfKeys];
-			for (int i = 0; i < animation_header.anim_nrOfKeys; i++)
+			animation_to_return.keyframe_transformations = new Transform[animation_header.anim_nrOfKeys*nrOfJoints];
+			for (int i = 0; i < animation_header.anim_nrOfKeys * nrOfJoints; i++)
 			{
 				animation_to_return.keyframe_transformations[i] = keyframes[i];
 			}

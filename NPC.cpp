@@ -2,10 +2,8 @@
 
 
 
-NPC::NPC(std::vector<Unit*> *player_units, std::vector<Unit*> *player_buildings) : Component(-1, "NPC")
+NPC::NPC() : Component(-1, "NPC")
 {
-	this->player_units = player_units;
-	this->player_buildings = player_buildings;
 	wantsToAttackHero = false;
 
 }
@@ -66,18 +64,18 @@ void NPC::instantiate_NPC()
 void NPC::findNewEnemies(Unit* unit)
 {
 	float temp_distance;
-	for (int i = 0; i < player_units->size(); i++)
+	for (int i = 0; i < gamemanager.unitLists[1].size(); i++)
 	{
 		
-			temp_distance = unit->getDistanceBetweenUnits(unit->gameObject->transform.getPosition(), player_units[0][i]->gameObject->transform.getPosition());
+			temp_distance = unit->getDistanceBetweenUnits(unit->gameObject->transform.getPosition(), gamemanager.unitLists[1][i]->gameObject->transform.getPosition());
 			
 			
 			if (temp_distance < unit->getUnitDistance() || unit->getUnitDistance() == 0)
 			{
 				unit->setDistance(temp_distance);
-				unit->setTargetPos(player_units[0][i]->gameObject->transform.getPosition());
+				unit->setTargetPos(gamemanager.unitLists[1][i]->gameObject->transform.getPosition());
 				RaycastHit hit;
-				hit.transform = &player_units[0][i]->gameObject->transform;
+				hit.transform = &gamemanager.unitLists[1][i]->gameObject->transform;
 				unit->ReceiveOrder(hit, unit->gameObject->tag);
 			}
 
@@ -88,18 +86,18 @@ void NPC::findNewEnemies(Unit* unit)
 void NPC::attack(Unit * unit)
 {
 	float temp_distance;
-	for (int i = 0; i < player_units->size(); i++)
+	for (int i = 0; i <  gamemanager.unitLists[1].size(); i++)
 	{
 
-		temp_distance = unit->getDistanceBetweenUnits(unit->gameObject->transform.getPosition(), player_units[0][i]->gameObject->transform.getPosition());
+		temp_distance = unit->getDistanceBetweenUnits(unit->gameObject->transform.getPosition(), gamemanager.unitLists[1][i]->gameObject->transform.getPosition());
 
 
 		if (temp_distance < unit->getUnitDistance() || unit->getUnitDistance() == 0)
 		{
 			unit->setDistance(temp_distance);
-			unit->setTargetPos(player_units[0][i]->gameObject->transform.getPosition());
+			unit->setTargetPos(gamemanager.unitLists[1][i]->gameObject->transform.getPosition());
 			RaycastHit hit;
-			hit.transform = &player_units[0][i]->gameObject->transform;
+			hit.transform = &gamemanager.unitLists[1][i]->gameObject->transform;
 			unit->ReceiveOrder(hit, unit->gameObject->tag);
 
 		}

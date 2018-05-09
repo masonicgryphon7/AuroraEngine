@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include <vector>
 #include <string>
+#include "formatImporter.h"
 enum class Primitives
 {
 	OOBB,
@@ -23,19 +24,24 @@ enum OPTIONS
 	Option3
 };
 
-struct Joint {
+
+
+struct SkeletonJoint {
 	std::string name;
-	unsigned int parentID;
+	int parentIndex;
+	DirectX::XMMATRIX jointMatrix;
+};
+
+struct JointTransform {
 	DirectX::XMVECTOR position;
 	DirectX::XMVECTOR rotation;
 	DirectX::XMVECTOR scale;
+
 };
 
 struct AnimationFrame {
-	std::vector<Joint> joints;
+	std::vector<JointTransform> joints;
 };
-
-
 
 
 

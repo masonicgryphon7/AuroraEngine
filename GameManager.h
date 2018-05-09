@@ -11,7 +11,7 @@
 
 enum GAME_STATE
 {
-	MAIN_MENU,START_STATE,LARGE_CIRCEL_STATE, MEDIUM_CIRCEL_STATE, SMALL_CIRCEL_STATE,END_STATE,GAME_OVER_MENU
+	MAIN_MENU,START_STATE,LARGE_CIRCLE_STATE, MEDIUM_CIRCLE_STATE, SMALL_CIRCLE_STATE,END_STATE,GAME_OVER_MENU
 };
 class Unit;
 static class GameManager
@@ -42,7 +42,11 @@ public:
 
 	static GAME_STATE gameState;
 	static std::vector<std::vector<Unit*>> unitLists;
+	static std::vector<std::vector<Unit*>> buildingLists;
+	
 	Unit* unit;
+
+	void addBuildings();
 
 } gamemanager;
 //Ovanför

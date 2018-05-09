@@ -2,8 +2,10 @@
 
 
 
-AnimationClip::AnimationClip()
+AnimationClip::AnimationClip(Skeleton * skeleton, std::string filePath)
 {
+	this->skeleton = skeleton;
+	createClipFromBinary(filePath);
 }
 
 
@@ -13,6 +15,9 @@ AnimationClip::~AnimationClip()
 
 void AnimationClip::createClipFromBinary(std::string filePath)
 {
+	framesPerSecond = 24.0f;
+
+
 	MyLibrary::Loadera myLoader;
 
 	this->clipPath = filePath;
@@ -21,13 +26,33 @@ void AnimationClip::createClipFromBinary(std::string filePath)
 	std::reverse(this->clipName.begin(), this->clipName.end());
 	this->clipName = clipName.substr(0, clipName.find(".", 0));
 
-	MyLibrary::AnimationFromFile tempAnimation = myLoader.readAnimationFile(clipPath);
+	MyLibrary::AnimationFromFile tempAnimation = myLoader.readAnimationFile(clipPath, skeleton->getNrOfJoints());
 	
-	for (int i = 0; i < tempAnimation.nr_of_keyframes; i++)
-	{
-		animationKeys.push_back(tempAnimation.keyframe_transformations[i]);
-	}
+	nrOfKeyFrames = tempAnimation.nr_of_keyframes;
 
+	int totalIndices = 0;
+	for (int i = 0; i < nrOfKeyFrames; i++)
+	{
+		AnimationFrame animFrame = AnimationFrame();
+
+		for (int j = 0; j < skeleton->getNrOfJoints(); j++)
+		{
+			DirectX::XMVECTOR position = DirectX::XMVectorSet(tempAnimation.keyframe_transformations[totalIndices].transform_position[0], tempAnimation.keyframe_transformations[totalIndices].transform_position[1], tempAnimation.keyframe_transformations[totalIndices].transform_position[2], 0);
+			DirectX::XMVECTOR rotation = DirectX::XMVectorSet(tempAnimation.keyframe_transformations[totalIndices].transform_rotation[0], tempAnimation.keyframe_transformations[totalIndices].transform_rotation[1], tempAnimation.keyframe_transformations[totalIndices].transform_rotation[2], 0);
+			DirectX::XMVECTOR scale = DirectX::XMVectorSet(tempAnimation.keyframe_transformations[totalIndices].transform_scale[0], tempAnimation.keyframe_transformations[totalIndices].transform_scale[1], tempAnimation.keyframe_transformations[totalIndices].transform_scale[2],0);
+
+			JointTransform jointTransform = JointTransform();
+			jointTransform.position = position;
+			jointTransform.rotation = rotation;
+			jointTransform.scale = scale;
+
+			animFrame.joints.push_back(jointTransform);
+			totalIndices++;
+		}
+
+		animationFrames.push_back(animFrame);
+
+	}
 }
 
 const std::string AnimationClip::getClipName() const

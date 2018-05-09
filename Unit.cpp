@@ -13,7 +13,7 @@ Unit::Unit() :Component(-1, "Unit")
 	switch (type)
 	{
 	case Type::Hero: //HERO
-		this->healthPoints = 100;
+		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 15;
 		this->defencePoints = 5;
 		this->attackDistance = 2;
@@ -21,7 +21,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->healthPoints = 20;
+		this->healthPoints = this->maxHealthPoints = 20;
 		this->attackPoints = 4;
 		this->defencePoints = 8;
 		this->attackDistance = 1;
@@ -29,7 +29,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case Type::Worker: //WORKER
-		this->healthPoints = 15;
+		this->healthPoints = this->maxHealthPoints = 15;
 		this->attackPoints = 1;
 		this->defencePoints = 5;
 		this->attackDistance = 1;
@@ -37,7 +37,7 @@ Unit::Unit() :Component(-1, "Unit")
 		break;
 
 	case 3: //BUILDING
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 20;
 		this->attackDistance = 0;
@@ -61,7 +61,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	switch (UnitTypeSet)
 	{
 	case Type::Hero: //HERO
-		this->healthPoints = 100;
+		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 16;
 		this->defencePoints = 20; // 10
 		this->attackDistance = 2;
@@ -70,7 +70,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	case Type::Soldier: //SOLDIER
-		this->healthPoints = 30;
+		this->healthPoints = this->maxHealthPoints = 30;
 		this->attackPoints = 13;
 		this->defencePoints = 7;
 		this->attackDistance = 2;
@@ -79,7 +79,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	case Type::Worker: //WORKER
-		this->healthPoints = 15;
+		this->healthPoints = this->maxHealthPoints = 15;
 		this->attackPoints = 11;
 		this->defencePoints = 5;
 		this->attackDistance = 2;
@@ -88,7 +88,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	case Type::Barrack: //BUILDING
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 20;
 		this->attackDistance = 0;
@@ -98,7 +98,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::Bank: //Bank
 
-		this->healthPoints = 500;
+		this->healthPoints = this->maxHealthPoints = 500;
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
@@ -108,7 +108,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	case Type::GoldMine: //NATURE TREES, MINES, ETC
 
-		this->healthPoints = 10000;
+		this->healthPoints = this->maxHealthPoints = 10000;
 		this->attackPoints = 0;
 		this->defencePoints = 0;
 		this->attackDistance = 0;
@@ -234,7 +234,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		if (pathNodes.at(pathNodes.size() - 1).pathable == PATHABLE_CHECK)
 			pathNodes.erase(pathNodes.begin() + pathNodes.size() - 1);
 	}
-
+	
 	if (pathNodes.size() > 0) {
 		lerpValue += Time.getDeltaTime() * 10;
 		if (lerpValue > 1) {
@@ -498,7 +498,7 @@ void Unit::summonWorkerCommand()
 	Unit *unitWorker = new Unit(Worker);
 	unitWorker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	worker->addComponent(unitWorker);
-	playerScript->friendlyUnits.push_back(unitWorker);
+	//playerScript->friendlyUnits.push_back(unitWorker);
 	unitWorker->setPlayerScript(playerScript);
 	gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
 	
@@ -546,7 +546,7 @@ void Unit::summonSoldierCommand()
 	Unit *unitSoldier = new Unit(Soldier);
 	unitSoldier->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
 	soldier->addComponent(unitSoldier);
-	playerScript->friendlyUnits.push_back(unitSoldier);
+	//playerScript->friendlyUnits.push_back(unitSoldier);
 	unitSoldier->setPlayerScript(playerScript);
 	gamemanager.unitLists[gameObject->tag].push_back(unitSoldier);
 
@@ -569,11 +569,19 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 		if (actionTime > 1)
 		{
 			//attackEnemy();
-			targetedUnit->gameObject->tag = gameObject->tag;
+			for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
+			{
+				if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
+				{
+					gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
+					targetedUnit->gameObject->tag = gameObject->tag;
+					gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
+					UnitOrders.erase(UnitOrders.begin());
+					break;
+				}
+			}
 			//Debug.Log("Enemy Hit!");
 			actionTime = 0;
-
-			UnitOrders.erase(UnitOrders.begin());
 		}
 	}
 	else
@@ -677,17 +685,26 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 			}
 		}
 		else if (Values.transform->gameObject->tag != unitTag && Values.transform->gameObject->tag != 3 && Values.transform->gameObject->tag != 0) { //!=gameObject->tag){
-																								 //enemy
+			//enemy
 			switch (type)
 			{
 			case Type::Hero:
-				tempOrder.command = Attack;
-				//tempOrder.command = Move;
-
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				actionTime = 2;
+				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
+				{
+					tempOrder.command = takeBuilding;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
+				else
+				{
+					tempOrder.command = Attack;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					actionTime = 2;
+				}
 				break;
 
 			case Type::Soldier:
