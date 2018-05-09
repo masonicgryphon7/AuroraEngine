@@ -42,8 +42,6 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="PathCreator.cpp" />
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PlayerMoveScript.cpp" />
-    <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="PlayerSelectionScript.cpp" />
     <ClCompile Include="QuadTreeNode.cpp" />
     <ClCompile Include="RenderManager.cpp" />
@@ -107,8 +105,6 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="PathCreator.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="PlayerMoveScript.h" />
-    <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="PlayerSelectionScript.h" />
     <ClInclude Include="PRIMITIVE_GEOMETRY.h" />
     <ClInclude Include="QuadTreeNode.h" />
