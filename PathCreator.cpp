@@ -234,6 +234,8 @@ void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
+	
+
 	std::vector<std::vector<Node>> tempGrid = grid;
 	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
 	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
@@ -397,7 +399,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	if (reversePath) {
 		std::reverse(resultNodes.begin(), resultNodes.end());
 	}
-
+	
 	return resultNodes;
 }
 

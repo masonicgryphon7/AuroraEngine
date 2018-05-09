@@ -317,6 +317,43 @@ void GameManager::addBuildings()
 	 barrackGameObject->addComponent(barrack);
 	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
 
+	 i = 275;
+	 j = 275;
+	 barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 barrackGameObject->name = "Barrack";
+	 barrackGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+	 barrackGameObject->addComponent(meshFilter2);
+	 barrackGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+	 barrack = new Unit(Barrack);
+	 barrackGameObject->addComponent(barrack);
+	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+
+	 i = 25;
+	 j = 275;
+	 barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 barrackGameObject->name = "Barrack";
+	 barrackGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+	 barrackGameObject->addComponent(meshFilter2);
+	 barrackGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+	 barrack = new Unit(Barrack);
+	 barrackGameObject->addComponent(barrack);
+	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+
+	 i = 275;
+	 j = 25;
+	 barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 barrackGameObject->name = "Barrack";
+	 barrackGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+	 barrackGameObject->addComponent(meshFilter2);
+	 barrackGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+	 barrack = new Unit(Barrack);
+	 barrackGameObject->addComponent(barrack);
+	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+
+
 	/*int x = 0;
 	for (int i = 25; i < HeightMapVariables.VertInfo[0].size(); i += 50)
 	{
