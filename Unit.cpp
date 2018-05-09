@@ -62,8 +62,8 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	{
 	case Type::Hero: //HERO
 		this->healthPoints = this->maxHealthPoints = 100;
-		this->attackPoints = 16;
-		this->defencePoints = 20; // 10
+		this->attackPoints = 160;
+		this->defencePoints = 10; // 10
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
