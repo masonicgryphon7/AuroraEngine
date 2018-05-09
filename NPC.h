@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "AssetManager.h"
 #include "Debug.h"
+class Unit;
 class NPC : public Component
 {
 public:
@@ -17,8 +18,8 @@ public:
 	
 
 private:
-	std::vector<Unit*> npc_units;
-	std::vector<Unit*> npc_buildings;
+	//std::vector<Unit*> npc_units;
+	//std::vector<Unit*> npc_buildings;
 
 	bool wantsToAttackHero;
 

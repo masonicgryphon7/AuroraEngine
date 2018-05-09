@@ -31,6 +31,7 @@ enum Command
 	SummonSoldier,
 	convertToSoldier,
 	takeBuilding,
+	Die,
 	Idle
 };
 
@@ -63,6 +64,7 @@ private:
 	int defencePoints;
 	float attackDistance;
 	float actionTime;
+	float dieTime;
 	Transform* homePos;
 
 	int e = 0;
@@ -121,6 +123,7 @@ public:
 	void attackCommand(Unit* targetedUnit);
 	void attackEnemy();
 	void takeDamage(int attackPoints);
+	void takeFireDamage(float attackPoints);
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);
 	void HeroGatherCommand(Unit* targetedUnit);

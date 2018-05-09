@@ -25,7 +25,7 @@
 #include "PlayerScript.h"
 #include "PathCreator.h"
 #include "AudioListener.h"
-#include "PlayerSelectionScript.h"
+
 #include "PlayerScript.h"
 //#include "MaterialLib.h"
 //#include "TextureLib.h"
@@ -52,7 +52,7 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_internal.h"
 #include <math.h>
-
+#include <thread>
 #define WIDTH 800
 #define HEIGHT 600
 
@@ -70,6 +70,8 @@ protected:
 	bool consoleInitialized = false;
 
 private:
+	
+
 	HINSTANCE hInstance;
 	HWND wnd;
 	int nCmdShow;

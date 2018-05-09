@@ -23,6 +23,7 @@ GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceCont
 
 	unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 	buildingLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
+
 	gameState = GAME_STATE::START_STATE;
 }
 
@@ -33,22 +34,39 @@ GameManager::~GameManager()
 
 void GameManager::dmgRing()
 {
-	for (int i = 0; i < unitLists[2].size(); i++)
+	for (int i = 0; i < unitLists.size(); i++)
 	{
-		if (unit->getDistanceBetweenUnits(unitLists[2][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+
+		for (int j = 0; j < unitLists[i].size(); j++)
 		{
-			//Debug.Log("eeeeeeeeeeey");
-			unitLists[2][i]->takeDamage(100);
+			if (unit->getDistanceBetweenUnits(unitLists[i][j]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+			{
+				//Debug.Log("eeeeeeeeeeey");
+				unitLists[i][j]->takeFireDamage(1 * Time.getDeltaTime());
+			}
+		}
+	
+	}
+	for (int i = 0; i < buildingLists.size(); i++)
+	{
+		for (int j = 0; j < buildingLists[i].size(); j++)
+		{
+			if (unit->getDistanceBetweenUnits(buildingLists[i][j]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+			{
+				buildingLists[i][j]->takeFireDamage(1 * Time.getDeltaTime());
+			}
 		}
 	}
-	for (int i = 0; i < unitLists[1].size(); i++)
-	{
-		if (unit->getDistanceBetweenUnits(unitLists[1][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
-		{
-			//Debug.Log("eeeeeeeeeeey");
-			unitLists[1][i]->takeDamage(100);
-		}
-	}
+	//for (int i = 0; i < unitLists[1].size(); i++)
+	//{
+	//	if (unit->getDistanceBetweenUnits(unitLists[1][i]->gameObject->transform.getPosition(), middlePoint) > ringOfFire)
+	//	{
+	//		//Debug.Log("eeeeeeeeeeey");
+	//		unitLists[1][i]->takeFireDamage(1 * Time.getDeltaTime());
+	//		
+	//	}
+	//}
+	
 }
 
 HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceContext)
@@ -94,11 +112,11 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 0)
 		{
 			//Debug.Log(ringOfFire);  
 			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
-			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
+			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
 		}
 		if (ringOfFire < 150) {
 			gameState = GAME_STATE::MEDIUM_CIRCLE_STATE;
@@ -199,8 +217,188 @@ void GameManager::addBuildings()
 		HeightMapVariables.VertInfo.push_back(tempHeightVert);
 
 	}
+	int i = 25;
+	int j = 50;
 
-	int x = 0;
+	GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	goldMineGameObject->name = "Bank";
+	goldMineGameObject->tag = 0;
+	MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	goldMineGameObject->addComponent(meshFilter2);
+	goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	Unit *goldMine = new Unit(Bank);
+	goldMineGameObject->addComponent(goldMine);
+	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+
+	i = 25;
+	j = 250;
+
+	goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	goldMineGameObject->name = "Bank";
+	goldMineGameObject->tag = 0;
+	meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	goldMineGameObject->addComponent(meshFilter2);
+	goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	goldMine = new Unit(Bank);
+	goldMineGameObject->addComponent(goldMine);
+	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	 i = 50;
+	 j = 25;
+	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 goldMineGameObject->name = "Bank";
+	 goldMineGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 goldMineGameObject->addComponent(meshFilter2);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(goldMine);
+	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	 i = 50;
+	 j = 275;
+
+	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 goldMineGameObject->name = "Bank";
+	 goldMineGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 goldMineGameObject->addComponent(meshFilter2);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(goldMine);
+	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+
+	 i = 250;
+	 j = 25;
+
+	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 goldMineGameObject->name = "Bank";
+	 goldMineGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 goldMineGameObject->addComponent(meshFilter2);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(goldMine);
+	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	 i = 250;
+	 j = 275;
+
+	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 goldMineGameObject->name = "Bank";
+	 goldMineGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 goldMineGameObject->addComponent(meshFilter2);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(goldMine);
+	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	 i = 275;
+	 j = 50;
+
+	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 goldMineGameObject->name = "Bank";
+	 goldMineGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 goldMineGameObject->addComponent(meshFilter2);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(goldMine);
+	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	 i = 275;
+	 j = 250;
+	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 goldMineGameObject->name = "Bank";
+	 goldMineGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 goldMineGameObject->addComponent(meshFilter2);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(goldMine);
+	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+
+
+	 i = 25;
+	 j = 25;
+	 GameObject* barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 barrackGameObject->name = "Barrack";
+	 barrackGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+	 barrackGameObject->addComponent(meshFilter2);
+	 barrackGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+	 Unit *barrack = new Unit(Barrack);
+	 barrackGameObject->addComponent(barrack);
+	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+
+	 i = 275;
+	 j = 275;
+	 barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 barrackGameObject->name = "Barrack";
+	 barrackGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+	 barrackGameObject->addComponent(meshFilter2);
+	 barrackGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+	 barrack = new Unit(Barrack);
+	 barrackGameObject->addComponent(barrack);
+	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+
+	 i = 25;
+	 j = 275;
+	 barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 barrackGameObject->name = "Barrack";
+	 barrackGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+	 barrackGameObject->addComponent(meshFilter2);
+	 barrackGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+	 barrack = new Unit(Barrack);
+	 barrackGameObject->addComponent(barrack);
+	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+
+	 i = 275;
+	 j = 25;
+	 barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 barrackGameObject->name = "Barrack";
+	 barrackGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
+	 barrackGameObject->addComponent(meshFilter2);
+	 barrackGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+	 barrack = new Unit(Barrack);
+	 barrackGameObject->addComponent(barrack);
+	 gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+
+	 i = 10;
+	 j = 75;
+
+	 GameObject* bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 bankGameObject->name = "Bank";
+	 bankGameObject->tag = 0;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
+	 bankGameObject->addComponent(meshFilter2);
+	 bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 Unit *bank = new Unit(Bank);
+	 bankGameObject->addComponent(bank);
+	 gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+
+	 i = 75;
+	 j = 10;
+
+	 bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 bankGameObject->name = "Bank";
+	 bankGameObject->tag = 1;
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
+	 bankGameObject->addComponent(meshFilter2);
+	 bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	 bank = new Unit(Bank);
+	 bankGameObject->addComponent(bank);
+	 gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+
+	
+	/*int x = 0;
 	for (int i = 25; i < HeightMapVariables.VertInfo[0].size(); i += 50)
 	{
 		
@@ -220,6 +418,7 @@ void GameManager::addBuildings()
 					Unit *goldMine = new Unit(GoldMine);
 					goldMineGameObject->addComponent(goldMine);
 					gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
+					PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 					x++;
 					continue;
 				}
@@ -240,7 +439,7 @@ void GameManager::addBuildings()
 				}
 				if (x == 2)
 				{
-					GameObject* barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+					GameObject* barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y +2, j, 0));
 					barrackGameObject->name = "Barrack";
 					barrackGameObject->tag = 0;
 					MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
@@ -257,7 +456,7 @@ void GameManager::addBuildings()
 			}
 			
 		}
-	}
+	}*/
 
 	delete[] bitMapImage_Info;
 	bitMapImage_Info = 0;

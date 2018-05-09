@@ -151,11 +151,13 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 			{
 				DirectX::XMFLOAT4X4 temp;
 				DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j+nrOfObjectsDrawn]->calculateWorldMatrix()));
-				opaqueTransforms[j]=temp;
+				InstanceMatrixData.opaqueTransforms[j]=temp;
+				InstanceMatrixData.unitTag[j].x = opaqueDraw[i][j + nrOfObjectsDrawn]->tag;
+				int jj = 0;
 			}
-
+	
 			nrOfObjectsDrawn += nrToDraw;
-			gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &opaqueTransforms, 0, 0);
+			gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &InstanceMatrixData, 0, 0);
 			
 			
 			
@@ -271,7 +273,7 @@ void RenderManager::CreateInstanceMatrixBuffer()
 	D3D11_BUFFER_DESC bufferDesc;
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * 100;
+	bufferDesc.ByteWidth = sizeof(InstanceMatrixStruct);
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 
@@ -284,6 +286,7 @@ void RenderManager::CreateInstanceMatrixBuffer()
 		exit(-1);
 	}
 	gDeviceContext->VSSetConstantBuffers(1, 1, &instanceBuffer);
+	gDeviceContext->PSSetConstantBuffers(2, 1, &instanceBuffer);
 }
 
 void RenderManager::CreateSkeletonBuffer()
@@ -375,7 +378,7 @@ void RenderManager::SetRenderTarget(ID3D11DepthStencilView * depthStencilView)
 
 void RenderManager::ClearRenderTarget(ID3D11DepthStencilView * depthStencilView)
 {
-	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float clearColor[] = { 0.2f, 0.2f, 0.2f, 1.0f };
 
 	gDeviceContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	gDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
