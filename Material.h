@@ -36,7 +36,9 @@ public:
 private:
 	std::string materialName;
 
-	ID3D11SamplerState * m_sampleState=nullptr;
+	ID3D11SamplerState * m_sampleState = nullptr;
+	ID3D11SamplerState * m_sampleStateIDMAP = nullptr;
+
 	float xTile = 1;
 	float yTile = 1;
 
@@ -64,5 +66,6 @@ private:
 	ID3D11Device* gDevice = nullptr;
 
 	void createSamplerState();
+	void createSamplerStateForIDMap();
 };
 
