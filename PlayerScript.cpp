@@ -26,9 +26,8 @@
 
 PlayerScript::PlayerScript(GameObject * player) :Component(-1, "Editor Move Script")
 {
-	speed = 0.01f;
-	//direction = DirectX::XMVectorSet(0, 0, 0, 0);
-	position = DirectX::XMVectorSet(0, 0, 0, 0);
+	speed = 200.0f;
+	direction = DirectX::XMVectorSet(0, 0, 0, 0);
 
 	pitch = 0;
 	yaw = 0;
@@ -53,7 +52,7 @@ void PlayerScript::instantiate_Player()
 	friendly_Hero->name = "Hero";
 	friendly_Hero->tag = 1;
 
-	MeshFilter* friendly_hero_meshFilter = new MeshFilter(AssetManager.getMesh("COLLECTOR"));
+	MeshFilter* friendly_hero_meshFilter = new MeshFilter(AssetManager.getMesh("COLLECTOR_Mesh"));
 	friendly_Hero->addComponent(friendly_hero_meshFilter);
 	friendly_Hero->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
 	Unit* friendly_unit_hero = new Unit(Hero);
@@ -86,27 +85,59 @@ void PlayerScript::update()
 
 	}
 	///////////////////////
+	//Movement
 
 	distance = speed * Time.getDeltaTime();
-	position = DirectX::XMVectorSet(0, 0, 0, 0);
+	direction = DirectX::XMVectorSet(0, 0, 0, 0);
 
-	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow) || Input.fullscreenMousePosition.x == 0.0f)
-		//direction = DirectX::XMVectorAdd(gameObject->transform.getForward(), direction);
-		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, 0, 1, 0)));
+	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow) || Input.GetMousePosition().x == 0.0f) {
+		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(0, 0, 1, 0), direction);
 
-	if (Input.GetKey(KeyCode::W) || Input.GetKey(KeyCode::UpArrow) || Input.fullscreenMousePosition.y == 0.0f)
-		//direction = DirectX::XMVectorScale(DirectX::XMVectorAdd(gameObject->transform.getRight(), direction), -1);
-		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1, 0, 0, 0)));
+	}
+
+	if (Input.GetKey(KeyCode::W) || Input.GetKey(KeyCode::UpArrow) || Input.GetMousePosition().y == 0.0f) {
+		direction =DirectX::XMVectorAdd(DirectX::XMVectorSet(1, 0, 0, 0), direction);
+
+	}
 
 
-	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.fullscreenMousePosition.x >= Input.GetFullscreenWindow().x - 5)
-		//direction = DirectX::XMVectorScale(DirectX::XMVectorAdd(gameObject->transform.getForward(), direction), -1);
-		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, 0, -1, 0)));
+	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.GetMousePosition().x >= Input.GetWidth()) {
+		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(0, 0,- 1, 0), direction);
 
-	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.fullscreenMousePosition.y >= Input.GetFullscreenWindow().y - 5)
-		//direction = DirectX::XMVectorAdd(gameObject->transform.getRight(), direction);
-		gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(-1, 0, 0, 0)));
+	}
 
+	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.GetMousePosition().y >= Input.GetHeight()) {
+		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(-1, 0, 0, 0), direction);
+
+	}
+
+	direction = DirectX::XMVector3Normalize(direction);
+	DirectX::XMFLOAT3 positionX;
+	DirectX::XMStoreFloat3(&positionX, gameObject->transform.getPosition());
+
+	DirectX::XMFLOAT3 directionX;
+	DirectX::XMStoreFloat3(&directionX, direction);
+
+
+	if (positionX.x > 200 && directionX.x>0) {
+		directionX.x = 0;
+	}
+	else if(positionX.x<-30 && directionX.x<0){
+		directionX.x = 0;
+	}
+
+	if (positionX.z > 260 && directionX.z>0) {
+		directionX.z = 0;
+	}
+	else if (positionX.z<40 && directionX.z<0) {
+		directionX.z = 0;
+	}
+
+	direction = DirectX::XMLoadFloat3(&directionX);
+	gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorScale(direction, distance)));
+
+
+	//////////////////
 	if (Input.GetKeyUp(KeyCode::Alpha1))
 	{
 		//for each unit ReceiveOrder
@@ -146,7 +177,6 @@ void PlayerScript::update()
 	if (Input.GetKey(KeyCode::Escape))
 		exit(-1);
 
-	direction = DirectX::XMVector3Normalize(direction);
 
 	//Mouse
 	if (firstMouse)
@@ -159,36 +189,13 @@ void PlayerScript::update()
 	xpos = Input.fullscreenMousePosition.x;
 	ypos = Input.fullscreenMousePosition.y;
 
-	/*if (Input.GetKey(KeyCode::RightMouse))
-	{
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
 
-	yaw = xoffset;
-	pitch = yoffset;
-
-	if (pitch > 90.f)
-	pitch = 90.0f;
-	if (pitch < -90.0f)
-	pitch = -90.0f;
-
-	DirectX::XMMATRIX rotation;
-
-	rotation = DirectX::XMMatrixRotationAxis(gameObject->transform.getRight(), pitch);
-	rotation = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationAxis(gameObject->transform.getUp(), -yaw), rotation);
-	rotation = DirectX::XMMatrixTranspose(rotation);
-
-	gameObject->transform.setForward(DirectX::XMVector3Transform(gameObject->transform.getForward(), rotation));
-	gameObject->transform.setRight(DirectX::XMVector3Transform(gameObject->transform.getRight(), rotation));
-	}*/
 	// Left button is down
 	xoffset = (float)xpos - lastX;
 	yoffset = (float)ypos - lastY;
 	lastX = (float)xpos;
 	lastY = (float)ypos;
 
-
-	//gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorScale(position, distance)));
 	SelectUnits();
 }
 

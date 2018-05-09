@@ -8,7 +8,7 @@
 #include "PRIMITIVE_GEOMETRY.h"
 #include "Unit.h"
 #include <vector>
-#include "PlayerSelectionScript.h"
+
 #include "GameManager.h"
 ///////////////
 //#include "Component.h"
@@ -28,7 +28,6 @@ private:
 	float speed = 0;
 	float distance = 0;
 	DirectX::XMVECTOR direction;
-	DirectX::XMVECTOR position;
 
 	float pitch;
 	float yaw;

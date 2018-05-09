@@ -53,13 +53,13 @@ VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 	output.Position = float4(0, 0, 0, 0);
 	if (animate==1) {
 		if(input.JointWeights.x>0)
-			output.Position += mul(1, mul(float4(input.Position, 1), skeletonTransform[1]));
-		//if (input.JointWeights.y>0)
-		//	output.Position += mul(input.JointWeights.y, mul(float4(input.Position, 1), skeletonTransform[input.JointIndices.y]));
-		//if (input.JointWeights.z>0)
-		//	output.Position += mul(input.JointWeights.z, mul(float4(input.Position, 1), skeletonTransform[input.JointIndices.z]));
-		//if (input.JointWeights.w>0)
-		//	output.Position += mul(input.JointWeights.w, mul(float4(input.Position, 1), skeletonTransform[input.JointIndices.w]));
+			output.Position += mul(input.JointWeights.x, mul(float4(input.Position, 1), skeletonTransform[input.JointIndices.x]));
+		if (input.JointWeights.y>0)
+			output.Position += mul(input.JointWeights.y, mul(float4(input.Position, 1), skeletonTransform[input.JointIndices.y]));
+		if (input.JointWeights.z>0)
+			output.Position += mul(input.JointWeights.z, mul(float4(input.Position, 1), skeletonTransform[input.JointIndices.z]));
+		if (input.JointWeights.w>0)
+			output.Position += mul(input.JointWeights.w, mul(float4(input.Position, 1), skeletonTransform[input.JointIndices.w]));
 
 		//output.Position = output.Position / output.Position.w;
 	}

@@ -172,6 +172,7 @@
     <ClInclude Include="FormatHeader.h" />
     <ClInclude Include="formatImporter.h" />
     <ClInclude Include="JGUI.h" />
+    <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
@@ -202,9 +203,6 @@
     <ClInclude Include="PathCreator.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerMoveScript.h" />
-    <ClInclude Include="PlayerScript.h" />
-    <ClInclude Include="PlayerSelectionScript.h" />
     <ClInclude Include="PRIMITIVE_GEOMETRY.h" />
     <ClInclude Include="QuadTreeNode.h" />
     <ClInclude Include="RenderManager.h" />
@@ -248,6 +246,7 @@
     <ClCompile Include="EditorSceneSelectionScript.cpp" />
     <ClCompile Include="formatImporter.cpp" />
     <ClCompile Include="JGUI.cpp" />
+    <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -275,9 +274,6 @@
     <ClCompile Include="PathCreator.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerMoveScript.cpp" />
-    <ClCompile Include="PlayerScript.cpp" />
-    <ClCompile Include="PlayerSelectionScript.cpp" />
     <ClCompile Include="QuadTreeNode.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Scene.cpp" />
