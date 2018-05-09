@@ -10,6 +10,7 @@
 #include <DirectXMath.h>
 #include "PRIMITIVE_GEOMETRY.h"
 #include <algorithm>
+#include <thread>
 
 /*#define MAX 200
 #define MIN 0
@@ -27,6 +28,9 @@ public:
 	void createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions);
 	void blockGrid(DirectX::XMFLOAT3 pos);
 	std::vector<Node> getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos);
+
+	void loadBlockMap();
+
 
 private:
 	static int MAX;

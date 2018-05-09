@@ -8,6 +8,7 @@ struct VS_OUT
 	float4 worldPosition : WPOSITION;
 	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
+	uint instanceID : InstanceID;
 };
 
 cbuffer MATRIX_Buffer :register (b0)
@@ -26,6 +27,12 @@ cbuffer MATRIX_Buffer :register (b0)
 cbuffer Manager_Buffer :register (b1)
 {
 	float4 fireRing;
+};
+
+cbuffer INSTANCE_Buffer :register (b2)
+{
+	matrix instanceWorld[100];
+	int4 unitTag[100];
 };
 
 Texture2D Diffuse:register(t0);
@@ -101,7 +108,18 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float metallic = AORoughMet.z;//met_Roug_Ao.x;
 	float roughness = AORoughMet.y;
 	float ao = AORoughMet.x;//met_Roug_Ao.z;	
-		
+
+	if (unitTag[input.instanceID].x == 1)
+	{
+		if (roughness >= 0.5)
+			return float4(0, 0, 1, 0);
+	}
+	if (unitTag[input.instanceID].x == 2)
+	{
+		if(roughness >= 0.5)
+			return float4(1, 0, 0, 0);
+	}
+
 	if (isTerrain==1)
 	{
 		float3 IDcolor, colorValue;
@@ -131,7 +149,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 			metallic = lerp(metallic, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.y);
 			roughness = lerp(roughness, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.y);
 
-			albedo = albedo * float3(0.9f, 1.0, 0.1f);
+			//albedo = albedo * float3(0.9f, 1.0, 0.1f);
 		}
 
 		if (colorValue.z > Epsilon) //B
@@ -142,7 +160,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 			metallic = lerp(metallic, SandAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.z);
 			roughness = lerp(roughness, SandAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.z);
 
-			albedo = albedo * float3(0.1f, 0.1, 1.0f);
+			//albedo = albedo * float3(0.1f, 0.1, 1.0f);
 		}
 
 		float3 middle = float3(149, 0, 149);
