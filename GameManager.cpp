@@ -219,36 +219,36 @@ void GameManager::addBuildings()
 					goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
 					Unit *goldMine = new Unit(GoldMine);
 					goldMineGameObject->addComponent(goldMine);
-					gamemanager.unitLists[0].push_back(goldMine);
+					gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 					x++;
 					continue;
 				}
 				
 				if (x == 1)
 				{
-					GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
-					goldMineGameObject->name = "Bank";
-					goldMineGameObject->tag = 0;
+					GameObject* bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+					bankGameObject->name = "Bank";
+					bankGameObject->tag = 0;
 					MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
-					goldMineGameObject->addComponent(meshFilter2);
-					goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+					bankGameObject->addComponent(meshFilter2);
+					bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
 					Unit *bank = new Unit(Bank);
-					goldMineGameObject->addComponent(bank);
-					gamemanager.unitLists[0].push_back(bank);
+					bankGameObject->addComponent(bank);
+					gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
 					x++;
 					continue;
 				}
 				if (x == 2)
 				{
-					GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
-					goldMineGameObject->name = "Barrack";
-					goldMineGameObject->tag = 0;
+					GameObject* barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+					barrackGameObject->name = "Barrack";
+					barrackGameObject->tag = 0;
 					MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("BarracksTest1"));
-					goldMineGameObject->addComponent(meshFilter2);
-					goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
-					Unit *bank = new Unit(Barrack);
-					goldMineGameObject->addComponent(bank);
-					gamemanager.unitLists[0].push_back(bank);
+					barrackGameObject->addComponent(meshFilter2);
+					barrackGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BarrackMaterial")));
+					Unit *barrack = new Unit(Barrack);
+					barrackGameObject->addComponent(barrack);
+					gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
 					x = 0;
 					continue;
 				}
