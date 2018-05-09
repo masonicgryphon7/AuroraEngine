@@ -28,7 +28,6 @@ private:
 	float speed = 0;
 	float distance = 0;
 	DirectX::XMVECTOR direction;
-	DirectX::XMVECTOR position;
 
 	float pitch;
 	float yaw;
