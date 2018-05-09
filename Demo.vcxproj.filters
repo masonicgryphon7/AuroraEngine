@@ -42,7 +42,6 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="PathCreator.cpp" />
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PlayerSelectionScript.cpp" />
     <ClCompile Include="QuadTreeNode.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -62,6 +61,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="JGUI.cpp" />
+    <ClCompile Include="PlayerScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
@@ -105,7 +105,6 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="PathCreator.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="PlayerSelectionScript.h" />
     <ClInclude Include="PRIMITIVE_GEOMETRY.h" />
     <ClInclude Include="QuadTreeNode.h" />
     <ClInclude Include="RenderManager.h" />
@@ -132,6 +131,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="JGUI.h" />
+    <ClInclude Include="PlayerScript.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
