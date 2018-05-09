@@ -293,7 +293,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
-	else
+	if ( targetedUnit->healthPoints < 0)
 	{
 		UnitOrders.erase(UnitOrders.begin());
 	}
@@ -553,7 +553,7 @@ void Unit::summonSoldierCommand()
 	UnitOrders.erase(UnitOrders.begin());
 	Order tempOrder;
 	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
 	unitSoldier->getUnitOrdersPointer()->push_back(tempOrder);
 }
 
