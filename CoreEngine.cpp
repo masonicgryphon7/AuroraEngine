@@ -19,7 +19,7 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define GRAPHICS_DEBUGGER_ENABLED 1
-#define PLAYER_BUILD 0
+#define PLAYER_BUILD 1
 
 bool CoreEngine::hasResized = false;
 
@@ -175,7 +175,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//camera->addComponent(playerscript);
 
 		//Tree
-		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
+		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(12, 0, 20, 0));
 		tree->name = "Tree";
 		tree->tag = 0;
 		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
