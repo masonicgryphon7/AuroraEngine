@@ -293,7 +293,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
-	else
+	if ( targetedUnit->healthPoints < 0)
 	{
 		UnitOrders.erase(UnitOrders.begin());
 	}

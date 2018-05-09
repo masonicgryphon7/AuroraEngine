@@ -46,8 +46,8 @@ void NPC::update()
 
 			}
 		}
-	}
-	*/
+	}*/
+	
 
 	//CODE GOES HERE
 
