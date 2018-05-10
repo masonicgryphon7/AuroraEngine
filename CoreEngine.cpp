@@ -274,6 +274,15 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 			else
 			{
+				// FULLSCREEN
+				{
+					BOOL bFullscreen;
+					gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
+					// If not full screen, enable fullscreen again.
+					if (!bFullscreen)
+						gSwapChain->SetFullscreenState(TRUE, NULL);
+				}
+
 				inputHandler.updateInput();
 				Time.tick();
 				//gameManager.update();
