@@ -32,7 +32,7 @@ cbuffer INSTANCE_Buffer :register (b1)
 
 cbuffer SKELETON_Buffer :register (b2)
 {
-	matrix skeletonTransform[NUMBER_OF_JOINTS];
+	matrix skeletonTransform[20];
 };
 
 struct VS_OUT
@@ -42,6 +42,8 @@ struct VS_OUT
 	float4 worldPosition : WPOSITION;
 	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
+	uint instanceID : InstanceID;
+
 };
 //-----------------------------------------------------------------------------------------
 // VertexShader: VSScene
@@ -49,7 +51,7 @@ struct VS_OUT
 VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 {
 	VS_OUT output = (VS_OUT)0;
-
+	output.instanceID = instanceID;
 	output.Position = float4(0, 0, 0, 0);
 	if (animate==1) {
 		if(input.JointWeights.x>0)
@@ -64,7 +66,7 @@ VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 		//output.Position = output.Position / output.Position.w;
 	}
 	else {
-		output.Position = float4(0,0,0, 1);
+		output.Position = float4(input.Position, 1);
 	}
 
 	output.Position = mul(output.Position, instanceWorld[instanceID]);

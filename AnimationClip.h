@@ -16,9 +16,11 @@ public:
 	int nrOfKeyFrames;
 	std::vector<AnimationFrame>* getAnimationFrames() { return &animationFrames; };
 	int getFramesPerSecond() { return framesPerSecond; };
+	float getClipTimeLength() { return clipTimeLength; };
 private:
 	Skeleton * skeleton;
 	int framesPerSecond = 0;
+	float clipTimeLength;
 	std::vector<AnimationFrame> animationFrames;
 	std::string clipName, clipPath;
 

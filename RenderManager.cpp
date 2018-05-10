@@ -128,7 +128,9 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 				DirectX::XMStoreFloat4x4( &skeleton[j], skel[j]);
 				//DirectX::XMStoreFloat4x4( &skeleton[j], DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
 			}
-			gDeviceContext->UpdateSubresource(skeletonBuffer, 0, nullptr, &matrixBufferData, 0, 0);
+			//DirectX::XMStoreFloat4x4(&skeleton[2], DirectX::XMMatrixTranspose( DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f, 4.0f, 1.0f)));
+
+			gDeviceContext->UpdateSubresource(skeletonBuffer, 0, nullptr, &skeleton, 0, 0);
 
 		}
 		else
