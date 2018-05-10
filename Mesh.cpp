@@ -4,14 +4,14 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
+Mesh::Mesh(int vertCountData, std::string terrainName, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
 {
 	this->vertexShader = vertexShader;
 	vertexCount = 0;
 	gDeviceContext = devContext;
 	CreateTerrainMeshData(vertCountData, TerrainInfoVector, device, devContext);
-	this->meshName = "Terrain";
-	this->meshPath = "Terrain";
+	this->meshName = terrainName;
+	this->meshPath = terrainName;
 }
 
 Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)

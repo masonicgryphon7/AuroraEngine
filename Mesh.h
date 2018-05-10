@@ -29,7 +29,7 @@ class Mesh
 {
 public:
 	Mesh();
-	Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader);
+	Mesh(int vertCountData, std::string terrainName, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader);
 	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader);
 	Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, bool isBinary, bool isAnimated, ShaderProgram* vertexShader);
 

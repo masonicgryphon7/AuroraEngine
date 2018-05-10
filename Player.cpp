@@ -22,11 +22,16 @@ void Player::Start(HWND * w, ID3D11Device * d, ID3D11DeviceContext * dc, CoreEng
 	ImGui::StyleColorsDark();
 
 	jGUI = new JGUI();
+	//AssetManager.AddTexture("troll_made-with-unity.png");
+	//AssetManager.addTexture("Assets/troll_made-with-unity.png");
 }
 
 float gameTime = 600.0f;
 float timeSelectToUnits = 0.0f;
 Vector2 mousePosUnits;
+
+float unityTroll = 0.0f;
+unsigned int stateTroll = 0;
 
 #include "Debug.h"
 void Player::Update()
@@ -149,6 +154,59 @@ void Player::Update()
 	ImGui::Text("%.1f", ImGui::GetIO().Framerate);
 	ImGui::GetWindowDrawList()->AddRect(ImVec2(p.x, p.y), ImVec2(p.x + 100, p.y + 40), 0xFFFFFFFF);
 	ImGui::PopTextWrapPos();
+
+
+	if (stateTroll == 0) // start troll mode
+	{
+		if (unityTroll >= 5.f)
+		{
+			stateTroll = 1; // fade out troll mode
+			unityTroll = 0.0f;
+		}
+		else
+			unityTroll += Time.getDeltaTime();
+
+		jGUI->BoxFilled(0.0f, 0.0f, 1.0f, 1.0f, ImColor(34, 44, 55));
+	}
+	else if (stateTroll == 1)
+	{
+		if (unityTroll >= 3.f)
+		{
+			stateTroll = 2; // fade out troll mode
+			unityTroll = 0.0f;
+		}
+		else
+			unityTroll += Time.getDeltaTime();
+
+
+		float xMin = jGUI->Lerp(811.5f, 781.5f, (unityTroll / 3));
+		float yMin = jGUI->Lerp(430.5f, 400.5f, (unityTroll / 3));
+
+		float xMax = jGUI->Lerp(1108.5f, 1138.5f, (unityTroll / 3));
+		float yMax = jGUI->Lerp(649.5f, 679.5f, (unityTroll / 3));
+
+		int alpha = (int)jGUI->Lerp(0, 255, (unityTroll / 3));
+
+		jGUI->BoxFilled(0.0f, 0.0f, 1.0f, 1.0f, ImColor(34, 44, 55));
+		jGUI->Image(Vector2(xMin, yMin), Vector2(xMax, yMax), AssetManager.getTexture("troll_made_with_unity")->getTexture(), ImColor(255, 255, 255, alpha));
+	}
+	else if (stateTroll == 2)
+	{
+		if (unityTroll < 1.0f)
+			unityTroll += Time.getDeltaTime();
+		else
+		{
+			unityTroll = 10.0f;
+			stateTroll = 3; // exit troll mode
+			coreEngine->createTerrain();
+		}
+
+		int alpha = (int)jGUI->Lerp(255, 0, unityTroll);
+
+		jGUI->BoxFilled(0.0f, 0.0f, 1.0f, 1.0f, ImColor(34, 44, 55));
+		jGUI->Image(Vector2(781.5f, 400.5f), Vector2(1138.5f, 679.5f), AssetManager.getTexture("troll_made_with_unity")->getTexture(), ImColor(255, 255, 255, alpha));
+	}
+
 
 	coreEngine->camera->getComponent<Camera>()->width = screen.x;
 	coreEngine->camera->getComponent<Camera>()->height = screen.y;
