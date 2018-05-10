@@ -300,6 +300,9 @@ void Unit::attackCommand(Unit* targetedUnit)
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
 	}
+	else {
+		UnitOrders.erase(UnitOrders.begin());
+	}
 
 }
 
@@ -319,14 +322,10 @@ void Unit::takeDamage(int attackPoints)
 
 	if (healthPoints <= 0)
 	{
-		UnitOrders.erase(UnitOrders.begin());
 		Order tempOrder;
 		tempOrder.command = Die;
-		if (UnitOrders.size() > 0)
-		{
-			UnitOrders.erase(UnitOrders.begin());
-		}
-		UnitOrders.push_back(tempOrder);
+
+		UnitOrders.insert(UnitOrders.begin(), tempOrder);
 	}
 }
 
