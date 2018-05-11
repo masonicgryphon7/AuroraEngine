@@ -4376,21 +4376,21 @@ void ImGui::RenderCheckMark(ImVec2 pos, ImU32 col, float sz)
 	window->DrawList->PathStroke(col, false, thickness);
 }
 
-void ImGui::RenderNavHighlight(const ImRect& bb, ImGuiID id, ImGuiNavHighlightFlags flags)
+void ImGui::RenderNavHighlight(const ImRect& bb, ImGuiID id, ImGuiNavHighLightlags flags)
 {
 	ImGuiContext& g = *GImGui;
 	if (id != g.NavId)
 		return;
-	if (g.NavDisableHighlight && !(flags & ImGuiNavHighlightFlags_AlwaysDraw))
+	if (g.NavDisableHighlight && !(flags & ImGuiNavHighLightlags_AlwaysDraw))
 		return;
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 	if (window->DC.NavHideHighlightOneFrame)
 		return;
 
-	float rounding = (flags & ImGuiNavHighlightFlags_NoRounding) ? 0.0f : g.Style.FrameRounding;
+	float rounding = (flags & ImGuiNavHighLightlags_NoRounding) ? 0.0f : g.Style.FrameRounding;
 	ImRect display_rect = bb;
 	display_rect.ClipWith(window->ClipRect);
-	if (flags & ImGuiNavHighlightFlags_TypeDefault)
+	if (flags & ImGuiNavHighLightlags_TypeDefault)
 	{
 		const float THICKNESS = 2.0f;
 		const float DISTANCE = 3.0f + THICKNESS * 0.5f;
@@ -4402,7 +4402,7 @@ void ImGui::RenderNavHighlight(const ImRect& bb, ImGuiID id, ImGuiNavHighlightFl
 		if (!fully_visible)
 			window->DrawList->PopClipRect();
 	}
-	if (flags & ImGuiNavHighlightFlags_TypeThin)
+	if (flags & ImGuiNavHighLightlags_TypeThin)
 	{
 		window->DrawList->AddRect(display_rect.Min, display_rect.Max, GetColorU32(ImGuiCol_NavHighlight), rounding, ~0, 1.0f);
 	}
@@ -5171,7 +5171,7 @@ void ImGui::EndChild()
 
 			// When browsing a window that has no activable items (scroll only) we keep a highlight on the child
 			if (window->DC.NavLayerActiveMask == 0 && window == g.NavWindow)
-				RenderNavHighlight(ImRect(bb.Min - ImVec2(2, 2), bb.Max + ImVec2(2, 2)), g.NavId, ImGuiNavHighlightFlags_TypeThin);
+				RenderNavHighlight(ImRect(bb.Min - ImVec2(2, 2), bb.Max + ImVec2(2, 2)), g.NavId, ImGuiNavHighLightlags_TypeThin);
 		}
 		else
 		{
@@ -8125,7 +8125,7 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
 	{
 		// Framed type
 		RenderFrame(frame_bb.Min, frame_bb.Max, col, true, style.FrameRounding);
-		RenderNavHighlight(frame_bb, id, ImGuiNavHighlightFlags_TypeThin);
+		RenderNavHighlight(frame_bb, id, ImGuiNavHighLightlags_TypeThin);
 		RenderArrow(frame_bb.Min + ImVec2(padding.x, text_base_offset_y), is_open ? ImGuiDir_Down : ImGuiDir_Right, 1.0f);
 		if (g.LogEnabled)
 		{
@@ -8147,7 +8147,7 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
 		if (hovered || (flags & ImGuiTreeNodeFlags_Selected))
 		{
 			RenderFrame(frame_bb.Min, frame_bb.Max, col, false);
-			RenderNavHighlight(frame_bb, id, ImGuiNavHighlightFlags_TypeThin);
+			RenderNavHighlight(frame_bb, id, ImGuiNavHighLightlags_TypeThin);
 		}
 
 		if (flags & ImGuiTreeNodeFlags_Bullet)
@@ -10944,7 +10944,7 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
 	{
 		const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
 		RenderFrame(bb_with_spacing.Min, bb_with_spacing.Max, col, false, 0.0f);
-		RenderNavHighlight(bb_with_spacing, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
+		RenderNavHighlight(bb_with_spacing, id, ImGuiNavHighLightlags_TypeThin | ImGuiNavHighLightlags_NoRounding);
 	}
 
 	if ((flags & ImGuiSelectableFlags_SpanAllColumns) && window->DC.ColumnsSet)

@@ -194,11 +194,11 @@ namespace MyLibrary
 		return materialToReturn;
 	}
 
-	LightFromFile Loadera::readLightFile(std::string fileName)
+	LightromFile Loadera::readLightile(std::string fileName)
 	{
 		//read the light file
 
-		LightFromFile lightToReturn;
+		LightromFile lightToReturn;
 
 		bool fileIsOpen = false;
 

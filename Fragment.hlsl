@@ -196,7 +196,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 	//light value
 	float3 lightDirection = normalize(float3(1, 3, 1));
 	float3 lightColor = float3(1, 1, 1);
-	float intensity = 1;
+	float intensity = 2;
 	//pbr
 	float3 f0 = float3(0.04f, 0.04f, 0.04f);
 	f0 = lerp(f0, albedo, metallic);
