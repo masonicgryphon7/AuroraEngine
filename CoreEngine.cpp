@@ -215,7 +215,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 		//
-		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 60, 20, 0));
+		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 50, 40, 0));
 		animatedGO->name = "Animator";
 		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
 		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
@@ -358,23 +358,23 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("TerrainMaterial1")->setYTile(matYTile);
 	assetManager.getMaterial("TerrainMaterial1")->setTerrainMaterials(
 
-		assetManager.getTexture("Grass-Diffuse")->getTexture(),
-		assetManager.getTexture("Grass-Normal")->getTexture(),
-		assetManager.getTexture("Grass-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("Grass-Diffuse")->getTexture(),
+	assetManager.getTexture("Grass-Normal")->getTexture(),
+	assetManager.getTexture("Grass-RoughMetalAo")->getTexture(),
 
-		assetManager.getTexture("Mountain-Diffuse")->getTexture(),
-		assetManager.getTexture("Mountain-Normal")->getTexture(),
-		assetManager.getTexture("Mountain-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("Mountain-Diffuse")->getTexture(),
+	assetManager.getTexture("Mountain-Normal")->getTexture(),
+	assetManager.getTexture("Mountain-RoughMetalAo")->getTexture(),
 
-		assetManager.getTexture("GrassBricks-Diffuse")->getTexture(),
-		assetManager.getTexture("GrassBricks-Normal")->getTexture(),
-		assetManager.getTexture("GrassBricks-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("GrassBricks-Diffuse")->getTexture(),
+	assetManager.getTexture("GrassBricks-Normal")->getTexture(),
+	assetManager.getTexture("GrassBricks-RoughMetalAo")->getTexture(),
 
-		assetManager.getTexture("Lava_Albedo2")->getTexture(),
-		assetManager.getTexture("Lava_Normal")->getTexture(),
-		assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+	assetManager.getTexture("Lava_Albedo2")->getTexture(),
+	assetManager.getTexture("Lava_Normal")->getTexture(),
+	assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 
-		assetManager.getTexture("FinaleIDMAP3")->getTexture()); //USE ID_PART 1
+	assetManager.getTexture("FinaleIDMAP3")->getTexture()); //USE ID_PART 1
 
 
 

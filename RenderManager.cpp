@@ -125,10 +125,11 @@ void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObj
 			std::vector<DirectX::XMMATRIX> skel = animator->getMatrixPalette();
 			for (int j = 0; j < skel.size(); j++)
 			{
-				DirectX::XMStoreFloat4x4( &skeleton[j], skel[j]);
-				//DirectX::XMStoreFloat4x4( &skeleton[j], DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+				//DirectX::XMStoreFloat4x4( &skeleton[j], skel[j]);
+				DirectX::XMStoreFloat4x4( &skeleton[j], DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
 			}
-			//DirectX::XMStoreFloat4x4(&skeleton[2], DirectX::XMMatrixTranspose( DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f, 4.0f, 1.0f)));
+			DirectX::XMStoreFloat4x4(&skeleton[1], DirectX::XMMatrixTranspose( DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f, 4.0f, 1.0f)));
+			DirectX::XMStoreFloat4x4(&skeleton[2], DirectX::XMMatrixTranspose(DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 8.0f, 0.0f, 8.0f, 1.0f)));
 
 			gDeviceContext->UpdateSubresource(skeletonBuffer, 0, nullptr, &skeleton, 0, 0);
 

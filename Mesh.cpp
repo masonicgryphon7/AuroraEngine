@@ -405,10 +405,10 @@ void Mesh::createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * dev
 		DirectX::XMStoreFloat3(&vertex.bitangent, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&vertex.bitangent)));
 		DirectX::XMStoreFloat3(&vertex.bitangent, DirectX::XMVectorSet(0, 0, 0, 0));
 
-		vertex.jointIndex.x =  myMesh.mesh_vertices[i].influencing_joint[0]-1;
-		vertex.jointIndex.y =  myMesh.mesh_vertices[i].influencing_joint[1]-1;
-		vertex.jointIndex.z =  myMesh.mesh_vertices[i].influencing_joint[2]-1;
-		vertex.jointIndex.w =  myMesh.mesh_vertices[i].influencing_joint[3]-1;
+		vertex.jointIndex.x =  myMesh.mesh_vertices[i].influencing_joint[0];
+		vertex.jointIndex.y =  myMesh.mesh_vertices[i].influencing_joint[1];
+		vertex.jointIndex.z =  myMesh.mesh_vertices[i].influencing_joint[2];
+		vertex.jointIndex.w =  myMesh.mesh_vertices[i].influencing_joint[3];
 
 		vertex.jointWeight.x =  myMesh.mesh_vertices[i].joint_weights[0];
 		vertex.jointWeight.y =  myMesh.mesh_vertices[i].joint_weights[1];
