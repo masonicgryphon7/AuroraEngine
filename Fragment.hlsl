@@ -102,7 +102,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 {
 	float2 adjustedUV = float2(input.Uv.x*xMaterialTile, input.Uv.y*yMaterialTile);
 
-	float3 albedo = pow(Diffuse.Sample(sampAni, adjustedUV).xyz, float3(2.2, 2.2, 2.2));
+	float3 albedo = Diffuse.Sample(sampAni, adjustedUV).xyz;
 	float3 N = NormalTexture.Sample(sampAni, adjustedUV).xyz;
 	float3 AORoughMet = AORoughMetTexture.Sample(sampAni, adjustedUV).xyz;
 	float metallic = AORoughMet.z;//met_Roug_Ao.x;
@@ -122,12 +122,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 	if (isTerrain==1)
 	{
-		float3 IDcolor, colorValue;
-		IDcolor = ID_Map.Sample(IDsampler, input.Uv).xyz;
-
-		colorValue.x = IDcolor.x;
-		colorValue.y = IDcolor.y;
-		colorValue.z = IDcolor.z;
+		float3 colorValue = ID_Map.Sample(IDsampler, input.Uv).xyz;
 
 
 		if (colorValue.x > Epsilon) //R
@@ -181,6 +176,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 	}
 
+	albedo = pow(albedo, float3(2.2, 2.2, 2.2));
 	N = N * 2.0f - 1.0f;
 	N = normalize(mul(N, input.TBNMatrix));
 
