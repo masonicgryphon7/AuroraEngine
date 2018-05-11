@@ -26,8 +26,8 @@ private:
 	bool HeightMapLoaded = false, HeightmapWithinBoundsOfGrid = false;
 	std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> RealVertArr;
 
+	std::vector<VERTEX_POS3UV2T3B3N3*> TriangleArr;
 public:
-	std::vector<VERTEX_POS3UV2T3B3N3> TriangleArr;
 	HeightMapAttributes HeightMapVariables;
 	int vertCount;
 	int vertpatchCount;

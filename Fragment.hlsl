@@ -112,12 +112,12 @@ float4 PS_main(VS_OUT input) : SV_Target
 	if (unitTag[input.instanceID].x == 1)
 	{
 		if (roughness >= 0.5)
-			return float4(0, 0, 1, 0);
+			albedo = float4(0, 0, 1, 0);
 	}
 	if (unitTag[input.instanceID].x == 2)
 	{
 		if(roughness >= 0.5)
-			return float4(1, 0, 0, 0);
+			albedo= float4(1, 0, 0, 0);
 	}
 
 	if (isTerrain==1)
@@ -135,8 +135,8 @@ float4 PS_main(VS_OUT input) : SV_Target
 			albedo = lerp(albedo, Grass.Sample(sampAni, adjustedUV).xyz, colorValue.x);
 			N = lerp(N, GrassNormal.Sample(sampAni, adjustedUV).xyz, colorValue.x);
 			ao = lerp(ao, GrassAORoughMetTexture.Sample(sampAni, adjustedUV).x, colorValue.x);
-			metallic = lerp(metallic, GrassAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.x);
-			roughness = lerp(roughness, GrassAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.x);
+			metallic = lerp(metallic, GrassAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.x);
+			roughness = lerp(roughness, GrassAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.x);
 
 			//albedo = albedo * float3(1.0f, 0.1, 0.1f);
 		}
@@ -146,8 +146,8 @@ float4 PS_main(VS_OUT input) : SV_Target
 			albedo = lerp(albedo, Mountain.Sample(sampAni, adjustedUV).xyz, colorValue.y);
 			N = lerp(N, MountainNormal.Sample(sampAni, adjustedUV).xyz, colorValue.y);
 			ao = lerp(ao, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).x, colorValue.y);
-			metallic = lerp(metallic, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.y);
-			roughness = lerp(roughness, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.y);
+			metallic = lerp(metallic, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.y);
+			roughness = lerp(roughness, MountainAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.y);
 
 			//albedo = albedo * float3(0.9f, 1.0, 0.1f);
 		}
@@ -157,8 +157,8 @@ float4 PS_main(VS_OUT input) : SV_Target
 			albedo = lerp(albedo, Sand.Sample(sampAni, adjustedUV).xyz, colorValue.z);
 			N = lerp(N, SandNormal.Sample(sampAni, adjustedUV).xyz, colorValue.z);
 			ao = lerp(ao, SandAORoughMetTexture.Sample(sampAni, adjustedUV).x, colorValue.z);
-			metallic = lerp(metallic, SandAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.z);
-			roughness = lerp(roughness, SandAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.z);
+			metallic = lerp(metallic, SandAORoughMetTexture.Sample(sampAni, adjustedUV).z, colorValue.z);
+			roughness = lerp(roughness, SandAORoughMetTexture.Sample(sampAni, adjustedUV).y, colorValue.z);
 
 			//albedo = albedo * float3(0.1f, 0.1, 1.0f);
 		}
@@ -174,13 +174,10 @@ float4 PS_main(VS_OUT input) : SV_Target
 			albedo = lerp(albedo, Lava_Albedo.Sample(sampAni, adjustedUV).xyz,lavaLerp) ;
 			N = lerp(N, Lava_Normal.Sample(sampAni, adjustedUV).xyz, lavaLerp);
 			ao = lerp(ao, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).x, lavaLerp);
-			metallic = lerp(metallic, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).y, lavaLerp);
-			roughness = lerp(roughness, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).z, lavaLerp);
+			metallic = lerp(metallic, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).z, lavaLerp);
+			roughness = lerp(roughness, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).y, lavaLerp);
 		}
-		if (distance(input.worldPosition, float4(22, 0, 5, 0)) <= 3)
-		{
-			return float4(1, 0, 1, 0);
-		}
+
 
 	}
 
