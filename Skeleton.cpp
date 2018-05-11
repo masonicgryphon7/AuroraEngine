@@ -23,7 +23,6 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 	MyLibrary::Loadera myLoader;
 
 	MyLibrary::SkeletonFromFile tempSkeleton = myLoader.readSkeletonFile(skeletonPath);
-	tempSkeleton.skeleton_joints[0].parentIndex = -1;
 
 	nrOfJoints = tempSkeleton.skeleton_nrOfJoints;
 	for (int i = 0; i < tempSkeleton.skeleton_nrOfJoints; i++ )
@@ -47,7 +46,13 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 		skeletonJoint.jointMatrix = currentJointInverseTransform;
 		std::string name =temp.joint_name;
 		skeletonJoint.name = "inverse_" + name;
-		skeletonJoint.parentIndex = temp.parentIndex/256;
+		if (i == 0) {
+			skeletonJoint.parentIndex =-1;
+		}
+		else
+		{
+			skeletonJoint.parentIndex = temp.parentIndex/256;
+		}
 		inverseSkeletonJoints.push_back(skeletonJoint);
 	}
 

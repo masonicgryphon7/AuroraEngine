@@ -24,7 +24,7 @@ void Animator::update()
 	if (isPlaying) {
 		playTime += Time.getDeltaTime()*playRate;
 
-		if (!loop && playTime>animationclips[currentClipIndex]->getClipTimeLength()) {
+		if (!loop && playTime>=animationclips[currentClipIndex]->getClipTimeLength()) {
 			isPlaying = false;
 		}
 	}
@@ -71,13 +71,14 @@ void Animator::calculateMatrixPalette()
 
 void Animator::transformToWorldSpace(int jointChildIndex, int firstFrameIndex, int secondFrameIndex, float lerpValue, DirectX::XMMATRIX parentMatrix)
 {
-	DirectX::XMVECTOR position1 = animationclips[currentClipIndex]->getAnimationFrames()[0][firstFrameIndex].joints[jointChildIndex].position;
-	DirectX::XMVECTOR rotation1 = animationclips[currentClipIndex]->getAnimationFrames()[0][firstFrameIndex].joints[jointChildIndex].rotation;
-	DirectX::XMVECTOR scale1 = animationclips[currentClipIndex]->getAnimationFrames()[0][firstFrameIndex].joints[jointChildIndex].scale;
+	std::vector<AnimationFrame>* currentClipFrames = animationclips[currentClipIndex]->getAnimationFrames();
+	DirectX::XMVECTOR position1 = currentClipFrames->at(firstFrameIndex).joints[jointChildIndex].position;
+	DirectX::XMVECTOR rotation1 = currentClipFrames->at(firstFrameIndex).joints[jointChildIndex].rotation;
+	DirectX::XMVECTOR scale1 = currentClipFrames->at(firstFrameIndex).joints[jointChildIndex].scale;
 
-	DirectX::XMVECTOR position2 = animationclips[currentClipIndex]->getAnimationFrames()[0][secondFrameIndex].joints[jointChildIndex].position;
-	DirectX::XMVECTOR rotation2 = animationclips[currentClipIndex]->getAnimationFrames()[0][secondFrameIndex].joints[jointChildIndex].rotation;
-	DirectX::XMVECTOR scale2 = animationclips[currentClipIndex]->getAnimationFrames()[0][secondFrameIndex].joints[jointChildIndex].scale;
+	DirectX::XMVECTOR position2 = currentClipFrames->at(secondFrameIndex).joints[jointChildIndex].position;
+	DirectX::XMVECTOR rotation2 = currentClipFrames->at(secondFrameIndex).joints[jointChildIndex].rotation;
+	DirectX::XMVECTOR scale2 = currentClipFrames->at(secondFrameIndex).joints[jointChildIndex].scale;
 
 
 	//LERP SLERP LERP
@@ -107,6 +108,6 @@ void Animator::transformToWorldSpace(int jointChildIndex, int firstFrameIndex, i
 	//parentMatrix = DirectX::XMMatrixMultiply(animationClipMatrix, parentMatrix);
 	for (int i = 0; i <skeleton->getInverseSkeletonJoints()[0][jointChildIndex].childIndices.size(); i++)
 	{
-		transformToWorldSpace(skeleton->getInverseSkeletonJoints()[0][jointChildIndex].childIndices[i], firstFrameIndex, secondFrameIndex, lerpValue, globalMatrix);
+		transformToWorldSpace(skeleton->getInverseSkeletonJoints()[0][jointChildIndex].childIndices[i], firstFrameIndex, secondFrameIndex, lerpValue, localMatrix);
 	}
 }
