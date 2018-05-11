@@ -171,16 +171,26 @@ float4 PS_main(VS_OUT input) : SV_Target
 		{
 			float lavaLerp = diff;
 			//return float4(Lava_Albedo.Sample(sampAni, adjustedUV).xyz, 0);
+			//adjustedUV.x = mul(sin(mul(fireRing.y, 0.06f) + mul(adjustedUV.x, 0.7f)), 0.3f) + mul(cos(mul(fireRing.y, 0.05f) + mul(adjustedUV.y, 0.5)), 0.5f);
+			//adjustedUV.x += newY;
+
+			//adjustedUV.x += lerp(5.5 * fireRing.y, adjustedUV.x, 0.2);
+
+			adjustedUV.x += fireRing.y;
+			adjustedUV.y += fireRing.y;
+
+			//adjustedUV.y += lerp5.5 *fireRing.y;
+
 			albedo = lerp(albedo, Lava_Albedo.Sample(sampAni, adjustedUV).xyz,lavaLerp) ;
 			N = lerp(N, Lava_Normal.Sample(sampAni, adjustedUV).xyz, lavaLerp);
 			ao = lerp(ao, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).x, lavaLerp);
 			metallic = lerp(metallic, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).y, lavaLerp);
 			roughness = lerp(roughness, Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV).z, lavaLerp);
 		}
-		if (distance(input.worldPosition, float4(22, 0, 5, 0)) <= 3)
+	/*	if (distance(float4(input.worldPosition.x - (150 - fireRing.x), input.worldPosition.yzw), float4(22, 0, 5, 0)) <= 150)
 		{
 			return float4(1, 0, 1, 0);
-		}
+		}*/
 
 	}
 

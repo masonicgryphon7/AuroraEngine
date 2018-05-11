@@ -285,7 +285,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				inputHandler.updateInput();
 				Time.tick();
-				//gameManager.update();
+				gameManager.update();
 				OnResize();
 
 				gScene.destroyGameObjects();

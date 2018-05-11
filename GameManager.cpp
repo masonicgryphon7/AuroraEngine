@@ -73,7 +73,7 @@ HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gD
 {
 	HRESULT hr = S_OK;
 	Manager_Buffer Manager_BufferData;
-	Manager_BufferData.fireRing = DirectX::XMVectorSet(ringOfFire, ringOfFire, ringOfFire, ringOfFire);
+	Manager_BufferData.fireRing = DirectX::XMVectorSet(ringOfFire, Time.getDeltaTime(), ringOfFire, ringOfFire);
 
 	CD3D11_BUFFER_DESC ManagerDesc(
 		sizeof(Manager_Buffer),
@@ -102,6 +102,12 @@ void GameManager::winCondition()
 void GameManager::update()
 {
 	gameTime += Time.getDeltaTime();
+	uvPanning += lavaSpeed * Time.getDeltaTime();
+	if (uvPanning > 1)
+		uvPanning = 0;
+
+	fireBufferData = DirectX::XMFLOAT4(ringOfFire, uvPanning, 0, 0);
+	devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &fireBufferData, 0, 0);
 	//winCondition();
 	switch (gameState)
 	{
@@ -115,11 +121,11 @@ void GameManager::update()
 		if (gameTime >= 0)
 		{
 			//Debug.Log(ringOfFire);  
-			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
-			ringOfFire -= 0.05f * Time.getDeltaTime() * gameTime;
+			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
 		if (ringOfFire < 150) {
 			gameState = GAME_STATE::MEDIUM_CIRCLE_STATE;
+			lavaSpeed = 0.01;
 		}
 		dmgRing();
 		break;
@@ -127,11 +133,13 @@ void GameManager::update()
 		if (gameTime >= 180)
 		{
 			//Debug.Log(ringOfFire);  
-			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
+			lavaSpeed = 0.05;
 		}
 		if (ringOfFire < 80) {
 			gameState = GAME_STATE::SMALL_CIRCLE_STATE;
+			lavaSpeed = 0.01;
 		}
 		dmgRing();
 		break;
@@ -139,8 +147,13 @@ void GameManager::update()
 		if (gameTime >= 240 && ringOfFire > 28)
 		{
 			Debug.Log(ringOfFire);  
-			devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
+			lavaSpeed = 0.05;
+		}
+		else
+		{
+			lavaSpeed = 0.01;
 		}
 		dmgRing();
 		break;
