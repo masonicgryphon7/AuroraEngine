@@ -173,7 +173,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		camera->addComponent(cam);
 		PlayerScript* playerscript = new PlayerScript(camera);
 		camera->addComponent(playerscript);
-
+		Light* directionalLight = new Light(LIGHT_TYPES::Directional, SHADOW_TYPE::SoftShadows, TEXTURE_RESOLUTIONS::R1024x1024, DirectX::XMVectorSet(1, 1, 1, 1), 1, 1);
+		camera->addComponent(directionalLight);
 		//PlayerScript *playerscript = new PlayerScript();
 		//camera->addComponent(playerscript);
 

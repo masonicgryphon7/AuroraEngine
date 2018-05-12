@@ -17,6 +17,7 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix world;
 	matrix view;
 	matrix projection;
+	matrix lightProjection;
 	float4 cameraPosition;
 	int isTerrain;
 	float xMaterialTile;
@@ -40,6 +41,7 @@ struct VS_OUT
 	float4 Position : SV_POSITION;
 	float2 Uv : UV;
 	float4 worldPosition : WPOSITION;
+	float4 lightspacePosition : LPOSITION;
 	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
 	uint instanceID : InstanceID;
@@ -73,6 +75,7 @@ VS_OUT VS_main(VS_IN input, uint instanceID : SV_InstanceID)
 	output.TBNMatrix = mul(float3x3(input.Tangent, input.Bitangent, input.Normal), instanceWorld[instanceID]);
 
 	output.worldPosition = output.Position;
+	output.lightspacePosition = mul(output.Position, lightProjection);
 	output.Position = mul(output.Position, view);
 	output.Position = mul(output.Position, projection);
 	output.Uv = input.Uv;

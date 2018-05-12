@@ -33,11 +33,10 @@ RenderManager::~RenderManager()
 	m_renderTargetView->Release();
 }
 
-void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* objectsToRender)
+void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* objectsToRender, int width, int height)
 {
 	DirectX::XMMATRIX viewMatrix = cameraObject->getComponent<Camera>()->calculateViewMatrix();
 	DirectX::XMMATRIX perspectiveMatrix = cameraObject->getComponent<Camera>()->calculatePerspectiveMatrix();
-	std::vector<GameObject*> affectingLights;
 	//Sort Objects To Render
 	int instanceIndex = 0;
 
@@ -53,6 +52,11 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 		}
 		else {
 			objectsToRender[0][i]->instanceIndex = temp->renderIndex;
+		}
+
+		Light* light = objectsToRender[0][i]->getComponent<Light>();
+		if (light) {
+			lightsVector.push_back(light);
 		}
 	}
 
@@ -92,8 +96,10 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 			}
 		}
 
-		if (tempInstanceGroup.size()>0)
+		if (tempInstanceGroup.size() > 0) {
 			opaqueDraw.push_back(tempInstanceGroup);
+		}
+
 	}
 
 	//Back To Front Sort
@@ -102,8 +108,18 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 
 	}
 
+	////Render shadow maps
+	//for (int i = 0; i < lightsVector.size(); i++)
+	//{
+	//	if(lightsVector[i]->getShadowType()!=SHADOW_TYPE::NoShadows)
+	//		RenderShadowMaps(lightsVector[i], width, height);
+	//}
+	Light* directionalLight = cameraObject->getComponent<Light>();
+	RenderShadowMaps(directionalLight, width, height);
+	gDeviceContext->PSSetShaderResources(16, 1, directionalLight->getID3D11ShaderResourceView());
 
-	//Opaque
+
+	//Draw Opaque
 	for (int i = 0; i < opaqueDraw.size(); i++)
 	{
 
@@ -118,6 +134,7 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(opaqueDraw[i][0]->calculateWorldMatrix()));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
 		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.lightProjection, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(directionalLight->calculateViewMatrix(), directionalLight->calculatePerspectiveMatrix(width,height))));
 		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
 		Animator* animator = opaqueDraw[i][0]->getComponent<Animator>();
 		if (animator) {
@@ -125,11 +142,11 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 			std::vector<DirectX::XMMATRIX> skel = animator->getMatrixPalette();
 			for (int j = 0; j < skel.size(); j++)
 			{
-				//DirectX::XMStoreFloat4x4( &skeleton[j], skel[j]);
-				DirectX::XMStoreFloat4x4( &skeleton[j], DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+				DirectX::XMStoreFloat4x4( &skeleton[j], skel[j]);
+				//DirectX::XMStoreFloat4x4( &skeleton[j], DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
 			}
-			DirectX::XMStoreFloat4x4(&skeleton[1], DirectX::XMMatrixTranspose( DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f, 4.0f, 1.0f)));
-			DirectX::XMStoreFloat4x4(&skeleton[2], DirectX::XMMatrixTranspose(DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 8.0f, 0.0f, 8.0f, 1.0f)));
+			//DirectX::XMStoreFloat4x4(&skeleton[1], DirectX::XMMatrixTranspose( DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f, 4.0f, 1.0f)));
+			//DirectX::XMStoreFloat4x4(&skeleton[2], DirectX::XMMatrixTranspose(DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 8.0f, 0.0f, 8.0f, 1.0f)));
 
 			gDeviceContext->UpdateSubresource(skeletonBuffer, 0, nullptr, &skeleton, 0, 0);
 
@@ -170,6 +187,8 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 
 		}		
 	}
+	//Clean opaque draw
+	gDeviceContext->PSSetShaderResources(16, 1, nullSRV);
 
 	/////////////////////Animation?
 
@@ -187,16 +206,13 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 	{
 		materialVector[i]->renderIndex = -1;
 	}
-	for (int i = 0; i < translucentDraw.size(); i++)
-	{
-		translucentDraw[i]->instanceIndex = -1;
-	}
 	for (int i = 0; i < objectsToRender->size(); i++)
 	{
 		objectsToRender[0][i]->instanceIndex = -1;
 	}
 	meshVector.clear();
 	materialVector.clear();
+	lightsVector.clear();
 	opaqueDraw.clear();
 	translucentDraw.clear();
 }
@@ -313,6 +329,89 @@ void RenderManager::CreateSkeletonBuffer()
 	gDeviceContext->VSSetConstantBuffers(2, 1, &skeletonBuffer);
 }
 
+
+
+void RenderManager::RenderShadowMaps(Light * light, int width, int height)
+{
+	ID3D11RenderTargetView* gBackbufferRTVgg = nullptr;
+	ID3D11DepthStencilView* m_depthStencilViewgg = nullptr;
+	gDeviceContext->OMGetRenderTargets(1, &gBackbufferRTVgg, &m_depthStencilViewgg);
+
+	DirectX::XMMATRIX viewMatrix = light->calculateViewMatrix();
+	DirectX::XMMATRIX perspectiveMatrix = light->calculatePerspectiveMatrix(width, height);
+	gDeviceContext->ClearDepthStencilView(light->getID3D11DepthStencilView(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	gDeviceContext->OMSetRenderTargets(1, light->getID3D11RenderTargetView(), light->getID3D11DepthStencilView());
+	gDeviceContext->PSSetShader(nullptr, nullptr, 0);
+	float clearColor[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+
+
+
+	//Draw Opaque
+	for (int i = 0; i < opaqueDraw.size(); i++)
+	{
+		opaqueDraw[i][0]->meshFilterComponent->getMesh()->bindMesh();
+
+		//Fill matrixbuffer
+		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(opaqueDraw[i][0]->calculateWorldMatrix()));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
+
+		Animator* animator = opaqueDraw[i][0]->getComponent<Animator>();
+		if (animator) {
+			matrixBufferData.animate = 1;
+			std::vector<DirectX::XMMATRIX> skel = animator->getMatrixPalette();
+			for (int j = 0; j < skel.size(); j++)
+			{
+				DirectX::XMStoreFloat4x4(&skeleton[j], skel[j]);
+				//DirectX::XMStoreFloat4x4(&skeleton[j], DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+			}
+			//DirectX::XMStoreFloat4x4(&skeleton[1], DirectX::XMMatrixTranspose(DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f, 4.0f, 1.0f)));
+			//DirectX::XMStoreFloat4x4(&skeleton[2], DirectX::XMMatrixTranspose(DirectX::XMMATRIX(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 8.0f, 0.0f, 8.0f, 1.0f)));
+
+			gDeviceContext->UpdateSubresource(skeletonBuffer, 0, nullptr, &skeleton, 0, 0);
+
+		}
+		else
+		{
+			matrixBufferData.animate = 0;
+		}
+		gDeviceContext->UpdateSubresource(matrixBuffer, 0, nullptr, &matrixBufferData, 0, 0);
+
+		//Instancing
+		int nrOfObjectsDrawn = 0;
+		while (nrOfObjectsDrawn != opaqueDraw[i].size())
+		{
+			//Get world matricies
+			int nrToDraw = 0;
+			nrToDraw = opaqueDraw[i].size() - nrOfObjectsDrawn;
+			if (nrToDraw > 100)
+				nrToDraw = 100;
+
+			for (int j = 0; j < nrToDraw; j++)
+			{
+				DirectX::XMFLOAT4X4 temp;
+				DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j + nrOfObjectsDrawn]->calculateWorldMatrix()));
+				InstanceMatrixData.opaqueTransforms[j] = temp;
+				InstanceMatrixData.unitTag[j].x = opaqueDraw[i][j + nrOfObjectsDrawn]->tag;
+				int jj = 0;
+			}
+
+			nrOfObjectsDrawn += nrToDraw;
+			gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &InstanceMatrixData, 0, 0);
+
+
+
+			//Get skeleton
+
+			gDeviceContext->DrawInstanced(opaqueDraw[i][0]->meshFilterComponent->getMesh()->getVertexCount(), opaqueDraw[i].size(), 0, 0);
+
+		}
+	}
+
+	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTVgg, m_depthStencilViewgg);
+
+}
+
 void RenderManager::CreateRenderTarget(int width, int height)
 {
 	if (m_renderTargetTexture != nullptr)
@@ -370,6 +469,8 @@ void RenderManager::CreateRenderTarget(int width, int height)
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
 	gDevice->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
+
+
 
 	//Console.success("Passed");
 }

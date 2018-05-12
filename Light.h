@@ -31,11 +31,20 @@ public:
 	~Light();
 
 	void setShadowMapSize(TEXTURE_RESOLUTIONS shadowMapSize);
+	DirectX::XMMATRIX calculateViewMatrix();
+	DirectX::XMMATRIX calculatePerspectiveMatrix(int width, int height);
 
-
+	SHADOW_TYPE getShadowType() { return shadowType; };
+	ID3D11ShaderResourceView** getID3D11ShaderResourceView() { return &m_shadowMapView; };
+	ID3D11DepthStencilView* getID3D11DepthStencilView() { return m_depthStencilView; };
+	ID3D11RenderTargetView** getID3D11RenderTargetView() { return &m_renderTargetView; };
 private:
+	ID3D11RenderTargetView * m_renderTargetView = nullptr;
+	ID3D11ShaderResourceView * m_shadowMapView = nullptr;
 	ID3D11DepthStencilView* m_depthStencilView = nullptr;
-	
+	ID3D11Texture2D* m_depthStencilBuffer = nullptr;
+	ID3D11Texture2D* m_renderTargetTexture = nullptr;
+
 	LIGHT_TYPES lightType;
 	SHADOW_TYPE shadowType;
 	TEXTURE_RESOLUTIONS shadowMapSize;
@@ -43,8 +52,8 @@ private:
 	DirectX::XMVECTOR color;
 	float lightIntensity;
 	float shadowStrength;
-	
-	void CreateRenderTarget(int width, int height);
-
+	float nearZ;
+	float farZ;
+	void CreateDepthStencilBuffer(int width, int height);
 };
 
