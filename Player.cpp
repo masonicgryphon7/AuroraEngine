@@ -228,7 +228,7 @@ void Player::Update()
 	//deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // set the primitive topology
 
 	// CLEAR END
-	coreEngine->renderManager->ForwardRender(coreEngine->camera, coreEngine->objectsToRender);
+	coreEngine->renderManager->Render(coreEngine->camera, coreEngine->objectsToRender);
 	coreEngine->SetViewport();
 
 	Input.mousePosition = Input.GetMousePosition();

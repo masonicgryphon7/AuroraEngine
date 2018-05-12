@@ -1,6 +1,11 @@
 #pragma once
 #include "Component.h"
 
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include "AssetManager.h"
+
+
 
 enum  class LIGHT_TYPES
 {
@@ -22,7 +27,24 @@ class Light :
 	public Component
 {
 public:
-	Light();
+	Light(LIGHT_TYPES lightType, SHADOW_TYPE shadowType, TEXTURE_RESOLUTIONS shadowMapSize, DirectX::XMVECTOR color, float lightIntensity, float shadowStrength);
 	~Light();
+
+	void setShadowMapSize(TEXTURE_RESOLUTIONS shadowMapSize);
+
+
+private:
+	ID3D11DepthStencilView* m_depthStencilView = nullptr;
+	
+	LIGHT_TYPES lightType;
+	SHADOW_TYPE shadowType;
+	TEXTURE_RESOLUTIONS shadowMapSize;
+	
+	DirectX::XMVECTOR color;
+	float lightIntensity;
+	float shadowStrength;
+	
+	void CreateRenderTarget(int width, int height);
+
 };
 

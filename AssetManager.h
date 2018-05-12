@@ -44,12 +44,15 @@ public:
 	Mesh* getMesh(const std::string& name);
 	ShaderProgram* getShaderProgram(int index);
 	ShaderProgram* getShaderProgram(const std::string& filePath);
+	ID3D11Device* getD3D11Device() { return device; };
+
 
 	// -- GUID -- //
 	static unsigned int GenerateGUID();
 	static std::string GenerateGUIDAsString();
 	static std::string GUIDToString(unsigned int guid);
 	static unsigned int GUIDToUnsignedInt(const std::string& guid);
+
 
 private:
 	static std::vector<Texture*> textures;

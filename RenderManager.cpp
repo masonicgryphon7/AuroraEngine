@@ -33,11 +33,11 @@ RenderManager::~RenderManager()
 	m_renderTargetView->Release();
 }
 
-void RenderManager::ForwardRender(GameObject * cameraObject, std::vector<GameObject*>* objectsToRender)
+void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* objectsToRender)
 {
 	DirectX::XMMATRIX viewMatrix = cameraObject->getComponent<Camera>()->calculateViewMatrix();
 	DirectX::XMMATRIX perspectiveMatrix = cameraObject->getComponent<Camera>()->calculatePerspectiveMatrix();
-
+	std::vector<GameObject*> affectingLights;
 	//Sort Objects To Render
 	int instanceIndex = 0;
 

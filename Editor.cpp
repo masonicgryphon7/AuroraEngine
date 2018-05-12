@@ -143,7 +143,7 @@ void Editor::Update()
 
 		Input.InternalSetMouseViewport(ImGui::GetCurrentWindow()->Size.x, ImGui::GetCurrentWindow()->Size.y);
 
-		coreEngine->renderManager->ForwardRender(coreEngine->camera, coreEngine->objectsToRender);
+		coreEngine->renderManager->Render(coreEngine->camera, coreEngine->objectsToRender);
 		coreEngine->gDeviceContext->OMSetRenderTargets(1, &coreEngine->gBackbufferRTV, coreEngine->m_depthStencilView);
 		coreEngine->SetViewport();
 
