@@ -341,7 +341,7 @@ void CoreEngine::addMaterials()
 	assetManager.addTexture("Assets/GrassBricks-Normal.png"); //10
 	assetManager.addTexture("Assets/GrassBricks-RoughMetalAo.png"); //11
 
-	assetManager.addTexture("Assets/Lava_Albedo2.png"); //20
+	assetManager.addTexture("Assets/Lava_Albedo.png"); //20
 	assetManager.addTexture("Assets/Lava_Normal.png"); //21
 	assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
 
@@ -370,7 +370,7 @@ void CoreEngine::addMaterials()
 	assetManager.getTexture("GrassBricks-Normal")->getTexture(),
 	assetManager.getTexture("GrassBricks-RoughMetalAo")->getTexture(),
 
-	assetManager.getTexture("Lava_Albedo2")->getTexture(),
+	assetManager.getTexture("Lava_Albedo")->getTexture(),
 	assetManager.getTexture("Lava_Normal")->getTexture(),
 	assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 

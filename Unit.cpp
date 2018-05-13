@@ -402,7 +402,7 @@ void Unit::FollowCommand()
 void Unit::gatherCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
-	if (targetedUnit != nullptr)
+	if (targetedUnit != nullptr && this->homePos->gameObject->isActive == true)
 	{
 		if (this->Resources < 100 && e == 0) // worker is not full
 		{
@@ -433,7 +433,7 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
 
-	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->getResources() > 0)
+	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->getResources() > 0 && targetedUnit->gameObject->isActive == true)
 	{
 		actionTime += Time.getDeltaTime();
 		if (targetedUnit->type == Bank && actionTime > 4)
@@ -460,7 +460,7 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 void Unit::gatherResources()
 {
 	actionTime += Time.getDeltaTime();
-	if (actionTime > 1)
+	if (actionTime > 1 && this->homePos->gameObject->isActive == true)
 	{
 		int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
 		UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
@@ -477,7 +477,7 @@ void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
 
-	if (this->Resources > 0)
+	if (this->Resources > 0 && this->homePos->gameObject->isActive == true)
 	{
 		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
 		{
@@ -496,7 +496,7 @@ void Unit::dropCommand(Unit* targetedUnit)
 void Unit::dropResources()
 {
 	actionTime += Time.getDeltaTime();
-	if (actionTime > 1)
+	if (actionTime > 1 && this->homePos->gameObject->isActive == true)
 	{
 		int resourcesInUnit = this->getResources();
 		this->setResources(resourcesInUnit - 20);
@@ -518,25 +518,29 @@ void Unit::destroyUnit()
 
 void Unit::summonWorkerCommand()
 {
-	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());
-	worker->name = "Worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
-	worker->tag = gameObject->tag;
-	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
-	worker->addComponent(meshFilter);
-	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
-	Unit *unitWorker = new Unit(Worker);
-	unitWorker->setHomePos(&gameObject->transform);
-	worker->addComponent(unitWorker);
-	//playerScript->friendlyUnits.push_back(unitWorker);
-	unitWorker->setPlayerScript(playerScript);
-	gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
-	
 
-	UnitOrders.erase(UnitOrders.begin());
-	Order tempOrder;
-	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 15.0, 0.0));
-	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
+	if (this->gameObject->isActive == true)
+	{
+		GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());
+		worker->name = "Worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
+		worker->tag = gameObject->tag;
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
+		worker->addComponent(meshFilter);
+		worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+		Unit *unitWorker = new Unit(Worker);
+		unitWorker->setHomePos(&gameObject->transform);
+		worker->addComponent(unitWorker);
+		//playerScript->friendlyUnits.push_back(unitWorker);
+		unitWorker->setPlayerScript(playerScript);
+		gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
+
+
+		UnitOrders.erase(UnitOrders.begin());
+		Order tempOrder;
+		tempOrder.command = Move;
+		tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 15.0, 0.0));
+		unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
+	}
 }
 
 void Unit::convertToSoldierCommand(Unit* targetedUnit)
@@ -622,6 +626,7 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 void Unit::dieCommand()
 {
 	dieTime += Time.getDeltaTime();
+	gameObject->isActive = false;
 	if(dieTime > 1)
 		gameObject->transform.setPosition(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, dieTime*0.01, 0, 0)));
 	if (dieTime > 3)

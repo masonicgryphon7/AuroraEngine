@@ -170,11 +170,29 @@ float4 PS_main(VS_OUT input) : SV_Target
 			//adjustedUV.x += newY;
 
 			//adjustedUV.x += lerp(5.5 * fireRing.y, adjustedUV.x, 0.2);
+			if (input.worldPosition.x > 150 && input.worldPosition.z > 150)
+			{
+				adjustedUV.x += fireRing.y;
+				adjustedUV.y += fireRing.y;
+			}
 
-			adjustedUV.x += fireRing.y;
-			adjustedUV.y += fireRing.y;
+			if (input.worldPosition.x > 150 && input.worldPosition.z < 150)
+			{
+				adjustedUV.x += fireRing.y;
+				adjustedUV.y -= fireRing.y;
+			}
 
-			//adjustedUV.y += lerp5.5 *fireRing.y;
+			if (input.worldPosition.x < 150 && input.worldPosition.z > 150)
+			{
+				adjustedUV.x -= fireRing.y;
+				adjustedUV.y += fireRing.y;
+			}
+
+			if (input.worldPosition.x < 150 && input.worldPosition.z < 150)
+			{
+				adjustedUV.x -= fireRing.y;
+				adjustedUV.y -= fireRing.y;
+			}
 
 			albedo = lerp(albedo, Lava_Albedo.Sample(sampAni, adjustedUV).xyz,lavaLerp) ;
 			N = lerp(N, Lava_Normal.Sample(sampAni, adjustedUV).xyz, lavaLerp);
