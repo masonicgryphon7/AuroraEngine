@@ -62,6 +62,7 @@
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="JGUI.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
+    <ClCompile Include="Light.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
@@ -97,7 +98,6 @@
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="KeyCode.h" />
-    <ClInclude Include="LIGHT_TYPES.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialFilter.h" />
     <ClInclude Include="Mesh.h" />
@@ -110,7 +110,6 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="SHADOW_TYPE.h" />
     <ClInclude Include="AudioListener.h" />
     <ClInclude Include="SoundEmitter.h" />
     <ClInclude Include="SoundEngine.h" />
@@ -119,7 +118,6 @@
     <ClInclude Include="stb_truetype.h" />
     <ClInclude Include="TerrainGenerator.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TEXTURE_RESOLUTIONS.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Unit.h" />
@@ -132,6 +130,7 @@
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="JGUI.h" />
     <ClInclude Include="PlayerScript.h" />
+    <ClInclude Include="Light.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

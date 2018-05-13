@@ -6,6 +6,7 @@ struct VS_OUT
 	float4 Position : SV_POSITION;
 	float2 Uv : UV;
 	float4 worldPosition : WPOSITION;
+	float4 lightspacePosition : LPOSITION;
 	float4 cameraPosition : CAMERAPOSITIOM;
 	float3x3 TBNMatrix : TBNMATRIX;
 	uint instanceID : InstanceID;
@@ -16,6 +17,7 @@ cbuffer MATRIX_Buffer :register (b0)
 	matrix world;
 	matrix view;
 	matrix projection;
+	matrix lightProjection;
 	float4 cameraPosition;
 	int isTerrain;
 	float xMaterialTile;
@@ -58,6 +60,7 @@ Texture2D Lava_Albedo : register(t13);
 Texture2D Lava_Normal : register(t14);
 Texture2D Lava_OcclusionRoughnessMetallic : register(t15);
 
+Texture2D ShadowMap : register(t16);
 
 float distributionGGX(float3 normal, float3 halfV, float roughness)
 {
@@ -96,6 +99,19 @@ float geometrySmith(float3 normal, float3 view, float3 light, float roughness)
 float3 fresnelSchlick(float cosTheta, float3 F0)
 {
 	return F0 + (1.0f - F0) * pow(1.0f - cosTheta, 5.0f);
+}
+
+
+float ShadowCalculations(float4 lightSpacePosition) {
+	float3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;
+	projCoords = projCoords * 0.5 + 0.5;
+
+	float closestDepth = ShadowMap.Sample(IDsampler, projCoords.xy).x;
+	float currentDepth = projCoords.z;
+	float bias = 0.005;
+	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+	shadow = 1 - shadow;
+	return shadow;
 }
 
 float4 PS_main(VS_OUT input) : SV_Target
@@ -214,7 +230,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 	//light value
 	float3 lightDirection = normalize(float3(1, 3, 1));
 	float3 lightColor = float3(1, 1, 1);
-	float intensity = 1;
+	float intensity = 2;
 	//pbr
 	float3 f0 = float3(0.04f, 0.04f, 0.04f);
 	f0 = lerp(f0, albedo, metallic);
@@ -233,7 +249,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 	kD *= 1.0f - metallic;
 
 	float normDotLight = max(dot(N, lightDirection), 0.0f);
-	float3 lo = (kD * albedo /pi + spec) * normDotLight*lightColor*intensity;
+	float3 lo = (kD * albedo /pi + spec) * normDotLight*lightColor*intensity*ShadowCalculations(input.lightspacePosition);
 	float3 amb = albedo * ao * float3(0.03f, 0.03f, 0.03f);
 	float3 finalColor = amb + lo;
 

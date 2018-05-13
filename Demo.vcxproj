@@ -180,6 +180,7 @@
     <ClInclude Include="FormatHeader.h" />
     <ClInclude Include="formatImporter.h" />
     <ClInclude Include="JGUI.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="GameManager.h" />
@@ -201,7 +202,6 @@
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="KeyCode.h" />
-    <ClInclude Include="LIGHT_TYPES.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialFilter.h" />
     <ClInclude Include="Mesh.h" />
@@ -216,7 +216,6 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="SHADOW_TYPE.h" />
     <ClInclude Include="AudioListener.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
@@ -231,7 +230,6 @@
     <ClInclude Include="stb_truetype.h" />
     <ClInclude Include="TerrainGenerator.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TEXTURE_RESOLUTIONS.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Unit.h" />
@@ -254,6 +252,7 @@
     <ClCompile Include="EditorSceneSelectionScript.cpp" />
     <ClCompile Include="formatImporter.cpp" />
     <ClCompile Include="JGUI.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="GameManager.cpp" />

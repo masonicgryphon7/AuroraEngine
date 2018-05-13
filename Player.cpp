@@ -221,14 +221,14 @@ void Player::Update()
 	deviceContext->OMSetRenderTargets(1, &coreEngine->gBackbufferRTV, coreEngine->m_depthStencilView);
 
 	// CLEAR START
-	float clearColor[] = { 1.0f, 0.28f, 0.28f, 1.0f };
+	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	deviceContext->ClearRenderTargetView(coreEngine->gBackbufferRTV, clearColor);
 	deviceContext->ClearDepthStencilView(coreEngine->m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0xFF);
 	//deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // set the primitive topology
 
 	// CLEAR END
-	coreEngine->renderManager->ForwardRender(coreEngine->camera, coreEngine->objectsToRender);
+	coreEngine->renderManager->Render(coreEngine->camera, coreEngine->objectsToRender, screen.x,screen.y);
 	coreEngine->SetViewport();
 
 	Input.mousePosition = Input.GetMousePosition();

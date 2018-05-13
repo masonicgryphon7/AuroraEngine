@@ -47,7 +47,7 @@ typedef int ImGuiLayoutType;        // enum: horizontal or vertical             
 typedef int ImGuiButtonFlags;       // flags: for ButtonEx(), ButtonBehavior()  // enum ImGuiButtonFlags_
 typedef int ImGuiItemFlags;         // flags: for PushItemFlag()                // enum ImGuiItemFlags_
 typedef int ImGuiItemStatusFlags;   // flags: storage for DC.LastItemXXX        // enum ImGuiItemStatusFlags_
-typedef int ImGuiNavHighlightFlags; // flags: for RenderNavHighlight()          // enum ImGuiNavHighlightFlags_
+typedef int ImGuiNavHighLightlags; // flags: for RenderNavHighlight()          // enum ImGuiNavHighLightlags_
 typedef int ImGuiNavDirSourceFlags; // flags: for GetNavInputAmount2d()         // enum ImGuiNavDirSourceFlags_
 typedef int ImGuiSeparatorFlags;    // flags: for Separator() - internal        // enum ImGuiSeparatorFlags_
 typedef int ImGuiSliderFlags;       // flags: for SliderBehavior()              // enum ImGuiSliderFlags_
@@ -273,12 +273,12 @@ enum ImGuiInputReadMode
     ImGuiInputReadMode_RepeatFast
 };
 
-enum ImGuiNavHighlightFlags_
+enum ImGuiNavHighLightlags_
 {
-    ImGuiNavHighlightFlags_TypeDefault  = 1 << 0,
-    ImGuiNavHighlightFlags_TypeThin     = 1 << 1,
-    ImGuiNavHighlightFlags_AlwaysDraw   = 1 << 2,
-    ImGuiNavHighlightFlags_NoRounding   = 1 << 3
+    ImGuiNavHighLightlags_TypeDefault  = 1 << 0,
+    ImGuiNavHighLightlags_TypeThin     = 1 << 1,
+    ImGuiNavHighLightlags_AlwaysDraw   = 1 << 2,
+    ImGuiNavHighLightlags_NoRounding   = 1 << 3
 };
 
 enum ImGuiNavDirSourceFlags_
@@ -1083,7 +1083,7 @@ namespace ImGui
     IMGUI_API void          RenderArrow(ImVec2 pos, ImGuiDir dir, float scale = 1.0f);
     IMGUI_API void          RenderBullet(ImVec2 pos);
     IMGUI_API void          RenderCheckMark(ImVec2 pos, ImU32 col, float sz);
-    IMGUI_API void          RenderNavHighlight(const ImRect& bb, ImGuiID id, ImGuiNavHighlightFlags flags = ImGuiNavHighlightFlags_TypeDefault); // Navigation highlight
+    IMGUI_API void          RenderNavHighlight(const ImRect& bb, ImGuiID id, ImGuiNavHighLightlags flags = ImGuiNavHighLightlags_TypeDefault); // Navigation highlight
     IMGUI_API void          RenderRectFilledRangeH(ImDrawList* draw_list, const ImRect& rect, ImU32 col, float x_start_norm, float x_end_norm, float rounding);
     IMGUI_API const char*   FindRenderedTextEnd(const char* text, const char* text_end = NULL); // Find the optional ## from which we stop displaying text.
 
