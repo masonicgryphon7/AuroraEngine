@@ -4,6 +4,7 @@
     <FxCompile Include="Fragment.hlsl" />
     <FxCompile Include="Vertex.hlsl" />
     <FxCompile Include="VertexAnimation.hlsl" />
+    <FxCompile Include="FragmentLight.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationClip.cpp" />
