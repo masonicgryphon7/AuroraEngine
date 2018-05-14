@@ -39,6 +39,9 @@ public:
 	ID3D11ShaderResourceView** getID3D11ShaderResourceView() { return &m_shadowMapView; };
 	ID3D11DepthStencilView* getID3D11DepthStencilView() { return m_depthStencilView; };
 	ID3D11RenderTargetView** getID3D11RenderTargetView() { return &m_renderTargetView; };
+
+	int widht = 0;
+	int height = 0;
 private:
 	ID3D11RenderTargetView * m_renderTargetView = nullptr;
 	ID3D11ShaderResourceView * m_shadowMapView = nullptr;

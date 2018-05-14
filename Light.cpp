@@ -13,9 +13,7 @@ Light::Light(LIGHT_TYPES lightType, SHADOW_TYPE shadowType, TEXTURE_RESOLUTIONS 
 	this->shadowStrength = shadowStrength;
 	nearZ = 0.01;
 	farZ = 400;
-	setShadowMapSize(this->shadowMapSize);/*
-	AssetManager.addShaderProgram("FragmentLight.hlsl", SHADER_TYPE::PIXEL_SHADER);
-	pixelShader = AssetManager.getShaderProgram("FragmentLight.hlsl");*/
+	setShadowMapSize(this->shadowMapSize);
 }
 
 Light::~Light()
@@ -48,6 +46,8 @@ void Light::setShadowMapSize(TEXTURE_RESOLUTIONS shadowMapSize)
 	}
 
 	int y = x;
+	widht = x;
+	height = y;
 	CreateDepthStencilBuffer(x, y);
 }
 
@@ -60,7 +60,7 @@ DirectX::XMMATRIX Light::calculateViewMatrix()
 
 DirectX::XMMATRIX  Light::calculatePerspectiveMatrix(int width, int height)
 {
-	return DirectX::XMMatrixOrthographicLH(width,height, nearZ, farZ);
+	return DirectX::XMMatrixOrthographicLH(150, 150, nearZ, farZ);
 }
 
 

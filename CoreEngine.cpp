@@ -349,8 +349,8 @@ void CoreEngine::addMaterials()
 	assetManager.addTexture("Assets/FinaleIDMAP3.png");
 
 	//Terrain
-	int matXTile = 10;
-	int matYTile = 10;
+	int matXTile = 20;
+	int matYTile = 20;
 
 	//Terrain Material 1
 	assetManager.AddMaterial("TerrainMaterial1", assetManager.getShaderProgram("Fragment.hlsl"));
