@@ -336,11 +336,21 @@ void RenderManager::RenderShadowMaps(Light * light, int width, int height)
 	ID3D11RenderTargetView* gBackbufferRTVgg = nullptr;
 	ID3D11DepthStencilView* m_depthStencilViewgg = nullptr;
 	gDeviceContext->OMGetRenderTargets(1, &gBackbufferRTVgg, &m_depthStencilViewgg);
-
+	D3D11_VIEWPORT prevVp;
+	UINT num = 1;
+	gDeviceContext->RSGetViewports(&num, &prevVp);
 	DirectX::XMMATRIX viewMatrix = light->calculateViewMatrix();
 	DirectX::XMMATRIX perspectiveMatrix = light->calculatePerspectiveMatrix(width, height);
 	gDeviceContext->ClearDepthStencilView(light->getID3D11DepthStencilView(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	gDeviceContext->OMSetRenderTargets(1, light->getID3D11RenderTargetView(), light->getID3D11DepthStencilView());
+	D3D11_VIEWPORT vp;
+	vp.Width = (float)light->widht;
+	vp.Height = (float)light->height;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	gDeviceContext->RSSetViewports(1, &vp);
 	//light->pixelShader->ActivateShader();
 	gDeviceContext->PSSetShader(nullptr, nullptr, 0);
 	float clearColor[] = { 0.2f, 0.2f, 0.2f, 1.0f };
@@ -408,7 +418,7 @@ void RenderManager::RenderShadowMaps(Light * light, int width, int height)
 
 		}
 	}
-
+	gDeviceContext->RSSetViewports(1, &prevVp);
 	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTVgg, m_depthStencilViewgg);
 
 }

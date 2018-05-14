@@ -118,7 +118,7 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 0)
+		if (gameTime >= 120)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
@@ -130,7 +130,7 @@ void GameManager::update()
 		dmgRing();
 		break;
 	case MEDIUM_CIRCLE_STATE:
-		if (gameTime >= 18)
+		if (gameTime >= 180)
 		{
 			//Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
@@ -144,7 +144,7 @@ void GameManager::update()
 		dmgRing();
 		break;
 	case SMALL_CIRCLE_STATE:
-		if (gameTime >= 24 && ringOfFire > 28)
+		if (gameTime >= 240 && ringOfFire > 28)
 		{
 			Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
@@ -403,7 +403,7 @@ void GameManager::addBuildings()
 	 bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y - 5, j, 0));
 	 bankGameObject->name = "Bank";
 	 bankGameObject->tag = 0;
-	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
 	 bankGameObject->addComponent(meshFilter2);
 	 bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
 	 bank = new Unit(Bank);

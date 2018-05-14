@@ -66,6 +66,9 @@ private:
 	float actionTime;
 	float dieTime;
 	Transform* homePos;
+	Transform* minePos;
+
+	float findClosest = 10000;
 
 	int e = 0;
 
@@ -106,6 +109,8 @@ public:
 	float getAttackDistance() { return this->attackDistance; };
 	Transform* getHomePos() { return this->homePos; };
 	Transform getTargetPos() { return this->targetPos; };
+	//Transform* getMinePos() { return this->minePos; };
+
 	float getUnitDistance() { return this->distance; };
 	void setDistance(float newDistance) { this->distance = newDistance; };
 	void setTargetPos(DirectX::XMVECTOR newTarget) { this->targetPos = newTarget; };
