@@ -341,6 +341,7 @@ void RenderManager::RenderShadowMaps(Light * light, int width, int height)
 	DirectX::XMMATRIX perspectiveMatrix = light->calculatePerspectiveMatrix(width, height);
 	gDeviceContext->ClearDepthStencilView(light->getID3D11DepthStencilView(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	gDeviceContext->OMSetRenderTargets(1, light->getID3D11RenderTargetView(), light->getID3D11DepthStencilView());
+	//light->pixelShader->ActivateShader();
 	gDeviceContext->PSSetShader(nullptr, nullptr, 0);
 	float clearColor[] = { 0.2f, 0.2f, 0.2f, 1.0f };
 

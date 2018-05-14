@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include "AssetManager.h"
-
+#include "ShaderProgram.h"
 
 
 enum  class LIGHT_TYPES
@@ -33,6 +33,7 @@ public:
 	void setShadowMapSize(TEXTURE_RESOLUTIONS shadowMapSize);
 	DirectX::XMMATRIX calculateViewMatrix();
 	DirectX::XMMATRIX calculatePerspectiveMatrix(int width, int height);
+	ShaderProgram* pixelShader = nullptr;
 
 	SHADOW_TYPE getShadowType() { return shadowType; };
 	ID3D11ShaderResourceView** getID3D11ShaderResourceView() { return &m_shadowMapView; };
@@ -44,7 +45,6 @@ private:
 	ID3D11DepthStencilView* m_depthStencilView = nullptr;
 	ID3D11Texture2D* m_depthStencilBuffer = nullptr;
 	ID3D11Texture2D* m_renderTargetTexture = nullptr;
-
 	LIGHT_TYPES lightType;
 	SHADOW_TYPE shadowType;
 	TEXTURE_RESOLUTIONS shadowMapSize;

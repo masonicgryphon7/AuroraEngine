@@ -110,7 +110,6 @@ float ShadowCalculations(float4 lightSpacePosition) {
 	float currentDepth = projCoords.z;
 	float bias = 0.005;
 	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
-	shadow = 1 - shadow;
 	return shadow;
 }
 
@@ -248,8 +247,9 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float3 kD = float3(1.0f, 1.0f, 1.0f) - kS;
 	kD *= 1.0f - metallic;
 
+	float shadow = 1;//ShadowCalculations(input.lightspacePosition);
 	float normDotLight = max(dot(N, lightDirection), 0.0f);
-	float3 lo = (kD * albedo /pi + spec) * normDotLight*lightColor*intensity*ShadowCalculations(input.lightspacePosition);
+	float3 lo = (kD * albedo /pi + spec) * normDotLight*lightColor*intensity*shadow;
 	float3 amb = albedo * ao * float3(0.03f, 0.03f, 0.03f);
 	float3 finalColor = amb + lo;
 
