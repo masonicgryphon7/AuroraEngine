@@ -65,7 +65,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 160;
 		this->defencePoints = 10; // 10
-		this->attackDistance = 2;
+		this->attackDistance = 3;
 		this->Resources = 0;
 		this->type = Hero;
 		break;
@@ -223,6 +223,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 {
 	DirectX::XMFLOAT3 current;
 	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
+
 
 	DirectX::XMFLOAT3 pointPosition;
 	if (goalPos == nullptr)
@@ -402,7 +403,7 @@ void Unit::FollowCommand()
 void Unit::gatherCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
-	if (targetedUnit != nullptr && this->homePos->gameObject->isActive == true)
+	if (targetedUnit != nullptr && this->homePos->gameObject->unitIsAvtive == true)
 	{
 		if (this->Resources < 100 && e == 0) // worker is not full
 		{
@@ -433,7 +434,7 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
 
-	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->getResources() > 0 && targetedUnit->gameObject->isActive == true)
+	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->getResources() > 0 && targetedUnit->gameObject->unitIsAvtive == true)
 	{
 		actionTime += Time.getDeltaTime();
 		if (targetedUnit->type == Bank && actionTime > 4)
@@ -460,7 +461,7 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 void Unit::gatherResources()
 {
 	actionTime += Time.getDeltaTime();
-	if (actionTime > 1 && this->homePos->gameObject->isActive == true)
+	if (actionTime > 1 && UnitOrders.at(0).transform->gameObject->unitIsAvtive == true)
 	{
 		int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
 		UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
@@ -477,7 +478,7 @@ void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
 
-	if (this->Resources > 0 && this->homePos->gameObject->isActive == true)
+	if (this->Resources > 0 && this->homePos->gameObject->unitIsAvtive == true)
 	{
 		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
 		{
@@ -496,7 +497,7 @@ void Unit::dropCommand(Unit* targetedUnit)
 void Unit::dropResources()
 {
 	actionTime += Time.getDeltaTime();
-	if (actionTime > 1 && this->homePos->gameObject->isActive == true)
+	if (actionTime > 1 && this->homePos->gameObject->unitIsAvtive == true)
 	{
 		int resourcesInUnit = this->getResources();
 		this->setResources(resourcesInUnit - 20);
@@ -519,7 +520,7 @@ void Unit::destroyUnit()
 void Unit::summonWorkerCommand()
 {
 
-	if (this->gameObject->isActive == true)
+	if (this->gameObject->unitIsAvtive == true)
 	{
 		GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());
 		worker->name = "Worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
@@ -626,7 +627,7 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 void Unit::dieCommand()
 {
 	dieTime += Time.getDeltaTime();
-	gameObject->isActive = false;
+	gameObject->unitIsAvtive = false;
 	if(dieTime > 1)
 		gameObject->transform.setPosition(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, dieTime*0.01, 0, 0)));
 	if (dieTime > 3)

@@ -23,6 +23,7 @@ public:
 	int instanceIndex = -1;
 	int assetID, tag;
     bool isActive;
+	bool unitIsAvtive;
     bool hasLight;
 	bool destroyGO = false;
 	std::string name, meshPath;
