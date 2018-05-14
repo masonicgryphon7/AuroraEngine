@@ -307,15 +307,21 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	std::vector<std::vector<Node>> tempGrid = grid;
 	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
 	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
-	int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos))))*2;
+	//int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos))))*2;
 	int iteration = 0;
 
 	if (startNode.pathable == NONE_PATHABLE) {
 		 startNode.position= goalNode.position;
+		 std::vector<Node> resultNodes = std::vector<Node>();
+		 resultNodes.push_back(startNode);
+		 return resultNodes;
 	}
 
 	if (goalNode.pathable == NONE_PATHABLE) {
 		startNode.position = startNode.position;
+		std::vector<Node> resultNodes = std::vector<Node>();
+		resultNodes.push_back(startNode);
+		return resultNodes;
 	}
 
 	

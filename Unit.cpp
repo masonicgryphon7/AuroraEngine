@@ -139,6 +139,8 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 {
 	if (gameObject->unitIsAvtive == true)
 	{
+
+
 		DirectX::XMFLOAT3 current;
 		DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
@@ -229,6 +231,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
 		DirectX::XMFLOAT3 pointPosition;
+
 		if (goalPos == nullptr)
 		{
 			DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
