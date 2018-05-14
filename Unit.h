@@ -68,6 +68,8 @@ private:
 	Transform* homePos;
 	Transform* minePos;
 
+	float findClosest = 10000;
+
 	int e = 0;
 
 	DirectX::XMVECTOR targetPos;

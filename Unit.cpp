@@ -506,6 +506,7 @@ void Unit::dropCommand(Unit* targetedUnit)
 	unitPos = gameObject->transform.getPosition();
 	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
+		this->homePos = &targetedUnit->gameObject->transform;
 		if (this->Resources > 0)
 		{
 			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
@@ -519,6 +520,33 @@ void Unit::dropCommand(Unit* targetedUnit)
 				tempOrder.point = this->homePos->getPosition();
 				UnitOrders.insert(UnitOrders.begin(), tempOrder);
 			}
+		}
+		else
+		{
+			DirectX::XMVECTOR orderPoint = this->gameObject->transform.getPosition();
+			Transform *orderTransform = &this->gameObject->transform;
+
+			for (int i = 0; i < gamemanager.buildingLists[0].size(); i++)
+			{
+				if (gamemanager.buildingLists[0][i]->type == GoldMine)
+				{
+					int temp = getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[0][i]->gameObject->transform.getPosition());
+					if (temp < findClosest)
+					{
+						findClosest = temp;
+						orderPoint = gamemanager.buildingLists[0][i]->gameObject->transform.getPosition();
+						orderTransform = &gamemanager.buildingLists[0][i]->gameObject->transform;
+					}
+				}
+			}
+
+			UnitOrders.erase(UnitOrders.begin());
+
+			Order tempOrder;
+			tempOrder.command = Command::Gather;
+			tempOrder.transform = orderTransform;
+			tempOrder.point = orderPoint;
+			UnitOrders.insert(UnitOrders.begin(), tempOrder);
 		}
 	}
 	else {

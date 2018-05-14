@@ -118,7 +118,7 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 12)
+		if (gameTime >= 120)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
@@ -130,7 +130,7 @@ void GameManager::update()
 		dmgRing();
 		break;
 	case MEDIUM_CIRCLE_STATE:
-		if (gameTime >= 18)
+		if (gameTime >= 180)
 		{
 			//Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
@@ -144,7 +144,7 @@ void GameManager::update()
 		dmgRing();
 		break;
 	case SMALL_CIRCLE_STATE:
-		if (gameTime >= 24 && ringOfFire > 28)
+		if (gameTime >= 240 && ringOfFire > 28)
 		{
 			Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
