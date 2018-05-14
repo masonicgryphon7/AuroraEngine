@@ -63,7 +63,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	{
 	case Type::Hero: //HERO
 		this->healthPoints = this->maxHealthPoints = 100;
-		this->attackPoints = 160;
+		this->attackPoints = 16;
 		this->defencePoints = 10; // 10
 		this->attackDistance = 3;
 		this->Resources = 0;
@@ -83,7 +83,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 15;
 		this->attackPoints = 11;
 		this->defencePoints = 5;
-		this->attackDistance = 2;
+		this->attackDistance = 3;
 		this->Resources = 0;
 		this->type = Worker;
 		break;
@@ -407,6 +407,7 @@ void Unit::gatherCommand(Unit* targetedUnit)
 	{
 		if (this->Resources < 100 && e == 0) // worker is not full
 		{
+			//this->minePos = &targetedUnit->gameObject->transform;
 			if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
 			{
 				gatherResources();
@@ -480,6 +481,7 @@ void Unit::dropCommand(Unit* targetedUnit)
 
 	if (this->Resources > 0 && this->homePos->gameObject->unitIsAvtive == true)
 	{
+		this->setHomePos(&targetedUnit->gameObject->transform);
 		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
 		{
 			dropResources();
