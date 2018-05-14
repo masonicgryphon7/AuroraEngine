@@ -104,14 +104,15 @@ float3 fresnelSchlick(float cosTheta, float3 F0)
 
 float ShadowCalculations(float4 lightSpacePosition) {
 	float3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;
-	projCoords = projCoords * 0.5 + 0.5;
+	projCoords.x = projCoords.x * 0.5 + 0.5;
+	projCoords.y = projCoords.y * -0.5 + 0.5;
 
 	float closestDepth = ShadowMap.Sample(IDsampler, projCoords.xy).x;
 	float currentDepth = projCoords.z;
 	float bias = 0.005;
-	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+	float shadow = currentDepth  > closestDepth ? 1.0 : 0.0;
 	shadow = 1 - shadow;
-	return shadow;
+	return 1;
 }
 
 float4 PS_main(VS_OUT input) : SV_Target
@@ -248,8 +249,9 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float3 kD = float3(1.0f, 1.0f, 1.0f) - kS;
 	kD *= 1.0f - metallic;
 
+	float shadow = ShadowCalculations(input.lightspacePosition);
 	float normDotLight = max(dot(N, lightDirection), 0.0f);
-	float3 lo = (kD * albedo /pi + spec) * normDotLight*lightColor*intensity*ShadowCalculations(input.lightspacePosition);
+	float3 lo = (kD * albedo /pi + spec) * normDotLight*lightColor*intensity*shadow;
 	float3 amb = albedo * ao * float3(0.03f, 0.03f, 0.03f);
 	float3 finalColor = amb + lo;
 
