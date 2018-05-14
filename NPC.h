@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "AssetManager.h"
 #include "Debug.h"
+#include <DirectXMathVector.inl>
 class Unit;
 class NPC : public Component
 {

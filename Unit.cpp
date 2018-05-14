@@ -18,6 +18,7 @@ Unit::Unit() :Component(-1, "Unit")
 		this->defencePoints = 5;
 		this->attackDistance = 2;
 		this->Resources = 10;
+		this->future_nodes = promisedNodes.get_future();
 		break;
 
 	case Type::Soldier: //SOLDIER
@@ -68,6 +69,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->attackDistance = 2;
 		this->Resources = 0;
 		this->type = Hero;
+		this->future_nodes = promisedNodes.get_future();
 		break;
 
 	case Type::Soldier: //SOLDIER
@@ -134,13 +136,21 @@ Command Unit::getUnitCommand()
 		return Idle; 
 	};
 }
-
+void Unit::testThreading()
+{
+	DirectX::XMFLOAT3 startPos;
+	Debug.Log("HELLO I AM A NEW THREAD");
+	startPos = { pathNodes[pathNodes.size() - 1].position.x, pathNodes[pathNodes.size() - 1].position.y, pathNodes[pathNodes.size() - 1].position.z };
+	
+	std::vector<Node> hehe = PathCreator.getRestOfPath(startPos, pointPosition);
+	pathNodes.insert(pathNodes.end(), hehe.begin(), hehe.end());
+	//threads[0].join();
+}
 void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 {
-	DirectX::XMFLOAT3 current;
 	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
-	DirectX::XMFLOAT3 pointPosition;
+	
 	if (goalPos == nullptr)
 	{
 		DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
@@ -156,9 +166,15 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		std::clock_t start;
 		start = std::clock();
 
+		if (threads.size() > 0)
+		{
+			threads[0].detach();
+			threads.erase(threads.begin());
+		}
 		pathNodes = PathCreator.getPath(current, pointPosition); // Point position
 		float time = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
 		Debug.Log(" after astar time ", time);
+		threads.push_back(std::thread(&Unit::testThreading, this));
 
 	}
 
@@ -237,7 +253,13 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 	if (pathNodes.size() == 0)
 	{
 		lerpValue = 0;
+		if (threads.size() > 0)
+		{
+			threads[0].detach();
+			threads.erase(threads.begin());
+		}
 		pathNodes = PathCreator.getPath(current, pointPosition); // Point position
+		threads.push_back(std::thread(&Unit::testThreading, this));
 		if (pathNodes.at(pathNodes.size() - 1).pathable == PATHABLE_CHECK)
 			pathNodes.erase(pathNodes.begin() + pathNodes.size() - 1);
 	}

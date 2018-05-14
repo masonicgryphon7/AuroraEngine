@@ -33,6 +33,8 @@ public:
 	void loadBlockMap();
 
 
+	std::vector<Node> getRestOfPath( DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos);
+
 private:
 	static int MAX;
 	static int MIN;
@@ -42,5 +44,25 @@ private:
 	int zArr[9] = { -1,0,1,-1,0,1,-1,0,1 };
 
 	float manhattan(Node first, Node second);
+	DirectX::XMFLOAT3 getShortergGoal(const DirectX::XMFLOAT3 A, const DirectX::XMFLOAT3 B)
+	{
+		DirectX::XMFLOAT3 temp;
+		temp.x = std::round(B.x )- std::round(A.x);
+		temp.y = std::round(B.y) - std::round(A.y);
+		temp.z = std::round(B.z) - std::round(A.z);
+
+		DirectX::XMVECTOR temp_functioning_vector = DirectX::XMVectorSet(temp.x, temp.y, temp.z, 1.0);
+
+		DirectX::XMStoreFloat3(&temp, DirectX::XMVector3Normalize(temp_functioning_vector));
+		float dist = DirectX::XMVectorGetX(DirectX::XMVector3Length(temp_functioning_vector));
+
+		if (dist > 24)
+			(dist = 24);
+			temp.x = A.x + temp.x * dist;
+		temp.y = A.y + temp.y * dist;
+		temp.z = A.z + temp.z * dist;
+
+		return temp;
+	}
 } PathCreator;
 

@@ -8,6 +8,9 @@
 #include "PRIMITIVE_GEOMETRY.h"
 #include "Node.h"
 #include "GameManager.h"
+
+#include <future>
+#include <thread>
 class PlayerScript;
 #pragma once
 /*
@@ -66,6 +69,7 @@ private:
 	float actionTime;
 	float dieTime;
 	Transform* homePos;
+	DirectX::XMFLOAT3 current;
 
 	int e = 0;
 
@@ -77,10 +81,16 @@ private:
 
 	float distance = 0;
 
+	DirectX::XMFLOAT3 pointPosition;
 	DirectX::XMFLOAT3 goalPos;
 	float lerpValue;
 	std::vector<Node> pathNodes;
 	int count = 0, count2 = 0, count3 = 0;
+
+	std::promise<std::vector<Node>> promisedNodes;
+	std::future<std::vector<Node>> future_nodes;
+	std::vector<std::thread> threads;
+	void testThreading();
 
 public:
 
