@@ -54,13 +54,13 @@ void Light::setShadowMapSize(TEXTURE_RESOLUTIONS shadowMapSize)
 
 DirectX::XMMATRIX Light::calculateViewMatrix()
 {
-
+	//return DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(20.0f, 50.0f, 20.0f, 1.0f), DirectX::XMVectorSet(25.0f, 0.0f, 25.0f, 1.0f), DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 	return DirectX::XMMatrixLookToLH(gameObject->transform.getPosition(), gameObject->transform.getForward(), gameObject->transform.getUp());
 }
 
 DirectX::XMMATRIX  Light::calculatePerspectiveMatrix(int width, int height)
 {
-	return DirectX::XMMatrixOrthographicLH(200, 200, nearZ, farZ);
+	return DirectX::XMMatrixOrthographicLH(width,height, nearZ, farZ);
 }
 
 
