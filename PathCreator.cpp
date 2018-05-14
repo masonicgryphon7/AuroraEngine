@@ -241,7 +241,7 @@ void cPathCreator::loadBlockMap()
 	DirectX::XMFLOAT3 tempXMFLOAT3 = DirectX::XMFLOAT3(0, 0, 0);
 
 
-	tmpFile = fopen("Assets/Block_Map.bmp", "rb");
+	tmpFile = fopen("Assets/Block_Map2.bmp", "rb");
 	if (!tmpFile)
 	{
 		std::cout << "Error: Couldn't find HeightMap." << std::endl;
