@@ -22,6 +22,7 @@ public:
 	int parentX;
 	int parentZ;
 
+
 private:
 	
 };

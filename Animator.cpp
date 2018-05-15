@@ -1,5 +1,5 @@
 #include "Animator.h"
-
+#include "Debug.h"
 
 
 
@@ -64,6 +64,8 @@ void Animator::calculateMatrixPalette()
 	firstFrameIndex = firstFrameIndex % animationclips[currentClipIndex]->nrOfKeyFrames;
 	secondFrameIndex = secondFrameIndex % animationclips[currentClipIndex]->nrOfKeyFrames;
 
+	Debug.Log("Animframe ");
+	Debug.Log(firstFrameIndex);
 
 	transformToWorldSpace(0, firstFrameIndex, secondFrameIndex, lerpValue, DirectX::XMMatrixIdentity());
 

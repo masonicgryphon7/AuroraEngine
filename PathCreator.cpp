@@ -57,14 +57,14 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 		for (int y = MIN; y < positions.size(); y++) //Column
 		{
 
-			grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x+ StartY, positions[x][y].position.y, positions[x][y].position.z+ StartX);
+			grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x + StartY, positions[x][y].position.y, positions[x][y].position.z + StartX);
 			grid[StartY + y][StartX + x].g = 0;
 			grid[StartY + y][StartX + x].f = 0;
 			grid[StartY + y][StartX + x].h = 0;
 			grid[StartY + y][StartX + x].parentX = -999999999;
 			grid[StartY + y][StartX + x].parentZ = -999999999;
 			grid[StartY + y][StartX + x].pathable = PATHABLE;
-	
+
 			////top left
 			//grid[StartY + y][StartX + x].position = Vec3(positions[x][y].position.x+ StartY, positions[x][y].position.y, positions[x][y].position.z+ StartX);
 			//grid[StartY + y][StartX + x].g = 0;
@@ -154,7 +154,7 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 		}
 	}
 	int i = 0;
-	blockGrid(DirectX::XMFLOAT3(20,1,1));
+	blockGrid(DirectX::XMFLOAT3(20, 1, 1));
 	loadBlockMap();
 }
 //
@@ -287,7 +287,7 @@ void cPathCreator::loadBlockMap()
 		for (int j = 0; j < HeightMapVariables.Width_Columns; j++)
 		{
 			int e = HeightMapVariables.VertInfo[i][j].y;
-			if(e == 0)
+			if (e == 0)
 				grid[i][j].pathable = NONE_PATHABLE;
 		}
 
@@ -300,25 +300,31 @@ void cPathCreator::loadBlockMap()
 
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
-	
+
 	std::clock_t start;
 	start = std::clock();
 
 	std::vector<std::vector<Node>> tempGrid = grid;
-	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
+	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // f r aldrig vara -1. samplar utanf r terrain array
 	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
-	int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos))))*2;
+	//int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos))))*2;
 	int iteration = 0;
 
 	if (startNode.pathable == NONE_PATHABLE) {
-		 startNode.position= goalNode.position;
+		startNode.position = goalNode.position;
+		std::vector<Node> resultNodes = std::vector<Node>();
+		resultNodes.push_back(startNode);
+		return resultNodes;
 	}
 
 	if (goalNode.pathable == NONE_PATHABLE) {
 		startNode.position = startNode.position;
+		std::vector<Node> resultNodes = std::vector<Node>();
+		resultNodes.push_back(startNode);
+		return resultNodes;
 	}
 
-	
+
 	//direction help test
 	bool reversePath = false;
 	DirectX::XMVECTOR direction = DirectX::XMVectorSubtract(DirectX::XMVectorSet(goalNode.position.x, goalNode.position.y, goalNode.position.z, 0), DirectX::XMVectorSet(startNode.position.x, startNode.position.y, startNode.position.z, 0));
@@ -329,25 +335,25 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 		reversePath = true;
 	}
 
-	
-	
+
+
 	std::vector<Node> resultNodes = std::vector<Node>();
 	std::vector<Node> openNodes = std::vector<Node>();
-	std::vector<Node> closedNodes = std::vector<Node>();
+	std::vector<std::vector<Node>> closedNodes = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
 	openNodes.push_back(startNode);
 	bool succes = false;
 	Node currentNode = Node();
 	int iterations = 0;
 
-	
-	
+
+
 
 
 	while (openNodes.size() > 0 && succes == false) {
 		iteration++;
 		float lowestF = -1;
 		int lowestFIndex = openNodes[0].f;
-		
+
 		for (int i = 0; i < openNodes.size(); i++)
 		{
 
@@ -357,17 +363,17 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 			}
 		}
-		
-	
-		closedNodes.push_back(openNodes.at(lowestFIndex));
-		currentNode = closedNodes.back();
+
+		Node tempNode = openNodes.at(lowestFIndex);
+		closedNodes[tempNode.position.x][tempNode.position.z]=tempNode;
+		currentNode = tempNode;
 		openNodes.erase(openNodes.begin() + lowestFIndex);
 
-		if (closedNodes.back().position == goalNode.position) {
+		if (tempNode.position == goalNode.position) {
 			succes = true;
 			break;
 		}
-		
+
 		//for each neighbor
 		for (int i = 0; i < 9; i++)
 		{
@@ -385,12 +391,12 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 				isViableNeighbor = false;
 
 			}
-			if (tempGrid[x][z].pathable == PATHABLE_CHECK && tempGrid[x][z].position!=goalNode.position) {
+			if (tempGrid[x][z].pathable == PATHABLE_CHECK && tempGrid[x][z].position != goalNode.position) {
 				isViableNeighbor = false;
 			}
 			for (int j = 0; j < closedNodes.size(); j++)
 			{
-				if (tempGrid[x][z].position == closedNodes[j].position) {
+				if (tempGrid[x][z].position == closedNodes[x][z].position) {
 					isViableNeighbor = false;
 
 				}
@@ -444,8 +450,8 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 
 			}
-			
-			
+
+
 		}
 	}
 	//Debug.Log("AStar Iterations:", i);
@@ -464,11 +470,11 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 			gg++;
 
 		}
-		
+
 
 	}
 	else {
-		if(reversePath)
+		if (reversePath)
 			resultNodes.push_back(startNode);
 		else
 		{
