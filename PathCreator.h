@@ -13,6 +13,7 @@
 #include <thread>
 #include <time.h>
 #include <ctime>
+#include <queue>
 /*#define MAX 200
 #define MIN 0
 #define GRID 200*/ // spannet mellan min till max
@@ -26,7 +27,6 @@ public:
 
 	void trumpTheBorders();
 	void addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions, int Width, int Height);
-	void createNodes(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> positions);
 	void blockGrid(DirectX::XMFLOAT3 pos);
 	std::vector<Node> getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos);
 
