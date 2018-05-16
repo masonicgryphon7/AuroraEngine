@@ -75,7 +75,7 @@ void GUI_Viewport::ShowEngineView()
 
 	Input.InternalSetMouseViewport(ImGui::GetCurrentWindow()->Size.x, ImGui::GetCurrentWindow()->Size.y);
 
-	renderManager->ForwardRender(m_engine->camera, m_engine->objectsToRender);
+	renderManager->Render(m_engine->camera, m_engine->objectsToRender, screen.x,screen.y);
 	m_engine->gDeviceContext->OMSetRenderTargets(1, &m_engine->gBackbufferRTV, m_engine->m_depthStencilView);
 	m_engine->SetViewport();
 

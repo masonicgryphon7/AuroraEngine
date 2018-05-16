@@ -15,7 +15,6 @@ AnimationClip::~AnimationClip()
 
 void AnimationClip::createClipFromBinary(std::string filePath)
 {
-	framesPerSecond = 24.0f;
 
 
 	MyLibrary::Loadera myLoader;
@@ -53,6 +52,12 @@ void AnimationClip::createClipFromBinary(std::string filePath)
 		animationFrames.push_back(animFrame);
 
 	}
+
+
+	framesPerSecond = 24.0f;
+	clipTimeLength = (float)nrOfKeyFrames/(float)framesPerSecond;
+
+	int gg = 0;
 }
 
 const std::string AnimationClip::getClipName() const

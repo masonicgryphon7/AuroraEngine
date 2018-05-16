@@ -24,8 +24,9 @@ public:
 	Texture* AddTexture(std::string filePath);
 	Material* AddMaterial(std::string name, ShaderProgram* shaderProgram);
 	void addMesh(std::string filePath, ShaderProgram* vertexShader);
-	void addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ShaderProgram* vertexShader);
+	void addMesh(int vertCountData, std::string terrainName, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ShaderProgram* vertexShader);
 	Mesh* AddMesh(const std::string& filePath, ShaderProgram* vertexShader);
+	Mesh* AddMesh(int vertCountData, std::string terrainName, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ShaderProgram* vertexShader);
 	void addMeshFromBinary(std::string filePath, ShaderProgram* vertexShader);
 	void addAnimatedMeshFromBinary(std::string filePath, ShaderProgram* vertexShader);
 	void addShaderProgram(INPUT_ELEMENT_DESCRIPTION description,  std::string filePath, SHADER_TYPE type);
@@ -43,12 +44,15 @@ public:
 	Mesh* getMesh(const std::string& name);
 	ShaderProgram* getShaderProgram(int index);
 	ShaderProgram* getShaderProgram(const std::string& filePath);
+	ID3D11Device* getD3D11Device() { return device; };
+
 
 	// -- GUID -- //
 	static unsigned int GenerateGUID();
 	static std::string GenerateGUIDAsString();
 	static std::string GUIDToString(unsigned int guid);
 	static unsigned int GUIDToUnsignedInt(const std::string& guid);
+
 
 private:
 	static std::vector<Texture*> textures;

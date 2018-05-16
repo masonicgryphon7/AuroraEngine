@@ -23,6 +23,9 @@ public:
 	float ringOfFire;
 	DirectX::XMVECTOR middlePoint = DirectX::XMVectorSet(149, 0.0, 149, 0.0);
 
+	float uvPanning = 0;
+	DirectX::XMFLOAT4 fireBufferData;
+	float lavaSpeed = 0.04;
 	float gameTime;
 	float getGameTime() { return this->gameTime; };
 	float getRingRadius() { return this->ringOfFire; };

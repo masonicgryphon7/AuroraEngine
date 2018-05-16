@@ -4,14 +4,14 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
+Mesh::Mesh(int vertCountData, std::string terrainName, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
 {
 	this->vertexShader = vertexShader;
 	vertexCount = 0;
 	gDeviceContext = devContext;
 	CreateTerrainMeshData(vertCountData, TerrainInfoVector, device, devContext);
-	this->meshName = "Terrain";
-	this->meshPath = "Terrain";
+	this->meshName = terrainName;
+	this->meshPath = terrainName;
 }
 
 Mesh::Mesh(std::string filePath, ID3D11Device * device, ID3D11DeviceContext * devContext, ShaderProgram* vertexShader)
@@ -326,6 +326,7 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 		vertex.normal.x = myMesh.mesh_vertices[i].vertex_normal[0];
 		vertex.normal.y = myMesh.mesh_vertices[i].vertex_normal[1];
 		vertex.normal.z = myMesh.mesh_vertices[i].vertex_normal[2];
+		DirectX::XMStoreFloat3(&vertex.normal, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&vertex.normal)));
 
 		vertex.uv.x = myMesh.mesh_vertices[i].vertex_UVCoord[0];
 		vertex.uv.y = myMesh.mesh_vertices[i].vertex_UVCoord[1];
@@ -333,13 +334,16 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 		vertex.tangent.x = myMesh.mesh_vertices[i].vertex_tangent[0];
 		vertex.tangent.y = myMesh.mesh_vertices[i].vertex_tangent[1];
 		vertex.tangent.z = myMesh.mesh_vertices[i].vertex_tangent[2];
+		DirectX::XMStoreFloat3(&vertex.tangent, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&vertex.tangent)));
 
 		vertex.bitangent.x = myMesh.mesh_vertices[i].vertex_biTangent[0];
 		vertex.bitangent.y = myMesh.mesh_vertices[i].vertex_biTangent[1];
 		vertex.bitangent.z = myMesh.mesh_vertices[i].vertex_biTangent[2];
+		DirectX::XMStoreFloat3(&vertex.bitangent, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&vertex.bitangent)));
 
 		vertices.push_back(vertex);
 	}
+	
 
 	D3D11_BUFFER_DESC vertexBufferDesc;
 
@@ -383,6 +387,7 @@ void Mesh::createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * dev
 		vertex.normal.x =  myMesh.mesh_vertices[i].vertex_normal[0];
 		vertex.normal.y =  myMesh.mesh_vertices[i].vertex_normal[1];
 		vertex.normal.z =  myMesh.mesh_vertices[i].vertex_normal[2];
+		DirectX::XMStoreFloat3(&vertex.normal, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&vertex.normal)));
 
 		vertex.uv.x =  myMesh.mesh_vertices[i].vertex_UVCoord[0];
 		vertex.uv.y =  myMesh.mesh_vertices[i].vertex_UVCoord[1];
@@ -390,15 +395,20 @@ void Mesh::createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * dev
 		vertex.tangent.x =  myMesh.mesh_vertices[i].vertex_tangent[0];
 		vertex.tangent.y =  myMesh.mesh_vertices[i].vertex_tangent[1];
 		vertex.tangent.z =  myMesh.mesh_vertices[i].vertex_tangent[2];
+		DirectX::XMStoreFloat3(&vertex.tangent, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&vertex.tangent)));
+		DirectX::XMStoreFloat3(&vertex.tangent, DirectX::XMVectorSet(0,0,0,0));
+
 
 		vertex.bitangent.x =  myMesh.mesh_vertices[i].vertex_biTangent[0];
 		vertex.bitangent.y =  myMesh.mesh_vertices[i].vertex_biTangent[1];
 		vertex.bitangent.z =  myMesh.mesh_vertices[i].vertex_biTangent[2];
+		DirectX::XMStoreFloat3(&vertex.bitangent, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&vertex.bitangent)));
+		DirectX::XMStoreFloat3(&vertex.bitangent, DirectX::XMVectorSet(0, 0, 0, 0));
 
-		vertex.jointIndex.x =  myMesh.mesh_vertices[i].influencing_joint[0];
-		vertex.jointIndex.y =  myMesh.mesh_vertices[i].influencing_joint[1];
-		vertex.jointIndex.z =  myMesh.mesh_vertices[i].influencing_joint[2];
-		vertex.jointIndex.w =  myMesh.mesh_vertices[i].influencing_joint[3];
+		vertex.jointIndex.x =  myMesh.mesh_vertices[i].influencing_joint[0]-1;
+		vertex.jointIndex.y =  myMesh.mesh_vertices[i].influencing_joint[1]-1;
+		vertex.jointIndex.z =  myMesh.mesh_vertices[i].influencing_joint[2]-1;
+		vertex.jointIndex.w =  myMesh.mesh_vertices[i].influencing_joint[3]-1;
 
 		vertex.jointWeight.x =  myMesh.mesh_vertices[i].joint_weights[0];
 		vertex.jointWeight.y =  myMesh.mesh_vertices[i].joint_weights[1];
@@ -408,6 +418,8 @@ void Mesh::createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * dev
 		vertices.push_back(vertex);
 	}
 
+
+	gg = 0;
 	D3D11_BUFFER_DESC vertexBufferDesc;
 
 	memset(&vertexBufferDesc, 0, sizeof(vertexBufferDesc));

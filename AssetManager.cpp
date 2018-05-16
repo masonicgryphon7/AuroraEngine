@@ -151,9 +151,9 @@ void cAssetManager::addMesh(std::string filePath, ShaderProgram* vertexShader)
 }
 
 
-void cAssetManager::addMesh(int vertCountData, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ShaderProgram* vertexShader)
+void cAssetManager::addMesh(int vertCountData, std::string terrainName, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ShaderProgram* vertexShader)
 {
-	meshes.push_back(new Mesh(vertCountData, TerrainInfoVector, device, devContext, vertexShader));
+	meshes.push_back(new Mesh(vertCountData, terrainName, TerrainInfoVector, device, devContext, vertexShader));
 }
 
 void cAssetManager::addMeshFromBinary(std::string filePath, ShaderProgram* vertexShader)
@@ -183,6 +183,28 @@ Mesh * cAssetManager::AddMesh(const std::string & filePath, ShaderProgram* verte
 	if (temp == nullptr || !makingSureBool)
 	{
 		temp = new Mesh(filePath, device, devContext, vertexShader);
+		meshes.push_back(temp);
+	}
+
+	return temp;
+}
+
+Mesh * cAssetManager::AddMesh(int vertCountData, std::string terrainName, std::vector<VERTEX_POS3UV2T3B3N3> TerrainInfoVector, ShaderProgram * vertexShader)
+{
+	Mesh* temp = nullptr;
+
+	for (auto& mesh : meshes)
+	{
+		if (mesh->getMeshName() == terrainName)
+		{
+			temp = mesh;
+			break;
+		}
+	}
+
+	if (temp == nullptr)
+	{
+		temp = new Mesh(vertCountData, terrainName, TerrainInfoVector, device, devContext, vertexShader);
 		meshes.push_back(temp);
 	}
 

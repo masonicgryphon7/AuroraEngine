@@ -19,6 +19,5 @@ private:
 	int nrOfJoints;
 	std::vector<SkeletonJoint> inverseSkeletonJoints;
 	std::string skeletonName, skeletonPath;
-	DirectX::XMMATRIX getMultipliedJointHierarchyTransform(MyLibrary::SkeletonFromFile skeleton,MyLibrary::Joint currentJoint, DirectX::XMMATRIX childTransform);
 };
 

@@ -13,7 +13,7 @@ public:
 	~Animator();
 
 	void update();
-	void Play(int clipIndex);
+	void Play(int clipIndex, bool loop);
 	void Pause();
 	void addAnimationClip(AnimationClip* animClip);
 	void addAnimationClipAt(AnimationClip* animClip, int index);
@@ -22,7 +22,9 @@ public:
 		return matrixPalette; };
 private:
 	bool isPlaying;
+	bool loop;
 	float playTime;
+	float playRate;
 	int currentClipIndex;
 	std::vector<DirectX::XMMATRIX> matrixPalette;
 	std::vector<AnimationClip*> animationclips;

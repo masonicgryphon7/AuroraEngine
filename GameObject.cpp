@@ -6,6 +6,7 @@ GameObject::GameObject()
 	name = "GameObject";
 	transform = Transform();
 	isActive = true;
+	unitIsAvtive = true;
 	isRenderable = false;
 	hasLight = false;
 	transform.gameObject = this;
@@ -17,6 +18,7 @@ GameObject::GameObject(DirectX::XMVECTOR(otherPosition))
 {
 	name = "GameObject";
 	isActive = true;
+	unitIsAvtive = true;
 	isRenderable = false;
 	hasLight = false;
 	transform.setPosition(otherPosition);
@@ -32,6 +34,7 @@ GameObject::GameObject(int otherAssetID)
 	transform = Transform();
 	assetID = otherAssetID;
 	isActive = true;
+	unitIsAvtive = true;
 	isRenderable = false;
 	hasLight = false;
 

@@ -118,9 +118,6 @@ private:
 	//void SetViewport(int x = WIDTH, int y = HEIGHT);
 
 	void addMaterials();
-	void createTerrain();
-
-
 
 public:
 	ID3D11DeviceContext * gDeviceContext = nullptr;
@@ -135,6 +132,7 @@ public:
 	RenderManager *renderManager;
 
 
+	int createTerrain();
 	void SetViewport(int x = WIDTH, int y = HEIGHT);
 	void OnResize();
 

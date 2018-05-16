@@ -15,6 +15,7 @@
 #include "GameManager.h"
 #include <crtdbg.h>
 #include "PathCreator.h"
+#include <future>
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
@@ -39,7 +40,7 @@ CoreEngine::CoreEngine(bool includeDebugConsole)
 			std::cout << " -- CONSOLE LAUNCHED -- " << std::endl << std::endl << std::endl;
 		}
 	}
-	
+
 }
 
 CoreEngine::~CoreEngine()
@@ -149,7 +150,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//----------------
 		GameManager gameManager = GameManager(gDevice, gDeviceContext);
 
-		createTerrain();
+		if (!PLAYER_BUILD)
+			createTerrain();
 
 		//Meshes
 		AssetManager.addMeshFromBinary("Assets/PIRATE.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
@@ -171,7 +173,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		camera->addComponent(cam);
 		PlayerScript* playerscript = new PlayerScript(camera);
 		camera->addComponent(playerscript);
-
+		Light* directionalLight = new Light(LIGHT_TYPES::Directional, SHADOW_TYPE::SoftShadows, TEXTURE_RESOLUTIONS::R1024x1024, DirectX::XMVectorSet(1, 1, 1, 1), 1, 1);
+		camera->addComponent(directionalLight);
 		//PlayerScript *playerscript = new PlayerScript();
 		//camera->addComponent(playerscript);
 
@@ -209,13 +212,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//gamemanager.unitLists[cube->tag].push_back(unitWorker);
 
 
-		
+
 
 
 		//
-		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(5, 0, 5, 0));
+		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(10, 50, 40, 0));
 		animatedGO->name = "Animator";
-		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
 		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
 		MeshFilter* animMeshFilter = new MeshFilter(animMesh);
 		animatedGO->addComponent(animMeshFilter);
@@ -226,6 +229,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("First_JOint_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
 		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("First_JOint_Skeleton"), "ANIMATION_ANIMATION"));
+		animator->Play(0, true);
 
 		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 
@@ -249,7 +253,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		Editor* editor = nullptr;
 		Player* player = nullptr;
-		
+
 		if (!PLAYER_BUILD)
 		{
 			editor = new Editor();
@@ -271,6 +275,15 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 			else
 			{
+				// FULLSCREEN
+				{
+					BOOL bFullscreen;
+					gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
+					// If not full screen, enable fullscreen again.
+					if (!bFullscreen)
+						gSwapChain->SetFullscreenState(TRUE, NULL);
+				}
+
 				inputHandler.updateInput();
 				Time.tick();
 				gameManager.update();
@@ -286,13 +299,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				if (player != nullptr)
 					player->Update();
 
-			
+
 				gDeviceContext->PSSetShaderResources(0, 1, &renderManager->m_shaderResourceView);
 
 				renderManager->EndFrame(); // END RENDERING
 
 				objectsToRender[0].clear();
-				
+
 				hasResized = false;
 			}
 		}
@@ -329,13 +342,13 @@ void CoreEngine::addMaterials()
 	assetManager.addTexture("Assets/GrassBricks-Normal.png"); //10
 	assetManager.addTexture("Assets/GrassBricks-RoughMetalAo.png"); //11
 
-	assetManager.addTexture("Assets/Lava_Albedo2.png"); //20
+	assetManager.addTexture("Assets/Lava_Albedo.png"); //20
 	assetManager.addTexture("Assets/Lava_Normal.png"); //21
 	assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
 
 	assetManager.addTexture("Assets/FinaleIDMAP3.png");
 
-																		   //Terrain
+	//Terrain
 	int matXTile = 10;
 	int matYTile = 10;
 
@@ -346,23 +359,23 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("TerrainMaterial1")->setYTile(matYTile);
 	assetManager.getMaterial("TerrainMaterial1")->setTerrainMaterials(
 
-		assetManager.getTexture("Grass-Diffuse")->getTexture(),
-		assetManager.getTexture("Grass-Normal")->getTexture(),
-		assetManager.getTexture("Grass-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("Grass-Diffuse")->getTexture(),
+	assetManager.getTexture("Grass-Normal")->getTexture(),
+	assetManager.getTexture("Grass-RoughMetalAo")->getTexture(),
 
-		assetManager.getTexture("Mountain-Diffuse")->getTexture(),
-		assetManager.getTexture("Mountain-Normal")->getTexture(),
-		assetManager.getTexture("Mountain-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("Mountain-Diffuse")->getTexture(),
+	assetManager.getTexture("Mountain-Normal")->getTexture(),
+	assetManager.getTexture("Mountain-RoughMetalAo")->getTexture(),
 
-		assetManager.getTexture("GrassBricks-Diffuse")->getTexture(),
-		assetManager.getTexture("GrassBricks-Normal")->getTexture(),
-		assetManager.getTexture("GrassBricks-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("GrassBricks-Diffuse")->getTexture(),
+	assetManager.getTexture("GrassBricks-Normal")->getTexture(),
+	assetManager.getTexture("GrassBricks-RoughMetalAo")->getTexture(),
 
-		assetManager.getTexture("Lava_Albedo2")->getTexture(),
-		assetManager.getTexture("Lava_Normal")->getTexture(),
-		assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
+	assetManager.getTexture("Lava_Albedo")->getTexture(),
+	assetManager.getTexture("Lava_Normal")->getTexture(),
+	assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 
-		assetManager.getTexture("FinaleIDMAP3")->getTexture()); //USE ID_PART 1
+	assetManager.getTexture("FinaleIDMAP3")->getTexture()); //USE ID_PART 1
 
 
 
@@ -370,6 +383,7 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
 	AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
 	AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+	AssetManager.addTexture("Assets/troll_made_with_unity.png");
 
 
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_BaseColor.png");
@@ -421,7 +435,7 @@ void CoreEngine::addMaterials()
 
 }
 
-void CoreEngine::createTerrain()
+int CoreEngine::createTerrain()
 {
 	TerrainGenerator* Terrain = new TerrainGenerator(300, 300, "Assets/FinaleHeightMapTotal.bmp");
 
@@ -430,8 +444,8 @@ void CoreEngine::createTerrain()
 	terrain1->name = "Terrain1";
 	terrain1->tag = 0;
 	terrain1->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(0, 0, 100, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain = new MeshFilter(AssetManager.getMesh(0));
+	Mesh* m1 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_1", Terrain->getPatchTriangleArr(0, 0, 100, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain = new MeshFilter(m1);
 	terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain1->addComponent(meshFilterTerrain);
 
@@ -439,8 +453,8 @@ void CoreEngine::createTerrain()
 	terrain2->name = "Terrain2";
 	terrain2->tag = 0;
 	terrain2->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(100, 0, 200, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain2 = new MeshFilter(AssetManager.getMesh(1));
+	Mesh* m2 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_2", Terrain->getPatchTriangleArr(100, 0, 200, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain2 = new MeshFilter(m2);
 	terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain2->addComponent(meshFilterTerrain2);
 
@@ -448,8 +462,8 @@ void CoreEngine::createTerrain()
 	terrain3->name = "Terrain3";
 	terrain3->tag = 0;
 	terrain3->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(200, 0, 300, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain3 = new MeshFilter(AssetManager.getMesh(2));
+	Mesh* m3 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_3", Terrain->getPatchTriangleArr(200, 0, 300, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain3 = new MeshFilter(m3);
 	terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain3->addComponent(meshFilterTerrain3);
 
@@ -457,8 +471,8 @@ void CoreEngine::createTerrain()
 	terrain4->name = "Terrain4";
 	terrain4->tag = 0;
 	terrain4->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(0, 100, 100, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain4 = new MeshFilter(AssetManager.getMesh(3));
+	Mesh* m4 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_4", Terrain->getPatchTriangleArr(0, 100, 100, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain4 = new MeshFilter(m4);
 	terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain4->addComponent(meshFilterTerrain4);
 
@@ -466,8 +480,8 @@ void CoreEngine::createTerrain()
 	terrain5->name = "Terrain5";
 	terrain5->tag = 0;
 	terrain5->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(100, 100, 200, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain5 = new MeshFilter(AssetManager.getMesh(4));
+	Mesh* m5 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_5", Terrain->getPatchTriangleArr(100, 100, 200, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain5 = new MeshFilter(m5);
 	terrain5->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain5->addComponent(meshFilterTerrain5);
 
@@ -475,8 +489,8 @@ void CoreEngine::createTerrain()
 	terrain6->name = "Terrain6";
 	terrain6->tag = 0;
 	terrain6->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(200, 100, 300, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain6 = new MeshFilter(AssetManager.getMesh(5));
+	Mesh* m6 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_6", Terrain->getPatchTriangleArr(200, 100, 300, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain6 = new MeshFilter(m6);
 	terrain6->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain6->addComponent(meshFilterTerrain6);
 
@@ -484,8 +498,8 @@ void CoreEngine::createTerrain()
 	terrain7->name = "Terrain7";
 	terrain7->tag = 0;
 	terrain7->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(0, 200, 100, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain7 = new MeshFilter(AssetManager.getMesh(6));
+	Mesh* m7 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_7", Terrain->getPatchTriangleArr(0, 200, 100, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain7 = new MeshFilter(m7);
 	terrain7->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain7->addComponent(meshFilterTerrain7);
 
@@ -493,8 +507,8 @@ void CoreEngine::createTerrain()
 	terrain8->name = "Terrain8";
 	terrain8->tag = 0;
 	terrain8->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(100, 200, 200, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain8 = new MeshFilter(AssetManager.getMesh(7));
+	Mesh* m8 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_8", Terrain->getPatchTriangleArr(100, 200, 200, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain8 = new MeshFilter(m8);
 	terrain8->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain8->addComponent(meshFilterTerrain8);
 
@@ -502,11 +516,11 @@ void CoreEngine::createTerrain()
 	terrain9->name = "Terrain9";
 	terrain9->tag = 0;
 	terrain9->detailedRaycast = true;
-	AssetManager.addMesh(Terrain->getPatchVertCount(), Terrain->getPatchTriangleArr(200, 200, 300, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
-	MeshFilter* meshFilterTerrain9 = new MeshFilter(AssetManager.getMesh(8));
+	Mesh* m9 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_9", Terrain->getPatchTriangleArr(200, 200, 300, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
+	MeshFilter* meshFilterTerrain9 = new MeshFilter(m9);
 	terrain9->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
 	terrain9->addComponent(meshFilterTerrain9);
-	
+
 	//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
 
 
@@ -521,9 +535,9 @@ void CoreEngine::createTerrain()
 	//PathCreator1->addTerrain(terrainGenerator7->getRealVertArr(), 198, 0);
 
 	PathCreator.trumpTheBorders();
-	
-	//PathCreator.createNodes();
 
+	//PathCreator.createNodes();
+	return 1;
 }
 
 

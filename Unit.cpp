@@ -66,7 +66,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 160;
 		this->defencePoints = 10; // 10
-		this->attackDistance = 2;
+		this->attackDistance = 3;
 		this->Resources = 0;
 		this->type = Hero;
 		this->future_nodes = promisedNodes.get_future();
@@ -149,22 +149,26 @@ void Unit::testThreading()
 void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 {
 	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
+	if (gameObject->unitIsAvtive == true)
+	{
 
-	
-	if (goalPos == nullptr)
-	{
-		DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
-	}
-	else
-	{
-		DirectX::XMStoreFloat3(&pointPosition, *goalPos);
-	}
+		DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
-	if (pathNodes.size() == 0)
-	{
-		lerpValue = 0;
-		std::clock_t start;
-		start = std::clock();
+		DirectX::XMFLOAT3 pointPosition;
+		if (goalPos == nullptr)
+		{
+			DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
+		}
+		else
+		{
+			DirectX::XMStoreFloat3(&pointPosition, *goalPos);
+		}
+
+		if (pathNodes.size() == 0)
+		{
+			lerpValue = 0;
+			std::clock_t start;
+			start = std::clock();
 
 		if (threads.size() > 0)
 		{
@@ -176,79 +180,81 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		Debug.Log(" after astar time ", time);
 		threads.push_back(std::thread(&Unit::testThreading, this));
 
-	}
-
-	if (pathNodes.size() > 0) {
-		lerpValue += Time.getDeltaTime() * 10;
-		if (lerpValue > 1) {
-			lerpValue = 1;
 		}
-		DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
-		DirectX::XMFLOAT3 goalVec;
-		DirectX::XMStoreFloat3(&goalVec, goal);
 
-		DirectX::XMVECTOR forward = gameObject->transform.getForward();
-		DirectX::XMVECTOR currentPoint = gameObject->transform.getPosition();
-		DirectX::XMVECTOR goalPoint = DirectX::XMVectorSet(goalVec.x, goalVec.y, goalVec.z, 0.0);
-		DirectX::XMVECTOR currentToGoal = DirectX::XMVectorSubtract(goalPoint, currentPoint);
+		if (pathNodes.size() > 0) {
+			lerpValue += Time.getDeltaTime() * 10;
+			if (lerpValue > 1) {
+				lerpValue = 1;
+			}
+			DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+			DirectX::XMFLOAT3 goalVec;
+			DirectX::XMStoreFloat3(&goalVec, goal);
 
-	
+			DirectX::XMVECTOR forward = gameObject->transform.getForward();
+			DirectX::XMVECTOR currentPoint = gameObject->transform.getPosition();
+			DirectX::XMVECTOR goalPoint = DirectX::XMVectorSet(goalVec.x, goalVec.y, goalVec.z, 0.0);
+			DirectX::XMVECTOR currentToGoal = DirectX::XMVectorSubtract(goalPoint, currentPoint);
 
-		
-		
-		
-		
-	
-		
-	//	gameObject->transform.setForward(gameObject->transform.getForward());
-		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
-			pathNodes.erase(pathNodes.begin());
 
-			goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+
+
+
+
+
+
+
+			//	gameObject->transform.setForward(gameObject->transform.getForward());
+			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
+				pathNodes.erase(pathNodes.begin());
+
+				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+				lerpValue = 0;
+			}
+			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
+				pathNodes.erase(pathNodes.begin());
+				lerpValue = 0;
+				UnitOrders.erase(UnitOrders.begin());
+
+
+			}
+			gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
+
+			DirectX::XMVECTOR directionVector = DirectX::XMVectorSubtract(goalPoint, currentPoint);
+			float rotation;
+			rotation = DirectX::XMVectorGetX(DirectX::XMVector4Dot(DirectX::XMVector4Normalize(directionVector), DirectX::XMVectorSet(1.0, 0.0, 0.0, 1)));
+			if (goalVec.z == DirectX::XMVectorGetZ(currentPoint))
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, acos(rotation) *57.2957795, 0.0, 0.0));
+			else if (goalVec.z < DirectX::XMVectorGetZ(currentPoint))
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, acos(rotation) *57.2957795, 0.0, 0.0));
+			else if (goalVec.z > DirectX::XMVectorGetZ(currentPoint))
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, -acos(rotation) *57.2957795, 0.0, 0.0));
+		}
+		else
+		{
 			lerpValue = 0;
-		}
-		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
-			pathNodes.erase(pathNodes.begin());
-			lerpValue = 0;
-			UnitOrders.erase(UnitOrders.begin());
-
 
 		}
-		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
-	
-		DirectX::XMVECTOR directionVector = DirectX::XMVectorSubtract(goalPoint, currentPoint);
-		float rotation;
-		rotation = DirectX::XMVectorGetX(DirectX::XMVector4Dot(DirectX::XMVector4Normalize(directionVector), DirectX::XMVectorSet(1.0, 0.0, 0.0, 1)));
-		if (goalVec.z == DirectX::XMVectorGetZ(currentPoint))
-			gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, acos(rotation) *57.2957795, 0.0, 0.0));
-		else if (goalVec.z < DirectX::XMVectorGetZ(currentPoint))
-			gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, acos(rotation) *57.2957795, 0.0, 0.0));
-		else if (goalVec.z > DirectX::XMVectorGetZ(currentPoint))
-			gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, -acos(rotation) *57.2957795, 0.0, 0.0));
 	}
-	else
-	{
-		lerpValue = 0;
-
-	}
-	
 	//Debug.Log("Moving");
 }
 
 void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 {
-	DirectX::XMFLOAT3 current;
-	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
+	if (gameObject->unitIsAvtive == true)
+	{
+		DirectX::XMFLOAT3 current;
+		DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
-	DirectX::XMFLOAT3 pointPosition;
-	if (goalPos == nullptr)
-	{
-		DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
-	}
-	else
-	{
-		DirectX::XMStoreFloat3(&pointPosition, *goalPos);
-	}
+		DirectX::XMFLOAT3 pointPosition;
+		if (goalPos == nullptr)
+		{
+			DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
+		}
+		else
+		{
+			DirectX::XMStoreFloat3(&pointPosition, *goalPos);
+		}
 
 	if (pathNodes.size() == 0)
 	{
@@ -274,25 +280,26 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		DirectX::XMStoreFloat3(&goalVec, goal);
 
 
-		if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition())))<EPSILON &&pathNodes.size() > 1) {
-			pathNodes.erase(pathNodes.begin());
+			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
+				pathNodes.erase(pathNodes.begin());
 
-			goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
-			lerpValue = 0;
+				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+				lerpValue = 0;
+			}
+			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
+				pathNodes.erase(pathNodes.begin());
+				lerpValue = 0;
+				//UnitOrders.erase(UnitOrders.begin() + 1);
+
+
+			}
+			gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
 		}
-		else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
-			pathNodes.erase(pathNodes.begin());
+		else
+		{
 			lerpValue = 0;
-			//UnitOrders.erase(UnitOrders.begin() + 1);
-
 
 		}
-		gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
-	}
-	else
-	{
-		lerpValue = 0;
-
 	}
 	//Debug.Log("Moving");
 }
@@ -302,24 +309,33 @@ void Unit::attackCommand(Unit* targetedUnit)
 	targetPos = UnitOrders.at(0).transform->getPosition();
 	unitPos = gameObject->transform.getPosition();
 
-	if (targetedUnit != nullptr && targetedUnit->getHealthPoints() > 0)
-	{
+	if (targetedUnit->gameObject->unitIsAvtive == false)
+		int e = 0;
 
-		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
+	if (targetedUnit->gameObject->unitIsAvtive == true)
+	{
+		if (targetedUnit != nullptr && targetedUnit->getHealthPoints() > 0)
 		{
-			actionTime += Time.getDeltaTime();
-			//Damage enemy
-			if (actionTime > 1)
+
+			if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 			{
-				//attackEnemy();
-				targetedUnit->takeDamage(this->getAttackPoints());
-				Debug.Log("Enemy Hit!");
-				actionTime = 0;
+				actionTime += Time.getDeltaTime();
+				//Damage enemy
+				if (actionTime > 1)
+				{
+					//attackEnemy();
+					targetedUnit->takeDamage(this->getAttackPoints());
+					Debug.Log("Enemy Hit!");
+					actionTime = 0;
+				}
+			}
+			else
+			{
+				SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 			}
 		}
-		else
-		{
-			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		else {
+			UnitOrders.erase(UnitOrders.begin());
 		}
 	}
 	else {
@@ -344,6 +360,7 @@ void Unit::takeDamage(int attackPoints)
 
 	if (healthPoints <= 0)
 	{
+		gameObject->unitIsAvtive = false;
 		Order tempOrder;
 		tempOrder.command = Die;
 
@@ -356,6 +373,7 @@ void Unit::takeFireDamage(float attackPoints)
 	this->setHealthPoints(this->getHealthPoints() - attackPoints);
 	if (healthPoints <= 0)
 	{
+		gameObject->unitIsAvtive = false;
 		Order tempOrder;
 		tempOrder.command = Die;
 
@@ -424,9 +442,9 @@ void Unit::FollowCommand()
 void Unit::gatherCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
-	if (targetedUnit != nullptr)
+	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true && targetedUnit->gameObject->unitIsAvtive == true)
 	{
-		if (this->Resources < 100 && e == 0) // worker is not full
+		if (this->Resources < 100 && e == 0 && targetedUnit->gameObject->unitIsAvtive == true) // worker is not full
 		{
 			if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
 			{
@@ -437,7 +455,7 @@ void Unit::gatherCommand(Unit* targetedUnit)
 				SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 			}
 		}
-		else if (this->Resources > 0 && e == 1) // worker has gold
+		else if (this->Resources > 0 && e == 1 && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
 		{
 			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
 			{
@@ -449,13 +467,16 @@ void Unit::gatherCommand(Unit* targetedUnit)
 			}
 		}
 	}
+	else {
+		UnitOrders.erase(UnitOrders.begin());
+	}
 }
 
 void Unit::HeroGatherCommand(Unit * targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
 
-	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->getResources() > 0)
+	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->getResources() > 0 && targetedUnit->gameObject->unitIsAvtive == true)
 	{
 		actionTime += Time.getDeltaTime();
 		if (targetedUnit->type == Bank && actionTime > 4)
@@ -473,62 +494,82 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 			Debug.Log("Resources: ", this->getResources());
 		}
 	}
-	else
+	else if(targetedUnit->gameObject->unitIsAvtive == true)
 	{
 		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+	}
+	else {
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
 void Unit::gatherResources()
 {
 	actionTime += Time.getDeltaTime();
-	if (actionTime > 1)
+	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true)
 	{
-		int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
-		UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
-		int workersAmount = this->getResources();
-		this->setResources(workersAmount + 20);
-		Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
-		if (this->Resources == 100)
-			e = 1;
-		actionTime = 0;
+		if (actionTime > 1)
+		{
+			int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
+			UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
+			int workersAmount = this->getResources();
+			this->setResources(workersAmount + 20);
+			Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
+			if (this->Resources == 100)
+				e = 1;
+			actionTime = 0;
+		}
+	}
+	else {
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
 void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
-
-	if (this->Resources > 0)
+	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
-		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+		if (this->Resources > 0)
 		{
-			dropResources();
+			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+			{
+				dropResources();
+			}
+			else
+			{
+				Order tempOrder;
+				tempOrder.command = Command::Move;
+				tempOrder.point = this->homePos->getPosition();
+				UnitOrders.insert(UnitOrders.begin(), tempOrder);
+			}
 		}
-		else
-		{
-			Order tempOrder;
-			tempOrder.command = Command::Move;
-			tempOrder.point = this->homePos->getPosition();
-			UnitOrders.insert(UnitOrders.begin(), tempOrder);
-		}
+	}
+	else {
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
 void Unit::dropResources()
 {
 	actionTime += Time.getDeltaTime();
-	if (actionTime > 1)
+	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
-		int resourcesInUnit = this->getResources();
-		this->setResources(resourcesInUnit - 20);
-		Debug.Log("Resources dropped! In worker: ", this->getResources());
-		int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
-		this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
-		Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
-		if (this->Resources == 0)
-			e = 0;
-		actionTime = 0;
+		if (actionTime > 1)
+		{
+			int resourcesInUnit = this->getResources();
+			this->setResources(resourcesInUnit - 20);
+			Debug.Log("Resources dropped! In worker: ", this->getResources());
+			int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
+			this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+			Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
+			if (this->Resources == 0)
+				e = 0;
+			actionTime = 0;
+		}
+	}
+	else {
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
@@ -540,49 +581,56 @@ void Unit::destroyUnit()
 
 void Unit::summonWorkerCommand()
 {
-	GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());
-	worker->name = "Worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
-	worker->tag = gameObject->tag;
-	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
-	worker->addComponent(meshFilter);
-	worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
-	Unit *unitWorker = new Unit(Worker);
-	unitWorker->setHomePos(&gameObject->transform);
-	worker->addComponent(unitWorker);
-	//playerScript->friendlyUnits.push_back(unitWorker);
-	unitWorker->setPlayerScript(playerScript);
-	gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
-	
 
-	UnitOrders.erase(UnitOrders.begin());
-	Order tempOrder;
-	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 15.0, 0.0));
-	unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
+	if (this->gameObject->unitIsAvtive == true)
+	{
+		GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());
+		worker->name = "Worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
+		worker->tag = gameObject->tag;
+		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
+		worker->addComponent(meshFilter);
+		worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+		Unit *unitWorker = new Unit(Worker);
+		unitWorker->setHomePos(&gameObject->transform);
+		worker->addComponent(unitWorker);
+		//playerScript->friendlyUnits.push_back(unitWorker);
+		unitWorker->setPlayerScript(playerScript);
+		gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
+
+
+		UnitOrders.erase(UnitOrders.begin());
+		Order tempOrder;
+		tempOrder.command = Move;
+		tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 15.0, 0.0));
+		unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
+	}
 }
 
 void Unit::convertToSoldierCommand(Unit* targetedUnit)
 {
-	targetPos = UnitOrders.at(0).transform->getPosition();
-	unitPos = gameObject->transform.getPosition();
-
-	if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
+	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true)
 	{
-		gameObject->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
-		gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("PIRATE"));
-		gameObject->getComponent<MaterialFilter>()->setMaterialFilter(AssetManager.getMaterial("SoldierMaterial"));
-		gameObject->getComponent<Unit>()->type = Soldier;
-		gameObject->getComponent<Unit>()->healthPoints = 20;
-		gameObject->getComponent<Unit>()->attackDistance = 2;
-		gameObject->getComponent<Unit>()->attackPoints = 8;
-		gameObject->getComponent<Unit>()->defencePoints = 4;
-		gameObject->getComponent<Unit>()->Resources = 0;
+		targetPos = UnitOrders.at(0).transform->getPosition();
+		unitPos = gameObject->transform.getPosition();
 
-		UnitOrders.erase(UnitOrders.begin());
-	}
-	else
-	{
-		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
+		{
+			gameObject->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
+			gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("PIRATE"));
+			gameObject->getComponent<MaterialFilter>()->setMaterialFilter(AssetManager.getMaterial("SoldierMaterial"));
+			gameObject->getComponent<Unit>()->type = Soldier;
+			gameObject->getComponent<Unit>()->healthPoints = 20;
+			gameObject->getComponent<Unit>()->attackDistance = 2;
+			gameObject->getComponent<Unit>()->attackPoints = 8;
+			gameObject->getComponent<Unit>()->defencePoints = 4;
+			gameObject->getComponent<Unit>()->Resources = 0;
+
+			UnitOrders.erase(UnitOrders.begin());
+		}
+		else
+		{
+			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		}
 	}
 }
 
@@ -610,40 +658,44 @@ void Unit::summonSoldierCommand()
 
 void Unit::takeBuildingCommand(Unit * targetedUnit)
 {
-	targetPos = UnitOrders.at(0).transform->getPosition();
-	unitPos = gameObject->transform.getPosition();
+	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true)
+	{
+		targetPos = UnitOrders.at(0).transform->getPosition();
+		unitPos = gameObject->transform.getPosition();
 
-	if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
-	{
-		actionTime += Time.getDeltaTime();
-		//Damage enemy
-		if (actionTime > 1)
+		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 		{
-			//attackEnemy();
-			for (int i = 0; i < gamemanager.buildingLists[targetedUnit->gameObject->tag].size(); i++)
+			actionTime += Time.getDeltaTime();
+			//Damage enemy
+			if (actionTime > 1)
 			{
-				if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
+				//attackEnemy();
+				for (int i = 0; i < gamemanager.buildingLists[targetedUnit->gameObject->tag].size(); i++)
 				{
-					gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
-					targetedUnit->gameObject->tag = gameObject->tag;
-					gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
-					UnitOrders.erase(UnitOrders.begin());
-					break;
+					if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
+					{
+						gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
+						targetedUnit->gameObject->tag = gameObject->tag;
+						gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
+						UnitOrders.erase(UnitOrders.begin());
+						break;
+					}
 				}
+				//Debug.Log("Enemy Hit!");
+				actionTime = 0;
 			}
-			//Debug.Log("Enemy Hit!");
-			actionTime = 0;
 		}
-	}
-	else
-	{
-		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		else
+		{
+			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		}
 	}
 }
 
 void Unit::dieCommand()
 {
 	dieTime += Time.getDeltaTime();
+	gameObject->unitIsAvtive = false;
 	if(dieTime > 1)
 		gameObject->transform.setPosition(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, dieTime*0.01, 0, 0)));
 	if (dieTime > 3)
