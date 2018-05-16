@@ -241,7 +241,7 @@ void cPathCreator::loadBlockMap()
 	DirectX::XMFLOAT3 tempXMFLOAT3 = DirectX::XMFLOAT3(0, 0, 0);
 
 
-	tmpFile = fopen("Assets/Block_Map_New.bmp", "rb");
+	tmpFile = fopen("Assets/Block_Map2.bmp", "rb");
 	if (!tmpFile)
 	{
 		std::cout << "Error: Couldn't find HeightMap." << std::endl;
@@ -257,6 +257,7 @@ void cPathCreator::loadBlockMap()
 	//RGB size (r-byte, g-byte, b-byte).
 	mapSize = HeightMapVariables.Height_Row * HeightMapVariables.Width_Columns * 3;
 
+	//Store Image Data.
 	//Store Image Data.
 	bitMapImage_Info = new unsigned char[mapSize]; //Set fitting size for array that will contain data.
 	fseek(tmpFile, FileHeader.bfOffBits, SEEK_SET); //Pointer is set to the beginning of data.
@@ -310,10 +311,14 @@ std::vector<Node> cPathCreator::getRestOfPath( DirectX::XMFLOAT3 startPos, Direc
 	int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos)))) * 2;
 	int iteration = 0;
 
+	std::vector<Node> resultNodes = std::vector<Node>();
 	if (startNode.pathable == NONE_PATHABLE) {
-		startNode.position = goalNode.position;
+		startNode.position.x = startPos.x;
+		startNode.position.y = startPos.y;
+		startNode.position.z = startPos.z;
+		resultNodes.push_back(goalNode);
+		return resultNodes;
 	}
-
 	if (goalNode.pathable == NONE_PATHABLE) {
 		startNode.position = startNode.position;
 	}
@@ -331,7 +336,7 @@ std::vector<Node> cPathCreator::getRestOfPath( DirectX::XMFLOAT3 startPos, Direc
 
 
 
-	std::vector<Node> resultNodes = std::vector<Node>();
+	
 	std::vector<Node> openNodes = std::vector<Node>();
 	std::vector<Node> closedNodes = std::vector<Node>();
 	openNodes.push_back(startNode);
@@ -480,7 +485,7 @@ std::vector<Node> cPathCreator::getRestOfPath( DirectX::XMFLOAT3 startPos, Direc
 	if (reversePath) {
 		std::reverse(resultNodes.begin(), resultNodes.end());
 	}
-	Debug.Log("NINELOOP7: ", ((std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000)));
+	//Debug.Log("NINELOOP7: ", ((std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000)));
 	return resultNodes;
 }
 
@@ -496,7 +501,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	
 //	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // får aldrig vara -1. samplar utanför terrain array
 //	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
-	
+	Debug.Log("I GOT HERE");
 	DirectX::XMFLOAT3 newGoal = getShortergGoal(startPos, goalPos);
 	
 
@@ -506,9 +511,13 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 	int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos))))*2;
 	int iteration = 0;
-
+	std::vector<Node> resultNodes = std::vector<Node>();
 	if (startNode.pathable == NONE_PATHABLE) {
-		 startNode.position= goalNode.position;
+		startNode.position.x = startPos.x;
+		startNode.position.y = startPos.y;
+		startNode.position.z = startPos.z;
+		resultNodes.push_back(goalNode);
+		return resultNodes;
 	}
 
 	if (goalNode.pathable == NONE_PATHABLE) {
@@ -528,7 +537,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 
 	
 	
-	std::vector<Node> resultNodes = std::vector<Node>();
+	
 	std::vector<Node> openNodes = std::vector<Node>();
 	std::vector<Node> closedNodes = std::vector<Node>();
 	openNodes.push_back(startNode);

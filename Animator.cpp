@@ -82,9 +82,9 @@ void Animator::transformToWorldSpace(int jointChildIndex, int firstFrameIndex, i
 
 
 	//LERP SLERP LERP
-	//position1 = DirectX::XMVectorLerp(position1, position2, lerpValue);
-	//rotation1 = DirectX::XMVectorLerp(rotation1, rotation2, lerpValue);
-	//scale1 = DirectX::XMVectorLerp(scale1, scale2, lerpValue);
+	position1 = DirectX::XMVectorLerp(position1, position2, lerpValue);
+	rotation1 = DirectX::XMVectorLerp(rotation1, rotation2, lerpValue);
+	scale1 = DirectX::XMVectorLerp(scale1, scale2, lerpValue);
 
 
 	DirectX::XMMATRIX scaleMatrix = DirectX::XMMatrixScalingFromVector(scale1);

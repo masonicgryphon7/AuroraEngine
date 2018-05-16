@@ -426,7 +426,7 @@ void Mesh::createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * dev
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-	vertexBufferDesc.ByteWidth = sizeof(vertices[0])  * vertices.size();
+	vertexBufferDesc.ByteWidth = sizeof(VERTEX_POS3UV2T3B3N3JNT4WT4)  * vertices.size();
 	D3D11_SUBRESOURCE_DATA vertexdata;
 	ZeroMemory(&vertexdata, sizeof(D3D11_SUBRESOURCE_DATA));
 
