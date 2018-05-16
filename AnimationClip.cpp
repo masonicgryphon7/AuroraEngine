@@ -38,6 +38,8 @@ void AnimationClip::createClipFromBinary(std::string filePath)
 		{
 			DirectX::XMVECTOR position = DirectX::XMVectorSet(tempAnimation.keyframe_transformations[totalIndices].transform_position[0], tempAnimation.keyframe_transformations[totalIndices].transform_position[1], tempAnimation.keyframe_transformations[totalIndices].transform_position[2], 0);
 			DirectX::XMVECTOR rotation = DirectX::XMVectorSet(tempAnimation.keyframe_transformations[totalIndices].transform_rotation[0], tempAnimation.keyframe_transformations[totalIndices].transform_rotation[1], tempAnimation.keyframe_transformations[totalIndices].transform_rotation[2], 0);
+			rotation = DirectX::XMVectorScale(rotation, PI / 180.0f);
+
 			DirectX::XMVECTOR scale = DirectX::XMVectorSet(tempAnimation.keyframe_transformations[totalIndices].transform_scale[0], tempAnimation.keyframe_transformations[totalIndices].transform_scale[1], tempAnimation.keyframe_transformations[totalIndices].transform_scale[2],0);
 
 			JointTransform jointTransform = JointTransform();
