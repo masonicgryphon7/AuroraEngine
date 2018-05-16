@@ -64,7 +64,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 	{
 	case Type::Hero: //HERO
 		this->healthPoints = this->maxHealthPoints = 100;
-		this->attackPoints = 160;
+		this->attackPoints = 16;
 		this->defencePoints = 10; // 10
 		this->attackDistance = 2;
 		this->Resources = 0;
@@ -85,7 +85,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 15;
 		this->attackPoints = 11;
 		this->defencePoints = 5;
-		this->attackDistance = 2;
+		this->attackDistance = 3;
 		this->Resources = 0;
 		this->type = Worker;
 		break;
@@ -252,15 +252,15 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 	DirectX::XMFLOAT3 current;
 	DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
-	DirectX::XMFLOAT3 pointPosition;
-	if (goalPos == nullptr)
-	{
-		DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
-	}
-	else
-	{
-		DirectX::XMStoreFloat3(&pointPosition, *goalPos);
-	}
+		
+		if (goalPos == nullptr)
+		{
+			DirectX::XMStoreFloat3(&pointPosition, UnitOrders.at(0).point);
+		}
+		else
+		{
+			DirectX::XMStoreFloat3(&pointPosition, *goalPos);
+		}
 
 	if (pathNodes.size() == 0)
 	{
@@ -510,20 +510,53 @@ void Unit::gatherResources()
 void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
-
-	if (this->Resources > 0)
+	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
-		if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+		this->homePos = &targetedUnit->gameObject->transform;
+		if (this->Resources > 0)
 		{
-			dropResources();
+			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+			{
+				dropResources();
+			}
+			else
+			{
+				Order tempOrder;
+				tempOrder.command = Command::Move;
+				tempOrder.point = this->homePos->getPosition();
+				UnitOrders.insert(UnitOrders.begin(), tempOrder);
+			}
 		}
 		else
 		{
+			DirectX::XMVECTOR orderPoint = this->gameObject->transform.getPosition();
+			Transform *orderTransform = &this->gameObject->transform;
+
+			for (int i = 0; i < gamemanager.buildingLists[0].size(); i++)
+			{
+				if (gamemanager.buildingLists[0][i]->type == GoldMine)
+				{
+					int temp = getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[0][i]->gameObject->transform.getPosition());
+					if (temp < findClosest)
+					{
+						findClosest = temp;
+						orderPoint = gamemanager.buildingLists[0][i]->gameObject->transform.getPosition();
+						orderTransform = &gamemanager.buildingLists[0][i]->gameObject->transform;
+					}
+				}
+			}
+
+			UnitOrders.erase(UnitOrders.begin());
+
 			Order tempOrder;
-			tempOrder.command = Command::Move;
-			tempOrder.point = this->homePos->getPosition();
+			tempOrder.command = Command::Gather;
+			tempOrder.transform = orderTransform;
+			tempOrder.point = orderPoint;
 			UnitOrders.insert(UnitOrders.begin(), tempOrder);
 		}
+	}
+	else {
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
