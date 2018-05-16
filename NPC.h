@@ -20,17 +20,24 @@ public:
 private:
 	//std::vector<Unit*> npc_units;
 	//std::vector<Unit*> npc_buildings;
+	bool tempBool = false;
 
+	DirectX::XMVECTOR unitPos;
+	float findClosest = 10000;
+
+	std::clock_t start;
+	float waitTime;
+	bool checkTime;
+	
 	bool wantsToAttackHero;
 
-	void gather();
+	void gather(Unit* unitToUse);
 	void findNewSource();
 	void findNewEnemies(Unit* unit);
 	void attack(Unit* unit);
 	void standAbout(Unit* unit);
 	void summonWorker(Unit* building);
-
+	void takeOverBuilding(Unit* unitToUse);
 	
-
 };
 

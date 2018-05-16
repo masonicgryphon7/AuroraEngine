@@ -44,6 +44,7 @@ public:
 	void update();
 
 	static GAME_STATE gameState;
+	GAME_STATE getGameState() { return this->gameState; };
 	static std::vector<std::vector<Unit*>> unitLists;
 	static std::vector<std::vector<Unit*>> buildingLists;
 	

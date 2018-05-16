@@ -6,6 +6,7 @@
 #include "Debug.h"
 #include <DirectXMath.h>
 #include <math.h>
+
 Unit::Unit() :Component(-1, "Unit")
 {
 	actionTime = 10;
@@ -504,6 +505,8 @@ void Unit::gatherResources()
 void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
+	findClosest = 10000;//////////////
+
 	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
 		this->homePos = &targetedUnit->gameObject->transform;
@@ -670,7 +673,7 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 		{
 			actionTime += Time.getDeltaTime();
-			//Damage enemy
+			
 			if (actionTime > 1)
 			{
 				//attackEnemy();
