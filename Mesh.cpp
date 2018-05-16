@@ -418,7 +418,6 @@ void Mesh::createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * dev
 		vertices.push_back(vertex);
 	}
 
-
 	gg = 0;
 	D3D11_BUFFER_DESC vertexBufferDesc;
 
