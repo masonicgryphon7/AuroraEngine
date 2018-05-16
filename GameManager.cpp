@@ -238,7 +238,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->tag = 0;
 	MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
 	goldMineGameObject->addComponent(meshFilter2);
-	goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
+	goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
 	Unit *goldMine = new Unit(GoldMine);
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
@@ -248,34 +248,35 @@ void GameManager::addBuildings()
 	j = 250;
 
 	goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
-	goldMineGameObject->name = "Bank";
+	goldMineGameObject->name = "GoldMine";
 	goldMineGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
 	goldMineGameObject->addComponent(meshFilter2);
-	goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
-	goldMine = new Unit(Bank);
+	goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
+	goldMine = new Unit(GoldMine);
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	 i = 50;
 	 j = 25;
-	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
-	 goldMineGameObject->name = "Bank";
+
+	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y- 5, j, 0));
+	 goldMineGameObject->name = "Goldmine";
 	 goldMineGameObject->tag = 0;
 	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
 	 goldMineGameObject->addComponent(meshFilter2);
-	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
-	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
+	 goldMine = new Unit(GoldMine);
 	 goldMineGameObject->addComponent(goldMine);
 	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	 i = 50;
 	 j = 275;
 
-	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y-5, j, 0));
 	 goldMineGameObject->name = "Bank";
 	 goldMineGameObject->tag = 0;
-	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
 	 goldMineGameObject->addComponent(meshFilter2);
 	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
 	 goldMine = new Unit(Bank);
@@ -287,12 +288,12 @@ void GameManager::addBuildings()
 	 j = 25;
 
 	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
-	 goldMineGameObject->name = "Bank";
+	 goldMineGameObject->name = "Goldmine";
 	 goldMineGameObject->tag = 0;
 	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
 	 goldMineGameObject->addComponent(meshFilter2);
-	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
-	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
+	 goldMine = new Unit(GoldMine);
 	 goldMineGameObject->addComponent(goldMine);
 	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
@@ -302,7 +303,7 @@ void GameManager::addBuildings()
 	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	 goldMineGameObject->name = "Bank";
 	 goldMineGameObject->tag = 0;
-	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
 	 goldMineGameObject->addComponent(meshFilter2);
 	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
 	 goldMine = new Unit(Bank);
@@ -315,7 +316,7 @@ void GameManager::addBuildings()
 	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	 goldMineGameObject->name = "Bank";
 	 goldMineGameObject->tag = 0;
-	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	 meshFilter2 = new MeshFilter(AssetManager.getMesh("Test2ResourceSilo"));
 	 goldMineGameObject->addComponent(meshFilter2);
 	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
 	 goldMine = new Unit(Bank);
@@ -324,13 +325,14 @@ void GameManager::addBuildings()
 	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	 i = 275;
 	 j = 250;
+
 	 goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
-	 goldMineGameObject->name = "Bank";
+	 goldMineGameObject->name = "Goldmine";
 	 goldMineGameObject->tag = 0;
 	 meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
 	 goldMineGameObject->addComponent(meshFilter2);
-	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("BankMaterial")));
-	 goldMine = new Unit(Bank);
+	 goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
+	 goldMine = new Unit(GoldMine);
 	 goldMineGameObject->addComponent(goldMine);
 	 gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	 PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));

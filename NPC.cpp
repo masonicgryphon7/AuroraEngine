@@ -17,7 +17,7 @@ void NPC::update()
 	if (checkTime == true)
 	{
 		waitTime = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
-		if (waitTime > 7000)
+		if (waitTime > 20000)
 		{
 			checkTime = false;
 			Debug.Log("WAIT IS OVER");
@@ -27,21 +27,34 @@ void NPC::update()
 
 	if (checkTime == false) // waited for game to begin
 	{
-		if (gamemanager.unitLists[2][0]->getUnitOrders().size() > 0 && gamemanager.unitLists[2][0]->getUnitOrders().at(0).command == Die)
+		for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 		{
-			standAbout(gamemanager.unitLists[2][0]);
-			//attack(gamemanager.unitLists[2][0]);
-		}
-		else if(gamemanager.unitLists[2][0]->getUnitOrders().size() == 0)
-		{
-			if (gamemanager.unitLists[2][0]->getResources() <= 0)
+			if (gamemanager.unitLists[2][i]->getUnitOrders().size() > 0 && gamemanager.unitLists[2][i]->getUnitOrders().at(0).command == Die)
 			{
-				takeOverBuilding(gamemanager.unitLists[2][0]);
+				standAbout(gamemanager.unitLists[2][i]);
+				//attack(gamemanager.unitLists[2][0]);
 			}
 		}
 
-		if (gamemanager.buildingLists[2].size() > 0 && tempBool == false)
+		if(gamemanager.unitLists[2][0]->getUnitOrders().size() == 0)
 		{
+			if (gamemanager.buildingLists[2].size() < 2)//gamemanager.unitLists[2][0]->getResources() <= 0)
+			{
+				takeOverBuilding(gamemanager.unitLists[2][0]);
+			}
+			else if(gamemanager.unitLists[2][0]->getResources() < 100)
+			{
+				gather(gamemanager.unitLists[2][0]);
+			}
+		}
+		//else //if (gamemanager.unitLists[2][0]->getResources() <= 0)
+		//{
+		//	gather(gamemanager.unitLists[2][0]);
+		//}
+
+		if (gamemanager.unitLists[2][0]->getResources() > 40 && gamemanager.buildingLists[2].size() > 1) //gamemanager.buildingLists[2].size() > 0 && tempBool == false)
+		{
+			gamemanager.unitLists[2][0]->setResources(0);
 			summonWorker(gamemanager.buildingLists[2][0]);
 			tempBool = true;
 		}
@@ -255,7 +268,7 @@ void NPC::takeOverBuilding(Unit * unitToUse)
 	{
 		for (int i = 0; i < gamemanager.buildingLists[j].size(); i++)
 		{
-			if (gamemanager.buildingLists[j][i]->getType() == Bank)
+			if (gamemanager.buildingLists[j][i]->getType() != GoldMine) //Bank
 			{
 				int temp = unitToUse->getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[j][i]->gameObject->transform.getPosition());
 				if (temp < findClosest)

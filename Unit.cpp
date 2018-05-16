@@ -6,6 +6,7 @@
 #include "Debug.h"
 #include <DirectXMath.h>
 #include <math.h>
+
 Unit::Unit() :Component(-1, "Unit")
 {
 	actionTime = 10;
@@ -510,6 +511,8 @@ void Unit::gatherResources()
 void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
+	findClosest = 10000;//////////////
+
 	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
 		this->homePos = &targetedUnit->gameObject->transform;
@@ -658,31 +661,32 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 	targetPos = UnitOrders.at(0).transform->getPosition();
 	unitPos = gameObject->transform.getPosition();
 
-	if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
-	{
-		actionTime += Time.getDeltaTime();
-		//Damage enemy
-		if (actionTime > 1)
+		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 		{
-			//attackEnemy();
-			for (int i = 0; i < gamemanager.buildingLists[targetedUnit->gameObject->tag].size(); i++)
+			actionTime += Time.getDeltaTime();
+			
+			if (actionTime > 1)
 			{
-				if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
+				//attackEnemy();
+				for (int i = 0; i < gamemanager.buildingLists[targetedUnit->gameObject->tag].size(); i++)
 				{
-					gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
-					targetedUnit->gameObject->tag = gameObject->tag;
-					gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
-					UnitOrders.erase(UnitOrders.begin());
-					break;
+					if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
+					{
+						gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
+						targetedUnit->gameObject->tag = gameObject->tag;
+						gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
+						UnitOrders.erase(UnitOrders.begin());
+						break;
+					}
 				}
+				//Debug.Log("Enemy Hit!");
+				actionTime = 0;
 			}
-			//Debug.Log("Enemy Hit!");
-			actionTime = 0;
 		}
-	}
-	else
-	{
-		SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		else
+		{
+			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+		}
 	}
 }
 
