@@ -2,6 +2,7 @@
 
 Node::Node()
 {
+	position = Vec3(0, 0, 0);
 }
 
 Node::~Node()
