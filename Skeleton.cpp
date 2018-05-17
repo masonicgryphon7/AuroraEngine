@@ -1,5 +1,5 @@
 #include "Skeleton.h"
-
+#define PI 3.14159265359
 
 
 Skeleton::Skeleton()
@@ -32,6 +32,7 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 		DirectX::XMMATRIX transform_matrix = DirectX::XMMatrixTranslation(DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
 
 		DirectX::XMVECTOR rot = DirectX::XMVectorSet(temp.joint_transform.transform_rotation[0], temp.joint_transform.transform_rotation[1], temp.joint_transform.transform_rotation[2], 0);
+		rot = DirectX::XMVectorScale(rot, PI / 180.0f);
 		DirectX::XMMATRIX rotation_matrix = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XMVectorGetX(rot), DirectX::XMVectorGetY(rot), DirectX::XMVectorGetZ(rot));
 
 		DirectX::XMVECTOR scale = DirectX::XMVectorSet(temp.joint_transform.transform_scale[0], temp.joint_transform.transform_scale[1], temp.joint_transform.transform_scale[2], 0);
@@ -51,7 +52,7 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 		}
 		else
 		{
-			skeletonJoint.parentIndex = temp.parentIndex/256;
+			skeletonJoint.parentIndex = temp.parentIndex;
 		}
 		inverseSkeletonJoints.push_back(skeletonJoint);
 	}
