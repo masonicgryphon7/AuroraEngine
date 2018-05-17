@@ -31,6 +31,9 @@ private:
 	
 	bool wantsToAttackHero;
 
+	int nrOfSoldiers = 0;
+	int nrOfWorkers = 0;
+
 	void gather(Unit* unitToUse);
 	void findNewSource();
 	void findNewEnemies(Unit* unit);

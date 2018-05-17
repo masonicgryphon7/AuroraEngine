@@ -14,6 +14,8 @@ NPC::~NPC()
 
 void NPC::update()
 {
+	nrOfWorkers = 0;
+
 	if (checkTime == true)
 	{
 		waitTime = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
@@ -61,9 +63,13 @@ void NPC::update()
 
 		for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 		{
-			if (gamemanager.unitLists[2][i]->getType() == Worker && gamemanager.unitLists[2][i]->getUnitOrders().size() == 0)
+			if (gamemanager.unitLists[2][i]->getType() == Worker)
 			{
-				gather(gamemanager.unitLists[2][i]);
+				nrOfWorkers++;
+				if(gamemanager.unitLists[2][i]->getUnitOrders().size() == 0 && nrOfWorkers < 4)
+				{
+					gather(gamemanager.unitLists[2][i]);
+				}
 			}
 		}
 	}
