@@ -6,6 +6,7 @@
 std::vector<std::vector<Unit*>> GameManager::unitLists;
 std::vector<std::vector<Unit*>> GameManager::buildingLists;
 GAME_STATE GameManager::gameState;
+RING_STATE GameManager::ringState;
 
 
 GameManager::GameManager()
@@ -118,9 +119,10 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 12)
+		if (gameTime >= 120)
 		{
-			//Debug.Log(ringOfFire);  
+			//Debug.Log(ringOfFire); 
+			ringState = RING_STATE::FIRST_MOVE;
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
 		if (ringOfFire < 150) {
@@ -134,6 +136,7 @@ void GameManager::update()
 		{
 			//Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			ringState = RING_STATE::SECOND_MOVE;
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 			lavaSpeed = 0.05;
 		}
@@ -148,6 +151,7 @@ void GameManager::update()
 		{
 			Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
+			ringState = RING_STATE::THIRD_MOVE;
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 			lavaSpeed = 0.05;
 		}
