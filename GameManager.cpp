@@ -118,12 +118,12 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 2)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
-		if (ringOfFire < 150) {
+		if (ringOfFire < 5) {
 			gameState = GAME_STATE::MEDIUM_CIRCLE_STATE;
 			lavaSpeed = 0.01;
 		}

@@ -67,7 +67,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 16;
 		this->defencePoints = 10; // 10
-		this->attackDistance = 2;
+		this->attackDistance = 4;
 		this->Resources = 0;
 		this->type = Hero;
 		this->future_nodes = promisedNodes.get_future();
@@ -141,10 +141,14 @@ void Unit::testThreading()
 {
 	DirectX::XMFLOAT3 startPos;
 	Debug.Log("HELLO I AM A NEW THREAD");
-	startPos = { pathNodes[pathNodes.size() - 1].position.x, pathNodes[pathNodes.size() - 1].position.y, pathNodes[pathNodes.size() - 1].position.z };
+	if (pathNodes.size() > 0)
+	{
+		startPos = { pathNodes[pathNodes.size() - 1].position.x, pathNodes[pathNodes.size() - 1].position.y, pathNodes[pathNodes.size() - 1].position.z };
 
-	std::vector<Node> hehe = PathCreator.getRestOfPath(startPos, pointPosition);
-	pathNodes.insert(pathNodes.end(), hehe.begin(), hehe.end());
+		std::vector<Node> hehe = PathCreator.getRestOfPath(startPos, pointPosition);
+		pathNodes.insert(pathNodes.end(), hehe.begin(), hehe.end());
+	}
+	
 	//threads[0].join();
 }
 void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
@@ -447,6 +451,7 @@ void Unit::gatherCommand(Unit* targetedUnit)
 			}
 			else
 			{
+				
 				SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 			}
 		}
@@ -498,7 +503,7 @@ void Unit::gatherResources()
 	if (actionTime > 1)
 	{
 		int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
-		UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
+		//UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
 		int workersAmount = this->getResources();
 		this->setResources(workersAmount + 20);
 		Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
@@ -687,7 +692,7 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 		{
 			SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 		}
-	}
+	
 }
 
 void Unit::dieCommand()

@@ -17,7 +17,7 @@ void NPC::update()
 	if (checkTime == true)
 	{
 		waitTime = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
-		if (waitTime > 20000)
+		if (waitTime > 10000)
 		{
 			checkTime = false;
 			Debug.Log("WAIT IS OVER");
