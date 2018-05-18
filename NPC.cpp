@@ -172,7 +172,6 @@ void NPC::instantiate_NPC()
 	GameObject* enemy_unit = gScene.createEmptyGameObject(DirectX::XMVectorSet(250, 0, 250, 0));
 	enemy_unit->name = "ENEMY";
 	enemy_unit->tag = 2;
-	AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 	MeshFilter* enemy_unit_meshFilter = new MeshFilter(AssetManager.getMesh("COLLECTOR_Mesh"));
 	enemy_unit->addComponent(enemy_unit_meshFilter);

@@ -18,7 +18,7 @@ namespace MyLibrary
 		AnimatedMeshFromFile readAnimatedMeshFile(std::string fileName);
 		CameraFromFile readCameraFile(std::string fileName);
 		MaterialFromFile readMaterialFile(std::string fileName);
-		LightromFile readLightile(std::string fileName);
+		LightFromFile readLightFile(std::string fileName);
 		bool readMorphAnimationFile(std::string fileName);
 		SkeletonFromFile readSkeletonFile(std::string fileName);
 		AnimationFromFile readAnimationFile(std::string fileName, int nrOfJoints);
@@ -26,7 +26,7 @@ namespace MyLibrary
 		
 	private:
 		int getNrOfVerticesFromFile(std::ifstream& file);
-		template <class T> void calculateTangentsAndBitangents(T mesh);
+		void calculateTangentsAndBitangents(AnimatedMeshFromFile mesh);
 	};
 
 

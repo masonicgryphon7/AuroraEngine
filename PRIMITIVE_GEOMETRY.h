@@ -47,12 +47,12 @@ struct AnimationFrame {
 
 
 struct OOBB {
-	bool isActive;
-	DirectX::XMVECTOR centre;
-	DirectX::XMVECTOR x_hx;
-	DirectX::XMVECTOR y_hy;
-	DirectX::XMVECTOR z_hz;
-	DirectX::XMVECTOR corners[8];
+	bool isActive=true;
+	DirectX::XMVECTOR centre=DirectX::XMVectorSet(0,0,0,0);
+	DirectX::XMVECTOR x_hx = DirectX::XMVectorSet(0, 0, 0, 0);
+	DirectX::XMVECTOR y_hy = DirectX::XMVectorSet(0, 0, 0, 0);
+	DirectX::XMVECTOR z_hz = DirectX::XMVectorSet(0, 0, 0, 0);
+	DirectX::XMVECTOR corners[8]{ DirectX::XMVectorSet(0,0,0,0) };
 };
 
 struct Ray {
