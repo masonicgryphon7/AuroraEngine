@@ -236,7 +236,8 @@ void GameManager::addBuildings()
 	GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	goldMineGameObject->name = "GoldMine";
 	goldMineGameObject->tag = 0;
-	MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	Mesh* mesh = AssetManager.getMesh("QuarryTwo1_Mesh");
+	MeshFilter* meshFilter2 = new MeshFilter(mesh);
 	goldMineGameObject->addComponent(meshFilter2);
 	goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldmineMaterial")));
 	Unit *goldMine = new Unit(GoldMine);
