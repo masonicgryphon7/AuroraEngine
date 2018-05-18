@@ -14,6 +14,8 @@ NPC::~NPC()
 
 void NPC::update()
 {
+	nrOfWorkers = 0;
+
 	if (checkTime == true)
 	{
 		waitTime = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
@@ -27,43 +29,41 @@ void NPC::update()
 
 	if (checkTime == false) // waited for game to begin
 	{
-		for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+		if (gamemanager.unitLists[2].size() > 0)
 		{
-			if (gamemanager.unitLists[2][i]->getUnitOrders().size() > 0 && gamemanager.unitLists[2][i]->getUnitOrders().at(0).command == Die)
+			if (gamemanager.unitLists[2][0]->getUnitOrders().size() == 0)
 			{
-				standAbout(gamemanager.unitLists[2][i]);
-				//attack(gamemanager.unitLists[2][0]);
+				if (gamemanager.buildingLists[2].size() < 2)//gamemanager.unitLists[2][0]->getResources() <= 0)
+				{
+					takeOverBuilding(gamemanager.unitLists[2][0]);
+				}
+				else if (gamemanager.unitLists[2][0]->getResources() < 100)
+				{
+					gather(gamemanager.unitLists[2][0]);
+				}
 			}
-		}
+			//else //if (gamemanager.unitLists[2][0]->getResources() <= 0)
+			//{
+			//	gather(gamemanager.unitLists[2][0]);
+			//}
 
-		if(gamemanager.unitLists[2][0]->getUnitOrders().size() == 0)
-		{
-			if (gamemanager.buildingLists[2].size() < 2)//gamemanager.unitLists[2][0]->getResources() <= 0)
+			if (gamemanager.unitLists[2][0]->getResources() > 40 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
 			{
-				takeOverBuilding(gamemanager.unitLists[2][0]);
+				gamemanager.unitLists[2][0]->setResources(0);
+				summonUnit(gamemanager.buildingLists[2][0]);
+				tempBool = true;
 			}
-			else if(gamemanager.unitLists[2][0]->getResources() < 100)
-			{
-				gather(gamemanager.unitLists[2][0]);
-			}
-		}
-		//else //if (gamemanager.unitLists[2][0]->getResources() <= 0)
-		//{
-		//	gather(gamemanager.unitLists[2][0]);
-		//}
 
-		if (gamemanager.unitLists[2][0]->getResources() > 40 && gamemanager.buildingLists[2].size() > 1) //gamemanager.buildingLists[2].size() > 0 && tempBool == false)
-		{
-			gamemanager.unitLists[2][0]->setResources(0);
-			summonWorker(gamemanager.buildingLists[2][0]);
-			tempBool = true;
-		}
-
-		for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
-		{
-			if (gamemanager.unitLists[2][i]->getType() == Worker && gamemanager.unitLists[2][i]->getUnitOrders().size() == 0)
+			for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 			{
-				gather(gamemanager.unitLists[2][i]);
+				if (gamemanager.unitLists[2][i]->getType() == Worker)
+				{
+					nrOfWorkers++;
+					if (gamemanager.unitLists[2][i]->getUnitOrders().size() == 0) //&& nrOfWorkers < 4)
+					{
+						gather(gamemanager.unitLists[2][i]);
+					}
+				}
 			}
 		}
 	}
@@ -114,7 +114,6 @@ void NPC::instantiate_NPC()
 	GameObject* enemy_unit = gScene.createEmptyGameObject(DirectX::XMVectorSet(250, 0, 250, 0));
 	enemy_unit->name = "ENEMY";
 	enemy_unit->tag = 2;
-	AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 	MeshFilter* enemy_unit_meshFilter = new MeshFilter(AssetManager.getMesh("COLLECTOR_Mesh"));
 	enemy_unit->addComponent(enemy_unit_meshFilter);
@@ -215,46 +214,9 @@ void NPC::standAbout(Unit * unit)
 	
 }
 
-void NPC::summonWorker(Unit * building)
+void NPC::summonUnit(Unit * building)
 {
 	building->ReceiveOrder(Option0);
-
-	//GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//gScene.createEmptyGameObject(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0)));
-	//worker->name = "Worker"; //+ playerScript->friendlyUnits.size();
-	//worker->tag = gameObject->tag;
-	//MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
-	//worker->addComponent(meshFilter);
-	//worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
-	//Unit *unitWorker = new Unit(Worker);
-	//unitWorker->setHomePos(&building->gameObject->transform);
-	//worker->addComponent(unitWorker);
-	////npc_units.push_back(unitWorker);
-	//
-	//gamemanager.unitLists[2].push_back(unitWorker);
-
-
-	////building->clearUnitOrder();
-	//
-	//float tempDistance = 100;
-	//int temp;
-	//if (gamemanager.buildingLists[2].size() > 0)
-	//{
-	//	for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
-	//	{
-	//		float distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMVectorSubtract(worker->transform.getPosition(), gamemanager.buildingLists[2][i]->gameObject->transform.getPosition())));
-
-	//		if (distance < tempDistance)
-	//		{
-	//			gamemanager.unitLists[2][gamemanager.unitLists[2].size()]->setDistance(distance);
-	//			temp = i;
-	//		}
-
-	//	}
-	//}
-	
-	//gamemanager.unitLists[2][gamemanager.unitLists[2].size()]->gatherCommand(gamemanager.buildingLists[2][temp]);
-//	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -3.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
-	
 }
 
 void NPC::takeOverBuilding(Unit * unitToUse)

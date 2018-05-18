@@ -118,7 +118,7 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 12)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
@@ -238,7 +238,8 @@ void GameManager::addBuildings()
 	GameObject* goldMineGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y - 3, j, 0));
 	goldMineGameObject->name = "GoldMine";
 	goldMineGameObject->tag = 0;
-	MeshFilter* meshFilter2 = new MeshFilter(AssetManager.getMesh("QuarryTwo1_Mesh"));
+	Mesh* mesh = AssetManager.getMesh("QuarryTwo1_Mesh");
+	MeshFilter* meshFilter2 = new MeshFilter(mesh);
 	goldMineGameObject->addComponent(meshFilter2);
 	goldMineGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("GoldMineMaterial")));
 	Unit *goldMine = new Unit(GoldMine);

@@ -59,7 +59,7 @@ namespace MyLibrary
 				meshToReturn.mesh_meshID[i] = meshname.mesh_meshID[i];
 			}
 
-			calculateTangentsAndBitangents(meshToReturn);
+			//calculateTangentsAndBitangents(meshToReturn);
 
 			//meshToReturn.mesh_meshID = meshname.mesh_meshID;
 			//meshToReturn.mesh_materialID = meshname.mesh_materialID;
@@ -194,11 +194,11 @@ namespace MyLibrary
 		return materialToReturn;
 	}
 
-	LightromFile Loadera::readLightile(std::string fileName)
+	LightFromFile Loadera::readLightFile(std::string fileName)
 	{
 		//read the light file
 
-		LightromFile lightToReturn;
+		LightFromFile lightToReturn;
 
 		bool fileIsOpen = false;
 
@@ -423,8 +423,8 @@ namespace MyLibrary
 //		}
 //	}
 //}
-template<class T>
-inline void MyLibrary::Loadera::calculateTangentsAndBitangents(T mesh)
+
+void MyLibrary::Loadera::calculateTangentsAndBitangents(AnimatedMeshFromFile mesh)
 {
 	for (int i = 0; i < mesh.mesh_nrOfVertices; i += 3)
 	{
