@@ -611,7 +611,7 @@ void Unit::summonWorkerCommand()
 		UnitOrders.erase(UnitOrders.begin());
 		Order tempOrder;
 		tempOrder.command = Move;
-		tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 15.0, 0.0));
+		tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(15.0, 0.0, 1.0, 0.0));
 		unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 	}
 }
