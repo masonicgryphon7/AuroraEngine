@@ -48,7 +48,7 @@ PlayerScript::~PlayerScript()
 
 void PlayerScript::instantiate_Player()
 {
-	GameObject* friendly_Hero = gScene.createEmptyGameObject(DirectX::XMVectorSet(15, 0, 10, 0));
+	GameObject* friendly_Hero = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 30, 0));
 	friendly_Hero->name = "Hero";
 	friendly_Hero->tag = 1;
 	Mesh* mesh = AssetManager.getMesh("COLLECTOR_Mesh");

@@ -611,7 +611,7 @@ void Unit::summonWorkerCommand()
 		UnitOrders.erase(UnitOrders.begin());
 		Order tempOrder;
 		tempOrder.command = Move;
-		tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, 15.0, 0.0));
+		tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(15.0, 0.0, 1.0, 0.0));
 		unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 	}
 }
@@ -714,6 +714,13 @@ void Unit::dieCommand()
 		Debug.Log("Play death animation here");
 		dieTime = 0;
 		UnitOrders.erase(UnitOrders.begin());
+		for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
+		{
+			if (this == gamemanager.unitLists[gameObject->tag][i])
+			{
+				gamemanager.unitLists[gameObject->tag].erase(gamemanager.unitLists[gameObject->tag].begin() + i);
+			}
+		}
 		destroyUnit();
 	}
 }
@@ -734,177 +741,182 @@ DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX
 
 void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 {
-
-	UnitOrders.clear();
-	pathNodes.clear();
-
-	//Target is a unit
-	if (Values.transform->gameObject->getComponent<Unit>() != nullptr)
+	if (!UnitOrders.empty() && UnitOrders.at(0).command == Command::Die)
 	{
-		Order tempOrder;
-		if (Values.transform->gameObject->tag == unitTag) {
-			//friendly
-			//walk to
-
-			switch (type)
-			{
-			case Type::Hero:
-				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Worker || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
-				{
-					tempOrder.command = Move;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
-				{
-					tempOrder.command = HeroGather;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-				break;
-
-			case Type::Soldier:
-				tempOrder.command = Move;
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				break;
-
-			case Type::Worker:
-				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Hero || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
-				{
-					tempOrder.command = Move;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-				}
-				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
-				{
-					tempOrder.command = Drop;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
-				{
-					tempOrder.command = convertToSoldier;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-				break;
-			}
-		}
-		else if (Values.transform->gameObject->tag != unitTag && Values.transform->gameObject->tag != 3 && Values.transform->gameObject->tag != 0) { //!=gameObject->tag){
-			//enemy
-			switch (type)
-			{
-			case Type::Hero:
-				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
-				{
-					tempOrder.command = takeBuilding;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-				else
-				{
-					tempOrder.command = Attack;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-				break;
-
-			case Type::Soldier:
-				tempOrder.command = Attack;
-				//tempOrder.command = Move;
-
-				tempOrder.point = Values.point;
-				tempOrder.transform = Values.transform;
-				UnitOrders.push_back(tempOrder);
-				break;
-
-			default:
-				//walk to
-				break;
-			}
-		}
-		else if (Values.transform->gameObject->tag == 0) {
-			//Terrain
-			//Walk 
-
-			switch (type)
-			{
-			case Type::Hero:
-				if (Values.transform->gameObject->getComponent<Unit>()->getType() == GoldMine)
-				{
-					tempOrder.command = HeroGather;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-				if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
-				{
-					tempOrder.command = takeBuilding;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-				break;
-
-
-			case Type::Worker:
-				if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
-				{
-					tempOrder.command = Gather;
-					tempOrder.point = Values.point;
-					tempOrder.transform = Values.transform;
-					UnitOrders.push_back(tempOrder);
-					actionTime = 2;
-				}
-
-				break;
-
-			default:
-				//walk to
-				break;
-			}
-		}
 
 	}
-	else
-	{
-		//clicked on terrain
-		Order tempOrder;
+	else{
+		UnitOrders.clear();
+		pathNodes.clear();
 
-		switch (type)
+		//Target is a unit
+		if (Values.transform->gameObject->getComponent<Unit>() != nullptr)
 		{
-		case Type::Bank:
-			break;
+			Order tempOrder;
+			if (Values.transform->gameObject->tag == unitTag) {
+				//friendly
+				//walk to
 
-		case Type::GoldMine:
-			break;
+				switch (type)
+				{
+				case Type::Hero:
+					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Worker || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
+					{
+						tempOrder.command = Move;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
+					{
+						tempOrder.command = HeroGather;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+					break;
 
-		case Type::Barrack:
-			break;
-		default:
-			tempOrder.command = Move;
+				case Type::Soldier:
+					tempOrder.command = Move;
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					break;
 
-			tempOrder.point = Values.point;
-			tempOrder.transform = Values.transform;
-			UnitOrders.push_back(tempOrder);
-			break;
+				case Type::Worker:
+					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Hero || Values.transform->gameObject->getComponent<Unit>()->getType() == Soldier)
+					{
+						tempOrder.command = Move;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+					}
+					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
+					{
+						tempOrder.command = Drop;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
+					{
+						tempOrder.command = convertToSoldier;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+					break;
+				}
+			}
+			else if (Values.transform->gameObject->tag != unitTag && Values.transform->gameObject->tag != 3 && Values.transform->gameObject->tag != 0) { //!=gameObject->tag){
+				//enemy
+				switch (type)
+				{
+				case Type::Hero:
+					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
+					{
+						tempOrder.command = takeBuilding;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+					else
+					{
+						tempOrder.command = Attack;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+					break;
+
+				case Type::Soldier:
+					tempOrder.command = Attack;
+					//tempOrder.command = Move;
+
+					tempOrder.point = Values.point;
+					tempOrder.transform = Values.transform;
+					UnitOrders.push_back(tempOrder);
+					break;
+
+				default:
+					//walk to
+					break;
+				}
+			}
+			else if (Values.transform->gameObject->tag == 0) {
+				//Terrain
+				//Walk 
+
+				switch (type)
+				{
+				case Type::Hero:
+					if (Values.transform->gameObject->getComponent<Unit>()->getType() == GoldMine)
+					{
+						tempOrder.command = HeroGather;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
+					{
+						tempOrder.command = takeBuilding;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+					break;
+
+
+				case Type::Worker:
+					if (Values.transform->gameObject->getComponent<Unit>()->type == GoldMine)
+					{
+						tempOrder.command = Gather;
+						tempOrder.point = Values.point;
+						tempOrder.transform = Values.transform;
+						UnitOrders.push_back(tempOrder);
+						actionTime = 2;
+					}
+
+					break;
+
+				default:
+					//walk to
+					break;
+				}
+			}
+
+		}
+		else
+		{
+			//clicked on terrain
+			Order tempOrder;
+
+			switch (type)
+			{
+			case Type::Bank:
+				break;
+
+			case Type::GoldMine:
+				break;
+
+			case Type::Barrack:
+				break;
+			default:
+				tempOrder.command = Move;
+
+				tempOrder.point = Values.point;
+				tempOrder.transform = Values.transform;
+				UnitOrders.push_back(tempOrder);
+				break;
+			}
 		}
 	}
 }
@@ -998,14 +1010,6 @@ void Unit::update()
 		}
 		break;
 
-		case Command::Build: //BUILD
-
-			break;
-
-		case Command::Follow: //FOLLOW
-			FollowCommand();
-			break;
-
 		case Command::SummonWorker: //SUMMON
 			summonWorkerCommand();
 			break;
@@ -1030,7 +1034,7 @@ void Unit::update()
 
 		case Command::Die:
 			dieCommand();
-		break;
+			break;
 
 		default:
 			break;
