@@ -291,10 +291,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				OnResize();
 
 				gScene.destroyGameObjects();
-				gScene.update();
 				gScene.frustumCull(camera);
 				objectsToRender = gScene.getFrustumCulledResult();
 
+				gScene.update();
 				if (editor != nullptr)
 					editor->Update();
 				if (player != nullptr)

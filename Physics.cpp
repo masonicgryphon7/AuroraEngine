@@ -119,7 +119,7 @@ std::vector<GameObject*> Physics::ScreenSelection(DirectX::XMVECTOR startXYendXY
 	w = 1 / w;
 	viewToScreenMatrix = viewToScreenMatrix * DirectX::XMMatrixScaling(w, w, w);
 
-	for (int i = 0; i < temp[0].size(); i++)
+	for (int i = 0; i < temp->size(); i++)
 	{
 		if (temp[0][i]->getIsRenderable()) {
 
