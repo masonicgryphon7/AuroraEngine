@@ -118,7 +118,7 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 12)
 		{
 			//Debug.Log(ringOfFire);  
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;

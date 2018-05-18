@@ -20,19 +20,17 @@ Type
 
 enum Command
 {
-	Move,
-	Attack,
-	Gather,
-	HeroGather,
-	Drop,
-	Build,
-	Follow,
-	SummonWorker,
-	SummonSoldier,
-	convertToSoldier,
-	takeBuilding,
-	Die,
-	Idle
+	Move = 1,
+	Attack = 2,
+	Gather = 3,
+	HeroGather = 4,
+	Drop = 5,
+	SummonWorker = 6,
+	SummonSoldier = 7,
+	convertToSoldier = 8,
+	takeBuilding = 9,
+	Die = 10,
+	Idle = 11
 };
 
 enum Type
