@@ -137,16 +137,6 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float roughness = AORoughMet.y;
 	float ao = AORoughMet.x;//met_Roug_Ao.z;	
 
-	if (unitTag[input.instanceID].x == 1)
-	{
-		if (roughness >= 0.5)
-			albedo = float4(0, 0, 1, 0);
-	}
-	if (unitTag[input.instanceID].x == 2)
-	{
-		if(roughness >= 0.5)
-			albedo= float4(1, 0, 0, 0);
-	}
 
 
 

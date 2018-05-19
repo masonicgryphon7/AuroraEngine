@@ -134,6 +134,26 @@ void PlayerScript::update()
 	direction = DirectX::XMLoadFloat3(&directionX);
 	gameObject->transform.setPosition(DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorScale(direction, distance)));
 
+	DirectX::XMStoreFloat3(&positionX, gameObject->transform.getPosition());
+
+
+	if (positionX.x > 200) {
+		positionX.x = 200;
+	}
+	else if (positionX.x<-30) {
+		positionX.x = -29;
+	}
+
+	if (positionX.z > 260) {
+		positionX.z = 260;
+	}
+	else if (positionX.z<40) {
+		positionX.z = 39;
+	}
+
+	gameObject->transform.setPosition(DirectX::XMLoadFloat3(&positionX));
+
+
 
 	//////////////////
 	if (Input.GetKeyUp(KeyCode::Alpha1))

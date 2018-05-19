@@ -10,7 +10,7 @@ GameObject::GameObject()
 	isRenderable = false;
 	hasLight = false;
 	transform.gameObject = this;
-	detailedRaycast = false;
+	raycastOption = RayCastOptions::ONLY_BBOX;
 
 }
 
@@ -24,7 +24,7 @@ GameObject::GameObject(DirectX::XMVECTOR(otherPosition))
 	transform.setPosition(otherPosition);
 	transform.setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
 	transform.gameObject = this;
-	detailedRaycast = false;
+	raycastOption = RayCastOptions::ONLY_BBOX;
 
 }
 
