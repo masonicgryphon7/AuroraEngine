@@ -115,7 +115,6 @@ void GameManager::update()
 	case MAIN_MENU:
 		break;
 	case START_STATE:
-		addBuildings();
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
@@ -344,6 +343,7 @@ void GameManager::addBuildings()
 	Unit *barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	barrackGameObject->detailedRaycast = true;
 
 	i = 285;
@@ -357,6 +357,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	barrackGameObject->detailedRaycast = true;
 
 	i = 285;
@@ -370,6 +371,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	barrackGameObject->detailedRaycast = true;
 
 	i = 15;
@@ -383,6 +385,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	barrackGameObject->detailedRaycast = true;
 
 	//-------------------------------------------
@@ -398,6 +401,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	barrackGameObject->detailedRaycast = true;
 
 	i = 175;
@@ -411,6 +415,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	barrackGameObject->detailedRaycast = true;
 
 	//----------------------------------------
@@ -430,6 +435,7 @@ void GameManager::addBuildings()
 	Unit *bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	bankGameObject->detailedRaycast = true;
 
 	i = 275;
@@ -444,6 +450,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	bankGameObject->detailedRaycast = true;
 
 	i = 275;
@@ -458,6 +465,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	bankGameObject->detailedRaycast = true;
 
 	i = 25;
@@ -472,6 +480,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	bankGameObject->detailedRaycast = true;
 
 	//-------------------------------------------
@@ -488,6 +497,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	bankGameObject->detailedRaycast = true;
 
 	i = 180;
@@ -502,6 +512,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
 	bankGameObject->detailedRaycast = true;
 
 	//----------------------------------------

@@ -72,7 +72,21 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 }
 void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 {
-	//grid[2][1].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z + 1].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z + 2].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z + 3].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z - 1].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z - 2].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z - 3].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z + 1].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z + 2].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z + 3].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z - 1].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z - 2].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z - 3].pathable = PATHABLE_CHECK;
+
 }
 
 void cPathCreator::loadBlockMap()
