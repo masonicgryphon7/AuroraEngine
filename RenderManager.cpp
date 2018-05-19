@@ -103,17 +103,18 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 	}
 
 	//Back To Front Sort
-	for (int i = 0; i < translucentDraw.size(); i++)
-	{
+	auto cmp = [&](GameObject*lhs, GameObject*rhs) {
+		DirectX::XMVECTOR camPos = cameraObject->transform.getPosition();
+		DirectX::XMVECTOR camForward = cameraObject->transform.getForward();
 
-	}
+		float len1 = DirectX::XMVectorGetW( DirectX::XMVector3Dot(camForward, DirectX::XMVectorSubtract(camPos, lhs->transform.getPosition())));
+		float len2 = DirectX::XMVectorGetW(DirectX::XMVector3Dot(camForward, DirectX::XMVectorSubtract(camPos, rhs->transform.getPosition())));
+
+		return len1 < len2; 
+	};
+	std::sort(translucentDraw.begin(), translucentDraw.end(), cmp);
 
 	////Render shadow maps
-	//for (int i = 0; i < lightsVector.size(); i++)
-	//{
-	//	if(lightsVector[i]->getShadowType()!=SHADOW_TYPE::NoShadows)
-	//		RenderShadowMaps(lightsVector[i], width, height);
-	//}
 	Light* directionalLight = cameraObject->getComponent<Light>();
 	RenderShadowMaps(directionalLight, width, height);
 	gDeviceContext->PSSetShaderResources(16, 1, directionalLight->getID3D11ShaderResourceView());
@@ -171,7 +172,7 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 			{
 				DirectX::XMFLOAT4X4 temp;
 				DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j+nrOfObjectsDrawn]->calculateWorldMatrix()));
-				InstanceMatrixData.opaqueTransforms[j]=temp;
+				InstanceMatrixData.instanceTransforms[j]=temp;
 				InstanceMatrixData.unitTag[j].x = opaqueDraw[i][j + nrOfObjectsDrawn]->tag;
 				int jj = 0;
 			}
@@ -187,13 +188,36 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 
 		}		
 	}
-	//Clean opaque draw
+	//Clean for shadowmap
 	gDeviceContext->PSSetShaderResources(16, 1, nullSRV);
 
-	/////////////////////Animation?
-
 	//Translucent
+	for (int i = 0; i < translucentDraw.size(); i++)
+	{
+		translucentDraw[i]->materialFilterComponent->material->bindMaterial();
+		matrixBufferData.xMaterialTile = translucentDraw[i]->materialFilterComponent->material->getXTile();
+		matrixBufferData.yMaterialTile = translucentDraw[i]->materialFilterComponent->material->getYTile();
 
+		translucentDraw[i]->meshFilterComponent->getMesh()->bindMesh();
+
+		//Fill matrixbuffer
+		matrixBufferData.isTerrain = translucentDraw[i]->materialFilterComponent->material->isTerrain();
+		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(translucentDraw[i]->calculateWorldMatrix()));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.lightProjection, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(directionalLight->calculateViewMatrix(), directionalLight->calculatePerspectiveMatrix(width, height))));
+		DirectX::XMStoreFloat4(&matrixBufferData.cameraPosition, cameraObject->transform.getPosition());
+		gDeviceContext->UpdateSubresource(matrixBuffer, 0, nullptr, &matrixBufferData, 0, 0);
+
+		//transform
+		DirectX::XMFLOAT4X4 temp;
+		DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(translucentDraw[i]->calculateWorldMatrix()));
+		InstanceMatrixData.instanceTransforms[0] = temp;
+		gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &InstanceMatrixData, 0, 0);
+
+		gDeviceContext->Draw(translucentDraw[i]->meshFilterComponent->getMesh()->getVertexCount(), 0);
+
+	}
 
 
 
@@ -402,7 +426,7 @@ void RenderManager::RenderShadowMaps(Light * light, int width, int height)
 			{
 				DirectX::XMFLOAT4X4 temp;
 				DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(opaqueDraw[i][j + nrOfObjectsDrawn]->calculateWorldMatrix()));
-				InstanceMatrixData.opaqueTransforms[j] = temp;
+				InstanceMatrixData.instanceTransforms[j] = temp;
 				InstanceMatrixData.unitTag[j].x = opaqueDraw[i][j + nrOfObjectsDrawn]->tag;
 				int jj = 0;
 			}
@@ -417,6 +441,32 @@ void RenderManager::RenderShadowMaps(Light * light, int width, int height)
 			gDeviceContext->DrawInstanced(opaqueDraw[i][0]->meshFilterComponent->getMesh()->getVertexCount(), opaqueDraw[i].size(), 0, 0);
 
 		}
+	}
+
+
+	//Translucent
+	for (int i = 0; i < translucentDraw.size(); i++)
+	{
+		translucentDraw[i]->materialFilterComponent->material->bindMaterial();
+		matrixBufferData.xMaterialTile = translucentDraw[i]->materialFilterComponent->material->getXTile();
+		matrixBufferData.yMaterialTile = translucentDraw[i]->materialFilterComponent->material->getYTile();
+
+		translucentDraw[i]->meshFilterComponent->getMesh()->bindMesh();
+
+		//Fill matrixbuffer
+		DirectX::XMStoreFloat4x4(&matrixBufferData.world, DirectX::XMMatrixTranspose(translucentDraw[i]->calculateWorldMatrix()));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.view, DirectX::XMMatrixTranspose(viewMatrix));
+		DirectX::XMStoreFloat4x4(&matrixBufferData.projection, DirectX::XMMatrixTranspose(perspectiveMatrix));
+		gDeviceContext->UpdateSubresource(matrixBuffer, 0, nullptr, &matrixBufferData, 0, 0);
+
+		//transform
+		DirectX::XMFLOAT4X4 temp;
+		DirectX::XMStoreFloat4x4(&temp, DirectX::XMMatrixTranspose(translucentDraw[i]->calculateWorldMatrix()));
+		InstanceMatrixData.instanceTransforms[0] = temp;
+		gDeviceContext->UpdateSubresource(instanceBuffer, 0, nullptr, &InstanceMatrixData, 0, 0);
+
+		gDeviceContext->Draw(translucentDraw[i]->meshFilterComponent->getMesh()->getVertexCount(), 0);
+
 	}
 	gDeviceContext->RSSetViewports(1, &prevVp);
 	gDeviceContext->OMSetRenderTargets(1, &gBackbufferRTVgg, m_depthStencilViewgg);

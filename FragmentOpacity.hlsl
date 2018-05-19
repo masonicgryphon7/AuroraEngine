@@ -40,7 +40,6 @@ cbuffer INSTANCE_Buffer :register (b2)
 Texture2D Diffuse:register(t0);
 Texture2D NormalTexture:register(t1);
 Texture2D AORoughMetTexture:register(t2);
-
 SamplerState sampAni : register (s0);
 SamplerState IDsampler : register (s1);
 
@@ -62,8 +61,6 @@ Texture2D Lava_Normal : register(t14);
 Texture2D Lava_OcclusionRoughnessMetallic : register(t15);
 
 Texture2D ShadowMap : register(t16);
-
-Texture2D TeamIdMap:register(t17);
 
 float distributionGGX(float3 normal, float3 halfV, float roughness)
 {
@@ -132,112 +129,26 @@ float4 PS_main(VS_OUT input) : SV_Target
 {
 	float2 adjustedUV = float2(input.Uv.x*xMaterialTile, input.Uv.y*yMaterialTile);
 
-	float3 albedo = Diffuse.Sample(sampAni, adjustedUV).xyz;
+	float4 albedoMap = Diffuse.Sample(sampAni, adjustedUV);
+	float3 albedo = albedoMap.xyz;
 	float3 N = NormalTexture.Sample(sampAni, adjustedUV).xyz;
 	float3 AORoughMet = AORoughMetTexture.Sample(sampAni, adjustedUV).xyz;
 	float metallic = AORoughMet.z;//met_Roug_Ao.x;
 	float roughness = AORoughMet.y;
-	float ao = AORoughMet.x;//met_Roug_Ao.z;
-	float3 teamIdMap = TeamIdMap.Sample(sampAni, adjustedUV).xyz;
-
-	
-	//return float4(teamIdMap.xyz, 1);
+	float ao = AORoughMet.x;//met_Roug_Ao.z;	
 
 	if (unitTag[input.instanceID].x == 1)
 	{
-		if (teamIdMap.x >= 0.5)
+		if (roughness >= 0.5)
 			albedo = float4(0, 0, 1, 0);
 	}
 	if (unitTag[input.instanceID].x == 2)
 	{
-		if(teamIdMap.x >= 0.5)
+		if(roughness >= 0.5)
 			albedo= float4(1, 0, 0, 0);
 	}
 
-	if (isTerrain==1)
-	{
-		float3 colorValue = ID_Map.Sample(IDsampler, input.Uv).xyz;
 
-
-		if (colorValue.x > Epsilon) //R
-		{
-			albedo = lerp(albedo, Grass.Sample(sampAni, adjustedUV).xyz, colorValue.x);
-			N = lerp(N, GrassNormal.Sample(sampAni, adjustedUV).xyz, colorValue.x);
-			float3 aoRoughMetX = GrassAORoughMetTexture.Sample(sampAni, adjustedUV);
-			ao = lerp(ao, aoRoughMetX.x, colorValue.x);
-			metallic = lerp(metallic, aoRoughMetX.z, colorValue.x);
-			roughness = lerp(roughness, aoRoughMetX.y, colorValue.x);
-
-		}
-
-		if (colorValue.y > Epsilon) //G
-		{
-			albedo = lerp(albedo, Mountain.Sample(sampAni, adjustedUV).xyz, colorValue.y);
-			N = lerp(N, MountainNormal.Sample(sampAni, adjustedUV).xyz, colorValue.y);
-			float3 aoRoughMetY = MountainAORoughMetTexture.Sample(sampAni, adjustedUV);
-			ao = lerp(ao, aoRoughMetY.x, colorValue.y);
-			metallic = lerp(metallic, aoRoughMetY.z, colorValue.y);
-			roughness = lerp(roughness, aoRoughMetY.y, colorValue.y);
-
-		}
-
-		if (colorValue.z > Epsilon) //B
-		{
-			albedo = lerp(albedo, Sand.Sample(sampAni, adjustedUV).xyz, colorValue.z);
-			N = lerp(N, SandNormal.Sample(sampAni, adjustedUV).xyz, colorValue.z);
-			float3 aoRoughMetZ = SandAORoughMetTexture.Sample(sampAni, adjustedUV);
-			ao = lerp(ao, aoRoughMetZ.x, colorValue.z);
-			metallic = lerp(metallic, aoRoughMetZ.z, colorValue.z);
-			roughness = lerp(roughness, aoRoughMetZ.y, colorValue.z);
-
-		}
-
-		float3 middle = float3(149, 0, 149);
-		float ringDistance = distance(middle, input.worldPosition);
-		float diff = saturate(ringDistance - fireRing.x);
-
-		if (diff>0)
-		{
-			float lavaLerp = diff;
-			//return float4(Lava_Albedo.Sample(sampAni, adjustedUV).xyz, 0);
-			//adjustedUV.x = mul(sin(mul(fireRing.y, 0.06f) + mul(adjustedUV.x, 0.7f)), 0.3f) + mul(cos(mul(fireRing.y, 0.05f) + mul(adjustedUV.y, 0.5)), 0.5f);
-			//adjustedUV.x += newY;
-
-			//adjustedUV.x += lerp(5.5 * fireRing.y, adjustedUV.x, 0.2);
-			if (input.worldPosition.x > 150 && input.worldPosition.z > 150)
-			{
-				adjustedUV.x += fireRing.y;
-				adjustedUV.y += fireRing.y;
-			}
-
-			if (input.worldPosition.x > 150 && input.worldPosition.z < 150)
-			{
-				adjustedUV.x += fireRing.y;
-				adjustedUV.y -= fireRing.y;
-			}
-
-			if (input.worldPosition.x < 150 && input.worldPosition.z > 150)
-			{
-				adjustedUV.x -= fireRing.y;
-				adjustedUV.y += fireRing.y;
-			}
-
-			if (input.worldPosition.x < 150 && input.worldPosition.z < 150)
-			{
-				adjustedUV.x -= fireRing.y;
-				adjustedUV.y -= fireRing.y;
-			}
-
-			albedo = lerp(albedo, Lava_Albedo.Sample(sampAni, adjustedUV).xyz,lavaLerp) ;
-			N = lerp(N, Lava_Normal.Sample(sampAni, adjustedUV).xyz, lavaLerp);
-			float3 aoRoughMetLava = Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV);
-			ao = lerp(ao, aoRoughMetLava.x, lavaLerp);
-			metallic = lerp(metallic, aoRoughMetLava.z, lavaLerp);
-			roughness = lerp(roughness, aoRoughMetLava.y, lavaLerp);
-		}
-
-
-	}
 
 	albedo = pow(albedo, float3(2.2, 2.2, 2.2));
 	N = N * 2.0f - 1.0f;
@@ -279,5 +190,6 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float value = 1.0f / 2.2f;
 	finalColor = pow(finalColor, float3(value, value, value));
 
-	return float4(finalColor, 1.0f);
+
+	return float4(finalColor, albedoMap.a);
 }

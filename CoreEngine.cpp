@@ -140,6 +140,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4, "VertexAnimation.hlsl", SHADER_TYPE::VERTEX_SHADER);
 
 		AssetManager.addShaderProgram("Fragment.hlsl", SHADER_TYPE::PIXEL_SHADER);
+		AssetManager.addShaderProgram("FragmentOpacity.hlsl", SHADER_TYPE::PIXEL_SHADER);
 
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
@@ -180,12 +181,12 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//camera->addComponent(playerscript);
 
 		////Tree
-		//GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
-		//tree->name = "Tree";
-		//tree->tag = 0;
-		//MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
-		//tree->addComponent(meshFilterTree);
-		//tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
+		tree->name = "Tree";
+		tree->tag = 0;
+		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+		tree->addComponent(meshFilterTree);
+		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
 
 		//Barrack
 
@@ -468,7 +469,8 @@ void CoreEngine::addMaterials()
 
 
 	//Tree Material
-	assetManager.AddMaterial("TreeMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.AddMaterial("TreeMaterial", assetManager.getShaderProgram("FragmentOpacity.hlsl"));
+	assetManager.getMaterial("TreeMaterial")->setAlpha(true);
 	assetManager.getMaterial("TreeMaterial")->setAlbedo(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_BaseColor")->getTexture());
 	assetManager.getMaterial("TreeMaterial")->setNormal(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_Normal")->getTexture());
 	assetManager.getMaterial("TreeMaterial")->setAORoughMet(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic")->getTexture());
@@ -1095,26 +1097,29 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 
 	// Create an alpha enabled blend state description.
 	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
-	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	// Create the blend state using the description.
 	result = gDevice->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendState);
 	if (FAILED(result))
 		Console.error("Error Enable Blend State");
 
-	// Modify the description to create an alpha disabled blend state description.
-	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
+	float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
+	UINT sampleMask = 0xffffffff;
+	gDeviceContext->OMSetBlendState(m_alphaEnableBlendState, 0, sampleMask);
+	//// Modify the description to create an alpha disabled blend state description.
+	//blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
 
-	// Create the blend state using the description.
-	result = gDevice->CreateBlendState(&blendStateDescription, &m_alphaDisabledBlendState);
-	if (FAILED(result))
-		Console.error("Error Disable Blend State");
+	//// Create the blend state using the description.
+	//result = gDevice->CreateBlendState(&blendStateDescription, &m_alphaDisabledBlendState);
+	//if (FAILED(result))
+	//	Console.error("Error Disable Blend State");
 
 	return hr;
 }
