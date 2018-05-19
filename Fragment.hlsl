@@ -40,6 +40,7 @@ cbuffer INSTANCE_Buffer :register (b2)
 Texture2D Diffuse:register(t0);
 Texture2D NormalTexture:register(t1);
 Texture2D AORoughMetTexture:register(t2);
+
 SamplerState sampAni : register (s0);
 SamplerState IDsampler : register (s1);
 
@@ -61,6 +62,8 @@ Texture2D Lava_Normal : register(t14);
 Texture2D Lava_OcclusionRoughnessMetallic : register(t15);
 
 Texture2D ShadowMap : register(t16);
+
+Texture2D TeamIdMap:register(t17);
 
 float distributionGGX(float3 normal, float3 halfV, float roughness)
 {
@@ -134,16 +137,20 @@ float4 PS_main(VS_OUT input) : SV_Target
 	float3 AORoughMet = AORoughMetTexture.Sample(sampAni, adjustedUV).xyz;
 	float metallic = AORoughMet.z;//met_Roug_Ao.x;
 	float roughness = AORoughMet.y;
-	float ao = AORoughMet.x;//met_Roug_Ao.z;	
+	float ao = AORoughMet.x;//met_Roug_Ao.z;
+	float3 teamIdMap = TeamIdMap.Sample(sampAni, adjustedUV).xyz;
+
+	
+	//return float4(teamIdMap.xyz, 1);
 
 	if (unitTag[input.instanceID].x == 1)
 	{
-		if (roughness >= 0.5)
+		if (teamIdMap.x >= 0.5)
 			albedo = float4(0, 0, 1, 0);
 	}
 	if (unitTag[input.instanceID].x == 2)
 	{
-		if(roughness >= 0.5)
+		if(teamIdMap.x >= 0.5)
 			albedo= float4(1, 0, 0, 0);
 	}
 

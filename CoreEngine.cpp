@@ -160,9 +160,9 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMeshFromBinary("Assets/QuarryTwo1_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Spruce_Tree2.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Test2ResourceSilo.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Barracks/CryptBarracksFinale1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/ResourceCenter/FinalSilo1OBJ.obj", AssetManager.getShaderProgram("Vertex.hlsl")); 
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
-
-
 
 		//PathCreator.createNodes();
 
@@ -387,10 +387,49 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 	AssetManager.addTexture("Assets/troll_made_with_unity.png");
 
+	//barracksTex
+	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_BaseColor.png");
+	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_Emissive.png");
+	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_Normal.png");
+	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic.png");
+
+	//ResourseCenterTex
+	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Diffuse.png");
+	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Normal.png");
+	assetManager.AddTexture("Assets/ResourceCenter/Resource-RoughMetalAo.png");
+	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo_flag.png");
+
+	//Goldmine
+	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_BaseColor.png");
+	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_Normal.png");
+	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_OcclusionRoughnessMetallic.png");
+	
 
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_BaseColor.png");
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_Normal.png");
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic.png");
+
+	//GoldmineMat
+	assetManager.AddMaterial("GoldMineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("GoldMineMaterial")->setAlbedo(assetManager.getTexture("GoldMineResource_BaseColor")->getTexture());
+	assetManager.getMaterial("GoldMineMaterial")->setNormal(assetManager.getTexture("GoldMineResource_Normal")->getTexture());
+	assetManager.getMaterial("GoldMineMaterial")->setAORoughMet(assetManager.getTexture("GoldMineResource_OcclusionRoughnessMetallic")->getTexture());
+
+
+	//BarracksMat
+	assetManager.AddMaterial("BarracksMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("BarracksMaterial")->setAlbedo(assetManager.getTexture("CryptBarracksFinale1_Barracks_BaseColor")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setNormal(assetManager.getTexture("CryptBarracksFinale1_Barracks_Normal")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setTeamIdMap(assetManager.getTexture("CryptBarracksFinale1_Barracks_Emissive")->getTexture());
+
+	//ResoursMaterial
+	assetManager.AddMaterial("ResoursMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("ResoursMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
+	assetManager.getMaterial("ResoursMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
+	assetManager.getMaterial("ResoursMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
+	assetManager.getMaterial("ResoursMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
+
 
 	//Unit Material
 	assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -417,11 +456,11 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("BankMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
 
 	//Goldmine material
-	assetManager.AddMaterial("GoldmineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	/*assetManager.AddMaterial("GoldmineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("GoldmineMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
 	assetManager.getMaterial("GoldmineMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
 	assetManager.getMaterial("GoldmineMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
-
+*/
 	//Barrack material
 	assetManager.AddMaterial("BarrackMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("BarrackMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());

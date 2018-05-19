@@ -95,7 +95,7 @@ public:
 
 	Command getUnitCommand();
 
-	void clearUnitOrder() { this->UnitOrders.erase(UnitOrders.begin()); }
+	void clearUnitOrder() { UnitOrders.erase(UnitOrders.begin()); };
 
 	int getUnitOrdersSize() { return this->UnitOrders.size(); };
 

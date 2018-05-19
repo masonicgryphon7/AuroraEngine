@@ -47,6 +47,11 @@ void Material::setAORoughMet(ID3D11ShaderResourceView * AORoughMet)
 	this->AORoughMet = AORoughMet;
 }
 
+void Material::setTeamIdMap(ID3D11ShaderResourceView * teamIdMap)
+{
+	this->teamIdMap = teamIdMap;
+}
+
 void Material::setTerrainMaterials(ID3D11ShaderResourceView * albedo1, ID3D11ShaderResourceView * normal1, ID3D11ShaderResourceView * AORoughMet1, ID3D11ShaderResourceView * albedo2, ID3D11ShaderResourceView * normal2, ID3D11ShaderResourceView * AORoughMet2, ID3D11ShaderResourceView * albedo3, ID3D11ShaderResourceView * normal3, ID3D11ShaderResourceView * AORoughMet3, ID3D11ShaderResourceView *albedo4, ID3D11ShaderResourceView *normal4, ID3D11ShaderResourceView *AORoughMet4, ID3D11ShaderResourceView * ID_MAP)
 {
 	this->TerrainAlbedo_1 = albedo1;
@@ -95,6 +100,9 @@ void Material::bindMaterial()
 	gDeviceContext->PSSetShaderResources(13, 1, &TerrainAlbedo_4);
 	gDeviceContext->PSSetShaderResources(14, 1, &TerrainNormal_4);
 	gDeviceContext->PSSetShaderResources(15, 1, &TerrainAORoughMet_4);
+
+	gDeviceContext->PSSetShaderResources(17, 1, &teamIdMap);
+
 }
 
 void Material::update()
