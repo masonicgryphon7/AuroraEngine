@@ -23,38 +23,39 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 	//
 	for (int i = 0; i < gScene.getSceneObjectsCount(); i++)
 	{
-		
-		//OBB
-		if (gScene.getSceneObjects()[i]->getIsRenderable()) {
-			OOBB obb = gScene.getSceneObjects()[i]->getComponent<MeshFilter>()->getBoundingBox();
-			if (obb.isActive == true) {
-				obb.centre = DirectX::XMVectorAdd(obb.centre, gScene.getSceneObjects()[i]->transform.getPosition());
+		if (gScene.getSceneObjects()[i]->raycastOption != RayCastOptions::NONE) {
+			//OBB
+			if (gScene.getSceneObjects()[i]->getIsRenderable()) {
+				OOBB obb = gScene.getSceneObjects()[i]->getComponent<MeshFilter>()->getBoundingBox();
+				if (obb.isActive == true) {
+					obb.centre = DirectX::XMVectorAdd(obb.centre, gScene.getSceneObjects()[i]->transform.getPosition());
 
-				float t = obbTest(ray.direction, ray.origin, obb);
-				if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
+					float t = obbTest(ray.direction, ray.origin, obb);
+					if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
 				
 
-					//Detail
-					if (gScene.getSceneObjects()[i]->detailedRaycast == true) {
-						Debug.Log("Detailed");
-						float t = triangleTest(ray.direction, ray.origin, gScene.getSceneObjects()[i]->transform.getPosition(), gScene.getSceneObjects()[i]->getComponent<MeshFilter>()->getMesh()->getVertexPositions());
+						//Detail
+						if (gScene.getSceneObjects()[i]->raycastOption == RayCastOptions::DETAILED) {
+							Debug.Log("Detailed");
+							float t = triangleTest(ray.direction, ray.origin, gScene.getSceneObjects()[i]->transform.getPosition(), gScene.getSceneObjects()[i]->getComponent<MeshFilter>()->getMesh()->getVertexPositions());
 
-						if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
+							if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
+								lastT = t;
+								objIndex = i;
+								hitObject = true;
+							}
+						}
+						else {
 							lastT = t;
 							objIndex = i;
 							hitObject = true;
+
 						}
-					}
-					else {
-						lastT = t;
-						objIndex = i;
-						hitObject = true;
 
 					}
-
 				}
-			}
 
+			}
 		}
 		
 

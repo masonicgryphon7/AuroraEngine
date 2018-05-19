@@ -184,6 +184,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
 		tree->name = "Tree";
 		tree->tag = 0;
+		tree->raycastOption = RayCastOptions::NONE;
 		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
 		tree->addComponent(meshFilterTree);
 		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
@@ -485,7 +486,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain1->name = "Terrain1";
 	terrain1->tag = 0;
-	terrain1->detailedRaycast = true;
+	terrain1->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m1 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_1", Terrain->getPatchTriangleArr(0, 0, 100, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain = new MeshFilter(m1);
 	terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -494,7 +495,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain2->name = "Terrain2";
 	terrain2->tag = 0;
-	terrain2->detailedRaycast = true;
+	terrain2->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m2 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_2", Terrain->getPatchTriangleArr(100, 0, 200, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain2 = new MeshFilter(m2);
 	terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -503,7 +504,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain3->name = "Terrain3";
 	terrain3->tag = 0;
-	terrain3->detailedRaycast = true;
+	terrain3->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m3 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_3", Terrain->getPatchTriangleArr(200, 0, 300, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain3 = new MeshFilter(m3);
 	terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -512,7 +513,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain4->name = "Terrain4";
 	terrain4->tag = 0;
-	terrain4->detailedRaycast = true;
+	terrain4->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m4 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_4", Terrain->getPatchTriangleArr(0, 100, 100, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain4 = new MeshFilter(m4);
 	terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -521,7 +522,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain5 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain5->name = "Terrain5";
 	terrain5->tag = 0;
-	terrain5->detailedRaycast = true;
+	terrain5->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m5 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_5", Terrain->getPatchTriangleArr(100, 100, 200, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain5 = new MeshFilter(m5);
 	terrain5->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -530,7 +531,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain6 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain6->name = "Terrain6";
 	terrain6->tag = 0;
-	terrain6->detailedRaycast = true;
+	terrain6->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m6 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_6", Terrain->getPatchTriangleArr(200, 100, 300, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain6 = new MeshFilter(m6);
 	terrain6->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -539,7 +540,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain7 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain7->name = "Terrain7";
 	terrain7->tag = 0;
-	terrain7->detailedRaycast = true;
+	terrain7->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m7 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_7", Terrain->getPatchTriangleArr(0, 200, 100, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain7 = new MeshFilter(m7);
 	terrain7->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -548,7 +549,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain8 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain8->name = "Terrain8";
 	terrain8->tag = 0;
-	terrain8->detailedRaycast = true;
+	terrain8->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m8 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_8", Terrain->getPatchTriangleArr(100, 200, 200, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain8 = new MeshFilter(m8);
 	terrain8->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -557,7 +558,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain9 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain9->name = "Terrain9";
 	terrain9->tag = 0;
-	terrain9->detailedRaycast = true;
+	terrain9->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m9 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_9", Terrain->getPatchTriangleArr(200, 200, 300, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain9 = new MeshFilter(m9);
 	terrain9->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
