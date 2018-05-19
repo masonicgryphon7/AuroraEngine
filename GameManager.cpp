@@ -250,6 +250,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	goldMineGameObject->detailedRaycast = true;
 
 	i = 250;
 	j = 25;
@@ -264,6 +265,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	goldMineGameObject->detailedRaycast = true;
 
 	i = 250;
 	j = 275;
@@ -278,6 +280,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	goldMineGameObject->detailedRaycast = true;
 
 	i = 50;
 	j = 275;
@@ -292,6 +295,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	goldMineGameObject->detailedRaycast = true;
 
 	//-------------------------------------------
 
@@ -308,6 +312,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	goldMineGameObject->detailedRaycast = true;
 
 	i = 175;
 	j = 175;
@@ -322,6 +327,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
+	goldMineGameObject->detailedRaycast = true;
 
 	//----------------------------------------
 
@@ -338,6 +344,7 @@ void GameManager::addBuildings()
 	Unit *barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	barrackGameObject->detailedRaycast = true;
 
 	i = 285;
 	j = 10;
@@ -350,6 +357,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	barrackGameObject->detailedRaycast = true;
 
 	i = 285;
 	j = 290;
@@ -362,6 +370,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	barrackGameObject->detailedRaycast = true;
 
 	i = 15;
 	j = 290;
@@ -374,6 +383,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	barrackGameObject->detailedRaycast = true;
 
 	//-------------------------------------------
 
@@ -388,6 +398,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	barrackGameObject->detailedRaycast = true;
 
 	i = 175;
 	j = 75;
@@ -400,6 +411,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
+	barrackGameObject->detailedRaycast = true;
 
 	//----------------------------------------
 
@@ -418,6 +430,7 @@ void GameManager::addBuildings()
 	Unit *bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	bankGameObject->detailedRaycast = true;
 
 	i = 275;
 	j = 50;
@@ -431,6 +444,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	bankGameObject->detailedRaycast = true;
 
 	i = 275;
 	j = 250;
@@ -444,6 +458,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	bankGameObject->detailedRaycast = true;
 
 	i = 25;
 	j = 250;
@@ -457,6 +472,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	bankGameObject->detailedRaycast = true;
 
 	//-------------------------------------------
 
@@ -472,6 +488,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	bankGameObject->detailedRaycast = true;
 
 	i = 180;
 	j = 75;
@@ -485,6 +502,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
+	bankGameObject->detailedRaycast = true;
 
 	//----------------------------------------
 
