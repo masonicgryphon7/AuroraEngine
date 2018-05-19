@@ -99,12 +99,12 @@ void PlayerScript::update()
 	}
 
 
-	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.GetMousePosition().x >= Input.GetWidth()) {
+	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.GetMousePosition().x >= Input.GetWidth()-20) {
 		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(0, 0,- 1, 0), direction);
 
 	}
 
-	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.GetMousePosition().y >= Input.GetHeight()) {
+	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.GetMousePosition().y >= Input.GetHeight()-40) {
 		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(-1, 0, 0, 0), direction);
 
 	}

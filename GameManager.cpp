@@ -250,7 +250,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
-	goldMineGameObject->detailedRaycast = true;
+	goldMineGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 250;
 	j = 25;
@@ -265,7 +265,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
-	goldMineGameObject->detailedRaycast = true;
+	goldMineGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 250;
 	j = 275;
@@ -280,7 +280,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
-	goldMineGameObject->detailedRaycast = true;
+	goldMineGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 50;
 	j = 275;
@@ -295,7 +295,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
-	goldMineGameObject->detailedRaycast = true;
+	goldMineGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	//-------------------------------------------
 
@@ -312,7 +312,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
-	goldMineGameObject->detailedRaycast = true;
+	goldMineGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 175;
 	j = 175;
@@ -327,7 +327,7 @@ void GameManager::addBuildings()
 	goldMineGameObject->addComponent(goldMine);
 	gamemanager.buildingLists[goldMineGameObject->tag].push_back(goldMine);
 	PathCreator.blockGrid(DirectX::XMFLOAT3(i, HeightMapVariables.VertInfo[i][j].y, j));
-	goldMineGameObject->detailedRaycast = true;
+	goldMineGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	//----------------------------------------
 
@@ -344,7 +344,7 @@ void GameManager::addBuildings()
 	Unit *barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
-	barrackGameObject->detailedRaycast = true;
+	barrackGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 285;
 	j = 10;
@@ -357,7 +357,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
-	barrackGameObject->detailedRaycast = true;
+	barrackGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 285;
 	j = 290;
@@ -370,7 +370,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
-	barrackGameObject->detailedRaycast = true;
+	barrackGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 15;
 	j = 290;
@@ -383,7 +383,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
-	barrackGameObject->detailedRaycast = true;
+	barrackGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	//-------------------------------------------
 
@@ -398,7 +398,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
-	barrackGameObject->detailedRaycast = true;
+	barrackGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 175;
 	j = 75;
@@ -411,7 +411,7 @@ void GameManager::addBuildings()
 	barrack = new Unit(Barrack);
 	barrackGameObject->addComponent(barrack);
 	gamemanager.buildingLists[barrackGameObject->tag].push_back(barrack);
-	barrackGameObject->detailedRaycast = true;
+	barrackGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	//----------------------------------------
 
@@ -430,7 +430,7 @@ void GameManager::addBuildings()
 	Unit *bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
-	bankGameObject->detailedRaycast = true;
+	bankGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 275;
 	j = 50;
@@ -444,7 +444,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
-	bankGameObject->detailedRaycast = true;
+	bankGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 275;
 	j = 250;
@@ -458,7 +458,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
-	bankGameObject->detailedRaycast = true;
+	bankGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 25;
 	j = 250;
@@ -472,7 +472,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
-	bankGameObject->detailedRaycast = true;
+	bankGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	//-------------------------------------------
 
@@ -488,7 +488,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
-	bankGameObject->detailedRaycast = true;
+	bankGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 180;
 	j = 75;
@@ -502,7 +502,7 @@ void GameManager::addBuildings()
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
-	bankGameObject->detailedRaycast = true;
+	bankGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	//----------------------------------------
 
