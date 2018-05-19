@@ -199,6 +199,7 @@ void Player::Update()
 			unityTroll = 10.0f;
 			stateTroll = 3; // exit troll mode
 			coreEngine->createTerrain();
+			gamemanager.addBuildings();
 		}
 
 		int alpha = (int)jGUI->Lerp(255, 0, unityTroll);
