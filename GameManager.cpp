@@ -148,7 +148,7 @@ void GameManager::update()
 	case SMALL_CIRCLE_STATE:
 		if (gameTime >= 240 && ringOfFire > 28)
 		{
-			Debug.Log(ringOfFire);  
+			//Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
 			ringState = RING_STATE::THIRD_MOVE;
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;

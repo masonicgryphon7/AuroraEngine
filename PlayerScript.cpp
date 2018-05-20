@@ -44,7 +44,8 @@ PlayerScript::PlayerScript(GameObject * player) :Component(-1, "Editor Move Scri
 }
 
 PlayerScript::~PlayerScript()
-{}
+{
+}
 
 void PlayerScript::instantiate_Player()
 {
@@ -58,7 +59,7 @@ void PlayerScript::instantiate_Player()
 	Unit* friendly_unit_hero = new Unit(Hero);
 	friendly_Hero->addComponent(friendly_unit_hero);
 	//friendlyUnits.push_back(friendly_unit_hero);
-	
+
 	gamemanager.unitLists[friendly_Hero->tag].push_back(friendly_unit_hero);
 
 }
@@ -88,23 +89,27 @@ void PlayerScript::update()
 	distance = speed * Time.getDeltaTime();
 	direction = DirectX::XMVectorSet(0, 0, 0, 0);
 
-	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow) || Input.GetMousePosition().x == 0.0f) {
+	if (Input.GetKey(KeyCode::A) || Input.GetKey(KeyCode::LeftArrow) || Input.GetMousePosition().x == 0.0f)
+	{
 		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(0, 0, 1, 0), direction);
 
 	}
 
-	if (Input.GetKey(KeyCode::W) || Input.GetKey(KeyCode::UpArrow) || Input.GetMousePosition().y == 0.0f) {
-		direction =DirectX::XMVectorAdd(DirectX::XMVectorSet(1, 0, 0, 0), direction);
+	if (Input.GetKey(KeyCode::W) || Input.GetKey(KeyCode::UpArrow) || Input.GetMousePosition().y == 0.0f)
+	{
+		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(1, 0, 0, 0), direction);
 
 	}
 
 
-	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.GetMousePosition().x >= Input.GetWidth()-20) {
-		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(0, 0,- 1, 0), direction);
+	if (Input.GetKey(KeyCode::D) || Input.GetKey(KeyCode::RightArrow) || Input.GetMousePosition().x >= Input.GetWidth() - 20)
+	{
+		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(0, 0, -1, 0), direction);
 
 	}
 
-	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.GetMousePosition().y >= Input.GetHeight()-40) {
+	if (Input.GetKey(KeyCode::S) || Input.GetKey(KeyCode::DownArrow) || Input.GetMousePosition().y >= Input.GetHeight() - 40)
+	{
 		direction = DirectX::XMVectorAdd(DirectX::XMVectorSet(-1, 0, 0, 0), direction);
 
 	}
@@ -117,17 +122,21 @@ void PlayerScript::update()
 	DirectX::XMStoreFloat3(&directionX, direction);
 
 
-	if (positionX.x > 200 && directionX.x>0) {
+	if (positionX.x > 200 && directionX.x > 0)
+	{
 		directionX.x = 0;
 	}
-	else if(positionX.x<-30 && directionX.x<0){
+	else if (positionX.x < -30 && directionX.x < 0)
+	{
 		directionX.x = 0;
 	}
 
-	if (positionX.z > 260 && directionX.z>0) {
+	if (positionX.z > 260 && directionX.z > 0)
+	{
 		directionX.z = 0;
 	}
-	else if (positionX.z<40 && directionX.z<0) {
+	else if (positionX.z < 40 && directionX.z < 0)
+	{
 		directionX.z = 0;
 	}
 
@@ -137,17 +146,21 @@ void PlayerScript::update()
 	DirectX::XMStoreFloat3(&positionX, gameObject->transform.getPosition());
 
 
-	if (positionX.x > 200) {
+	if (positionX.x > 200)
+	{
 		positionX.x = 200;
 	}
-	else if (positionX.x<-30) {
+	else if (positionX.x < -30)
+	{
 		positionX.x = -29;
 	}
 
-	if (positionX.z > 260) {
+	if (positionX.z > 260)
+	{
 		positionX.z = 260;
 	}
-	else if (positionX.z<40) {
+	else if (positionX.z < 40)
+	{
 		positionX.z = 39;
 	}
 
@@ -192,11 +205,11 @@ void PlayerScript::update()
 		}
 	}
 
-	if (Input.GetKey(KeyCode::Escape))
-		exit(-1);
+	/*if (Input.GetKey(KeyCode::Escape))
+		exit(-1);*/
 
 
-	//Mouse
+		//Mouse
 	if (firstMouse)
 	{
 		lastX = (float)xpos;
@@ -240,13 +253,16 @@ void PlayerScript::SelectUnits()
 
 		//10 is selection deadzone
 		bool isSelection = true;
-		if (currentPos.x < mousePosRelative.x + 10 && currentPos.x > mousePosRelative.x - 10) {
-			if (currentPos.y < mousePosRelative.y + 10 && currentPos.y > mousePosRelative.y - 10) {
+		if (currentPos.x < mousePosRelative.x + 10 && currentPos.x > mousePosRelative.x - 10)
+		{
+			if (currentPos.y < mousePosRelative.y + 10 && currentPos.y > mousePosRelative.y - 10)
+			{
 				isSelection = false;
 			}
 		}
 
-		if (isSelection) {
+		if (isSelection)
+		{
 			std::vector<GameObject*> selectedObjects = gPhysics.ScreenSelection(DirectX::XMVectorSet(mousePosRelative.x, mousePosRelative.y, currentPos.x, currentPos.y), Player);
 			SelectedUnits.clear();
 
@@ -277,7 +293,8 @@ void PlayerScript::SelectUnits()
 			Ray ray = Player->getComponent<Camera>()->calculateScreenPointToRay(DirectX::XMVectorSet(Input.mousePosition.x, Input.mousePosition.y, 0, 0));
 			gPhysics.Raycast(ray, hit);
 
-			if (hit.transform != nullptr) {
+			if (hit.transform != nullptr)
+			{
 				//EmptyUnitArr();
 				SelectedUnits.clear();
 				Scene::selectedGameObject = hit.transform->gameObject;
@@ -313,7 +330,8 @@ void PlayerScript::SelectUnits()
 			calculateScreenPointToRay(DirectX::XMVectorSet(Input.mousePosition.x, Input.mousePosition.y, 0, 0));
 		gPhysics.Raycast(ray, hit);
 
-		if (hit.transform != nullptr) {
+		if (hit.transform != nullptr)
+		{
 
 			for (int i = 0; i < SelectedUnits.size(); i++)
 			{
@@ -338,7 +356,11 @@ bool PlayerScript::UnitAlreadySelected(std::vector<GameObject*> object, int elem
 	for (int i = 0; i < SelectedUnits.size(); i++)
 	{
 		if (object.at(element) == SelectedUnits.at(i))
+		{
 			duplicate = true;
+			// Joji: Added this so it optimizes the code and game -> faster for the game to run
+			break;
+		}
 	}
 
 	return duplicate;

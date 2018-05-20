@@ -131,7 +131,9 @@ public:
 	cAssetManager assetManager;
 	RenderManager *renderManager;
 
+	bool IS_RUNNING = true;
 
+	void CreateUITextures();
 	int createTerrain();
 	void SetViewport(int x = WIDTH, int y = HEIGHT);
 	void OnResize();

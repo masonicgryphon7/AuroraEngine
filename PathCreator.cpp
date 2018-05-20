@@ -343,7 +343,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	if (reversePath) {
 		std::reverse(resultNodes.begin(), resultNodes.end());
 	}
-	Debug.Log("NINELOOP7: ", ((std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000)));
+	//Debug.Log("NINELOOP7: ", ((std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000)));
 	return resultNodes;
 }
 

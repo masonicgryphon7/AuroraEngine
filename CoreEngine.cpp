@@ -289,7 +289,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			gSwapChain->SetFullscreenState(TRUE, NULL);
 		}
 
-		while (WM_QUIT != msg.message)
+		while (WM_QUIT != msg.message && IS_RUNNING)
 		{
 			if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 			{
@@ -299,13 +299,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			else
 			{
 				// FULLSCREEN
-				{
-					BOOL bFullscreen;
-					gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
-					// If not full screen, enable fullscreen again.
-					if (!bFullscreen)
-						gSwapChain->SetFullscreenState(TRUE, NULL);
-				}
+				//{
+				//	BOOL bFullscreen;
+				//	gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
+				//	// If not full screen, enable fullscreen again.
+				//	if (!bFullscreen)
+				//		gSwapChain->SetFullscreenState(TRUE, NULL);
+				//}
 
 				inputHandler.updateInput();
 				Time.tick();
@@ -408,6 +408,8 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 	AssetManager.addTexture("Assets/troll_made_with_unity.png");
 
+	CreateUITextures();
+
 	//barracksTex
 	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_BaseColor.png");
 	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_Emissive.png");
@@ -507,6 +509,35 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("StairsMaterial")->setNormal(assetManager.getTexture("Stairs_stairs_Normal")->getTexture());
 	assetManager.getMaterial("StairsMaterial")->setAORoughMet(assetManager.getTexture("Stairs_stairs_OcclusionRoughnessMetallic")->getTexture());
 
+}
+
+#include <experimental\filesystem>
+
+void CoreEngine::CreateUITextures()
+{
+	namespace fs = std::experimental::filesystem;
+
+	std::string path = "Assets/UI";
+	for (auto & p : fs::directory_iterator(path))
+	{
+		std::string finalPath = p.path().string();
+
+		char remove = '\\';
+		for (string::iterator it = finalPath.begin(); it != finalPath.end();)
+		{
+			if ((*it) == remove)
+				it = finalPath.erase(it);
+			else
+				it++;
+		}
+
+		finalPath.insert(6, "/");
+		finalPath.insert(9, "/");
+
+		AssetManager.addTexture(finalPath);
+
+		//AssetManager.addTexture(finalPath);
+	}
 }
 
 int CoreEngine::createTerrain()

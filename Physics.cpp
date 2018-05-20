@@ -36,7 +36,7 @@ bool Physics::Raycast(Ray ray, RaycastHit & hit)
 
 						//Detail
 						if (gScene.getSceneObjects()[i]->raycastOption == RayCastOptions::DETAILED) {
-							Debug.Log("Detailed");
+							//Debug.Log("Detailed");
 							float t = triangleTest(ray.direction, ray.origin, gScene.getSceneObjects()[i]->transform.getPosition(), gScene.getSceneObjects()[i]->getComponent<MeshFilter>()->getMesh()->getVertexPositions());
 
 							if (t > EPSILON && (t < lastT || lastT < EPSILON)) {
@@ -148,10 +148,10 @@ std::vector<GameObject*> Physics::ScreenSelection(DirectX::XMVECTOR startXYendXY
 		}
 	}
 
-	for (int i = 0; i < selectedGameObjects.size(); i++)
+	/*for (int i = 0; i < selectedGameObjects.size(); i++)
 	{
 		Debug.Log(selectedGameObjects[i]->name, "was selected");
-	}
+	}*/
 
 	return selectedGameObjects;
 }

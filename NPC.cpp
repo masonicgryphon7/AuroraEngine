@@ -20,7 +20,7 @@ void NPC::update()
 		if (waitTime > 20000)
 		{
 			checkTime = false;
-			Debug.Log("WAIT IS OVER");
+			//Debug.Log("WAIT IS OVER");
 		}
 
 	}

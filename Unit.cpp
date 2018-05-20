@@ -167,7 +167,7 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 			previousPos = gameObject->transform.getPosition();
 
 			float time = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
-			Debug.Log(" after astar time ", time);
+			//Debug.Log(" after astar time ", time);
 
 		}
 
@@ -376,7 +376,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 				{
 					//attackEnemy();
 					targetedUnit->takeDamage(this->getAttackPoints());
-					Debug.Log("Enemy Hit!");
+					//Debug.Log("Enemy Hit!");
 					actionTime = 0;
 				}
 			}
@@ -401,7 +401,7 @@ void Unit::attackEnemy()
 	int damage = this->attackPoints - UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getDefencePoints();
 	int newEnemyHealth = enemyHealth - damage;
 	UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setHealthPoints(newEnemyHealth);
-	Debug.Log("Attacking.");
+	//Debug.Log("Attacking.");
 }
 
 void Unit::takeDamage(int attackPoints)
@@ -535,14 +535,14 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 			int resourcesLeft = targetedUnit->getResources();
 			targetedUnit->setResources(0);
 			this->setResources(this->getResources() + resourcesLeft);
-			Debug.Log("Resources: ", targetedUnit->getResources());
+			//Debug.Log("Resources: ", targetedUnit->getResources());
 		}
 
 		if (targetedUnit->type == GoldMine && actionTime > 1)
 		{
 			gatherResources();
 			actionTime = 0;
-			Debug.Log("Resources: ", this->getResources());
+			//Debug.Log("Resources: ", this->getResources());
 		}
 	}
 	else if(targetedUnit->gameObject->unitIsAvtive == true)
@@ -565,7 +565,7 @@ void Unit::gatherResources()
 			UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
 			int workersAmount = this->getResources();
 			this->setResources(workersAmount + 20);
-			Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
+			//Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
 			if (this->Resources == 100)
 				e = 1;
 			actionTime = 0;
@@ -640,10 +640,10 @@ void Unit::dropResources()
 		{
 			int resourcesInUnit = this->getResources();
 			this->setResources(resourcesInUnit - 20);
-			Debug.Log("Resources dropped! In worker: ", this->getResources());
+			//Debug.Log("Resources dropped! In worker: ", this->getResources());
 			int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
 			this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
-			Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
+			//Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
 			if (this->Resources == 0)
 				e = 0;
 			actionTime = 0;
@@ -782,7 +782,7 @@ void Unit::dieCommand()
 	if (dieTime > 3)
 	{
 		//play death animation
-		Debug.Log("Play death animation here");
+		//Debug.Log("Play death animation here");
 		dieTime = 0;
 		UnitOrders.erase(UnitOrders.begin());
 		for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
