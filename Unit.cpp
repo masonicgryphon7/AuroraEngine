@@ -53,6 +53,7 @@ Unit::Unit() :Component(-1, "Unit")
 		//	this->Resources = 50;
 		//	break;
 	}
+
 }
 
 Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
@@ -119,6 +120,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	}
+
 }
 
 Unit::~Unit()
@@ -162,6 +164,8 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 			start = std::clock();
 
 			pathNodes = PathCreator.getPath(current, pointPosition); // Point position
+			previousPos = gameObject->transform.getPosition();
+
 			float time = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
 			Debug.Log(" after astar time ", time);
 
@@ -191,29 +195,56 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 
 			//	gameObject->transform.setForward(gameObject->transform.getForward());
 			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
+				previousPos =goal;
 				pathNodes.erase(pathNodes.begin());
 
 				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 				lerpValue = 0;
 			}
 			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
+				previousPos = goal;
 				pathNodes.erase(pathNodes.begin());
 				lerpValue = 0;
 				UnitOrders.erase(UnitOrders.begin());
 
 
 			}
-			gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
+			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
 
-			DirectX::XMVECTOR directionVector = DirectX::XMVectorSubtract(goalPoint, currentPoint);
-			float rotation;
-			rotation = DirectX::XMVectorGetX(DirectX::XMVector4Dot(DirectX::XMVector4Normalize(directionVector), DirectX::XMVectorSet(1.0, 0.0, 0.0, 1)));
-			if (goalVec.z == DirectX::XMVectorGetZ(currentPoint))
-				gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, acos(rotation) *57.2957795, 0.0, 0.0));
-			else if (goalVec.z < DirectX::XMVectorGetZ(currentPoint))
-				gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, acos(rotation) *57.2957795, 0.0, 0.0));
-			else if (goalVec.z > DirectX::XMVectorGetZ(currentPoint))
-				gameObject->transform.setRotation(DirectX::XMVectorSet(0.0, -acos(rotation) *57.2957795, 0.0, 0.0));
+			DirectX::XMVECTOR directionVector = DirectX::XMVector3Normalize( DirectX::XMVectorSubtract(goalPoint, previousPos));
+			float zComponent = DirectX::XMVectorGetZ(directionVector);
+			float xComponent = DirectX::XMVectorGetX(directionVector);
+
+			if (zComponent< 0 && xComponent==0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0,90,0,0));
+
+			}else if (zComponent > 0 && xComponent==0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 270, 0, 0));
+
+			}else if (xComponent> 0 && zComponent==0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
+
+			}else if (xComponent < 0 && zComponent==0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
+
+			}
+			else if (xComponent < 0 && zComponent < 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 135, 0, 0));
+
+			}
+			else if (xComponent < 0 && zComponent > 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 225, 0, 0));
+
+			}
+			else if (xComponent > 0 && zComponent > 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 315, 0, 0));
+
+			}
+			else if (xComponent > 0 && zComponent < 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 45, 0, 0));
+
+			}
+
 		}
 		else
 		{
@@ -246,6 +277,8 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		{
 			lerpValue = 0;
 			pathNodes = PathCreator.getPath(current, pointPosition); // Point position
+			previousPos = gameObject->transform.getPosition();
+
 			if (pathNodes.at(pathNodes.size() - 1).pathable == PATHABLE_CHECK)
 				pathNodes.erase(pathNodes.begin() + pathNodes.size() - 1);
 		}
@@ -261,19 +294,60 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 
 
 			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
+				previousPos = goal;
+
 				pathNodes.erase(pathNodes.begin());
 
 				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 				lerpValue = 0;
 			}
 			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
+				previousPos = goal;
+
 				pathNodes.erase(pathNodes.begin());
 				lerpValue = 0;
 				//UnitOrders.erase(UnitOrders.begin() + 1);
 
 
 			}
-			gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
+			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
+
+			DirectX::XMVECTOR directionVector = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(goal, previousPos));
+			float zComponent = DirectX::XMVectorGetZ(directionVector);
+			float xComponent = DirectX::XMVectorGetX(directionVector);
+
+			if (zComponent< 0 && xComponent == 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+
+			}
+			else if (zComponent > 0 && xComponent == 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 270, 0, 0));
+
+			}
+			else if (xComponent> 0 && zComponent == 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
+
+			}
+			else if (xComponent < 0 && zComponent == 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
+
+			}
+			else if (xComponent < 0 && zComponent < 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 135, 0, 0));
+
+			}
+			else if (xComponent < 0 && zComponent > 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 225, 0, 0));
+
+			}
+			else if (xComponent > 0 && zComponent > 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 315, 0, 0));
+
+			}
+			else if (xComponent > 0 && zComponent < 0) {
+				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 45, 0, 0));
+
+			}
 		}
 		else
 		{
