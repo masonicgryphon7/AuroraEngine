@@ -363,9 +363,6 @@ void Unit::attackCommand(Unit* targetedUnit)
 	targetPos = UnitOrders.at(0).transform->getPosition();
 	unitPos = gameObject->transform.getPosition();
 
-	if (targetedUnit->gameObject->unitIsAvtive == false)
-		int e = 0;
-
 	if (targetedUnit->gameObject->unitIsAvtive == true)
 	{
 		if (targetedUnit != nullptr && targetedUnit->getHealthPoints() > 0)
