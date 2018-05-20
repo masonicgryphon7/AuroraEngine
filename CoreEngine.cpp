@@ -163,6 +163,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.AddMesh("Assets/Barracks/CryptBarracksFinale1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/ResourceCenter/FinalSilo1OBJ.obj", AssetManager.getShaderProgram("Vertex.hlsl")); 
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Stairs.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		//PathCreator.createNodes();
 
@@ -188,6 +189,25 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
 		tree->addComponent(meshFilterTree);
 		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+
+		////Stairs
+		GameObject* stair1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(149, 21, 180, 0));
+		stair1->name = "Stair1";
+		stair1->tag = 0;
+		stair1->raycastOption = RayCastOptions::NONE;
+		MeshFilter* meshFilterStair1 = new MeshFilter(AssetManager.getMesh("Stairs"));
+		stair1->addComponent(meshFilterStair1);
+		stair1->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+
+		GameObject* stair2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(151, 21, 114, 0));
+		stair2->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
+		stair2->name = "Stair2";
+		stair2->tag = 0;
+		stair2->raycastOption = RayCastOptions::NONE;
+		MeshFilter* meshFilterStair2 = new MeshFilter(AssetManager.getMesh("Stairs"));
+		stair2->addComponent(meshFilterStair2);
+		stair2->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 
 		//Barrack
 
