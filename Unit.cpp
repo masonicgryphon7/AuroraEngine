@@ -53,6 +53,7 @@ Unit::Unit() :Component(-1, "Unit")
 		//	this->Resources = 50;
 		//	break;
 	}
+
 }
 
 Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
@@ -119,6 +120,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	}
+
 }
 
 Unit::~Unit()
@@ -162,6 +164,8 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 			start = std::clock();
 
 			pathNodes = PathCreator.getPath(current, pointPosition); // Point position
+			previousPos = gameObject->transform.getPosition();
+
 			float time = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
 			Debug.Log(" after astar time ", time);
 
@@ -191,19 +195,21 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 
 			//	gameObject->transform.setForward(gameObject->transform.getForward());
 			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
+				previousPos =goal;
 				pathNodes.erase(pathNodes.begin());
 
 				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 				lerpValue = 0;
 			}
 			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
+				previousPos = goal;
 				pathNodes.erase(pathNodes.begin());
 				lerpValue = 0;
 				UnitOrders.erase(UnitOrders.begin());
 
 
 			}
-			gameObject->transform.setPosition(DirectX::XMVectorLerp(gameObject->transform.getPosition(), goal, lerpValue));
+			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
 
 			DirectX::XMVECTOR directionVector = DirectX::XMVectorSubtract(goalPoint, currentPoint);
 			float rotation;

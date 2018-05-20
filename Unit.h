@@ -72,6 +72,7 @@ private:
 
 	DirectX::XMVECTOR targetPos;
 	DirectX::XMVECTOR unitPos;
+	DirectX::XMVECTOR previousPos;
 
 
 	PlayerScript* playerScript;
