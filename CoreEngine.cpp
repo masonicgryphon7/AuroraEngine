@@ -198,7 +198,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		stair1->raycastOption = RayCastOptions::NONE;
 		MeshFilter* meshFilterStair1 = new MeshFilter(AssetManager.getMesh("Stairs"));
 		stair1->addComponent(meshFilterStair1);
-		stair1->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+		stair1->addComponent(new MaterialFilter(AssetManager.getMaterial("StairsMaterial")));
 
 		GameObject* stair2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(151, 21, 114, 0));
 		stair2->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
@@ -207,7 +207,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		stair2->raycastOption = RayCastOptions::NONE;
 		MeshFilter* meshFilterStair2 = new MeshFilter(AssetManager.getMesh("Stairs"));
 		stair2->addComponent(meshFilterStair2);
-		stair2->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+		stair2->addComponent(new MaterialFilter(AssetManager.getMaterial("StairsMaterial")));
 
 		//Barrack
 
@@ -430,6 +430,11 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_Normal.png");
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic.png");
 
+
+	AssetManager.addTexture("Assets/Stairs_stairs_BaseColor.png");
+	AssetManager.addTexture("Assets/Stairs_stairs_Normal.png");
+	AssetManager.addTexture("Assets/Stairs_stairs_OcclusionRoughnessMetallic.png");
+
 	//GoldmineMat
 	assetManager.AddMaterial("GoldMineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("GoldMineMaterial")->setAlbedo(assetManager.getTexture("GoldMineResource_BaseColor")->getTexture());
@@ -495,6 +500,12 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("TreeMaterial")->setAlbedo(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_BaseColor")->getTexture());
 	assetManager.getMaterial("TreeMaterial")->setNormal(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_Normal")->getTexture());
 	assetManager.getMaterial("TreeMaterial")->setAORoughMet(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic")->getTexture());
+
+	//Stairs Material
+	assetManager.AddMaterial("StairsMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("StairsMaterial")->setAlbedo(assetManager.getTexture("Stairs_stairs_BaseColor")->getTexture());
+	assetManager.getMaterial("StairsMaterial")->setNormal(assetManager.getTexture("Stairs_stairs_Normal")->getTexture());
+	assetManager.getMaterial("StairsMaterial")->setAORoughMet(assetManager.getTexture("Stairs_stairs_OcclusionRoughnessMetallic")->getTexture());
 
 }
 
