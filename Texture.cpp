@@ -3,7 +3,8 @@
 
 
 Texture::Texture()
-{}
+{
+}
 
 Texture::Texture(ID3D11Device * device, ID3D11DeviceContext * devContext, std::string filePath)
 {
@@ -20,7 +21,10 @@ Texture::Texture(ID3D11Device * device, ID3D11DeviceContext * devContext, std::s
 
 Texture::~Texture()
 {
-	textureView->Release();
+	if (textureView != nullptr)
+		textureView->Release();
+
+	textureView = nullptr;
 }
 
 void Texture::createTextureData(ID3D11Device * device, ID3D11DeviceContext * devContext, std::string filePath)

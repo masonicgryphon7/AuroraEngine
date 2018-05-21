@@ -140,6 +140,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addShaderProgram(INPUT_ELEMENT_DESCRIPTION::INPUT_ELEMENT_POS3UV2T3B3N3JNT4WT4, "VertexAnimation.hlsl", SHADER_TYPE::VERTEX_SHADER);
 
 		AssetManager.addShaderProgram("Fragment.hlsl", SHADER_TYPE::PIXEL_SHADER);
+		AssetManager.addShaderProgram("FragmentOpacity.hlsl", SHADER_TYPE::PIXEL_SHADER);
 
 
 		//shaderProgram.CreateShaderData(gDeviceContext, gDevice, descTest, "Vertex.hlsl", "", "", "", "Fragment.hlsl", "");
@@ -159,9 +160,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMeshFromBinary("Assets/QuarryTwo1_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Spruce_Tree2.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Test2ResourceSilo.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Barracks/CryptBarracksFinale1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/ResourceCenter/FinalSilo1OBJ.obj", AssetManager.getShaderProgram("Vertex.hlsl")); 
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
-
-
+		AssetManager.AddMesh("Assets/Stairs.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		//PathCreator.createNodes();
 
@@ -169,7 +171,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		Camera* cam = nullptr;
 		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 100, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
-		cam = new Camera(HEIGHT, WIDTH, 35, 0.01f, 1000.0f);
+		cam = new Camera(HEIGHT, WIDTH, 30, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
 		camera->addComponent(cam);
 		PlayerScript* playerscript = new PlayerScript(camera);
@@ -180,12 +182,32 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//camera->addComponent(playerscript);
 
 		////Tree
-		//GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
-		//tree->name = "Tree";
-		//tree->tag = 0;
-		//MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
-		//tree->addComponent(meshFilterTree);
-		//tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
+		tree->name = "Tree";
+		tree->tag = 0;
+		tree->raycastOption = RayCastOptions::NONE;
+		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+		tree->addComponent(meshFilterTree);
+		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+
+		////Stairs
+		GameObject* stair1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(149, 21, 180, 0));
+		stair1->name = "Stair1";
+		stair1->tag = 0;
+		stair1->raycastOption = RayCastOptions::NONE;
+		MeshFilter* meshFilterStair1 = new MeshFilter(AssetManager.getMesh("Stairs"));
+		stair1->addComponent(meshFilterStair1);
+		stair1->addComponent(new MaterialFilter(AssetManager.getMaterial("StairsMaterial")));
+
+		GameObject* stair2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(151, 21, 114, 0));
+		stair2->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
+		stair2->name = "Stair2";
+		stair2->tag = 0;
+		stair2->raycastOption = RayCastOptions::NONE;
+		MeshFilter* meshFilterStair2 = new MeshFilter(AssetManager.getMesh("Stairs"));
+		stair2->addComponent(meshFilterStair2);
+		stair2->addComponent(new MaterialFilter(AssetManager.getMaterial("StairsMaterial")));
 
 		//Barrack
 
@@ -267,7 +289,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			gSwapChain->SetFullscreenState(TRUE, NULL);
 		}
 
-		while (WM_QUIT != msg.message)
+		while (WM_QUIT != msg.message && IS_RUNNING)
 		{
 			if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 			{
@@ -277,13 +299,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			else
 			{
 				// FULLSCREEN
-				{
-					BOOL bFullscreen;
-					gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
-					// If not full screen, enable fullscreen again.
-					if (!bFullscreen)
-						gSwapChain->SetFullscreenState(TRUE, NULL);
-				}
+				//{
+				//	BOOL bFullscreen;
+				//	gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
+				//	// If not full screen, enable fullscreen again.
+				//	if (!bFullscreen)
+				//		gSwapChain->SetFullscreenState(TRUE, NULL);
+				//}
 
 				inputHandler.updateInput();
 				Time.tick();
@@ -291,10 +313,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				OnResize();
 
 				gScene.destroyGameObjects();
-				gScene.update();
 				gScene.frustumCull(camera);
 				objectsToRender = gScene.getFrustumCulledResult();
 
+				gScene.update();
 				if (editor != nullptr)
 					editor->Update();
 				if (player != nullptr)
@@ -386,10 +408,56 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 	AssetManager.addTexture("Assets/troll_made_with_unity.png");
 
+	CreateUITextures();
+
+	//barracksTex
+	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_BaseColor.png");
+	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_Emissive.png");
+	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_Normal.png");
+	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic.png");
+
+	//ResourseCenterTex
+	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Diffuse.png");
+	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Normal.png");
+	assetManager.AddTexture("Assets/ResourceCenter/Resource-RoughMetalAo.png");
+	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo_flag.png");
+
+	//Goldmine
+	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_BaseColor.png");
+	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_Normal.png");
+	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_OcclusionRoughnessMetallic.png");
+	
 
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_BaseColor.png");
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_Normal.png");
 	AssetManager.addTexture("Assets/Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic.png");
+
+
+	AssetManager.addTexture("Assets/Stairs_stairs_BaseColor.png");
+	AssetManager.addTexture("Assets/Stairs_stairs_Normal.png");
+	AssetManager.addTexture("Assets/Stairs_stairs_OcclusionRoughnessMetallic.png");
+
+	//GoldmineMat
+	assetManager.AddMaterial("GoldMineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("GoldMineMaterial")->setAlbedo(assetManager.getTexture("GoldMineResource_BaseColor")->getTexture());
+	assetManager.getMaterial("GoldMineMaterial")->setNormal(assetManager.getTexture("GoldMineResource_Normal")->getTexture());
+	assetManager.getMaterial("GoldMineMaterial")->setAORoughMet(assetManager.getTexture("GoldMineResource_OcclusionRoughnessMetallic")->getTexture());
+
+
+	//BarracksMat
+	assetManager.AddMaterial("BarracksMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("BarracksMaterial")->setAlbedo(assetManager.getTexture("CryptBarracksFinale1_Barracks_BaseColor")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setNormal(assetManager.getTexture("CryptBarracksFinale1_Barracks_Normal")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setTeamIdMap(assetManager.getTexture("CryptBarracksFinale1_Barracks_Emissive")->getTexture());
+
+	//ResoursMaterial
+	assetManager.AddMaterial("ResoursMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("ResoursMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
+	assetManager.getMaterial("ResoursMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
+	assetManager.getMaterial("ResoursMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
+	assetManager.getMaterial("ResoursMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
+
 
 	//Unit Material
 	assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -416,11 +484,11 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("BankMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
 
 	//Goldmine material
-	assetManager.AddMaterial("GoldmineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	/*assetManager.AddMaterial("GoldmineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("GoldmineMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
 	assetManager.getMaterial("GoldmineMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
 	assetManager.getMaterial("GoldmineMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
-
+*/
 	//Barrack material
 	assetManager.AddMaterial("BarrackMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("BarrackMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
@@ -429,11 +497,47 @@ void CoreEngine::addMaterials()
 
 
 	//Tree Material
-	assetManager.AddMaterial("TreeMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.AddMaterial("TreeMaterial", assetManager.getShaderProgram("FragmentOpacity.hlsl"));
+	assetManager.getMaterial("TreeMaterial")->setAlpha(true);
 	assetManager.getMaterial("TreeMaterial")->setAlbedo(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_BaseColor")->getTexture());
 	assetManager.getMaterial("TreeMaterial")->setNormal(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_Normal")->getTexture());
 	assetManager.getMaterial("TreeMaterial")->setAORoughMet(assetManager.getTexture("Spruce_Tree1_initialShadingGroup_OcclusionRoughnessMetallic")->getTexture());
 
+	//Stairs Material
+	assetManager.AddMaterial("StairsMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("StairsMaterial")->setAlbedo(assetManager.getTexture("Stairs_stairs_BaseColor")->getTexture());
+	assetManager.getMaterial("StairsMaterial")->setNormal(assetManager.getTexture("Stairs_stairs_Normal")->getTexture());
+	assetManager.getMaterial("StairsMaterial")->setAORoughMet(assetManager.getTexture("Stairs_stairs_OcclusionRoughnessMetallic")->getTexture());
+
+}
+
+#include <experimental\filesystem>
+
+void CoreEngine::CreateUITextures()
+{
+	namespace fs = std::experimental::filesystem;
+
+	std::string path = "Assets/UI";
+	for (auto & p : fs::directory_iterator(path))
+	{
+		std::string finalPath = p.path().string();
+
+		char remove = '\\';
+		for (string::iterator it = finalPath.begin(); it != finalPath.end();)
+		{
+			if ((*it) == remove)
+				it = finalPath.erase(it);
+			else
+				it++;
+		}
+
+		finalPath.insert(6, "/");
+		finalPath.insert(9, "/");
+
+		AssetManager.addTexture(finalPath);
+
+		//AssetManager.addTexture(finalPath);
+	}
 }
 
 int CoreEngine::createTerrain()
@@ -444,7 +548,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain1->name = "Terrain1";
 	terrain1->tag = 0;
-	terrain1->detailedRaycast = true;
+	terrain1->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m1 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_1", Terrain->getPatchTriangleArr(0, 0, 100, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain = new MeshFilter(m1);
 	terrain1->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -453,7 +557,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain2->name = "Terrain2";
 	terrain2->tag = 0;
-	terrain2->detailedRaycast = true;
+	terrain2->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m2 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_2", Terrain->getPatchTriangleArr(100, 0, 200, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain2 = new MeshFilter(m2);
 	terrain2->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -462,7 +566,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain3 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain3->name = "Terrain3";
 	terrain3->tag = 0;
-	terrain3->detailedRaycast = true;
+	terrain3->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m3 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_3", Terrain->getPatchTriangleArr(200, 0, 300, 100), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain3 = new MeshFilter(m3);
 	terrain3->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -471,7 +575,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain4 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain4->name = "Terrain4";
 	terrain4->tag = 0;
-	terrain4->detailedRaycast = true;
+	terrain4->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m4 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_4", Terrain->getPatchTriangleArr(0, 100, 100, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain4 = new MeshFilter(m4);
 	terrain4->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -480,7 +584,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain5 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain5->name = "Terrain5";
 	terrain5->tag = 0;
-	terrain5->detailedRaycast = true;
+	terrain5->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m5 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_5", Terrain->getPatchTriangleArr(100, 100, 200, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain5 = new MeshFilter(m5);
 	terrain5->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -489,7 +593,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain6 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain6->name = "Terrain6";
 	terrain6->tag = 0;
-	terrain6->detailedRaycast = true;
+	terrain6->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m6 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_6", Terrain->getPatchTriangleArr(200, 100, 300, 200), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain6 = new MeshFilter(m6);
 	terrain6->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -498,7 +602,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain7 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain7->name = "Terrain7";
 	terrain7->tag = 0;
-	terrain7->detailedRaycast = true;
+	terrain7->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m7 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_7", Terrain->getPatchTriangleArr(0, 200, 100, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain7 = new MeshFilter(m7);
 	terrain7->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -507,7 +611,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain8 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain8->name = "Terrain8";
 	terrain8->tag = 0;
-	terrain8->detailedRaycast = true;
+	terrain8->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m8 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_8", Terrain->getPatchTriangleArr(100, 200, 200, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain8 = new MeshFilter(m8);
 	terrain8->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -516,7 +620,7 @@ int CoreEngine::createTerrain()
 	GameObject* terrain9 = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 0, 0, 0));
 	terrain9->name = "Terrain9";
 	terrain9->tag = 0;
-	terrain9->detailedRaycast = true;
+	terrain9->raycastOption = RayCastOptions::DETAILED;
 	Mesh* m9 = AssetManager.AddMesh(Terrain->getPatchVertCount(), "Terrain_9", Terrain->getPatchTriangleArr(200, 200, 300, 300), AssetManager.getShaderProgram("Vertex.hlsl"));
 	MeshFilter* meshFilterTerrain9 = new MeshFilter(m9);
 	terrain9->addComponent(new MaterialFilter(AssetManager.getMaterial("TerrainMaterial1")));
@@ -1056,26 +1160,29 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 
 	// Create an alpha enabled blend state description.
 	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
-	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	// Create the blend state using the description.
 	result = gDevice->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendState);
 	if (FAILED(result))
 		Console.error("Error Enable Blend State");
 
-	// Modify the description to create an alpha disabled blend state description.
-	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
+	float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
+	UINT sampleMask = 0xffffffff;
+	gDeviceContext->OMSetBlendState(m_alphaEnableBlendState, 0, sampleMask);
+	//// Modify the description to create an alpha disabled blend state description.
+	//blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
 
-	// Create the blend state using the description.
-	result = gDevice->CreateBlendState(&blendStateDescription, &m_alphaDisabledBlendState);
-	if (FAILED(result))
-		Console.error("Error Disable Blend State");
+	//// Create the blend state using the description.
+	//result = gDevice->CreateBlendState(&blendStateDescription, &m_alphaDisabledBlendState);
+	//if (FAILED(result))
+	//	Console.error("Error Disable Blend State");
 
 	return hr;
 }

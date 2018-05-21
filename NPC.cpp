@@ -14,15 +14,13 @@ NPC::~NPC()
 
 void NPC::update()
 {
-	nrOfWorkers = 0;
-
 	if (checkTime == true)
 	{
 		waitTime = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
 		if (waitTime > 10000)
 		{
 			checkTime = false;
-			Debug.Log("WAIT IS OVER");
+			//Debug.Log("WAIT IS OVER");
 		}
 
 	}
@@ -33,32 +31,92 @@ void NPC::update()
 		{
 			if (gamemanager.unitLists[2][0]->getUnitOrders().size() == 0)
 			{
-				if (gamemanager.buildingLists[2].size() < 2)//gamemanager.unitLists[2][0]->getResources() <= 0)
+				int nrOfSoldiers = 0;
+				for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 				{
-					takeOverBuilding(gamemanager.unitLists[2][0]);
+					if (gamemanager.unitLists[2][i]->getType() == Soldier)
+					{
+						nrOfSoldiers++;
+					}
 				}
-				else if (gamemanager.unitLists[2][0]->getResources() < 100)
+
+				if (nrOfSoldiers >= 3 && nrOfSoldiers > gamemanager.unitLists[1].size())
 				{
-					gather(gamemanager.unitLists[2][0]);
+					attack(gamemanager.unitLists[2][0]);
+
+					for (int i = 1; i < gamemanager.unitLists[2].size(); i++)
+					{
+						if (gamemanager.unitLists[2][i]->getType() == Soldier)
+						{
+							attack(gamemanager.unitLists[2][i]);
+						}
+					}
+				}
+				else
+				{
+					if (gamemanager.buildingLists[2].size() < 4)//gamemanager.unitLists[2][0]->getResources() <= 0)
+					{
+						takeOverBuilding(gamemanager.unitLists[2][0]);
+					}
+					else if (gamemanager.unitLists[2][0]->getResources() < 100)
+					{
+						gather(gamemanager.unitLists[2][0]);
+					}
 				}
 			}
-			//else //if (gamemanager.unitLists[2][0]->getResources() <= 0)
-			//{
-			//	gather(gamemanager.unitLists[2][0]);
-			//}
+			if (gamemanager.unitLists[2][0]->getUnitOrdersSize() > 0 && gamemanager.unitLists[2][0]->getResources() >= 100)
+			{
+				gamemanager.unitLists[2][0]->clearUnitOrder();
+				gamemanager.unitLists[2][0]->setResources(0);
+			}
 
 			if (gamemanager.unitLists[2][0]->getResources() > 40 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
 			{
-				gamemanager.unitLists[2][0]->setResources(0);
-				summonUnit(gamemanager.buildingLists[2][0]);
-				tempBool = true;
+				int nrOfWorkers = 0;
+				int nrOfSoldiers = 0;
+
+				for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+				{
+					if (gamemanager.unitLists[2][i]->getType() == Worker)
+					{
+						nrOfWorkers++;
+					}
+					if (gamemanager.unitLists[2][i]->getType() == Soldier)
+					{
+						nrOfSoldiers++;
+					}
+				}
+
+				if (nrOfWorkers < 2)
+				{
+					for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
+					{
+						if (gamemanager.buildingLists[2][i]->getType() == Bank)
+						{
+							gamemanager.unitLists[2][0]->setResources(gamemanager.unitLists[2][0]->getResources() - 40);
+							summonUnit(gamemanager.buildingLists[2][i]);
+							tempBool = true;
+						}
+					}
+				}
+				if (nrOfWorkers >= 2 && nrOfSoldiers <= 3)
+				{
+					for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
+					{
+						if (gamemanager.buildingLists[2][i]->getType() == Barrack)
+						{
+							gamemanager.unitLists[2][0]->setResources(gamemanager.unitLists[2][0]->getResources() - 40);
+							summonUnit(gamemanager.buildingLists[2][i]);
+							tempBool = true;
+						}
+					}
+				}
 			}
 
 			for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 			{
 				if (gamemanager.unitLists[2][i]->getType() == Worker)
 				{
-					nrOfWorkers++;
 					if (gamemanager.unitLists[2][i]->getUnitOrders().size() == 0) //&& nrOfWorkers < 4)
 					{
 						gather(gamemanager.unitLists[2][i]);

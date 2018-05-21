@@ -11,8 +11,20 @@
 #include "NPC.h"
 enum GAME_STATE
 {
-	MAIN_MENU,START_STATE,LARGE_CIRCLE_STATE, MEDIUM_CIRCLE_STATE, SMALL_CIRCLE_STATE,END_STATE,GAME_OVER_MENU
+	MAIN_MENU,
+	START_STATE,
+	PAUSE_STATE,
+	LARGE_CIRCLE_STATE, 
+	MEDIUM_CIRCLE_STATE, 
+	SMALL_CIRCLE_STATE,
+	END_STATE,
+	GAME_OVER_MENU
 };
+enum RING_STATE
+{
+	FIRST_MOVE, SECOND_MOVE, THIRD_MOVE
+};
+
 class Unit;
 static class GameManager
 {
@@ -44,6 +56,7 @@ public:
 	void update();
 
 	static GAME_STATE gameState;
+	static RING_STATE ringState;
 	GAME_STATE getGameState() { return this->gameState; };
 	static std::vector<std::vector<Unit*>> unitLists;
 	static std::vector<std::vector<Unit*>> buildingLists;

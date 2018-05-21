@@ -68,12 +68,25 @@ void cPathCreator::addTerrain(std::vector<std::vector<VERTEX_POS3UV2T3B3N3>> pos
 		}
 	}
 	int i = 0;
-	blockGrid(DirectX::XMFLOAT3(20, 1, 1));
 	loadBlockMap();
 }
 void cPathCreator::blockGrid(DirectX::XMFLOAT3 pos)
 {
-	//grid[(int)pos.x][(int)pos.z].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z + 1].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z + 2].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z + 3].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z - 1].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z - 2].pathable = PATHABLE_CHECK;
+	grid[pos.x][pos.z - 3].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z + 1].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z + 2].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z + 3].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z - 1].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z - 2].pathable = PATHABLE_CHECK;
+	grid[pos.x + 1][pos.z - 3].pathable = PATHABLE_CHECK;
+
 }
 
 void cPathCreator::loadBlockMap()
@@ -150,191 +163,7 @@ void cPathCreator::loadBlockMap()
 	delete[] bitMapImage_Info;
 	bitMapImage_Info = 0;
 }
-std::vector<Node> cPathCreator::getRestOfPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
-{
-	std::clock_t start;
-	start = std::clock();
 
-	std::vector<std::vector<Node>> tempGrid = grid;
-
-	//DirectX::XMFLOAT3 newGoal = getShortergGoal(startPos, goalPos);
-	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];
-	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
-
-
-	//int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos))))*2;
-	int iteration = 0;
-
-	if (startNode.pathable == NONE_PATHABLE) {
-		startNode.position = goalNode.position;
-		std::vector<Node> resultNodes = std::vector<Node>();
-		resultNodes.push_back(startNode);
-		return resultNodes;
-	}
-
-	if (goalNode.pathable == NONE_PATHABLE) {
-		startNode.position = startNode.position;
-		std::vector<Node> resultNodes = std::vector<Node>();
-		resultNodes.push_back(startNode);
-		return resultNodes;
-	}
-
-
-	//direction help test
-	bool reversePath = false;
-	DirectX::XMVECTOR direction = DirectX::XMVectorSubtract(DirectX::XMVectorSet(goalNode.position.x, goalNode.position.y, goalNode.position.z, 0), DirectX::XMVectorSet(startNode.position.x, startNode.position.y, startNode.position.z, 0));
-	if (DirectX::XMVectorGetW(DirectX::XMVector3Dot(direction, DirectX::XMVectorSet(1, 0, 1, 0)))>EPSILON) {
-		Node temp = goalNode;
-		goalNode = startNode;
-		startNode = temp;
-		reversePath = true;
-	}
-
-
-
-	std::vector<Node> resultNodes = std::vector<Node>();
-	std::vector<Node> openNodes = std::vector<Node>();
-	std::vector<std::vector<Node>> openNodes2D = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
-	std::vector<std::vector<Node>> closedNodes = std::vector<std::vector<Node>>(MAX, std::vector<Node>(MAX));
-	openNodes.push_back(startNode);
-	bool succes = false;
-	Node currentNode = Node();
-	int iterations = 0;
-	Vec3 nullPos = Vec3(0, 0, 0);
-
-
-
-
-	while (openNodes.size() > 0 && succes == false) {
-		iteration++;
-
-
-		Node tempNode = openNodes.at(0);
-		closedNodes[tempNode.position.x][tempNode.position.z] = tempNode;
-		currentNode = tempNode;
-		openNodes.erase(openNodes.begin());
-		openNodes2D[tempNode.position.x][tempNode.position.z].position = nullPos;
-
-		if (tempNode.position == goalNode.position) {
-			succes = true;
-			break;
-		}
-
-		//for each neighbor
-		for (int i = 0; i < 9; i++)
-		{
-			if (i == 5) continue;
-
-			iterations++;
-
-			//neighbor index
-			int x = currentNode.position.x + xArr[i];
-			int z = currentNode.position.z + zArr[i];
-			//std::cout << "x" << x << " z" << z << std::endl;
-
-			bool isViableNeighbor = true;
-			if (tempGrid[x][z].pathable == NONE_PATHABLE) {
-				isViableNeighbor = false;
-
-			}
-			if (tempGrid[x][z].pathable == PATHABLE_CHECK && tempGrid[x][z].position != goalNode.position) {
-				isViableNeighbor = false;
-			}
-
-			if (tempGrid[x][z].position == closedNodes[x][z].position) {
-				isViableNeighbor = false;
-
-			}
-
-
-
-
-			if (isViableNeighbor == true) {
-				bool isInOpenNodes = false;
-				int index = -1;
-
-
-				if (openNodes2D[x][z].position == tempGrid[x][z].position) {
-					isInOpenNodes = true;
-				}
-
-
-				if (isInOpenNodes == false) {
-					tempGrid[x][z].h = manhattan(tempGrid[x][z], goalNode);
-					if (i == 0 || i == 2 || i == 5 || i == 7) {
-						tempGrid[x][z].g = 14 + currentNode.g;
-					}
-					else
-					{
-						tempGrid[x][z].g = 10 + currentNode.g;
-					}
-					tempGrid[x][z].f = tempGrid[x][z].g + tempGrid[x][z].h;
-					tempGrid[x][z].parentX = currentNode.position.x;
-					tempGrid[x][z].parentZ = currentNode.position.z;
-					openNodes.push_back(tempGrid[x][z]);
-					openNodes2D[x][z].position = tempGrid[x][z].position;
-				}
-				else {
-					int tempG = 0;
-					if (i == 0 || i == 2 || i == 5 || i == 7) {
-						tempG = 14 + currentNode.g;
-					}
-					else
-					{
-						tempG = 10 + currentNode.g;
-					}
-					if (tempGrid[x][z].g < tempG) {
-
-						tempGrid[x][z].g = tempG;
-						tempGrid[x][z].f = tempG + tempGrid[x][z].h;
-						tempGrid[x][z].parentX = currentNode.position.x;
-						tempGrid[x][z].parentZ = currentNode.position.z;
-					}
-				}
-
-
-			}
-
-
-		}
-		auto cmp = [](const Node&lhs, const Node&rhs) {return lhs.f < rhs.f; };
-		std::sort(openNodes.begin(), openNodes.end(), cmp);
-	}
-	//Debug.Log("AStar Iterations:", i);
-
-	int gg = 0;
-	if (succes == true) {
-
-		while (currentNode.parentX != -999999999)
-		{
-
-
-			resultNodes.push_back(currentNode);
-			currentNode = tempGrid[currentNode.parentX][currentNode.parentZ];
-
-
-			gg++;
-
-		}
-
-
-	}
-	else {
-		if (reversePath)
-			resultNodes.push_back(startNode);
-		else
-		{
-			resultNodes.push_back(goalNode);
-
-		}
-	}
-
-	if (reversePath) {
-		std::reverse(resultNodes.begin(), resultNodes.end());
-	}
-	Debug.Log("NINELOOP7: ", ((std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000)));
-	return resultNodes;
-}
 std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 goalPos)
 {
 
@@ -342,12 +171,8 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	start = std::clock();
 
 	std::vector<std::vector<Node>> tempGrid = grid;
-
-	DirectX::XMFLOAT3 newGoal = getShortergGoal(startPos, goalPos);
-	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];
-	Node startNode = tempGrid[std::round(newGoal.x)][std::round(newGoal.z)];
-
-	
+	Node goalNode = tempGrid[std::round(startPos.x)][std::round(startPos.z)];  // f r aldrig vara -1. samplar utanf r terrain array
+	Node startNode = tempGrid[std::round(goalPos.x)][std::round(goalPos.z)];
 	//int maxIterationsAllowed = DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&startPos), DirectX::XMLoadFloat3(&goalPos))))*2;
 	int iteration = 0;
 
@@ -518,7 +343,7 @@ std::vector<Node> cPathCreator::getPath(DirectX::XMFLOAT3 startPos, DirectX::XMF
 	if (reversePath) {
 		std::reverse(resultNodes.begin(), resultNodes.end());
 	}
-	Debug.Log("getPath: ", ((std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000)));
+	//Debug.Log("NINELOOP7: ", ((std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000)));
 	return resultNodes;
 }
 

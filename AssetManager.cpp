@@ -628,3 +628,8 @@ unsigned int cAssetManager::GUIDToUnsignedInt(const std::string & guid)
 
 	return guidSize;
 }
+
+std::vector<Texture*> cAssetManager::AllTextures()
+{
+	return this->textures;
+}

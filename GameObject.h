@@ -11,7 +11,9 @@
 #include "MaterialFilter.h"
 //#include "Light.h"
 
-
+enum RayCastOptions {
+	ONLY_BBOX,DETAILED,NONE
+};
 class GameObject
 {
 public:
@@ -32,7 +34,7 @@ public:
     MaterialFilter *materialFilterComponent = nullptr;
     MeshFilter *meshFilterComponent = nullptr;
 	//Light *lightComponent;
-	bool detailedRaycast;
+	RayCastOptions raycastOption;
 	void Destroy();
     void updateMaterialAndMeshFilterPointers();
     void updateHasLight();
@@ -40,7 +42,6 @@ public:
 	void deleteComponent(Component* otherComponent);
     const bool getIsRenderable();
 	DirectX::XMMATRIX calculateWorldMatrix();
-	void uniformWorldMatrix(unsigned int othershaderProgram);
 
 	//inline GameObject* getshared() { return shared}
 

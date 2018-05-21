@@ -64,8 +64,8 @@ void Animator::calculateMatrixPalette()
 	firstFrameIndex = firstFrameIndex % animationclips[currentClipIndex]->nrOfKeyFrames;
 	secondFrameIndex = secondFrameIndex % animationclips[currentClipIndex]->nrOfKeyFrames;
 
-	Debug.Log("Animframe ");
-	Debug.Log(firstFrameIndex);
+	/*Debug.Log("Animframe ");
+	Debug.Log(firstFrameIndex);*/
 
 	//Root
 	std::vector<AnimationFrame>* currentClipFrames = animationclips[currentClipIndex]->getAnimationFrames();

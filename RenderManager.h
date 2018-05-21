@@ -27,7 +27,7 @@ struct MatrixBufferStruct
 
 struct InstanceMatrixStruct
 {
-	DirectX::XMFLOAT4X4 opaqueTransforms[100]{ DirectX::XMFLOAT4X4() };
+	DirectX::XMFLOAT4X4 instanceTransforms[100]{ DirectX::XMFLOAT4X4() };
 	DirectX::XMINT4 unitTag[100]{ DirectX::XMINT4(0,0,0,0) };
 };
 

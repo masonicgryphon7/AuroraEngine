@@ -53,6 +53,7 @@ public:
 	static std::string GUIDToString(unsigned int guid);
 	static unsigned int GUIDToUnsignedInt(const std::string& guid);
 
+	std::vector<Texture*> AllTextures();
 
 private:
 	static std::vector<Texture*> textures;

@@ -23,6 +23,8 @@ protected:
 	CoreEngine* coreEngine;
 	JGUI* jGUI = nullptr;
 
+	GAME_STATE previousState;
+
 	Camera* mc;
 };
 
