@@ -21,6 +21,7 @@ public:
 	Vec3 position;
 	int parentX;
 	int parentZ;
+	
 
 
 private:

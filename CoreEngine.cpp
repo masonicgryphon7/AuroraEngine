@@ -169,7 +169,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 100, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
 		cam = new Camera(HEIGHT, WIDTH, 30, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
@@ -239,7 +239,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 		//
-		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 10, 40, 0));
+		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(150, 30, 150, 0));
 		animatedGO->name = "Animator";
 		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
 		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");

@@ -124,7 +124,7 @@ void GameManager::update()
 			ringState = RING_STATE::FIRST_MOVE;
 			ringOfFire -= 0.02f * Time.getDeltaTime() * gameTime;
 		}
-		if (ringOfFire < 150) {
+		if (ringOfFire < 5) {
 			gameState = GAME_STATE::MEDIUM_CIRCLE_STATE;
 			lavaSpeed = 0.01;
 		}
