@@ -48,11 +48,11 @@ PlayerScript::~PlayerScript()
 
 void PlayerScript::instantiate_Player()
 {
-	GameObject* friendly_Hero = gScene.createEmptyGameObject(DirectX::XMVectorSet(15, 0, 10, 0));
+	GameObject* friendly_Hero = gScene.createEmptyGameObject(DirectX::XMVectorSet(30, 0, 30, 0));
 	friendly_Hero->name = "Hero";
 	friendly_Hero->tag = 1;
-
-	MeshFilter* friendly_hero_meshFilter = new MeshFilter(AssetManager.getMesh("COLLECTOR_Mesh"));
+	Mesh* mesh = AssetManager.getMesh("COLLECTOR_Mesh");
+	MeshFilter* friendly_hero_meshFilter = new MeshFilter(mesh);
 	friendly_Hero->addComponent(friendly_hero_meshFilter);
 	friendly_Hero->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
 	Unit* friendly_unit_hero = new Unit(Hero);

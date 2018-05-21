@@ -171,14 +171,6 @@ void AudioListener::update()
 							playGather();
 							break;
 
-						case Command::Build:
-							playBuild();
-							break;
-
-						case Command::Follow:
-							playFollow();
-							break;
-
 						case Command::Idle:
 						
 							break;

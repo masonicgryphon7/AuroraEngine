@@ -152,7 +152,7 @@ namespace MyLibrary
 		Material* mat_materials;
 	};
 
-	struct LightromFile
+	struct LightFromFile
 	{
 		unsigned int light_nrofLights;
 		Light* light_lights;
