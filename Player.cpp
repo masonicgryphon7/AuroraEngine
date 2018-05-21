@@ -451,7 +451,7 @@ void Player::Update()
 	deviceContext->OMSetRenderTargets(1, &coreEngine->gBackbufferRTV, coreEngine->m_depthStencilView);
 
 	// CLEAR START
-	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	deviceContext->ClearRenderTargetView(coreEngine->gBackbufferRTV, clearColor);
 	deviceContext->ClearDepthStencilView(coreEngine->m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0xFF);
