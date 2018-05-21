@@ -430,6 +430,7 @@ void Unit::takeDamage(int attackPoints)
 
 	if (healthPoints <= 0)
 	{
+		gameObject->raycastOption = RayCastOptions::NONE;
 		gameObject->unitIsAvtive = false;
 		Order tempOrder;
 		tempOrder.command = Die;
@@ -443,6 +444,8 @@ void Unit::takeFireDamage(float attackPoints)
 	this->setHealthPoints(this->getHealthPoints() - attackPoints);
 	if (healthPoints <= 0)
 	{
+
+		gameObject->raycastOption = RayCastOptions::NONE;
 		gameObject->unitIsAvtive = false;
 		Order tempOrder;
 		tempOrder.command = Die;
