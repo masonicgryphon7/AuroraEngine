@@ -164,6 +164,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.AddMesh("Assets/ResourceCenter/FinalSilo1OBJ.obj", AssetManager.getShaderProgram("Vertex.hlsl")); 
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Stairs.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMesh("Assets/FlowersAndBushes4.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Fern.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/LionPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
@@ -185,9 +186,6 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		
 		//Barrack
-
-
-
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
@@ -325,16 +323,18 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 void CoreEngine::addMaterials()
 {
-
-
 	//Terrain Texture.
 	assetManager.addTexture("Assets/Grass-Diffuse.png"); //3
 	assetManager.addTexture("Assets/Grass-Normal.png"); //4
 	assetManager.addTexture("Assets/Grass-RoughMetalAo.png"); //5
 
-	assetManager.addTexture("Assets/Mountain-Diffuse.png"); //6
-	assetManager.addTexture("Assets/Mountain-Normal.png"); //7
-	assetManager.addTexture("Assets/Mountain-RoughMetalAo.png"); //8
+	assetManager.addTexture("Assets/Sand_BaseColor.png"); //3
+	assetManager.addTexture("Assets/Sand_Normal.png"); //4
+	assetManager.addTexture("Assets/Sand_OcclusionRoughnessMetallic.png"); //5
+
+	assetManager.addTexture("Assets/SandStone_BaseColor.png"); //6
+	assetManager.addTexture("Assets/SandStone_Normal.png"); //7
+	assetManager.addTexture("Assets/SandStone_OcclusionRoughnessMetallic.png"); //8
 
 	assetManager.addTexture("Assets/GrassBricks-Diffuse.png"); //9
 	assetManager.addTexture("Assets/GrassBricks-Normal.png"); //10
@@ -344,7 +344,7 @@ void CoreEngine::addMaterials()
 	assetManager.addTexture("Assets/Lava_Normal.png"); //21
 	assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
 
-	assetManager.addTexture("Assets/FinaleIDMAP3.png");
+	assetManager.addTexture("Assets/FinaleIDMAP8.png");
 
 	//Terrain
 	int matXTile = 20;
@@ -355,15 +355,19 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("TerrainMaterial1")->setIsTerrain(true);
 	assetManager.getMaterial("TerrainMaterial1")->setXTile(matXTile);
 	assetManager.getMaterial("TerrainMaterial1")->setYTile(matYTile);
+	assetManager.getMaterial("TerrainMaterial1")->setAlbedo(assetManager.getTexture("Grass-Diffuse")->getTexture());
+	assetManager.getMaterial("TerrainMaterial1")->setNormal(assetManager.getTexture("Grass-Normal")->getTexture());
+	assetManager.getMaterial("TerrainMaterial1")->setAORoughMet(assetManager.getTexture("Grass-RoughMetalAo")->getTexture());
+
 	assetManager.getMaterial("TerrainMaterial1")->setTerrainMaterials(
 
-	assetManager.getTexture("Grass-Diffuse")->getTexture(),
-	assetManager.getTexture("Grass-Normal")->getTexture(),
-	assetManager.getTexture("Grass-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("Sand_BaseColor")->getTexture(),
+	assetManager.getTexture("Sand_Normal")->getTexture(),
+	assetManager.getTexture("Sand_OcclusionRoughnessMetallic")->getTexture(),
 
-	assetManager.getTexture("Mountain-Diffuse")->getTexture(),
-	assetManager.getTexture("Mountain-Normal")->getTexture(),
-	assetManager.getTexture("Mountain-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("SandStone_BaseColor")->getTexture(),
+	assetManager.getTexture("SandStone_Normal")->getTexture(),
+	assetManager.getTexture("GrassBricks-RoughMetalAo")->getTexture(),
 
 	assetManager.getTexture("GrassBricks-Diffuse")->getTexture(),
 	assetManager.getTexture("GrassBricks-Normal")->getTexture(),
@@ -373,7 +377,7 @@ void CoreEngine::addMaterials()
 	assetManager.getTexture("Lava_Normal")->getTexture(),
 	assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 
-	assetManager.getTexture("FinaleIDMAP3")->getTexture()); //USE ID_PART 1
+	assetManager.getTexture("FinaleIDMAP8")->getTexture()); //USE ID_PART 1
 
 
 
@@ -416,6 +420,10 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/Fern_Fern_Normal.png");
 	AssetManager.addTexture("Assets/Fern_Fern_OcclusionRoughnessMetallic.png");
 
+	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_BaseColor.png");
+	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_Normal.png");
+	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_OcclusionRoughnessMetallic.png");
+
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_BaseColor.png");
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_ormal.png");
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_OcclusionRoughnessMetallic.png");
@@ -432,7 +440,7 @@ void CoreEngine::addMaterials()
 	assetManager.AddMaterial("BarracksMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("BarracksMaterial")->setAlbedo(assetManager.getTexture("CryptBarracksFinale1_Barracks_BaseColor")->getTexture());
 	assetManager.getMaterial("BarracksMaterial")->setNormal(assetManager.getTexture("CryptBarracksFinale1_Barracks_Normal")->getTexture());
-	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CrssdwwwssssyptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
 	assetManager.getMaterial("BarracksMaterial")->setTeamIdMap(assetManager.getTexture("CryptBarracksFinale1_Barracks_Emissive")->getTexture());
 
 	//ResoursMaterial
@@ -499,6 +507,12 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("FernMaterial")->setAlbedo(assetManager.getTexture("Fern_Fern_BaseColor")->getTexture());
 	assetManager.getMaterial("FernMaterial")->setNormal(assetManager.getTexture("Fern_Fern_Normal")->getTexture());
 	assetManager.getMaterial("FernMaterial")->setAORoughMet(assetManager.getTexture("Fern_Fern_OcclusionRoughnessMetallic")->getTexture());
+
+	assetManager.AddMaterial("FlowersAndBushesMaterial", assetManager.getShaderProgram("FragmentOpacity.hlsl"));
+	assetManager.getMaterial("FlowersAndBushesMaterial")->setAlpha(true);
+	assetManager.getMaterial("FlowersAndBushesMaterial")->setAlbedo(assetManager.getTexture("FlowersAndBushes1_FlowerGrowth_BaseColor")->getTexture());
+	assetManager.getMaterial("FlowersAndBushesMaterial")->setNormal(assetManager.getTexture("FlowersAndBushes1_FlowerGrowth_Normal")->getTexture());
+	assetManager.getMaterial("FlowersAndBushesMaterial")->setAORoughMet(assetManager.getTexture("FlowersAndBushes1_FlowerGrowth_OcclusionRoughnessMetallic")->getTexture());
 
 	//Lion Pillar Material
 	assetManager.AddMaterial("LionPillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));

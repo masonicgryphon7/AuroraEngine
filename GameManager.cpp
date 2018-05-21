@@ -245,6 +245,17 @@ void GameManager::addBuildings()
 	tree->addComponent(meshFilterTree);
 	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
 
+	//Flowers/Bushes
+	GameObject* FlowersAndBushes = gScene.createEmptyGameObject(DirectX::XMVectorSet(20, 1, 30, 0));
+	Prop* FlowersProp = new Prop();
+	FlowersAndBushes->addComponent(FlowersProp);
+	FlowersAndBushes->name = "FlowersAndBushes";
+	FlowersAndBushes->tag = 0;
+	FlowersAndBushes->raycastOption = RayCastOptions::NONE;
+	MeshFilter* FlowerBushesFilter = new MeshFilter(AssetManager.getMesh("FlowersAndBushes4"));
+	FlowersAndBushes->addComponent(FlowerBushesFilter);
+	FlowersAndBushes->addComponent(new MaterialFilter(AssetManager.getMaterial("FlowersAndBushesMaterial")));
+
 
 	////Stairs
 	GameObject* stair1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(149, 21, 180, 0));
