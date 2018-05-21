@@ -16,7 +16,6 @@
 #include <crtdbg.h>
 #include "PathCreator.h"
 #include <future>
-#include "Prop.h"
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
@@ -165,6 +164,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.AddMesh("Assets/ResourceCenter/FinalSilo1OBJ.obj", AssetManager.getShaderProgram("Vertex.hlsl")); 
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Stairs.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Fern.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/LionPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		//PathCreator.createNodes();
 
@@ -182,36 +183,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//PlayerScript *playerscript = new PlayerScript();
 		//camera->addComponent(playerscript);
 
-		////Tree
-		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
-		Prop* treeProp = new Prop();
-		tree->addComponent(treeProp);
-		tree->name = "Tree";
-		tree->tag = 0;
-		tree->raycastOption = RayCastOptions::NONE;
-		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
-		tree->addComponent(meshFilterTree);
-		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
-
-
-		////Stairs
-		GameObject* stair1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(149, 21, 180, 0));
-		stair1->name = "Stair1";
-		stair1->tag = 0;
-		stair1->raycastOption = RayCastOptions::NONE;
-		MeshFilter* meshFilterStair1 = new MeshFilter(AssetManager.getMesh("Stairs"));
-		stair1->addComponent(meshFilterStair1);
-		stair1->addComponent(new MaterialFilter(AssetManager.getMaterial("StairsMaterial")));
-
-		GameObject* stair2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(151, 21, 114, 0));
-		stair2->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
-		stair2->name = "Stair2";
-		stair2->tag = 0;
-		stair2->raycastOption = RayCastOptions::NONE;
-		MeshFilter* meshFilterStair2 = new MeshFilter(AssetManager.getMesh("Stairs"));
-		stair2->addComponent(meshFilterStair2);
-		stair2->addComponent(new MaterialFilter(AssetManager.getMaterial("StairsMaterial")));
-
+		
 		//Barrack
 
 
@@ -440,6 +412,15 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/Stairs_stairs_Normal.png");
 	AssetManager.addTexture("Assets/Stairs_stairs_OcclusionRoughnessMetallic.png");
 
+	AssetManager.addTexture("Assets/Fern_Fern_BaseColor.png");
+	AssetManager.addTexture("Assets/Fern_Fern_Normal.png");
+	AssetManager.addTexture("Assets/Fern_Fern_OcclusionRoughnessMetallic.png");
+
+	AssetManager.addTexture("Assets/LionPillar_LionPillar_BaseColor.png");
+	AssetManager.addTexture("Assets/LionPillar_LionPillar_ormal.png");
+	AssetManager.addTexture("Assets/LionPillar_LionPillar_OcclusionRoughnessMetallic.png");
+
+
 	//GoldmineMat
 	assetManager.AddMaterial("GoldMineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("GoldMineMaterial")->setAlbedo(assetManager.getTexture("GoldMineResource_BaseColor")->getTexture());
@@ -511,6 +492,19 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("StairsMaterial")->setAlbedo(assetManager.getTexture("Stairs_stairs_BaseColor")->getTexture());
 	assetManager.getMaterial("StairsMaterial")->setNormal(assetManager.getTexture("Stairs_stairs_Normal")->getTexture());
 	assetManager.getMaterial("StairsMaterial")->setAORoughMet(assetManager.getTexture("Stairs_stairs_OcclusionRoughnessMetallic")->getTexture());
+
+	//Fern Material
+	assetManager.AddMaterial("FernMaterial", assetManager.getShaderProgram("FragmentOpacity.hlsl"));
+	assetManager.getMaterial("FernMaterial")->setAlpha(true);
+	assetManager.getMaterial("FernMaterial")->setAlbedo(assetManager.getTexture("Fern_Fern_BaseColor")->getTexture());
+	assetManager.getMaterial("FernMaterial")->setNormal(assetManager.getTexture("Fern_Fern_Normal")->getTexture());
+	assetManager.getMaterial("FernMaterial")->setAORoughMet(assetManager.getTexture("Fern_Fern_OcclusionRoughnessMetallic")->getTexture());
+
+	//Lion Pillar Material
+	assetManager.AddMaterial("LionPillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("LionPillarMaterial")->setAlbedo(assetManager.getTexture("LionPillar_LionPillar_BaseColor")->getTexture());
+	assetManager.getMaterial("LionPillarMaterial")->setNormal(assetManager.getTexture("LionPillar_LionPillar_Normal")->getTexture());
+	assetManager.getMaterial("LionPillarMaterial")->setAORoughMet(assetManager.getTexture("LionPillar_LionPillar_OcclusionRoughnessMetallic")->getTexture());
 
 }
 

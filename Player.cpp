@@ -191,7 +191,7 @@ void Player::Update()
 
 		std::string typeName;
 
-		switch (unit->getType())
+		switch (unit!=nullptr && unit->getType())
 		{
 		case Type::Hero:
 			typeName = "Hero";

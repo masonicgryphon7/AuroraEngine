@@ -9,6 +9,7 @@
 #include "CoreEngine.h"
 #include "Unit.h"
 #include "NPC.h"
+#include "Prop.h"
 enum GAME_STATE
 {
 	MAIN_MENU,
