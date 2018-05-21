@@ -32,7 +32,7 @@ public:
 	GameManager();
 	GameManager(ID3D11Device* gDevice, ID3D11DeviceContext*  gDeviceContext);
 	~GameManager();
-	float ringOfFire;
+	static float ringOfFire;
 	DirectX::XMVECTOR middlePoint = DirectX::XMVectorSet(149, 0.0, 149, 0.0);
 
 	float uvPanning = 0;
