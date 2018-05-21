@@ -168,7 +168,10 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 
 			float time = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
 			//Debug.Log(" after astar time ", time);
-
+			lerpValue += Time.getDeltaTime() * 10;
+			if (lerpValue > 1) {
+				lerpValue = 0;
+			}
 		}
 
 		if (pathNodes.size() > 0) {
@@ -186,27 +189,22 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 			DirectX::XMVECTOR currentToGoal = DirectX::XMVectorSubtract(goalPoint, currentPoint);
 
 
-
-
-
-
-
-
-
 			//	gameObject->transform.setForward(gameObject->transform.getForward());
 			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
 				previousPos =goal;
 				pathNodes.erase(pathNodes.begin());
-
+			
 				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+			
 				lerpValue = 0;
+
 			}
 			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 				previousPos = goal;
 				pathNodes.erase(pathNodes.begin());
+				
 				lerpValue = 0;
 				UnitOrders.erase(UnitOrders.begin());
-
 
 			}
 			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
@@ -244,8 +242,29 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 				gameObject->transform.setRotation(DirectX::XMVectorSet(0, 45, 0, 0));
 
 			}
-
+			if (pathNodes.size() == 0)
+			{
+				//srand(time(NULL));
+				float randNr = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 4)) - 2;
+				float randNr2 = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 4)) - 2;
+				lerpedPos = DirectX::XMVectorSet((DirectX::XMVectorGetX(gameObject->transform.getPosition()) + randNr)\
+					, DirectX::XMVectorGetY(gameObject->transform.getPosition()), (DirectX::XMVectorGetZ(gameObject->transform.getPosition()) + randNr2), 0.0);
+					hasReached = true;
+			}
+			
+			
 		}
+		//if (pathNodes.size() == 0)
+		//{
+		//	srand(time(NULL));
+		//	float randNr = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2)) - 1;
+		//	float randNr2 = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2)) - 1;
+
+		//	DirectX::XMVECTOR offset = DirectX::XMVectorLerp(gameObject->transform.getPosition(), calculateOffsetInPath(gameObject->transform.getPosition(), DirectX::XMVectorSet(randNr, DirectX::XMVectorGetY(gameObject->transform.getPosition()), randNr2, 0.0)), lerpValue);
+		//	//DirectX::XMVECTOR randomOffset = DirectX::XMVectorSet(randNr, DirectX::XMVectorGetY(gameObject->transform.getPosition()), randNr2, 0.0);
+
+		//	gameObject->transform.setPosition(offset);//DirectX::XMVectorAdd(offset, randomOffset));
+		//}
 		else
 		{
 			lerpValue = 0;
@@ -805,6 +824,7 @@ float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR
 
 DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
 {
+	
 	DirectX::XMVECTOR vectorBetween = DirectX::XMVectorSubtract(unitPos, targetPos);
 	DirectX::XMVECTOR normalizedDistance = DirectX::XMVector3Normalize(vectorBetween);
 	return normalizedDistance;
@@ -1110,5 +1130,22 @@ void Unit::update()
 		default:
 			break;
 		}
+		
+		
+		
+	}
+	if (pathNodes.size() == 0 && hasReached == true)
+	{
+		lerpValue += Time.getDeltaTime() * 3;
+		if (lerpValue > 1) {
+			lerpValue = 1;
+			hasReached = false;
+		}
+
+
+		DirectX::XMVECTOR offset = DirectX::XMVectorLerp(gameObject->transform.getPosition(), lerpedPos, lerpValue);
+		//DirectX::XMVECTOR randomOffset = DirectX::XMVectorSet(randNr, DirectX::XMVectorGetY(gameObject->transform.getPosition()), randNr2, 0.0);
+
+		gameObject->transform.setPosition(offset);//DirectX::XMVectorAdd(offset, randomOffset));
 	}
 }

@@ -80,10 +80,12 @@ private:
 	float distance = 0;
 
 	DirectX::XMFLOAT3 goalPos;
+	DirectX::XMVECTOR offsetGoalPos;
 	float lerpValue;
 	std::vector<Node> pathNodes;
 	int count = 0, count2 = 0, count3 = 0;
-
+	bool hasReached = false;
+	DirectX::XMVECTOR lerpedPos;
 public:
 
 
