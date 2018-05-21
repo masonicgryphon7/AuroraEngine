@@ -65,6 +65,7 @@
     <ClCompile Include="JGUI.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="Prop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
@@ -133,6 +134,7 @@
     <ClInclude Include="JGUI.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="Prop.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

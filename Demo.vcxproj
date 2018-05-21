@@ -191,6 +191,7 @@
     <ClInclude Include="JGUI.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="PlayerScript.h" />
+    <ClInclude Include="Prop.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
@@ -263,6 +264,7 @@
     <ClCompile Include="JGUI.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
+    <ClCompile Include="Prop.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
