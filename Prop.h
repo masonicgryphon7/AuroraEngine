@@ -1,7 +1,7 @@
+#pragma once
 #include "GameManager.h"
 #include"Component.h"
 
-#pragma once
 class Prop : public Component
 {
 private:

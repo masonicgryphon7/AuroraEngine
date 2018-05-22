@@ -34,6 +34,7 @@ public:
 
 	int renderIndex = -1;
 
+	ShaderProgram* pixelShader = nullptr;
 private:
 	std::string materialName;
 
@@ -63,7 +64,6 @@ private:
 	ID3D11ShaderResourceView * normal = nullptr;
 	ID3D11ShaderResourceView * AORoughMet = nullptr;
 	ID3D11ShaderResourceView * teamIdMap = nullptr;
-	ShaderProgram* pixelShader = nullptr;
 	ID3D11DeviceContext* gDeviceContext = nullptr;
 	ID3D11Device* gDevice = nullptr;
 

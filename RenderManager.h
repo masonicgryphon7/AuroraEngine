@@ -62,7 +62,6 @@ private:
 
 	std::vector<std::vector<GameObject*>> opaqueDraw;
 	std::vector<GameObject*> translucentDraw;
-	std::vector<Light*> lightsVector;
 	std::vector<Mesh*> meshVector;
 	std::vector<Material*> materialVector;
 	DirectX::XMFLOAT4X4 skeleton[20]{ DirectX::XMFLOAT4X4() };
