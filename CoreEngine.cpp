@@ -443,12 +443,12 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CrssdwwwssssyptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
 	assetManager.getMaterial("BarracksMaterial")->setTeamIdMap(assetManager.getTexture("CryptBarracksFinale1_Barracks_Emissive")->getTexture());
 
-	//ResoursMaterial
-	assetManager.AddMaterial("ResoursMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("ResoursMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
-	assetManager.getMaterial("ResoursMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
-	assetManager.getMaterial("ResoursMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
-	assetManager.getMaterial("ResoursMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
+	//ResourceMaterial
+	assetManager.AddMaterial("ResourceMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("ResourceMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
 
 
 	//Unit Material
