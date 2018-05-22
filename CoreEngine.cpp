@@ -1184,7 +1184,6 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 	if (FAILED(result))
 		Console.error("Error Enable Blend State");
 
-	float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	UINT sampleMask = 0xffffffff;
 	gDeviceContext->OMSetBlendState(m_alphaEnableBlendState, 0, sampleMask);
 	//// Modify the description to create an alpha disabled blend state description.
