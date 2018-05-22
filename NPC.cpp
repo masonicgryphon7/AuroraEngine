@@ -58,16 +58,16 @@ void NPC::update()
 					{
 						takeOverBuilding(gamemanager.unitLists[2][0]);
 					}
-					else if (gamemanager.unitLists[2][0]->getResources() < 100)
-					{
-						gather(gamemanager.unitLists[2][0]);
-					}
 				}
 			}
-			if (gamemanager.unitLists[2][0]->getUnitOrdersSize() > 0 && gamemanager.unitLists[2][0]->getResources() >= 100)
+			
+			if (gamemanager.unitLists[2][0]->getUnitOrders().size() == 0 && gamemanager.unitLists[2][0]->getResources() < 100)
+			{
+				gather(gamemanager.unitLists[2][0]);
+			}
+			else if (gamemanager.unitLists[2][0]->getUnitOrders().at(0).command == Command::HeroGather && gamemanager.unitLists[2][0]->getResources() >= 100)
 			{
 				gamemanager.unitLists[2][0]->clearUnitOrder();
-				gamemanager.unitLists[2][0]->setResources(0);
 			}
 
 			if (gamemanager.unitLists[2][0]->getResources() > 40 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
@@ -125,46 +125,6 @@ void NPC::update()
 			}
 		}
 	}
-
-
-
-	/*for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
-	{
-		if (gamemanager.unitLists[2][i]->getHealthPoints() <= 0 && gamemanager.unitLists[2][i]->getUnitOrders().size() <= 0)
-		{
-			//gamemanager.unitLists[2][i]->dieCommand();
-			gamemanager.unitLists[2][i]->destroyUnit();
-			gamemanager.unitLists[2].erase(gamemanager.unitLists[2].begin() + i);
-		}
-	}
-
-	if (gamemanager.unitLists[2][0]->getResources() >= 100 && gamemanager.unitLists[2][0]->getUnitCommand() == HeroGather)
-	{
-		wantsToAttackHero = true;
-		gamemanager.unitLists[2][0]->clearUnitOrder();
-	}
-		
-	for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
-	{
-		if (gamemanager.unitLists[2][i]->getUnitOrdersSize() < 1)
-		{
-
-			
-			if (wantsToAttackHero)
-			{
-				attack(gamemanager.unitLists[2][i]);
-			}
-			else
-			{
-				standAbout(gamemanager.unitLists[2][i]);
-
-			}
-		}
-	}*/
-	
-
-	//CODE GOES HERE
-
 }
 
 void NPC::instantiate_NPC()
@@ -288,7 +248,7 @@ void NPC::takeOverBuilding(Unit * unitToUse)
 	{
 		for (int i = 0; i < gamemanager.buildingLists[j].size(); i++)
 		{
-			if (gamemanager.buildingLists[j][i]->getType() != GoldMine) //Bank
+			if (gamemanager.buildingLists[j][i]->getType() != GoldMine)
 			{
 				int temp = unitToUse->getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[j][i]->gameObject->transform.getPosition());
 				if (temp < findClosest)

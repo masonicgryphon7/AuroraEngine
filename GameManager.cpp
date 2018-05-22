@@ -118,7 +118,7 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 12)
+		if (gameTime >= 120)
 		{
 			//Debug.Log(ringOfFire); 
 			ringState = RING_STATE::FIRST_MOVE;
