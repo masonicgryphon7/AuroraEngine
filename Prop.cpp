@@ -41,7 +41,7 @@ float Prop::getDistanceBetweenProps(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR
 
 void Prop::update()
 {
-	distance = getDistanceBetweenProps(this->gameObject->transform.getPosition(), DirectX::XMVectorSet(150.0, 0.0, 150.0, 0.0));
+	distance = getDistanceBetweenProps(this->gameObject->transform.getPosition(), DirectX::XMVectorSet(149.0, 0.0, 149.0, 0.0));
 
 	if (distance > gamemanager.ringOfFire)
 	{
