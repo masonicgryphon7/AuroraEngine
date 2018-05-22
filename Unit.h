@@ -128,7 +128,7 @@ public:
 	void SecondMoveCommand(DirectX::XMVECTOR *goalPos);
 	void attackCommand(Unit* targetedUnit);
 	void attackEnemy();
-	void takeDamage(int attackPoints);
+	void takeDamage(int attackPoints, Unit* attackedBy);
 	void takeFireDamage(float attackPoints);
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);

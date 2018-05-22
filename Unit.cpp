@@ -394,7 +394,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 				if (actionTime > 1)
 				{
 					//attackEnemy();
-					targetedUnit->takeDamage(this->getAttackPoints());
+					targetedUnit->takeDamage(this->getAttackPoints(), gameObject->getComponent<Unit>());
 					//Debug.Log("Enemy Hit!");
 					actionTime = 0;
 				}
@@ -423,10 +423,19 @@ void Unit::attackEnemy()
 	//Debug.Log("Attacking.");
 }
 
-void Unit::takeDamage(int attackPoints)
+void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 {
 	if(attackPoints > this->getDefencePoints())
 		this->setHealthPoints(this->getHealthPoints() - (attackPoints - this->getDefencePoints()));
+
+	if (this->UnitOrders.size() == 0)
+	{
+		Order temporder;
+		temporder.point = attackedBy->gameObject->transform.getPosition();
+		temporder.transform = &attackedBy->gameObject->transform;
+		temporder.command = Command::Attack;
+		UnitOrders.push_back(temporder);
+	}
 
 	if (healthPoints <= 0)
 	{
