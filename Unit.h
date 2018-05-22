@@ -99,7 +99,7 @@ public:
 	Command getUnitCommand();
 
 	void clearUnitOrder() { UnitOrders.erase(UnitOrders.begin()); };
-
+	void setUnitOrder(Order newOrder);
 	int getUnitOrdersSize() { return this->UnitOrders.size(); };
 
 	int getResources() { return this->Resources; };

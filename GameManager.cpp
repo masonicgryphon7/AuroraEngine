@@ -116,6 +116,7 @@ void GameManager::update()
 		break;
 	case START_STATE:
 		gameState = LARGE_CIRCLE_STATE;
+		ringState = NO_MOVE;
 		break;
 	case LARGE_CIRCLE_STATE:
 		if (gameTime >= 12)
@@ -126,6 +127,7 @@ void GameManager::update()
 		}
 		if (ringOfFire < 150) {
 			gameState = GAME_STATE::MEDIUM_CIRCLE_STATE;
+			ringState = RING_STATE::NO_MOVE;
 			lavaSpeed = 0.01;
 		}
 		dmgRing();
@@ -141,6 +143,7 @@ void GameManager::update()
 		}
 		if (ringOfFire < 80) {
 			gameState = GAME_STATE::SMALL_CIRCLE_STATE;
+			ringState = RING_STATE::NO_MOVE;
 			lavaSpeed = 0.01;
 		}
 		dmgRing();

@@ -146,6 +146,15 @@ Command Unit::getUnitCommand()
 	};
 }
 
+void Unit::setUnitOrder(Order newOrder)
+{
+	if (this->UnitOrders.size() > 0)
+	{
+		this->clearUnitOrder();
+	}
+	this->UnitOrders.push_back(newOrder);
+}
+
 void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 {
 	if (gameObject->unitIsAvtive == true)
@@ -688,35 +697,29 @@ void Unit::summonWorkerCommand()
 	{
 		int temp = 0;
 		Unit* temp2;
-		if (this->gameObject->tag == 1)
-		{
-			temp = gamemanager.unitLists[1][0]->getResources();
-			temp2 = gamemanager.unitLists[1][0];
-		}
-		if (this->gameObject->tag == 2)
-		{
-			temp = gamemanager.unitLists[2][0]->getResources();
-			temp2 = gamemanager.unitLists[2][0];
-		}
+		
+		temp = gamemanager.unitLists[gameObject->tag][0]->getResources();
+		temp2 = gamemanager.unitLists[gameObject->tag][0];
+
 		if (temp > 40)
 		{
-			GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
-			soldier->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
-			soldier->tag = gameObject->tag;
-			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("PIRATE"));
-			soldier->addComponent(meshFilter);
-			soldier->addComponent(new MaterialFilter(AssetManager.getMaterial("SoldierMaterial")));
-			Unit *unitSoldier = new Unit(Soldier);
-			unitSoldier->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
-			soldier->addComponent(unitSoldier);
-			//playerScript->friendlyUnits.push_back(unitSoldier);
-			unitSoldier->setPlayerScript(playerScript);
-			gamemanager.unitLists[gameObject->tag].push_back(unitSoldier);
+			GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+			worker->name = "worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
+			worker->tag = gameObject->tag;
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
+			worker->addComponent(meshFilter);
+			worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+			Unit *unitworker = new Unit(Worker);
+			unitworker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+			worker->addComponent(unitworker);
+			//playerScript->friendlyUnits.push_back(unitworker);
+			unitworker->setPlayerScript(playerScript);
+			gamemanager.unitLists[gameObject->tag].push_back(unitworker);
 
 			Order tempOrder;
 			tempOrder.command = Move;
 			tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
-			unitSoldier->getUnitOrdersPointer()->push_back(tempOrder);
+			unitworker->getUnitOrdersPointer()->push_back(tempOrder);
 
 			temp2->setResources(temp - 60);
 		}
@@ -758,16 +761,10 @@ void Unit::summonSoldierCommand()
 	{
 		int temp = 0;
 		Unit* temp2;
-		if (this->gameObject->tag == 1)
-		{
-			temp = gamemanager.unitLists[1][0]->getResources();
-			temp2 = gamemanager.unitLists[1][0];
-		}
-		if (this->gameObject->tag == 2)
-		{
-			temp = gamemanager.unitLists[2][0]->getResources();
-			temp2 = gamemanager.unitLists[2][0];
-		}
+
+		temp = gamemanager.unitLists[gameObject->tag][0]->getResources();
+		temp2 = gamemanager.unitLists[gameObject->tag][0];
+		
 		if (temp > 40)
 		{
 			GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
@@ -788,6 +785,8 @@ void Unit::summonSoldierCommand()
 			tempOrder.command = Move;
 			tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
 			unitSoldier->getUnitOrdersPointer()->push_back(tempOrder);
+			
+			temp2->setResources(temp - 60);
 		}
 	}
 }

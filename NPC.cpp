@@ -40,7 +40,7 @@ void NPC::update()
 					}
 				}
 
-				if (nrOfSoldiers >= 3 && nrOfSoldiers > gamemanager.unitLists[1].size())
+				if (nrOfSoldiers >= 10 && nrOfSoldiers > gamemanager.unitLists[1].size())
 				{
 					attack(gamemanager.unitLists[2][0]);
 
@@ -61,16 +61,16 @@ void NPC::update()
 				}
 			}
 			
-			if (gamemanager.unitLists[2][0]->getUnitOrders().size() == 0 && gamemanager.unitLists[2][0]->getResources() < 100)
+			if (gamemanager.unitLists[2][0]->getUnitOrders().size() == 0 && gamemanager.unitLists[2][0]->getResources() < 200)
 			{
 				gather(gamemanager.unitLists[2][0]);
 			}
-			else if (gamemanager.unitLists[2][0]->getUnitOrders().at(0).command == Command::HeroGather && gamemanager.unitLists[2][0]->getResources() >= 100)
+			else if (gamemanager.unitLists[2][0]->getUnitOrders().size() > 0 && gamemanager.unitLists[2][0]->getUnitOrders().at(0).command == Command::HeroGather && gamemanager.unitLists[2][0]->getResources() >= 200)
 			{
 				gamemanager.unitLists[2][0]->clearUnitOrder();
 			}
 
-			if (gamemanager.unitLists[2][0]->getResources() > 40 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
+			if (gamemanager.unitLists[2][0]->getResources() > 60 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
 			{
 				int nrOfWorkers = 0;
 				int nrOfSoldiers = 0;
@@ -87,14 +87,15 @@ void NPC::update()
 					}
 				}
 
-				if (nrOfWorkers < 2)
+				if (nrOfWorkers < 5)
 				{
 					for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
 					{
 						if (gamemanager.buildingLists[2][i]->getType() == Bank)
 						{
 							summonUnit(gamemanager.buildingLists[2][i]);
-							tempBool = true;
+							gather(gamemanager.unitLists[2][gamemanager.unitLists[2].size()-1]);
+							//tempBool = true;
 						}
 					}
 				}
@@ -105,30 +106,64 @@ void NPC::update()
 						if (gamemanager.buildingLists[2][i]->getType() == Barrack)
 						{
 							summonUnit(gamemanager.buildingLists[2][i]);
-							tempBool = true;
+							//tempBool = true;
 						}
 					}
 				}
 			}
 
-			for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
-			{
-				if (gamemanager.unitLists[2][i]->getType() == Worker)
-				{
-					if (gamemanager.unitLists[2][i]->getUnitOrders().size() == 0) //&& nrOfWorkers < 4)
-					{
-						gather(gamemanager.unitLists[2][i]);
-					}
-				}
-			}
+			//for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+			//{
+			//	if (gamemanager.unitLists[2][i]->getType() == Worker)
+			//	{
+			//		if (gamemanager.unitLists[2][i]->getUnitOrders().size() == 0) //&& nrOfWorkers < 4)
+			//		{
+			//			gather(gamemanager.unitLists[2][i]);
+			//		}
+			//	}
+			//}
 
-			if (gamemanager.ringState == RING_STATE::FIRST_MOVE)
+			if (gamemanager.ringState == RING_STATE::FIRST_MOVE)//&& distanceToMiddle > 150
 			{
 				for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 				{
 					float distanceToMiddle = gamemanager.unitLists[2][i]->getDistanceBetweenUnits(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint);
+
+					if (distanceToMiddle > gamemanager.ringOfFire - 15)
+					{
+						DirectX::XMVECTOR pointInsideRing = DirectX::XMVectorLerp(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint, 0.2);
+						//RaycastHit hit;
+						//hit.point = pointInsideRing;
+						//gamemanager.unitLists[2][i]->ReceiveOrder(hit, gamemanager.unitLists[2][i]->gameObject->tag);
+						Order tempOrder;
+						tempOrder.point = pointInsideRing;
+						tempOrder.command = Move;
+
+						gamemanager.unitLists[2][i]->setUnitOrder(tempOrder);
+					}
 				}
 			}
+
+			//for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+			//{
+			//	float distanceToMiddle = gamemanager.unitLists[2][i]->getDistanceBetweenUnits(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint);
+			//	
+
+			//	if (gamemanager.ringState == RING_STATE::FIRST_MOVE && distanceToMiddle > 80)
+			//	{
+			//		if (gamemanager.unitLists[2][i]->getType() == Worker)
+			//		{
+
+			//		}
+			//	}
+			//	if (gamemanager.ringState == RING_STATE::FIRST_MOVE && distanceToMiddle > 28)
+			//	{
+			//		if (gamemanager.unitLists[2][i]->getType() == Worker)
+			//		{
+
+			//		}
+			//	}
+			//}
 		}
 	}
 }
