@@ -65,19 +65,7 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 			//Seperate translucent objects
 			translucentDraw.push_back(objectsToRender[0][i]);
 		}
-		else {
 
-			if (temp->renderIndex == -1) {
-				objectsToRender[0][i]->instanceIndex = instanceIndex;
-				temp->renderIndex = instanceIndex;
-				instanceIndex++;
-				materialVector.push_back(temp);
-			}
-			else {
-				objectsToRender[0][i]->instanceIndex = temp->renderIndex;
-
-			}
-		}
 	}
 
 	//Create instance groups
