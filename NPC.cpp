@@ -93,7 +93,6 @@ void NPC::update()
 					{
 						if (gamemanager.buildingLists[2][i]->getType() == Bank)
 						{
-							gamemanager.unitLists[2][0]->setResources(gamemanager.unitLists[2][0]->getResources() - 40);
 							summonUnit(gamemanager.buildingLists[2][i]);
 							tempBool = true;
 						}
@@ -105,7 +104,6 @@ void NPC::update()
 					{
 						if (gamemanager.buildingLists[2][i]->getType() == Barrack)
 						{
-							gamemanager.unitLists[2][0]->setResources(gamemanager.unitLists[2][0]->getResources() - 40);
 							summonUnit(gamemanager.buildingLists[2][i]);
 							tempBool = true;
 						}
@@ -121,6 +119,14 @@ void NPC::update()
 					{
 						gather(gamemanager.unitLists[2][i]);
 					}
+				}
+			}
+
+			if (gamemanager.ringState == RING_STATE::FIRST_MOVE)
+			{
+				for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+				{
+					float distanceToMiddle = gamemanager.unitLists[2][i]->getDistanceBetweenUnits(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint);
 				}
 			}
 		}

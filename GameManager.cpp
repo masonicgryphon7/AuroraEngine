@@ -118,7 +118,7 @@ void GameManager::update()
 		gameState = LARGE_CIRCLE_STATE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 12)
 		{
 			//Debug.Log(ringOfFire); 
 			ringState = RING_STATE::FIRST_MOVE;
@@ -526,7 +526,7 @@ void GameManager::addBuildings()
 	bankGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("FinalSilo1OBJ"));
 	bankGameObject->addComponent(meshFilter2);
-	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResoursMaterial")));
+	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResourceMaterial")));
 	Unit *bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
@@ -541,7 +541,7 @@ void GameManager::addBuildings()
 	bankGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("FinalSilo1OBJ"));
 	bankGameObject->addComponent(meshFilter2);
-	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResoursMaterial")));
+	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResourceMaterial")));
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
@@ -556,7 +556,7 @@ void GameManager::addBuildings()
 	bankGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("FinalSilo1OBJ"));
 	bankGameObject->addComponent(meshFilter2);
-	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResoursMaterial")));
+	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResourceMaterial")));
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
@@ -571,7 +571,7 @@ void GameManager::addBuildings()
 	bankGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("FinalSilo1OBJ"));
 	bankGameObject->addComponent(meshFilter2);
-	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResoursMaterial")));
+	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResourceMaterial")));
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
@@ -588,7 +588,7 @@ void GameManager::addBuildings()
 	bankGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("FinalSilo1OBJ"));
 	bankGameObject->addComponent(meshFilter2);
-	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResoursMaterial")));
+	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResourceMaterial")));
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
@@ -603,7 +603,7 @@ void GameManager::addBuildings()
 	bankGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("FinalSilo1OBJ"));
 	bankGameObject->addComponent(meshFilter2);
-	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResoursMaterial")));
+	bankGameObject->addComponent(new MaterialFilter(AssetManager.getMaterial("ResourceMaterial")));
 	bank = new Unit(Bank);
 	bankGameObject->addComponent(bank);
 	gamemanager.buildingLists[bankGameObject->tag].push_back(bank);
