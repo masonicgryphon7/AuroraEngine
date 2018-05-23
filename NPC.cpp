@@ -112,6 +112,7 @@ void NPC::update()
 				}
 			}
 
+			
 
 			if (gamemanager.ringState == RING_STATE::MOVE)//&& distanceToMiddle > 150
 			{
@@ -119,7 +120,7 @@ void NPC::update()
 				{
 					float distanceToMiddle = gamemanager.unitLists[2][i]->getDistanceBetweenUnits(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint);
 
-					if (distanceToMiddle > gamemanager.ringOfFire - 15)
+					if (distanceToMiddle > gamemanager.ringOfFire - 10)
 					{
 						DirectX::XMVECTOR pointInsideRing = DirectX::XMVectorLerp(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint, 0.1);
 						Order tempOrder;
@@ -183,7 +184,7 @@ void NPC::gather(Unit* unitToUse)
 
 	for (int i = 0; i < gamemanager.buildingLists[0].size(); i++)
 	{
-		if (gamemanager.buildingLists[0][i]->getType() == GoldMine && gamemanager.buildingLists[0][i]->gameObject->isActive == true)
+		if (gamemanager.buildingLists[0][i]->getType() == GoldMine && gamemanager.buildingLists[0][i]->gameObject->unitIsAvtive == true) // || gamemanager.buildingLists[2][i]->getType() == Bank && gamemanager.buildingLists[0][i]->getResources() > 100 && gamemanager.buildingLists[0][i]->gameObject->isActive == true)
 		{
 			int temp = unitToUse->getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[0][i]->gameObject->transform.getPosition());
 			if (temp < findClosest)
