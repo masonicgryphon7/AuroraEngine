@@ -737,7 +737,7 @@ void Unit::convertToSoldierCommand(Unit* targetedUnit)
 		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 		{
 			gameObject->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
-			gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("PIRATE"));
+			gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("Soldier1"));
 			gameObject->getComponent<MaterialFilter>()->setMaterialFilter(AssetManager.getMaterial("SoldierMaterial"));
 			gameObject->getComponent<Unit>()->type = Soldier;
 			gameObject->getComponent<Unit>()->healthPoints = 20;
@@ -770,7 +770,7 @@ void Unit::summonSoldierCommand()
 			GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 			soldier->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 			soldier->tag = gameObject->tag;
-			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("PIRATE"));
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Soldier1"));
 			soldier->addComponent(meshFilter);
 			soldier->addComponent(new MaterialFilter(AssetManager.getMaterial("SoldierMaterial")));
 			Unit *unitSoldier = new Unit(Soldier);
