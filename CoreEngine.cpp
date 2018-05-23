@@ -167,6 +167,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMesh("Assets/FlowersAndBushes4.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Fern.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/LionPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Worker/Worker.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+
 
 		//PathCreator.createNodes();
 
@@ -428,6 +430,19 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_ormal.png");
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_OcclusionRoughnessMetallic.png");
 
+	//Worker
+	AssetManager.addTexture("Assets/Worker/Worker_BaseColor.png");
+	AssetManager.addTexture("Assets/Worker/Worker_Id.png");
+	AssetManager.addTexture("Assets/Worker/Worker_Normal.png");
+	AssetManager.addTexture("Assets/Worker/Worker_OcclusionRoughnessMetallic.png");
+
+	assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("Worker_BaseColor")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("Worker_Normal")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("Worker_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setTeamIdMap(assetManager.getTexture("Worker_Id")->getTexture());
+
+
 
 	//GoldmineMat
 	assetManager.AddMaterial("GoldMineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -452,10 +467,10 @@ void CoreEngine::addMaterials()
 
 
 	//Unit Material
-	assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
-	assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
-	assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+	//assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	//assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
+	//assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
+	//assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
 
 	//Soldier material
 	assetManager.AddMaterial("SoldierMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
