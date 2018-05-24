@@ -162,11 +162,6 @@ void AudioListener::update()
 							playMove(multiPlay);
 							break;
 
-						case Command::Attack:
-							playAttack();
-							playHurt();
-							break;
-
 						case Command::Gather:
 							playGather();
 							break;

@@ -528,7 +528,7 @@ void GameManager::addBuildings()
 	j = 234;
 	i = (300 - i);
 	j = (300 - j);
-	GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+5, j, 0));
 	Prop* treeProp = new Prop();
 	tree->addComponent(treeProp);
 	tree->name = "Tree";
@@ -538,6 +538,75 @@ void GameManager::addBuildings()
 	tree->addComponent(meshFilterTree);
 	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
 
+	i = 98;
+	j = 210;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+	i = 198;
+	j = 96;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+	i = 181;
+	j = 100;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+	i = 80;
+	j = 98;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+	i = 133;
+	j = 166;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+5, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
 
 	//Flowers/Bushes
 	i = 210;
@@ -554,6 +623,62 @@ void GameManager::addBuildings()
 	FlowersAndBushes->addComponent(FlowerBushesFilter);
 	FlowersAndBushes->addComponent(new MaterialFilter(AssetManager.getMaterial("FlowersAndBushesMaterial")));
 
+
+	i = 110;
+	j = 136;
+	i = (300 - i);
+	j = (300 - j);
+	FlowersAndBushes = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+1, j, 0));
+	FlowersProp = new Prop();
+	FlowersAndBushes->addComponent(FlowersProp);
+	FlowersAndBushes->name = "FlowersAndBushes";
+	FlowersAndBushes->tag = 0;
+	FlowersAndBushes->raycastOption = RayCastOptions::NONE;
+	FlowerBushesFilter = new MeshFilter(AssetManager.getMesh("FlowersAndBushes4"));
+	FlowersAndBushes->addComponent(FlowerBushesFilter);
+	FlowersAndBushes->addComponent(new MaterialFilter(AssetManager.getMaterial("FlowersAndBushesMaterial")));
+
+	i = 130;
+	j = 216;
+	i = (300 - i);
+	j = (300 - j);
+	FlowersAndBushes = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+1, j, 0));
+	FlowersProp = new Prop();
+	FlowersAndBushes->addComponent(FlowersProp);
+	FlowersAndBushes->name = "FlowersAndBushes";
+	FlowersAndBushes->tag = 0;
+	FlowersAndBushes->raycastOption = RayCastOptions::NONE;
+	FlowerBushesFilter = new MeshFilter(AssetManager.getMesh("FlowersAndBushes4"));
+	FlowersAndBushes->addComponent(FlowerBushesFilter);
+	FlowersAndBushes->addComponent(new MaterialFilter(AssetManager.getMaterial("FlowersAndBushesMaterial")));
+
+	i = 170;
+	j = 136;
+	i = (300 - i);
+	j = (300 - j);
+	FlowersAndBushes = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+1, j, 0));
+	FlowersProp = new Prop();
+	FlowersAndBushes->addComponent(FlowersProp);
+	FlowersAndBushes->name = "FlowersAndBushes";
+	FlowersAndBushes->tag = 0;
+	FlowersAndBushes->raycastOption = RayCastOptions::NONE;
+	FlowerBushesFilter = new MeshFilter(AssetManager.getMesh("FlowersAndBushes4"));
+	FlowersAndBushes->addComponent(FlowerBushesFilter);
+	FlowersAndBushes->addComponent(new MaterialFilter(AssetManager.getMaterial("FlowersAndBushesMaterial")));
+
+	i = 110;
+	j = 206;
+	i = (300 - i);
+	j = (300 - j);
+	FlowersAndBushes = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j+1, 0));
+	FlowersProp = new Prop();
+	FlowersAndBushes->addComponent(FlowersProp);
+	FlowersAndBushes->name = "FlowersAndBushes";
+	FlowersAndBushes->tag = 0;
+	FlowersAndBushes->raycastOption = RayCastOptions::NONE;
+	FlowerBushesFilter = new MeshFilter(AssetManager.getMesh("FlowersAndBushes4"));
+	FlowersAndBushes->addComponent(FlowerBushesFilter);
+	FlowersAndBushes->addComponent(new MaterialFilter(AssetManager.getMaterial("FlowersAndBushesMaterial")));
 
 	////Stairs
 	//left
@@ -635,9 +760,85 @@ void GameManager::addBuildings()
 	fern1->addComponent(meshFilterfern1);
 	fern1->addComponent(new MaterialFilter(AssetManager.getMaterial("FernMaterial")));
 
+	i = 238;
+	j = 264;
+	i = (300 - i);
+	j = (300 - j);
+	fern1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	fernProp1 = new Prop();
+	fern1->addComponent(fernProp1);
+	fern1->transform.setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+	fern1->name = "fern1";
+	fern1->tag = 0;
+	fern1->raycastOption = RayCastOptions::NONE;
+	meshFilterfern1 = new MeshFilter(AssetManager.getMesh("Fern"));
+	fern1->addComponent(meshFilterfern1);
+	fern1->addComponent(new MaterialFilter(AssetManager.getMaterial("FernMaterial")));
+
+	i = 238;
+	j = 164;
+	i = (300 - i);
+	j = (300 - j);
+	fern1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	fernProp1 = new Prop();
+	fern1->addComponent(fernProp1);
+	fern1->transform.setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+	fern1->name = "fern1";
+	fern1->tag = 0;
+	fern1->raycastOption = RayCastOptions::NONE;
+	meshFilterfern1 = new MeshFilter(AssetManager.getMesh("Fern"));
+	fern1->addComponent(meshFilterfern1);
+	fern1->addComponent(new MaterialFilter(AssetManager.getMaterial("FernMaterial")));
+
+	i = 138;
+	j = 264;
+	i = (300 - i);
+	j = (300 - j);
+	fern1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	fernProp1 = new Prop();
+	fern1->addComponent(fernProp1);
+	fern1->transform.setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+	fern1->name = "fern1";
+	fern1->tag = 0;
+	fern1->raycastOption = RayCastOptions::NONE;
+	meshFilterfern1 = new MeshFilter(AssetManager.getMesh("Fern"));
+	fern1->addComponent(meshFilterfern1);
+	fern1->addComponent(new MaterialFilter(AssetManager.getMaterial("FernMaterial")));
+
+	i = 228;
+	j = 54;
+	i = (300 - i);
+	j = (300 - j);
+	fern1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	fernProp1 = new Prop();
+	fern1->addComponent(fernProp1);
+	fern1->transform.setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+	fern1->name = "fern1";
+	fern1->tag = 0;
+	fern1->raycastOption = RayCastOptions::NONE;
+	meshFilterfern1 = new MeshFilter(AssetManager.getMesh("Fern"));
+	fern1->addComponent(meshFilterfern1);
+	fern1->addComponent(new MaterialFilter(AssetManager.getMaterial("FernMaterial")));
+
+	i = 38;
+	j = 64;
+	i = (300 - i);
+	j = (300 - j);
+	fern1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	fernProp1 = new Prop();
+	fern1->addComponent(fernProp1);
+	fern1->transform.setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+	fern1->name = "fern1";
+	fern1->tag = 0;
+	fern1->raycastOption = RayCastOptions::NONE;
+	meshFilterfern1 = new MeshFilter(AssetManager.getMesh("Fern"));
+	fern1->addComponent(meshFilterfern1);
+	fern1->addComponent(new MaterialFilter(AssetManager.getMaterial("FernMaterial")));
+
 	//Lion Pillars
 	i = 192;
-	j = 252;
+	j = 222;
+	i = (300 - i);
 	j = (300 - j);
 	GameObject* lionPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	Prop* lionPillarProp1 = new Prop();
@@ -650,8 +851,202 @@ void GameManager::addBuildings()
 	lionPillar1->addComponent(meshFilterlionPillar1);
 	lionPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("LionPillarMaterial")));
 
+	i = 52;
+	j = 142;
+	i = (300 - i);
+	j = (300 - j);
+	lionPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	lionPillarProp1 = new Prop();
+	lionPillar1->addComponent(lionPillarProp1);
+	lionPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	lionPillar1->name = "lionPillar1";
+	lionPillar1->tag = 0;
+	lionPillar1->raycastOption = RayCastOptions::NONE;
+	meshFilterlionPillar1 = new MeshFilter(AssetManager.getMesh("LionPillar"));
+	lionPillar1->addComponent(meshFilterlionPillar1);
+	lionPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("LionPillarMaterial")));
 
+	i = 192;
+	j = 192;
+	i = (300 - i);
+	j = (300 - j);
+	lionPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	lionPillarProp1 = new Prop();
+	lionPillar1->addComponent(lionPillarProp1);
+	lionPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	lionPillar1->name = "lionPillar1";
+	lionPillar1->tag = 0;
+	lionPillar1->raycastOption = RayCastOptions::NONE;
+	meshFilterlionPillar1 = new MeshFilter(AssetManager.getMesh("LionPillar"));
+	lionPillar1->addComponent(meshFilterlionPillar1);
+	lionPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("LionPillarMaterial")));
 
+	i = 152;
+	j = 52;
+	i = (300 - i);
+	j = (300 - j);
+	lionPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	lionPillarProp1 = new Prop();
+	lionPillar1->addComponent(lionPillarProp1);
+	lionPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	lionPillar1->name = "lionPillar1";
+	lionPillar1->tag = 0;
+	lionPillar1->raycastOption = RayCastOptions::NONE;
+	meshFilterlionPillar1 = new MeshFilter(AssetManager.getMesh("LionPillar"));
+	lionPillar1->addComponent(meshFilterlionPillar1);
+	lionPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("LionPillarMaterial")));
+
+	i = 52;
+	j = 252;
+	i = (300 - i);
+	j = (300 - j);
+	lionPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	lionPillarProp1 = new Prop();
+	lionPillar1->addComponent(lionPillarProp1);
+	lionPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	lionPillar1->name = "lionPillar1";
+	lionPillar1->tag = 0;
+	lionPillar1->raycastOption = RayCastOptions::NONE;
+	meshFilterlionPillar1 = new MeshFilter(AssetManager.getMesh("LionPillar"));
+	lionPillar1->addComponent(meshFilterlionPillar1);
+	lionPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("LionPillarMaterial")));
+
+	//Ruined Pillars
+	i = 120;
+	j = 120;
+	i = (300 - i);
+	j = (300 - j);
+	GameObject* ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	Prop* ruinedPillarProp1 = new Prop();
+	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->tag = 0;
+	ruinedPillar1->raycastOption = RayCastOptions::NONE;
+	MeshFilter* meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));
+	ruinedPillar1->addComponent(meshFilterRuinedPillar1);
+	ruinedPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("RuinedPillarMaterial")));
+
+	i = 140;
+	j = 90;
+	i = (300 - i);
+	j = (300 - j);
+	ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	ruinedPillarProp1 = new Prop();
+	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->tag = 0;
+	ruinedPillar1->raycastOption = RayCastOptions::NONE;
+	meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));
+	ruinedPillar1->addComponent(meshFilterRuinedPillar1);
+	ruinedPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("RuinedPillarMaterial")));
+
+	i = 70;
+	j = 120;
+	i = (300 - i);
+	j = (300 - j);
+	ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	ruinedPillarProp1 = new Prop();
+	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->tag = 0;
+	ruinedPillar1->raycastOption = RayCastOptions::NONE;
+	meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));
+	ruinedPillar1->addComponent(meshFilterRuinedPillar1);
+	ruinedPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("RuinedPillarMaterial")));
+
+	i = 240;
+	j = 120;
+	i = (300 - i);
+	j = (300 - j);
+	ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	ruinedPillarProp1 = new Prop();
+	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->tag = 0;
+	ruinedPillar1->raycastOption = RayCastOptions::NONE;
+	meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));
+	ruinedPillar1->addComponent(meshFilterRuinedPillar1);
+	ruinedPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("RuinedPillarMaterial")));
+
+	i = 100;
+	j = 240;
+	i = (300 - i);
+	j = (300 - j);
+	ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	ruinedPillarProp1 = new Prop();
+	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->tag = 0;
+	ruinedPillar1->raycastOption = RayCastOptions::NONE;
+	meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));
+	ruinedPillar1->addComponent(meshFilterRuinedPillar1);
+	ruinedPillar1->addComponent(new MaterialFilter(AssetManager.getMaterial("RuinedPillarMaterial")));
+
+	//Brazier
+	i = 80;
+	j = 120;
+	i = (300 - i);
+	j = (300 - j);
+	GameObject* brazier1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	Prop* brazier1Prop1 = new Prop();
+	brazier1->addComponent(brazier1Prop1);
+	brazier1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	brazier1->name = "brazier1";
+	brazier1->tag = 0;
+	brazier1->raycastOption = RayCastOptions::NONE;
+	MeshFilter* meshFilterbrazier1 = new MeshFilter(AssetManager.getMesh("Brazier"));
+	brazier1->addComponent(meshFilterbrazier1);
+	brazier1->addComponent(new MaterialFilter(AssetManager.getMaterial("BrazierMaterial")));
+
+	i = 80;
+	j = 120;
+	i = (300 - i);
+	j = (300 - j);
+	brazier1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	brazier1Prop1 = new Prop();
+	brazier1->addComponent(brazier1Prop1);
+	brazier1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	brazier1->name = "brazier1";
+	brazier1->tag = 0;
+	brazier1->raycastOption = RayCastOptions::NONE;
+	meshFilterbrazier1 = new MeshFilter(AssetManager.getMesh("Brazier"));
+	brazier1->addComponent(meshFilterbrazier1);
+	brazier1->addComponent(new MaterialFilter(AssetManager.getMaterial("BrazierMaterial")));
+
+	i = 150;
+	j = 270;
+	i = (300 - i);
+	j = (300 - j);
+	brazier1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	brazier1Prop1 = new Prop();
+	brazier1->addComponent(brazier1Prop1);
+	brazier1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	brazier1->name = "brazier1";
+	brazier1->tag = 0;
+	brazier1->raycastOption = RayCastOptions::NONE;
+	meshFilterbrazier1 = new MeshFilter(AssetManager.getMesh("Brazier"));
+	brazier1->addComponent(meshFilterbrazier1);
+	brazier1->addComponent(new MaterialFilter(AssetManager.getMaterial("BrazierMaterial")));
+
+	i = 210;
+	j = 150;
+	i = (300 - i);
+	j = (300 - j);
+	brazier1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	brazier1Prop1 = new Prop();
+	brazier1->addComponent(brazier1Prop1);
+	brazier1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
+	brazier1->name = "brazier1";
+	brazier1->tag = 0;
+	brazier1->raycastOption = RayCastOptions::NONE;
+	meshFilterbrazier1 = new MeshFilter(AssetManager.getMesh("Brazier"));
+	brazier1->addComponent(meshFilterbrazier1);
+	brazier1->addComponent(new MaterialFilter(AssetManager.getMaterial("BrazierMaterial")));
 
 	//----------------------------------------
 

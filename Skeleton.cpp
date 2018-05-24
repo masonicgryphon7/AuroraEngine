@@ -22,7 +22,8 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 
 	MyLibrary::Loadera myLoader;
 
-	MyLibrary::SkeletonFromFile tempSkeleton = myLoader.readSkeletonFile(skeletonPath);
+	MyLibrary::SkeletonFromFile tempSkeleton;
+	myLoader.readSkeletonFile(skeletonPath, &tempSkeleton);
 
 	nrOfJoints = tempSkeleton.skeleton_nrOfJoints;
 	for (int i = 0; i < tempSkeleton.skeleton_nrOfJoints; i++ )
@@ -54,19 +55,22 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 		{
 			skeletonJoint.parentIndex = temp.parentIndex;
 		}
+		
+
 		inverseSkeletonJoints.push_back(skeletonJoint);
 	}
-
+	std::vector<int> childVector;
 	for (int i = 0; i < inverseSkeletonJoints.size(); i++)
 	{
 		for (int j = 0; j < inverseSkeletonJoints.size(); j++)
 		{
 			if (inverseSkeletonJoints[j].parentIndex == i) {
 				inverseSkeletonJoints[i].childIndices.push_back(j);
+
 			}
 		}
 	}
-
+	int bla = 0;
 }
 
 const std::string Skeleton::getSkeletonName() const {
