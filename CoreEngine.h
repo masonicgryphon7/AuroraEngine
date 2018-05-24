@@ -130,7 +130,7 @@ public:
 	GameObject* camera;
 	cAssetManager assetManager;
 	RenderManager *renderManager;
-
+	cPathCreator PathCreator;
 	bool IS_RUNNING = true;
 
 	void CreateUITextures();
