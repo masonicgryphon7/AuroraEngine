@@ -75,7 +75,6 @@
     <ClInclude Include="ClickToMove.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Editor.h" />
     <ClInclude Include="EditorMoveScript.h" />
@@ -135,6 +134,7 @@
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Prop.h" />
+    <ClInclude Include="CoreEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
