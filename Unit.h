@@ -82,6 +82,8 @@ private:
 	DirectX::XMFLOAT3 goalPos;
 	float lerpValue;
 	std::vector<Node> pathNodes;
+	std::vector<Node> worker_return_path;
+	bool worker_has_path;
 	int count = 0, count2 = 0, count3 = 0;
 
 public:

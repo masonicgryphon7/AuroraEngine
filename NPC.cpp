@@ -70,7 +70,7 @@ void NPC::update()
 				gamemanager.unitLists[2][0]->setResources(0);
 			}
 
-			if (gamemanager.unitLists[2][0]->getResources() > 40 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
+			if (gamemanager.unitLists[2][0]->getResources() > 20 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
 			{
 				int nrOfWorkers = 0;
 				int nrOfSoldiers = 0;

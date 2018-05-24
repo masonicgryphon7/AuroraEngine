@@ -288,6 +288,8 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 			if (lerpValue > 1) {
 				lerpValue = 1;
 			}
+			if (this->getUnitCommand() == Drop)
+				worker_has_path = true;
 			DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 			DirectX::XMFLOAT3 goalVec;
 			DirectX::XMStoreFloat3(&goalVec, goal);
@@ -295,7 +297,9 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 
 			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
 				previousPos = goal;
-
+				if(this->getType() == Worker && worker_has_path == true)
+				worker_return_path.push_back(pathNodes[0]);
+				
 				pathNodes.erase(pathNodes.begin());
 
 				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
@@ -303,12 +307,19 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 			}
 			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 				previousPos = goal;
-
+				if (this->getType() == Worker && worker_has_path == true)
+				worker_return_path.push_back(pathNodes[0]);
 				pathNodes.erase(pathNodes.begin());
 				lerpValue = 0;
 				//UnitOrders.erase(UnitOrders.begin() + 1);
+				
 
-
+			}
+			if (pathNodes.size() == 0 && this->getType() == Worker && worker_has_path && this->getUnitCommand() == Gather || this->getUnitCommand() == Drop )
+			{
+				std::reverse(worker_return_path.begin(), worker_return_path.end());
+				pathNodes = worker_return_path;
+				worker_return_path.clear();
 			}
 			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
 
