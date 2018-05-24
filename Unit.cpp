@@ -53,6 +53,10 @@ Unit::Unit() :Component(-1, "Unit")
 		//	this->Resources = 50;
 		//	break;
 	}
+	srand(time(NULL));
+	float x = (rand() % 100) / 10.0f;
+	float z = (rand() % 100) / 10.0f;
+	offset = DirectX::XMVectorSet(x, 0.0f, z, 0.0f);
 
 }
 
@@ -120,6 +124,10 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		break;
 
 	}
+	srand(time(NULL));
+	float x = (rand() % 200) / 100.0f;
+	float z = (rand() % 200) / 100.0f;
+	offset = DirectX::XMVectorSet(x, 0.0f, z, 0.0f);
 
 }
 
@@ -136,6 +144,15 @@ Command Unit::getUnitCommand()
 	{ 
 		return Idle; 
 	};
+}
+
+void Unit::setUnitOrder(Order newOrder)
+{
+	if (this->UnitOrders.size() > 0)
+	{
+		this->clearUnitOrder();
+	}
+	this->UnitOrders.push_back(newOrder);
 }
 
 void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
@@ -166,9 +183,13 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 			pathNodes = PathCreator.getPath(current, pointPosition); // Point position
 			previousPos = gameObject->transform.getPosition();
 
+
 			float time = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
 			//Debug.Log(" after astar time ", time);
-
+			lerpValue += Time.getDeltaTime() * 10;
+			if (lerpValue > 1) {
+				lerpValue = 0;
+			}
 		}
 
 		if (pathNodes.size() > 0) {
@@ -176,7 +197,7 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 			if (lerpValue > 1) {
 				lerpValue = 1;
 			}
-			DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+			DirectX::XMVECTOR goal =DirectX::XMVectorAdd(offset, DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0));
 			DirectX::XMFLOAT3 goalVec;
 			DirectX::XMStoreFloat3(&goalVec, goal);
 
@@ -186,27 +207,22 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 			DirectX::XMVECTOR currentToGoal = DirectX::XMVectorSubtract(goalPoint, currentPoint);
 
 
-
-
-
-
-
-
-
 			//	gameObject->transform.setForward(gameObject->transform.getForward());
 			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
 				previousPos =goal;
 				pathNodes.erase(pathNodes.begin());
-
+			
 				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
+			
 				lerpValue = 0;
+
 			}
 			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 				previousPos = goal;
 				pathNodes.erase(pathNodes.begin());
+				
 				lerpValue = 0;
 				UnitOrders.erase(UnitOrders.begin());
-
 
 			}
 			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
@@ -245,14 +261,17 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 
 			}
 
+
+			
+			
 		}
+
 		else
 		{
 			lerpValue = 0;
 
 		}
 	}
-	//Debug.Log("Moving");
 }
 
 void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
@@ -386,7 +405,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 				if (actionTime > 1)
 				{
 					//attackEnemy();
-					targetedUnit->takeDamage(this->getAttackPoints());
+					targetedUnit->takeDamage(this->getAttackPoints(), gameObject->getComponent<Unit>());
 					//Debug.Log("Enemy Hit!");
 					actionTime = 0;
 				}
@@ -415,13 +434,23 @@ void Unit::attackEnemy()
 	//Debug.Log("Attacking.");
 }
 
-void Unit::takeDamage(int attackPoints)
+void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 {
 	if(attackPoints > this->getDefencePoints())
 		this->setHealthPoints(this->getHealthPoints() - (attackPoints - this->getDefencePoints()));
 
+	if (this->UnitOrders.size() == 0)
+	{
+		Order temporder;
+		temporder.point = attackedBy->gameObject->transform.getPosition();
+		temporder.transform = &attackedBy->gameObject->transform;
+		temporder.command = Command::Attack;
+		UnitOrders.push_back(temporder);
+	}
+
 	if (healthPoints <= 0)
 	{
+		gameObject->raycastOption = RayCastOptions::NONE;
 		gameObject->unitIsAvtive = false;
 		Order tempOrder;
 		tempOrder.command = Die;
@@ -435,6 +464,8 @@ void Unit::takeFireDamage(float attackPoints)
 	this->setHealthPoints(this->getHealthPoints() - attackPoints);
 	if (healthPoints <= 0)
 	{
+
+		gameObject->raycastOption = RayCastOptions::NONE;
 		gameObject->unitIsAvtive = false;
 		Order tempOrder;
 		tempOrder.command = Die;
@@ -673,28 +704,37 @@ void Unit::destroyUnit()
 
 void Unit::summonWorkerCommand()
 {
-
 	if (this->gameObject->unitIsAvtive == true)
 	{
-		GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());
-		worker->name = "Worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
-		worker->tag = gameObject->tag;
-		MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("pose1smile"));
-		worker->addComponent(meshFilter);
-		worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
-		Unit *unitWorker = new Unit(Worker);
-		unitWorker->setHomePos(&gameObject->transform);
-		worker->addComponent(unitWorker);
-		//playerScript->friendlyUnits.push_back(unitWorker);
-		unitWorker->setPlayerScript(playerScript);
-		gamemanager.unitLists[gameObject->tag].push_back(unitWorker);
+		int temp = 0;
+		Unit* temp2;
+		
+		temp = gamemanager.unitLists[gameObject->tag][0]->getResources();
+		temp2 = gamemanager.unitLists[gameObject->tag][0];
 
+		if (temp > 40)
+		{
+			GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+			worker->name = "worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
+			worker->tag = gameObject->tag;
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker"));
+			worker->addComponent(meshFilter);
+			worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+			Unit *unitworker = new Unit(Worker);
+			unitworker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+			worker->addComponent(unitworker);
+			//playerScript->friendlyUnits.push_back(unitworker);
+			unitworker->setPlayerScript(playerScript);
+			gamemanager.unitLists[gameObject->tag].push_back(unitworker);
 
+			Order tempOrder;
+			tempOrder.command = Move;
+			tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+			unitworker->getUnitOrdersPointer()->push_back(tempOrder);
+
+			temp2->setResources(temp - 60);
+		}
 		UnitOrders.erase(UnitOrders.begin());
-		Order tempOrder;
-		tempOrder.command = Move;
-		tempOrder.point = DirectX::XMVectorAdd(gameObject->transform.getPosition(), DirectX::XMVectorSet(15.0, 0.0, 1.0, 0.0));
-		unitWorker->getUnitOrdersPointer()->push_back(tempOrder);
 	}
 }
 
@@ -728,24 +768,38 @@ void Unit::convertToSoldierCommand(Unit* targetedUnit)
 
 void Unit::summonSoldierCommand()
 {
-	GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
-	soldier->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
-	soldier->tag = gameObject->tag;
-	MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("PIRATE"));
-	soldier->addComponent(meshFilter);
-	soldier->addComponent(new MaterialFilter(AssetManager.getMaterial("SoldierMaterial")));
-	Unit *unitSoldier = new Unit(Soldier);
-	unitSoldier->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
-	soldier->addComponent(unitSoldier);
-	//playerScript->friendlyUnits.push_back(unitSoldier);
-	unitSoldier->setPlayerScript(playerScript);
-	gamemanager.unitLists[gameObject->tag].push_back(unitSoldier);
+	if (this->gameObject->unitIsAvtive == true)
+	{
+		int temp = 0;
+		Unit* temp2;
 
-	UnitOrders.erase(UnitOrders.begin());
-	Order tempOrder;
-	tempOrder.command = Move;
-	tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
-	unitSoldier->getUnitOrdersPointer()->push_back(tempOrder);
+		temp = gamemanager.unitLists[gameObject->tag][0]->getResources();
+		temp2 = gamemanager.unitLists[gameObject->tag][0];
+		
+		if (temp > 40)
+		{
+			GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+			soldier->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
+			soldier->tag = gameObject->tag;
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("PIRATE"));
+			soldier->addComponent(meshFilter);
+			soldier->addComponent(new MaterialFilter(AssetManager.getMaterial("SoldierMaterial")));
+			Unit *unitSoldier = new Unit(Soldier);
+			unitSoldier->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+			soldier->addComponent(unitSoldier);
+			//playerScript->friendlyUnits.push_back(unitSoldier);
+			unitSoldier->setPlayerScript(playerScript);
+			gamemanager.unitLists[gameObject->tag].push_back(unitSoldier);
+
+			UnitOrders.erase(UnitOrders.begin());
+			Order tempOrder;
+			tempOrder.command = Move;
+			tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+			unitSoldier->getUnitOrdersPointer()->push_back(tempOrder);
+			
+			temp2->setResources(temp - 60);
+		}
+	}
 }
 
 void Unit::takeBuildingCommand(Unit * targetedUnit)
@@ -816,6 +870,7 @@ float Unit::getDistanceBetweenUnits(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR
 
 DirectX::XMVECTOR Unit::calculateOffsetInPath(DirectX::XMVECTOR unitPos, DirectX::XMVECTOR targetPos)
 {
+	
 	DirectX::XMVECTOR vectorBetween = DirectX::XMVectorSubtract(unitPos, targetPos);
 	DirectX::XMVECTOR normalizedDistance = DirectX::XMVector3Normalize(vectorBetween);
 	return normalizedDistance;
@@ -1121,5 +1176,9 @@ void Unit::update()
 		default:
 			break;
 		}
+		
+		
+		
 	}
+
 }

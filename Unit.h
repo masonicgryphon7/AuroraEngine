@@ -80,12 +80,14 @@ private:
 	float distance = 0;
 
 	DirectX::XMFLOAT3 goalPos;
+	DirectX::XMVECTOR offset;
 	float lerpValue;
 	std::vector<Node> pathNodes;
 	std::vector<Node> worker_return_path;
 	bool worker_has_path;
 	int count = 0, count2 = 0, count3 = 0;
-
+	bool hasReached = false;
+	DirectX::XMVECTOR lerpedPos;
 public:
 
 
@@ -99,7 +101,7 @@ public:
 	Command getUnitCommand();
 
 	void clearUnitOrder() { UnitOrders.erase(UnitOrders.begin()); };
-
+	void setUnitOrder(Order newOrder);
 	int getUnitOrdersSize() { return this->UnitOrders.size(); };
 
 	int getResources() { return this->Resources; };
@@ -128,7 +130,7 @@ public:
 	void SecondMoveCommand(DirectX::XMVECTOR *goalPos);
 	void attackCommand(Unit* targetedUnit);
 	void attackEnemy();
-	void takeDamage(int attackPoints);
+	void takeDamage(int attackPoints, Unit* attackedBy);
 	void takeFireDamage(float attackPoints);
 	void FollowCommand();
 	void gatherCommand(Unit* targetedUnit);

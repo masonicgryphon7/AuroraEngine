@@ -9,6 +9,7 @@
 #include "CoreEngine.h"
 #include "Unit.h"
 #include "NPC.h"
+#include "Prop.h"
 enum GAME_STATE
 {
 	MAIN_MENU,
@@ -22,7 +23,7 @@ enum GAME_STATE
 };
 enum RING_STATE
 {
-	FIRST_MOVE, SECOND_MOVE, THIRD_MOVE
+	NO_MOVE, MOVE//, SECOND_MOVE, THIRD_MOVE
 };
 
 class Unit;
@@ -32,7 +33,7 @@ public:
 	GameManager();
 	GameManager(ID3D11Device* gDevice, ID3D11DeviceContext*  gDeviceContext);
 	~GameManager();
-	float ringOfFire;
+	static float ringOfFire;
 	DirectX::XMVECTOR middlePoint = DirectX::XMVectorSet(149, 0.0, 149, 0.0);
 
 	float uvPanning = 0;

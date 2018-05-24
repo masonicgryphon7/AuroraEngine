@@ -40,7 +40,7 @@ void NPC::update()
 					}
 				}
 
-				if (nrOfSoldiers >= 3 && nrOfSoldiers > gamemanager.unitLists[1].size())
+				if (nrOfSoldiers >= 10 && nrOfSoldiers > gamemanager.unitLists[1].size())
 				{
 					attack(gamemanager.unitLists[2][0]);
 
@@ -58,19 +58,19 @@ void NPC::update()
 					{
 						takeOverBuilding(gamemanager.unitLists[2][0]);
 					}
-					else if (gamemanager.unitLists[2][0]->getResources() < 100)
-					{
-						gather(gamemanager.unitLists[2][0]);
-					}
 				}
 			}
-			if (gamemanager.unitLists[2][0]->getUnitOrdersSize() > 0 && gamemanager.unitLists[2][0]->getResources() >= 100)
+			
+			if (gamemanager.unitLists[2][0]->getUnitOrders().size() == 0 && gamemanager.unitLists[2][0]->getResources() < 200)
+			{
+				gather(gamemanager.unitLists[2][0]);
+			}
+			else if (gamemanager.unitLists[2][0]->getUnitOrders().size() > 0 && gamemanager.unitLists[2][0]->getUnitOrders().at(0).command == Command::HeroGather && gamemanager.unitLists[2][0]->getResources() >= 200)
 			{
 				gamemanager.unitLists[2][0]->clearUnitOrder();
-				gamemanager.unitLists[2][0]->setResources(0);
 			}
 
-			if (gamemanager.unitLists[2][0]->getResources() > 20 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
+			if (gamemanager.unitLists[2][0]->getResources() > 60 && gamemanager.buildingLists[2].size() > 0)// && tempBool == false)
 			{
 				int nrOfWorkers = 0;
 				int nrOfSoldiers = 0;
@@ -87,15 +87,15 @@ void NPC::update()
 					}
 				}
 
-				if (nrOfWorkers < 2)
+				if (nrOfWorkers < 5)
 				{
 					for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
 					{
 						if (gamemanager.buildingLists[2][i]->getType() == Bank)
 						{
-							gamemanager.unitLists[2][0]->setResources(gamemanager.unitLists[2][0]->getResources() - 40);
 							summonUnit(gamemanager.buildingLists[2][i]);
-							tempBool = true;
+							gather(gamemanager.unitLists[2][gamemanager.unitLists[2].size()-1]);
+							//tempBool = true;
 						}
 					}
 				}
@@ -105,66 +105,55 @@ void NPC::update()
 					{
 						if (gamemanager.buildingLists[2][i]->getType() == Barrack)
 						{
-							gamemanager.unitLists[2][0]->setResources(gamemanager.unitLists[2][0]->getResources() - 40);
 							summonUnit(gamemanager.buildingLists[2][i]);
-							tempBool = true;
+							//tempBool = true;
 						}
 					}
 				}
 			}
 
-			for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+			
+
+			if (gamemanager.ringState == RING_STATE::MOVE)//&& distanceToMiddle > 150
 			{
-				if (gamemanager.unitLists[2][i]->getType() == Worker)
+				for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 				{
-					if (gamemanager.unitLists[2][i]->getUnitOrders().size() == 0) //&& nrOfWorkers < 4)
+					float distanceToMiddle = gamemanager.unitLists[2][i]->getDistanceBetweenUnits(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint);
+
+					if (distanceToMiddle > gamemanager.ringOfFire - 10)
 					{
-						gather(gamemanager.unitLists[2][i]);
+						DirectX::XMVECTOR pointInsideRing = DirectX::XMVectorLerp(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint, 0.1);
+						Order tempOrder;
+						tempOrder.point = pointInsideRing;
+						tempOrder.command = Move;
+
+						gamemanager.unitLists[2][i]->setUnitOrder(tempOrder);
 					}
 				}
 			}
+
+			//for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+			//{
+			//	float distanceToMiddle = gamemanager.unitLists[2][i]->getDistanceBetweenUnits(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint);
+			//	
+
+			//	if (gamemanager.ringState == RING_STATE::FIRST_MOVE && distanceToMiddle > 80)
+			//	{
+			//		if (gamemanager.unitLists[2][i]->getType() == Worker)
+			//		{
+
+			//		}
+			//	}
+			//	if (gamemanager.ringState == RING_STATE::FIRST_MOVE && distanceToMiddle > 28)
+			//	{
+			//		if (gamemanager.unitLists[2][i]->getType() == Worker)
+			//		{
+
+			//		}
+			//	}
+			//}
 		}
 	}
-
-
-
-	/*for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
-	{
-		if (gamemanager.unitLists[2][i]->getHealthPoints() <= 0 && gamemanager.unitLists[2][i]->getUnitOrders().size() <= 0)
-		{
-			//gamemanager.unitLists[2][i]->dieCommand();
-			gamemanager.unitLists[2][i]->destroyUnit();
-			gamemanager.unitLists[2].erase(gamemanager.unitLists[2].begin() + i);
-		}
-	}
-
-	if (gamemanager.unitLists[2][0]->getResources() >= 100 && gamemanager.unitLists[2][0]->getUnitCommand() == HeroGather)
-	{
-		wantsToAttackHero = true;
-		gamemanager.unitLists[2][0]->clearUnitOrder();
-	}
-		
-	for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
-	{
-		if (gamemanager.unitLists[2][i]->getUnitOrdersSize() < 1)
-		{
-
-			
-			if (wantsToAttackHero)
-			{
-				attack(gamemanager.unitLists[2][i]);
-			}
-			else
-			{
-				standAbout(gamemanager.unitLists[2][i]);
-
-			}
-		}
-	}*/
-	
-
-	//CODE GOES HERE
-
 }
 
 void NPC::instantiate_NPC()
@@ -195,7 +184,7 @@ void NPC::gather(Unit* unitToUse)
 
 	for (int i = 0; i < gamemanager.buildingLists[0].size(); i++)
 	{
-		if (gamemanager.buildingLists[0][i]->getType() == GoldMine)
+		if (gamemanager.buildingLists[0][i]->getType() == GoldMine && gamemanager.buildingLists[0][i]->gameObject->unitIsAvtive == true) // || gamemanager.buildingLists[2][i]->getType() == Bank && gamemanager.buildingLists[0][i]->getResources() > 100 && gamemanager.buildingLists[0][i]->gameObject->isActive == true)
 		{
 			int temp = unitToUse->getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[0][i]->gameObject->transform.getPosition());
 			if (temp < findClosest)
@@ -288,7 +277,7 @@ void NPC::takeOverBuilding(Unit * unitToUse)
 	{
 		for (int i = 0; i < gamemanager.buildingLists[j].size(); i++)
 		{
-			if (gamemanager.buildingLists[j][i]->getType() != GoldMine) //Bank
+			if (gamemanager.buildingLists[j][i]->getType() != GoldMine)
 			{
 				int temp = unitToUse->getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[j][i]->gameObject->transform.getPosition());
 				if (temp < findClosest)

@@ -164,12 +164,20 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.AddMesh("Assets/ResourceCenter/FinalSilo1OBJ.obj", AssetManager.getShaderProgram("Vertex.hlsl")); 
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Stairs.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMesh("Assets/FlowersAndBushes4.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Fern.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/LionPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Worker/Worker.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/RuinedPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Pillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Brazier.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+
 
 		//PathCreator.createNodes();
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 100, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
 		cam = new Camera(HEIGHT, WIDTH, 30, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
@@ -181,38 +189,8 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//PlayerScript *playerscript = new PlayerScript();
 		//camera->addComponent(playerscript);
 
-		////Tree
-		GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(7, 0, 20, 0));
-		tree->name = "Tree";
-		tree->tag = 0;
-		tree->raycastOption = RayCastOptions::NONE;
-		MeshFilter* meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
-		tree->addComponent(meshFilterTree);
-		tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
-
-
-		////Stairs
-		GameObject* stair1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(149, 21, 180, 0));
-		stair1->name = "Stair1";
-		stair1->tag = 0;
-		stair1->raycastOption = RayCastOptions::NONE;
-		MeshFilter* meshFilterStair1 = new MeshFilter(AssetManager.getMesh("Stairs"));
-		stair1->addComponent(meshFilterStair1);
-		stair1->addComponent(new MaterialFilter(AssetManager.getMaterial("StairsMaterial")));
-
-		GameObject* stair2 = gScene.createEmptyGameObject(DirectX::XMVectorSet(151, 21, 114, 0));
-		stair2->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
-		stair2->name = "Stair2";
-		stair2->tag = 0;
-		stair2->raycastOption = RayCastOptions::NONE;
-		MeshFilter* meshFilterStair2 = new MeshFilter(AssetManager.getMesh("Stairs"));
-		stair2->addComponent(meshFilterStair2);
-		stair2->addComponent(new MaterialFilter(AssetManager.getMaterial("StairsMaterial")));
-
+		
 		//Barrack
-
-
-
 		AssetManager.addMeshFromBinary("Assets/COLLECTOR_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.addMeshFromBinary("Assets/pose1smile.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
@@ -298,14 +276,14 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 			else
 			{
-				// FULLSCREEN
-				//{
-				//	BOOL bFullscreen;
-				//	gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
-				//	// If not full screen, enable fullscreen again.
-				//	if (!bFullscreen)
-				//		gSwapChain->SetFullscreenState(TRUE, NULL);
-				//}
+				 //FULLSCREEN
+				{
+					BOOL bFullscreen;
+					gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
+					// If not full screen, enable fullscreen again.
+					if (!bFullscreen)
+						gSwapChain->SetFullscreenState(TRUE, NULL);
+				}
 
 				inputHandler.updateInput();
 				Time.tick();
@@ -350,16 +328,18 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 void CoreEngine::addMaterials()
 {
-
-
 	//Terrain Texture.
 	assetManager.addTexture("Assets/Grass-Diffuse.png"); //3
 	assetManager.addTexture("Assets/Grass-Normal.png"); //4
 	assetManager.addTexture("Assets/Grass-RoughMetalAo.png"); //5
 
-	assetManager.addTexture("Assets/Mountain-Diffuse.png"); //6
-	assetManager.addTexture("Assets/Mountain-Normal.png"); //7
-	assetManager.addTexture("Assets/Mountain-RoughMetalAo.png"); //8
+	assetManager.addTexture("Assets/Sand_BaseColor.png"); //3
+	assetManager.addTexture("Assets/Sand_Normal.png"); //4
+	assetManager.addTexture("Assets/Sand_OcclusionRoughnessMetallic.png"); //5
+
+	assetManager.addTexture("Assets/SandStone_BaseColor.png"); //6
+	assetManager.addTexture("Assets/SandStone_Normal.png"); //7
+	assetManager.addTexture("Assets/SandStone_OcclusionRoughnessMetallic.png"); //8
 
 	assetManager.addTexture("Assets/GrassBricks-Diffuse.png"); //9
 	assetManager.addTexture("Assets/GrassBricks-Normal.png"); //10
@@ -369,7 +349,7 @@ void CoreEngine::addMaterials()
 	assetManager.addTexture("Assets/Lava_Normal.png"); //21
 	assetManager.addTexture("Assets/Lava_OcclusionRoughnessMetallic.png"); //22
 
-	assetManager.addTexture("Assets/FinaleIDMAP3.png");
+	assetManager.addTexture("Assets/FinaleIDMAP8.png");
 
 	//Terrain
 	int matXTile = 20;
@@ -380,15 +360,19 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("TerrainMaterial1")->setIsTerrain(true);
 	assetManager.getMaterial("TerrainMaterial1")->setXTile(matXTile);
 	assetManager.getMaterial("TerrainMaterial1")->setYTile(matYTile);
+	assetManager.getMaterial("TerrainMaterial1")->setAlbedo(assetManager.getTexture("Grass-Diffuse")->getTexture());
+	assetManager.getMaterial("TerrainMaterial1")->setNormal(assetManager.getTexture("Grass-Normal")->getTexture());
+	assetManager.getMaterial("TerrainMaterial1")->setAORoughMet(assetManager.getTexture("Grass-RoughMetalAo")->getTexture());
+
 	assetManager.getMaterial("TerrainMaterial1")->setTerrainMaterials(
 
-	assetManager.getTexture("Grass-Diffuse")->getTexture(),
-	assetManager.getTexture("Grass-Normal")->getTexture(),
-	assetManager.getTexture("Grass-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("Sand_BaseColor")->getTexture(),
+	assetManager.getTexture("Sand_Normal")->getTexture(),
+	assetManager.getTexture("Sand_OcclusionRoughnessMetallic")->getTexture(),
 
-	assetManager.getTexture("Mountain-Diffuse")->getTexture(),
-	assetManager.getTexture("Mountain-Normal")->getTexture(),
-	assetManager.getTexture("Mountain-RoughMetalAo")->getTexture(),
+	assetManager.getTexture("SandStone_BaseColor")->getTexture(),
+	assetManager.getTexture("SandStone_Normal")->getTexture(),
+	assetManager.getTexture("GrassBricks-RoughMetalAo")->getTexture(),
 
 	assetManager.getTexture("GrassBricks-Diffuse")->getTexture(),
 	assetManager.getTexture("GrassBricks-Normal")->getTexture(),
@@ -398,7 +382,7 @@ void CoreEngine::addMaterials()
 	assetManager.getTexture("Lava_Normal")->getTexture(),
 	assetManager.getTexture("Lava_OcclusionRoughnessMetallic")->getTexture(),
 
-	assetManager.getTexture("FinaleIDMAP3")->getTexture()); //USE ID_PART 1
+	assetManager.getTexture("FinaleIDMAP8")->getTexture()); //USE ID_PART 1
 
 
 
@@ -437,6 +421,44 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/Stairs_stairs_Normal.png");
 	AssetManager.addTexture("Assets/Stairs_stairs_OcclusionRoughnessMetallic.png");
 
+	AssetManager.addTexture("Assets/Fern_Fern_BaseColor.png");
+	AssetManager.addTexture("Assets/Fern_Fern_Normal.png");
+	AssetManager.addTexture("Assets/Fern_Fern_OcclusionRoughnessMetallic.png");
+
+	AssetManager.addTexture("Assets/Brazier_Brazier_BaseColor.png");
+	AssetManager.addTexture("Assets/Brazier_Brazier_Normal.png");
+	AssetManager.addTexture("Assets/Brazier_Brazier_OcclusionRoughnessMetallic.png");
+
+	AssetManager.addTexture("Assets/RuinedPillar_BrokenPillar_BaseColor.png");
+	AssetManager.addTexture("Assets/RuinedPillar_BrokenPillar_Normal.png");
+	AssetManager.addTexture("Assets/RuinedPillar_BrokenPillar_OcclusionRoughnessMetallic.png");
+
+	AssetManager.addTexture("Assets/Pillar_Pillar_BaseColor.png");
+	AssetManager.addTexture("Assets/Pillar_Pillar_Normal.png");
+	AssetManager.addTexture("Assets/Pillar_Pillar_OcclusionRoughnessMetallic.png");
+
+	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_BaseColor.png");
+	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_Normal.png");
+	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_OcclusionRoughnessMetallic.png");
+
+	AssetManager.addTexture("Assets/LionPillar_LionPillar_BaseColor.png");
+	AssetManager.addTexture("Assets/LionPillar_LionPillar_ormal.png");
+	AssetManager.addTexture("Assets/LionPillar_LionPillar_OcclusionRoughnessMetallic.png");
+
+	//Worker
+	AssetManager.addTexture("Assets/Worker/Worker_BaseColor.png");
+	AssetManager.addTexture("Assets/Worker/Worker_Id.png");
+	AssetManager.addTexture("Assets/Worker/Worker_Normal.png");
+	AssetManager.addTexture("Assets/Worker/Worker_OcclusionRoughnessMetallic.png");
+
+	assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("Worker_BaseColor")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("Worker_Normal")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("Worker_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setTeamIdMap(assetManager.getTexture("Worker_Id")->getTexture());
+
+
+
 	//GoldmineMat
 	assetManager.AddMaterial("GoldMineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("GoldMineMaterial")->setAlbedo(assetManager.getTexture("GoldMineResource_BaseColor")->getTexture());
@@ -448,22 +470,39 @@ void CoreEngine::addMaterials()
 	assetManager.AddMaterial("BarracksMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("BarracksMaterial")->setAlbedo(assetManager.getTexture("CryptBarracksFinale1_Barracks_BaseColor")->getTexture());
 	assetManager.getMaterial("BarracksMaterial")->setNormal(assetManager.getTexture("CryptBarracksFinale1_Barracks_Normal")->getTexture());
-	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CrssdwwwssssyptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
 	assetManager.getMaterial("BarracksMaterial")->setTeamIdMap(assetManager.getTexture("CryptBarracksFinale1_Barracks_Emissive")->getTexture());
 
-	//ResoursMaterial
-	assetManager.AddMaterial("ResoursMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("ResoursMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
-	assetManager.getMaterial("ResoursMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
-	assetManager.getMaterial("ResoursMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
-	assetManager.getMaterial("ResoursMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
+	//ResourceMaterial
+	assetManager.AddMaterial("ResourceMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("ResourceMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
 
+	//RuinedPillarMaterial
+	assetManager.AddMaterial("RuinedPillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("RuinedPillarMaterial")->setAlbedo(assetManager.getTexture("RuinedPillar_BrokenPillar_BaseColor")->getTexture());
+	assetManager.getMaterial("RuinedPillarMaterial")->setNormal(assetManager.getTexture("RuinedPillar_BrokenPillar_Normal")->getTexture());
+	assetManager.getMaterial("RuinedPillarMaterial")->setAORoughMet(assetManager.getTexture("RuinedPillar_BrokenPillar_RoughMetalAo")->getTexture());
+
+	//PillarMaterial
+	assetManager.AddMaterial("PillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("PillarMaterial")->setAlbedo(assetManager.getTexture("Pillar_Pillar_BaseColor")->getTexture());
+	assetManager.getMaterial("PillarMaterial")->setNormal(assetManager.getTexture("Pillar_Pillar_Normal")->getTexture());
+	assetManager.getMaterial("PillarMaterial")->setAORoughMet(assetManager.getTexture("Pillar_Pillar_RoughMetalAo")->getTexture());
+
+	//BrazierMaterial
+	assetManager.AddMaterial("BrazierMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("BrazierMaterial")->setAlbedo(assetManager.getTexture("Brazier_Brazier_BaseColor")->getTexture());
+	assetManager.getMaterial("BrazierMaterial")->setNormal(assetManager.getTexture("Brazier_Brazier_Normal")->getTexture());
+	assetManager.getMaterial("BrazierMaterial")->setAORoughMet(assetManager.getTexture("Brazier_Brazier_RoughMetalAo")->getTexture());
 
 	//Unit Material
-	assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
-	assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
-	assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+	//assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	//assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
+	//assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
+	//assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
 
 	//Soldier material
 	assetManager.AddMaterial("SoldierMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -508,6 +547,26 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("StairsMaterial")->setAlbedo(assetManager.getTexture("Stairs_stairs_BaseColor")->getTexture());
 	assetManager.getMaterial("StairsMaterial")->setNormal(assetManager.getTexture("Stairs_stairs_Normal")->getTexture());
 	assetManager.getMaterial("StairsMaterial")->setAORoughMet(assetManager.getTexture("Stairs_stairs_OcclusionRoughnessMetallic")->getTexture());
+
+	//Fern Material
+	assetManager.AddMaterial("FernMaterial", assetManager.getShaderProgram("FragmentOpacity.hlsl"));
+	assetManager.getMaterial("FernMaterial")->setAlpha(true);
+	assetManager.getMaterial("FernMaterial")->setAlbedo(assetManager.getTexture("Fern_Fern_BaseColor")->getTexture());
+	assetManager.getMaterial("FernMaterial")->setNormal(assetManager.getTexture("Fern_Fern_Normal")->getTexture());
+	assetManager.getMaterial("FernMaterial")->setAORoughMet(assetManager.getTexture("Fern_Fern_OcclusionRoughnessMetallic")->getTexture());
+
+	//Flower Material
+	assetManager.AddMaterial("FlowersAndBushesMaterial", assetManager.getShaderProgram("FragmentOpacity.hlsl"));
+	assetManager.getMaterial("FlowersAndBushesMaterial")->setAlpha(true);
+	assetManager.getMaterial("FlowersAndBushesMaterial")->setAlbedo(assetManager.getTexture("FlowersAndBushes1_FlowerGrowth_BaseColor")->getTexture());
+	assetManager.getMaterial("FlowersAndBushesMaterial")->setNormal(assetManager.getTexture("FlowersAndBushes1_FlowerGrowth_Normal")->getTexture());
+	assetManager.getMaterial("FlowersAndBushesMaterial")->setAORoughMet(assetManager.getTexture("FlowersAndBushes1_FlowerGrowth_OcclusionRoughnessMetallic")->getTexture());
+
+	//Lion Pillar Material
+	assetManager.AddMaterial("LionPillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("LionPillarMaterial")->setAlbedo(assetManager.getTexture("LionPillar_LionPillar_BaseColor")->getTexture());
+	assetManager.getMaterial("LionPillarMaterial")->setNormal(assetManager.getTexture("LionPillar_LionPillar_Normal")->getTexture());
+	assetManager.getMaterial("LionPillarMaterial")->setAORoughMet(assetManager.getTexture("LionPillar_LionPillar_OcclusionRoughnessMetallic")->getTexture());
 
 }
 
@@ -1173,7 +1232,6 @@ HRESULT CoreEngine::CreateDirect3DContext(HWND wndHandle)
 	if (FAILED(result))
 		Console.error("Error Enable Blend State");
 
-	float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	UINT sampleMask = 0xffffffff;
 	gDeviceContext->OMSetBlendState(m_alphaEnableBlendState, 0, sampleMask);
 	//// Modify the description to create an alpha disabled blend state description.

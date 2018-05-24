@@ -54,10 +54,7 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 			objectsToRender[0][i]->instanceIndex = temp->renderIndex;
 		}
 
-		Light* light = objectsToRender[0][i]->getComponent<Light>();
-		if (light) {
-			lightsVector.push_back(light);
-		}
+
 	}
 
 	//Material sort
@@ -65,24 +62,10 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 	{
 		Material* temp = objectsToRender[0][i]->getComponent<MaterialFilter>()->material;
 		if (temp->getAlpha()) {
-			if (temp->renderIndex == -1) {
-				objectsToRender[0][i]->instanceIndex = instanceIndex;
-				temp->renderIndex = instanceIndex;
-				instanceIndex++;
-				materialVector.push_back(temp);
-
-				//Seperate translucent objects
-				translucentDraw.push_back(objectsToRender[0][i]);
-				objectsToRender->erase(objectsToRender->begin() + i);
-			}
-			else {
-				objectsToRender[0][i]->instanceIndex = temp->renderIndex;
-
-				//Seperate translucent objects
-				translucentDraw.push_back(objectsToRender[0][i]);
-				objectsToRender->erase(objectsToRender->begin() + i);
-			}
+			//Seperate translucent objects
+			translucentDraw.push_back(objectsToRender[0][i]);
 		}
+
 	}
 
 	//Create instance groups
@@ -236,7 +219,6 @@ void RenderManager::Render(GameObject * cameraObject, std::vector<GameObject*>* 
 	}
 	meshVector.clear();
 	materialVector.clear();
-	lightsVector.clear();
 	opaqueDraw.clear();
 	translucentDraw.clear();
 }
