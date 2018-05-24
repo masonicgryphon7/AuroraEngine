@@ -70,7 +70,7 @@ protected:
 	bool consoleInitialized = false;
 
 private:
-	
+
 
 	HINSTANCE hInstance;
 	HWND wnd;
