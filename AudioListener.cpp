@@ -147,37 +147,58 @@ void AudioListener::update()
 	{
 		if (sceneObjects[0][i]->tag > 0) {
 			Unit* unit = sceneObjects[0][i]->getComponent<Unit>();
-			if (unit != nullptr) {
 
-				if (unit->getUnitOrders().size() > 0)
+			if (unit != nullptr && state != AL_PLAYING) {
+
+				switch (unit->getSoundAction())
 				{
-					Order order = unit->getUnitOrders()[0];
-					if (unit != nullptr && state != AL_PLAYING) {
 
-						switch (order.command)
-						{
+				case 0:
+					break;
 
-						case Command::Move:
-							multiPlay++;
-							playMove(multiPlay);
-							break;
+				case 1:
+					multiPlay++;
+					playMove(multiPlay);
+					break;
 
-						case Command::Gather:
-							playGather();
-							break;
+				case 2:
+					playAttack();
 
-						case Command::Idle:
+					break;
+
+				case 3:
+					//playDmg();
+					break;
+
+				case 4:
+					//playFireDmg();
+					break;
+
+				case 5:
+					playGather();
+
+					break;
+
+				case 6:
+					//playDrop();
+					break;
+
+				case 7:
+					playSummon();
+					break;
+
+				case 8:
+					//PlayTake();
+					break;
+
+				case 9:
+					//PlayDied();
+					break;
+
+				default:
+					break;
 						
-							break;
-
-						case Command::SummonWorker:
-							playSummon();
-							break;
-
-						default:
-							break;
-						}
-					}
+					
 				}
 			}
 			//DirectX::XMVECTOR cubepos = sceneObjects[0][i]->transform.getPosition();

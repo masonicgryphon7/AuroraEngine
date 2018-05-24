@@ -143,6 +143,7 @@ Command Unit::getUnitCommand()
 	else
 	{ 
 		return Idle; 
+		this->soundAction = 0;
 	};
 }
 
@@ -159,7 +160,7 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 {
 	if (gameObject->unitIsAvtive == true)
 	{
-
+		this->soundAction = 1;
 
 		DirectX::XMFLOAT3 current;
 		DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
@@ -223,7 +224,7 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 				
 				lerpValue = 0;
 				UnitOrders.erase(UnitOrders.begin());
-
+				this->soundAction = 0;
 			}
 			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
 
@@ -269,7 +270,6 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		else
 		{
 			lerpValue = 0;
-
 		}
 	}
 }
@@ -278,6 +278,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 {
 	if (gameObject->unitIsAvtive == true)
 	{
+		this->soundAction = 1;
 		DirectX::XMFLOAT3 current;
 		DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
@@ -331,7 +332,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 				pathNodes.erase(pathNodes.begin());
 				lerpValue = 0;
 				//UnitOrders.erase(UnitOrders.begin() + 1);
-				
+				this->soundAction = 0;
 
 			}
 			if (pathNodes.size() == 0 && this->getType() == Worker && worker_has_path && this->getUnitCommand() == Gather || this->getUnitCommand() == Drop )
@@ -382,7 +383,6 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		else
 		{
 			lerpValue = 0;
-
 		}
 	}
 	//Debug.Log("Moving");
@@ -408,6 +408,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 					targetedUnit->takeDamage(this->getAttackPoints(), gameObject->getComponent<Unit>());
 					//Debug.Log("Enemy Hit!");
 					actionTime = 0;
+					this->soundAction = 2;
 				}
 			}
 			else
@@ -439,6 +440,8 @@ void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 	if(attackPoints > this->getDefencePoints())
 		this->setHealthPoints(this->getHealthPoints() - (attackPoints - this->getDefencePoints()));
 
+	this->soundAction = 3;
+
 	if (this->UnitOrders.size() == 0)
 	{
 		Order temporder;
@@ -461,6 +464,7 @@ void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 
 void Unit::takeFireDamage(float attackPoints)
 {
+	this->soundAction = 4;
 	this->setHealthPoints(this->getHealthPoints() - attackPoints);
 	if (healthPoints <= 0)
 	{
@@ -598,6 +602,7 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 
 void Unit::gatherResources()
 {
+	this->soundAction = 5;
 	actionTime += Time.getDeltaTime();
 	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true)
 	{
@@ -675,6 +680,7 @@ void Unit::dropCommand(Unit* targetedUnit)
 
 void Unit::dropResources()
 {
+	this->soundAction = 6;
 	actionTime += Time.getDeltaTime();
 	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
@@ -820,6 +826,8 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 				{
 					if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
 					{
+						this->soundAction = 8;
+
 						gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
 						targetedUnit->gameObject->tag = gameObject->tag;
 						gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
@@ -842,6 +850,7 @@ void Unit::dieCommand()
 {
 	dieTime += Time.getDeltaTime();
 	gameObject->unitIsAvtive = false;
+	this->soundAction = 9;
 	if(dieTime > 1)
 		gameObject->transform.setPosition(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, dieTime*0.01, 0, 0)));
 	if (dieTime > 3)
@@ -1180,5 +1189,4 @@ void Unit::update()
 		
 		
 	}
-
 }
