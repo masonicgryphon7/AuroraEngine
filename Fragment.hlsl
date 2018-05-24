@@ -142,7 +142,6 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 	
 	//return float4(teamIdMap.xyz, 1);
-
 	if (unitTag[input.instanceID].x == 1)
 	{
 		if (teamIdMap.x >= 0.5)
@@ -153,6 +152,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 		if(teamIdMap.x >= 0.5)
 			albedo *= float4(0.8, 0, 0, 0);
 	}
+
 
 	if (isTerrain==1)
 	{
