@@ -63,6 +63,7 @@ private:
 	float attackDistance;
 	float actionTime;
 	float dieTime;
+	int soundAction = 0;
 	Transform* homePos;
 	Transform* minePos;
 
@@ -104,6 +105,7 @@ public:
 	void setUnitOrder(Order newOrder);
 	int getUnitOrdersSize() { return this->UnitOrders.size(); };
 
+	int getSoundAction() { return this->soundAction; };
 	int getResources() { return this->Resources; };
 	int getHealthPoints() { return this->healthPoints; };
 	int getMaxHealthPoints() { return this->maxHealthPoints; };
@@ -118,7 +120,7 @@ public:
 	void setDistance(float newDistance) { this->distance = newDistance; };
 	void setTargetPos(DirectX::XMVECTOR newTarget) { this->targetPos = newTarget; };
 
-
+	int setSoundAction(int soundAction) { this->soundAction = soundAction; };
 	void setResources(int resources) { this->Resources = resources; };
 	void setHealthPoints(int healthPoints) { this->healthPoints = healthPoints; };
 	void setAttackPoints(int attackPoints) { this->attackPoints = attackPoints; };
