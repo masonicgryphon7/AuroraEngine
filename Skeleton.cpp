@@ -22,7 +22,8 @@ void Skeleton::createSkeletonFromBinary(std::string filePath)
 
 	MyLibrary::Loadera myLoader;
 
-	MyLibrary::SkeletonFromFile tempSkeleton = myLoader.readSkeletonFile(skeletonPath);
+	MyLibrary::SkeletonFromFile tempSkeleton;
+	myLoader.readSkeletonFile(skeletonPath, &tempSkeleton);
 
 	nrOfJoints = tempSkeleton.skeleton_nrOfJoints;
 	for (int i = 0; i < tempSkeleton.skeleton_nrOfJoints; i++ )

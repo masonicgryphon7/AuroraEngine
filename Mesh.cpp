@@ -314,7 +314,7 @@ void Mesh::createMeshFromBinary(std::string fileName, ID3D11Device * device)
 	MyLibrary::MeshFromFile myMesh;
 	VERTEX_POS3UV2T3B3N3 vertex;
 	std::vector<VERTEX_POS3UV2T3B3N3> vertices;
-	myMesh = myLoader.readMeshFile(fileName);
+	myLoader.readMeshFile(fileName, &myMesh);
 
 	for (int i = 0; i < myMesh.mesh_nrOfVertices; i++)
 	{
@@ -375,7 +375,7 @@ void Mesh::createAnimatedMeshFromBinary(std::string fileName, ID3D11Device * dev
 	MyLibrary::AnimatedMeshFromFile myMesh;
 	VERTEX_POS3UV2T3B3N3JNT4WT4 vertex;
 	std::vector<VERTEX_POS3UV2T3B3N3JNT4WT4> vertices;
-	myMesh = myLoader.readAnimatedMeshFile(fileName);
+	myLoader.readAnimatedMeshFile(fileName, &myMesh);
 	int gg = 0;
 	for (int i = 0; i <   myMesh.mesh_nrOfVertices; i++)
 	{
