@@ -528,7 +528,7 @@ void GameManager::addBuildings()
 	j = 234;
 	i = (300 - i);
 	j = (300 - j);
-	GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	GameObject* tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+5, j, 0));
 	Prop* treeProp = new Prop();
 	tree->addComponent(treeProp);
 	tree->name = "Tree";
@@ -538,6 +538,75 @@ void GameManager::addBuildings()
 	tree->addComponent(meshFilterTree);
 	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
 
+	i = 98;
+	j = 210;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+	i = 198;
+	j = 96;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+	i = 181;
+	j = 100;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+	i = 80;
+	j = 98;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
+
+	i = 133;
+	j = 166;
+	i = (300 - i);
+	j = (300 - j);
+	tree = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+5, j, 0));
+	treeProp = new Prop();
+	tree->addComponent(treeProp);
+	tree->name = "Tree";
+	tree->tag = 0;
+	tree->raycastOption = RayCastOptions::NONE;
+	meshFilterTree = new MeshFilter(AssetManager.getMesh("Spruce_Tree2"));
+	tree->addComponent(meshFilterTree);
+	tree->addComponent(new MaterialFilter(AssetManager.getMaterial("TreeMaterial")));
 
 	//Flowers/Bushes
 	i = 210;
