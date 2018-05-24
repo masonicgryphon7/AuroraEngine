@@ -167,14 +167,21 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMesh("Assets/FlowersAndBushes4.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Fern.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/LionPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
-		AssetManager.AddMesh("Assets/Worker/Worker.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMeshFromBinary("Assets/Worker_Worker_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/RuinedPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Pillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Brazier.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+
+
+		AssetManager.AddMesh("Assets/Hero1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Soldier1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 
 		//PathCreator.createNodes();
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 50, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
 		cam = new Camera(HEIGHT, WIDTH, 30, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
@@ -214,7 +221,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 		//
-		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(150, 30, 150, 0));
+		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(150, 10, 130, 0));
 		animatedGO->name = "Animator";
 		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
 		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
@@ -422,6 +429,18 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/Fern_Fern_Normal.png");
 	AssetManager.addTexture("Assets/Fern_Fern_OcclusionRoughnessMetallic.png");
 
+	AssetManager.addTexture("Assets/Brazier_Brazier_BaseColor.png");
+	AssetManager.addTexture("Assets/Brazier_Brazier_Normal.png");
+	AssetManager.addTexture("Assets/Brazier_Brazier_OcclusionRoughnessMetallic.png");
+
+	AssetManager.addTexture("Assets/RuinedPillar_BrokenPillar_BaseColor.png");
+	AssetManager.addTexture("Assets/RuinedPillar_BrokenPillar_Normal.png");
+	AssetManager.addTexture("Assets/RuinedPillar_BrokenPillar_OcclusionRoughnessMetallic.png");
+
+	AssetManager.addTexture("Assets/Pillar_Pillar_BaseColor.png");
+	AssetManager.addTexture("Assets/Pillar_Pillar_Normal.png");
+	AssetManager.addTexture("Assets/Pillar_Pillar_OcclusionRoughnessMetallic.png");
+
 	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_BaseColor.png");
 	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_Normal.png");
 	assetManager.addTexture("Assets/FlowersAndBushes1_FlowerGrowth_OcclusionRoughnessMetallic.png");
@@ -465,6 +484,23 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
 	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
 
+	//RuinedPillarMaterial
+	assetManager.AddMaterial("RuinedPillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("RuinedPillarMaterial")->setAlbedo(assetManager.getTexture("RuinedPillar_BrokenPillar_BaseColor")->getTexture());
+	assetManager.getMaterial("RuinedPillarMaterial")->setNormal(assetManager.getTexture("RuinedPillar_BrokenPillar_Normal")->getTexture());
+	assetManager.getMaterial("RuinedPillarMaterial")->setAORoughMet(assetManager.getTexture("RuinedPillar_BrokenPillar_RoughMetalAo")->getTexture());
+
+	//PillarMaterial
+	assetManager.AddMaterial("PillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("PillarMaterial")->setAlbedo(assetManager.getTexture("Pillar_Pillar_BaseColor")->getTexture());
+	assetManager.getMaterial("PillarMaterial")->setNormal(assetManager.getTexture("Pillar_Pillar_Normal")->getTexture());
+	assetManager.getMaterial("PillarMaterial")->setAORoughMet(assetManager.getTexture("Pillar_Pillar_RoughMetalAo")->getTexture());
+
+	//BrazierMaterial
+	assetManager.AddMaterial("BrazierMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("BrazierMaterial")->setAlbedo(assetManager.getTexture("Brazier_Brazier_BaseColor")->getTexture());
+	assetManager.getMaterial("BrazierMaterial")->setNormal(assetManager.getTexture("Brazier_Brazier_Normal")->getTexture());
+	assetManager.getMaterial("BrazierMaterial")->setAORoughMet(assetManager.getTexture("Brazier_Brazier_RoughMetalAo")->getTexture());
 
 	//Unit Material
 	//assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -523,6 +559,7 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("FernMaterial")->setNormal(assetManager.getTexture("Fern_Fern_Normal")->getTexture());
 	assetManager.getMaterial("FernMaterial")->setAORoughMet(assetManager.getTexture("Fern_Fern_OcclusionRoughnessMetallic")->getTexture());
 
+	//Flower Material
 	assetManager.AddMaterial("FlowersAndBushesMaterial", assetManager.getShaderProgram("FragmentOpacity.hlsl"));
 	assetManager.getMaterial("FlowersAndBushesMaterial")->setAlpha(true);
 	assetManager.getMaterial("FlowersAndBushesMaterial")->setAlbedo(assetManager.getTexture("FlowersAndBushes1_FlowerGrowth_BaseColor")->getTexture());

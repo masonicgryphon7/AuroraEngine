@@ -307,6 +307,8 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 			if (lerpValue > 1) {
 				lerpValue = 1;
 			}
+			if (this->getUnitCommand() == Drop)
+				worker_has_path = true;
 			DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 			DirectX::XMFLOAT3 goalVec;
 			DirectX::XMStoreFloat3(&goalVec, goal);
@@ -314,7 +316,9 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 
 			if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() > 1) {
 				previousPos = goal;
-
+				if(this->getType() == Worker && worker_has_path == true)
+				worker_return_path.push_back(pathNodes[0]);
+				
 				pathNodes.erase(pathNodes.begin());
 
 				goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
@@ -322,12 +326,19 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 			}
 			else if (DirectX::XMVectorGetW(DirectX::XMVector3Length(DirectX::XMVectorSubtract(goal, gameObject->transform.getPosition()))) < EPSILON &&pathNodes.size() == 1) {
 				previousPos = goal;
-
+				if (this->getType() == Worker && worker_has_path == true)
+				worker_return_path.push_back(pathNodes[0]);
 				pathNodes.erase(pathNodes.begin());
 				lerpValue = 0;
 				//UnitOrders.erase(UnitOrders.begin() + 1);
+				
 
-
+			}
+			if (pathNodes.size() == 0 && this->getType() == Worker && worker_has_path && this->getUnitCommand() == Gather || this->getUnitCommand() == Drop )
+			{
+				std::reverse(worker_return_path.begin(), worker_return_path.end());
+				pathNodes = worker_return_path;
+				worker_return_path.clear();
 			}
 			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
 
@@ -706,7 +717,7 @@ void Unit::summonWorkerCommand()
 			GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 			worker->name = "worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 			worker->tag = gameObject->tag;
-			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker"));
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker_Worker_Mesh"));
 			worker->addComponent(meshFilter);
 			worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 			Unit *unitworker = new Unit(Worker);
@@ -737,7 +748,7 @@ void Unit::convertToSoldierCommand(Unit* targetedUnit)
 		if (getDistanceBetweenUnits(unitPos, targetPos) < this->attackDistance)
 		{
 			gameObject->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
-			gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("PIRATE"));
+			gameObject->getComponent<MeshFilter>()->setMesh(AssetManager.getMesh("Soldier1"));
 			gameObject->getComponent<MaterialFilter>()->setMaterialFilter(AssetManager.getMaterial("SoldierMaterial"));
 			gameObject->getComponent<Unit>()->type = Soldier;
 			gameObject->getComponent<Unit>()->healthPoints = 20;
@@ -770,7 +781,7 @@ void Unit::summonSoldierCommand()
 			GameObject* soldier = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 			soldier->name = "Soldier" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 			soldier->tag = gameObject->tag;
-			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("PIRATE"));
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Soldier1"));
 			soldier->addComponent(meshFilter);
 			soldier->addComponent(new MaterialFilter(AssetManager.getMaterial("SoldierMaterial")));
 			Unit *unitSoldier = new Unit(Soldier);

@@ -13,86 +13,23 @@ namespace MyLibrary
 	public:
 		Loadera();
 		~Loadera();
-
-		MeshFromFile readMeshFile(std::string fileName);
-		AnimatedMeshFromFile readAnimatedMeshFile(std::string fileName);
-		CameraFromFile readCameraFile(std::string fileName);
+	
+		bool readMeshFile(std::string fileName, MeshFromFile *inMesh);
+		bool readAnimatedMeshFile(std::string fileName, AnimatedMeshFromFile *inMesh);
+		bool readCameraFile(std::string fileName, CamerasFromFile *inCamera);
 		MaterialFromFile readMaterialFile(std::string fileName);
-		LightFromFile readLightFile(std::string fileName);
-		bool readMorphAnimationFile(std::string fileName);
-		SkeletonFromFile readSkeletonFile(std::string fileName);
-		AnimationFromFile readAnimationFile(std::string fileName, int nrOfJoints);
-		bool readGroupFile(std::string fileName);
-		
+		CustomAttributes readCustomAttributeFile(std::string fileName);
+		bool readMorphAnimationFile(std::string fileName, MorphAnimationFromFile *inMorph);
+		bool readSkeletonFile(std::string fileName, SkeletonFromFile *inSkeleton);
+		bool readAnimationFile(std::string fileName, int nrOfJoints, AnimationFromFile *inAnim);
+		bool readGroupFile(std::string fileName, Group * inGroup);
+		bool readLightFile(std::string fileName, LightFromFile *inLight);
 	private:
-		int getNrOfVerticesFromFile(std::ifstream& file);
-		void calculateTangentsAndBitangents(AnimatedMeshFromFile mesh);
+		
+		template<typename T> 
+		void calculateTangentsAndBitangents(T mesh);
+
+		
 	};
 
-
-	//			//Mesh functions
-	////-----------------------------------------//
-	//
-	//int getNrOfVerticesFromFile(std::ifstream& file)
-	//{
-	//	//read number of vertices in mesh from custom file
-	//	int nrOfVerticesInFile = 0;
-	//
-	//
-	//	return nrOfVerticesInFile;
-	//}
-	//
-	////Vertex getVerticesFromFile(std::ifstream& file, int nrOfVertices)
-	////{
-	////	//get all the vertex data from the file
-	////	Vertex verticesInFile;
-	////
-	////	return verticesInFile;
-	////}
-	//
-	//int getMeshIdFromFile(std::ifstream& file)
-	//{
-	//	//get meshID from the file
-	//	int meshIdInFile = 0;
-	//
-	//	return meshIdInFile;
-	//}
-	//
-	//int getMaterialIdFromFile(std::ifstream& file)
-	//{
-	//	//get materialID from the file
-	//	int materialIdInFile = 0;
-	//
-	//	return materialIdInFile;
-	//}
-	//
-	//			//Camera functions
-	////-----------------------------------------//
-	//
-	//int getNrOfCamerasFromFile(std::ifstream& file)
-	//{
-	//	int nrOfCamerasInFile = 0;
-	//
-	//	return nrOfCamerasInFile;
-	//}
-	//
-	//			//Material functions
-	////----------------------------------------//
-	//
-	//int getNrOfMaterialsFromFile(std::ifstream& file)
-	//{
-	//	int nrOfMaterialsInFile = 0;
-	//
-	//	return nrOfMaterialsInFile;
-	//}
-	//
-	//			//Light functions
-	////---------------------------------------//
-	//
-	//int getNrOfLightsFromFile(std::ifstream& file)
-	//{
-	//	int nrOfLightsInFile = 0;
-	//
-	//	return nrOfLightsInFile;
-	//}
 }
