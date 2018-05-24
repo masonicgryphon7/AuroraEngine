@@ -396,9 +396,9 @@ void GameManager::addBuildings()
 
 	//-------------------------------------------
 
-	i = 125;
-	j = 235;
-	barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	i = 135;
+	j = 215;
+	barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+ 1, j, 0));
 	barrackGameObject->name = "Barrack";
 	barrackGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("CryptBarracksFinale1"));
@@ -491,10 +491,10 @@ void GameManager::addBuildings()
 
 	//-------------------------------------------
 
-	i = 110;
-	j = 235;
+	i = 120;
+	j = 215;
 
-	bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y + 1, j, 0));
 	bankGameObject->name = "Bank";
 	bankGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("FinalSilo1OBJ"));
