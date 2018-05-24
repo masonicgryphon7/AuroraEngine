@@ -148,11 +148,11 @@ Command Unit::getUnitCommand()
 
 void Unit::setUnitOrder(Order newOrder)
 {
-	if (this->UnitOrders.size() > 0)
+	if (this->UnitOrders.empty() || (!this->UnitOrders.empty() && this->UnitOrders.at(0).command != Die))
 	{
-		this->clearUnitOrder();
+		UnitOrders.clear();
+		this->UnitOrders.push_back(newOrder);
 	}
-	this->UnitOrders.push_back(newOrder);
 }
 
 void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
@@ -523,34 +523,37 @@ void Unit::FollowCommand()
 
 void Unit::gatherCommand(Unit* targetedUnit)
 {
-	unitPos = gameObject->transform.getPosition();
-	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true && targetedUnit->gameObject->unitIsAvtive == true)
+	if (targetedUnit->gameObject != nullptr && this->homePos != nullptr && this->homePos->gameObject != nullptr)
 	{
-		if (this->Resources < 100 && e == 0 && targetedUnit->gameObject->unitIsAvtive == true) // worker is not full
+		unitPos = gameObject->transform.getPosition();
+		if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == false || targetedUnit->gameObject->unitIsAvtive == false)
 		{
-			if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
+			UnitOrders.erase(UnitOrders.begin());
+		}
+		else {
+			if (this->Resources < 100 && e == 0 && targetedUnit->gameObject->unitIsAvtive == true) // worker is not full
 			{
-				gatherResources();
+				if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
+				{
+					gatherResources();
+				}
+				else
+				{
+					SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+				}
 			}
-			else
+			else if (this->Resources > 0 && e == 1 && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
 			{
-				SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+				if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+				{
+					dropResources();
+				}
+				else
+				{
+					SecondMoveCommand(&this->homePos->getPosition());
+				}
 			}
 		}
-		else if (this->Resources > 0 && e == 1 && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
-		{
-			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
-			{
-				dropResources();
-			}
-			else
-			{
-				SecondMoveCommand(&this->homePos->getPosition());
-			}
-		}
-	}
-	else {
-		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
@@ -1049,51 +1052,58 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 
 void Unit::ReceiveOrder(OPTIONS option)
 {
-	UnitOrders.clear();
-	pathNodes.clear();
-
-	Order tempOrder;
-	switch (type)
+	if (!UnitOrders.empty() && UnitOrders.at(0).command == Command::Die)
 	{
-	case Type::Bank:
-		if (option == Option0)
-		{
-			tempOrder.command = SummonWorker;
-			UnitOrders.push_back(tempOrder);
-		}
-		else if (option == Option1)
-		{
 
-		}
-		else if (option == Option2)
-		{
+	}
+	else
+	{
+		UnitOrders.clear();
+		pathNodes.clear();
 
-		}
-		else if (option == Option3)
+		Order tempOrder;
+		switch (type)
 		{
+		case Type::Bank:
+			if (option == Option0)
+			{
+				tempOrder.command = SummonWorker;
+				UnitOrders.push_back(tempOrder);
+			}
+			else if (option == Option1)
+			{
 
-		}
-		break;
+			}
+			else if (option == Option2)
+			{
 
-	case Type::Barrack:
-		if (option == Option0)
-		{
-			tempOrder.command = SummonSoldier;
-			UnitOrders.push_back(tempOrder);
-		}
-		else if (option == Option1)
-		{
+			}
+			else if (option == Option3)
+			{
 
-		}
-		else if (option == Option2)
-		{
+			}
+			break;
 
-		}
-		else if (option == Option3)
-		{
+		case Type::Barrack:
+			if (option == Option0)
+			{
+				tempOrder.command = SummonSoldier;
+				UnitOrders.push_back(tempOrder);
+			}
+			else if (option == Option1)
+			{
 
+			}
+			else if (option == Option2)
+			{
+
+			}
+			else if (option == Option3)
+			{
+
+			}
+			break;
 		}
-		break;
 	}
 }
 
@@ -1166,7 +1176,10 @@ void Unit::update()
 			break;
 		}
 		
-		
+		//if ((this->getType() == Worker || this->getType() == Soldier) && this->homePos->gameObject->unitIsAvtive == false || this->homePos != nullptr)
+		//{
+		//	this->setHomePos(nullptr);
+		//}
 		
 	}
 

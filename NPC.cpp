@@ -112,7 +112,32 @@ void NPC::update()
 				}
 			}
 
-			
+			for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
+			{
+				bool foundBank = false;
+				if (gamemanager.unitLists[2][i]->getType() == Worker && gamemanager.unitLists[2][i]->getUnitOrders().size() == 0)
+				{
+					if (gamemanager.unitLists[2][i]->getHomePos() == nullptr)
+					{
+						for (int j = 0; j < gamemanager.buildingLists[2].size(); j++)
+						{
+							if (gamemanager.buildingLists[2][j]->getType() == Bank)
+							{
+								gamemanager.unitLists[2][i]->setHomePos(&gamemanager.buildingLists[2][j]->gameObject->transform);
+								foundBank = true;
+							}
+						}
+					}
+					if(gamemanager.unitLists[2][i]->getHomePos() != nullptr)
+						gather(gamemanager.unitLists[2][i]);
+				}
+
+				if (foundBank == false)
+				{
+					gamemanager.unitLists[2][i]->setHomePos(nullptr);
+				}
+			}
+
 
 			if (gamemanager.ringState == RING_STATE::MOVE)//&& distanceToMiddle > 150
 			{

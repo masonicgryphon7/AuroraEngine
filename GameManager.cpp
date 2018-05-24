@@ -119,7 +119,7 @@ void GameManager::update()
 		ringState = NO_MOVE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 12)
 		{
 			//Debug.Log(ringOfFire); 
 			ringState = RING_STATE::MOVE;
@@ -133,7 +133,7 @@ void GameManager::update()
 		dmgRing();
 		break;
 	case MEDIUM_CIRCLE_STATE:
-		if (gameTime >= 180)
+		if (gameTime >= 18)
 		{
 			//Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
