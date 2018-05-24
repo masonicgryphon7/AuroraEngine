@@ -205,8 +205,8 @@ void PlayerScript::update()
 		}
 	}
 
-	/*if (Input.GetKey(KeyCode::Escape))
-		exit(-1);*/
+	if (Input.GetKey(KeyCode::Escape))
+		exit(-1);
 
 
 		//Mouse

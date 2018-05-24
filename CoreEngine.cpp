@@ -50,7 +50,6 @@ CoreEngine::~CoreEngine()
 		if (!FreeConsole())
 			MessageBox(0, L"Couldn't turn off debug console!", 0, 0);
 	}
-
 	SAFE_RELEASE(m_alphaDisabledBlendState);
 	SAFE_RELEASE(m_alphaEnableBlendState);
 	SAFE_RELEASE(m_depthStencilBuffer);
@@ -70,6 +69,7 @@ CoreEngine::~CoreEngine()
 
 	Input.~InputHandler();
 	gScene.~Scene();
+	gamemanager.~GameManager();
 	AssetManager.~cAssetManager();
 	SAFE_RELEASE(gDeviceContext);
 	SAFE_RELEASE(gDevice);
@@ -150,7 +150,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//----------------
 		GameManager gameManager = GameManager(gDevice, gDeviceContext);
-
+		PathCreator = cPathCreator(300, 300);
 		if (!PLAYER_BUILD)
 			createTerrain();
 
@@ -323,6 +323,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		if (player != nullptr)
 			delete player;
 
+		gameManager.~GameManager();
 		delete renderManager;
 		DestroyWindow(wndHandle);
 	}
@@ -692,8 +693,7 @@ int CoreEngine::createTerrain()
 	//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
 
 
-	cPathCreator* PathCreator1 = new cPathCreator(300, 300); // 200x200
-	PathCreator1->addTerrain(Terrain->getRealVertArr(), 0, 0);
+	PathCreator.addTerrain(Terrain->getRealVertArr(), 0, 0);
 	//PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 0, 198);
 	//PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 99, 0);
 	//PathCreator1->addTerrain(terrainGenerator5->getRealVertArr(), 99, 99);
@@ -703,7 +703,7 @@ int CoreEngine::createTerrain()
 	//PathCreator1->addTerrain(terrainGenerator7->getRealVertArr(), 198, 0);
 
 	PathCreator.trumpTheBorders();
-
+	delete Terrain;
 	//PathCreator.createNodes();
 	return 1;
 }
