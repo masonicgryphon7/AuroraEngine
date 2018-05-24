@@ -173,6 +173,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.AddMesh("Assets/Brazier.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 
+		AssetManager.AddMesh("Assets/Hero1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Soldier1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+
+
 		//PathCreator.createNodes();
 
 		// Create a Main Camera
