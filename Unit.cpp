@@ -726,7 +726,7 @@ void Unit::summonWorkerCommand()
 			GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 			worker->name = "worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 			worker->tag = gameObject->tag;
-			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker_Worker_Mesh"));
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker"));
 			worker->addComponent(meshFilter);
 			worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 			Unit *unitworker = new Unit(Worker);
