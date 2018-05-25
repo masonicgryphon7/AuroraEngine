@@ -509,16 +509,29 @@ void CoreEngine::addMaterials()
 	//assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
 
 	//Soldier material
+	AssetManager.addTexture("Assets/Soldier3_Soldier_BaseColor.png");
+	AssetManager.addTexture("Assets/Soldier3_Soldier_Normal.png");
+	AssetManager.addTexture("Assets/Soldier3_Soldier_OcclusionRoughnessMetallic.png");
+	AssetManager.addTexture("Assets/Soldier3_Soldier_Emissive.png");
+
 	assetManager.AddMaterial("SoldierMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("SoldierMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
-	assetManager.getMaterial("SoldierMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
-	assetManager.getMaterial("SoldierMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("SoldierMaterial")->setAlbedo(assetManager.getTexture("Soldier3_Soldier_BaseColor")->getTexture());
+	assetManager.getMaterial("SoldierMaterial")->setNormal(assetManager.getTexture("Soldier3_Soldier_Normal")->getTexture());
+	assetManager.getMaterial("SoldierMaterial")->setAORoughMet(assetManager.getTexture("Soldier3_Soldier_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("SoldierMaterial")->setTeamIdMap(assetManager.getTexture("Soldier3_Soldier_Emissive")->getTexture());
+
 
 	//Hero material
+	AssetManager.addTexture("Assets/Hero3_Hero_BaseColor.png");
+	AssetManager.addTexture("Assets/Hero3_Hero_Normal.png");
+	AssetManager.addTexture("Assets/Hero3_Hero_OcclusionRoughnessMetallic.png");
+	AssetManager.addTexture("Assets/Hero3_Hero_Emissive.png");
+
 	assetManager.AddMaterial("HeroMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("HeroMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
-	assetManager.getMaterial("HeroMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
-	assetManager.getMaterial("HeroMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setAlbedo(assetManager.getTexture("Hero3_Hero_BaseColor")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setNormal(assetManager.getTexture("Hero3_Hero_Normal")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setAORoughMet(assetManager.getTexture("Hero3_Hero_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setTeamIdMap(assetManager.getTexture("Hero3_Hero_Emissive")->getTexture());
 
 	//Bank material
 	assetManager.AddMaterial("BankMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
