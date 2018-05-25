@@ -24,7 +24,7 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 	sBuffer[1] = alutCreateBufferFromFile("Assets/sound/Hurt.wav");
 	sBuffer[2] = alutCreateBufferFromFile("Assets/sound/Attack.wav");
 	sBuffer[3] = alutCreateBufferFromFile("Assets/sound/Gather.wav");
-	sBuffer[4] = alutCreateBufferFromFile("Assets/sound/Build.wav");
+	sBuffer[4] = alutCreateBufferFromFile("Assets/sound/HurtFire.wav");
 	sBuffer[5] = alutCreateBufferFromFile("Assets/sound/Move.wav");
 	sBuffer[6] = alutCreateBufferFromFile("Assets/sound/Summon.wav");
 	sBuffer[7] = alutCreateBufferFromFile("Assets/sound/Follow.wav");
@@ -40,7 +40,7 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 	}
 
 	alSourcei(source[0], AL_LOOPING, AL_TRUE);
-
+	playMain();
 }
 
 
@@ -78,7 +78,7 @@ void AudioListener::playAttack()
 		alSourcePlay(source[2]);
 }
 
-void AudioListener::playBuild()
+void AudioListener::playHurtFire()
 {
 	alGetSourcei(source[4], AL_SOURCE_STATE, &state);
 	if (state != AL_PLAYING)
@@ -125,64 +125,63 @@ void AudioListener::update()
 	
 	//alListener3f(AL_POSITION, DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
 
-	if (Input.GetKey(KeyCode::R))
-		playMain();
-	if (Input.GetKey(KeyCode::T))
-		playHurt();
-	if (Input.GetKey(KeyCode::Y))
-		playAttack();
-	if (Input.GetKey(KeyCode::U))
-		playBuild();
-	if (Input.GetKey(KeyCode::I))
-		playFollow();
-	if (Input.GetKey(KeyCode::O))
-		playMove(multiPlay);
-	if (Input.GetKey(KeyCode::P))
-		playSummon();
-	if (Input.GetKey(KeyCode::Q))
-		playGather();
-
 
 	for (int i = 0; i < sceneObjects[0].size(); i++)
 	{
 		if (sceneObjects[0][i]->tag > 0) {
 			Unit* unit = sceneObjects[0][i]->getComponent<Unit>();
-			if (unit != nullptr) {
 
-				if (unit->getUnitOrders().size() > 0)
+			if (unit != nullptr && state != AL_PLAYING) {
+
+				switch (unit->getSoundAction())
 				{
-					Order order = unit->getUnitOrders()[0];
-					if (unit != nullptr && state != AL_PLAYING) {
 
-						switch (order.command)
-						{
+				case 0:
+					break;
 
-						case Command::Move:
-							multiPlay++;
-							playMove(multiPlay);
-							break;
+				case 1:
+					multiPlay++;
+					playMove(multiPlay);
+					break;
 
-						case Command::Attack:
-							playAttack();
-							playHurt();
-							break;
+				case 2:
+					playAttack();
 
-						case Command::Gather:
-							playGather();
-							break;
+					break;
 
-						case Command::Idle:
+				case 3:
+					//playDmg();
+					break;
+
+				case 4:
+					playHurtFire();
+					break;
+
+				case 5:
+					playGather();
+
+					break;
+
+				case 6:
+					//playDrop();
+					break;
+
+				case 7:
+					playSummon();
+					break;
+
+				case 8:
+					//PlayTake();
+					break;
+
+				case 9:
+					//PlayDied();
+					break;
+
+				default:
+					break;
 						
-							break;
-
-						case Command::SummonWorker:
-							playSummon();
-							break;
-
-						default:
-							break;
-						}
-					}
+					
 				}
 			}
 			//DirectX::XMVECTOR cubepos = sceneObjects[0][i]->transform.getPosition();

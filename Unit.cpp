@@ -143,23 +143,24 @@ Command Unit::getUnitCommand()
 	else
 	{ 
 		return Idle; 
+		this->soundAction = 0;
 	};
 }
 
 void Unit::setUnitOrder(Order newOrder)
 {
-	if (this->UnitOrders.size() > 0)
+	if (this->UnitOrders.empty() || (!this->UnitOrders.empty() && this->UnitOrders.at(0).command != Die))
 	{
-		this->clearUnitOrder();
+		UnitOrders.clear();
+		this->UnitOrders.push_back(newOrder);
 	}
-	this->UnitOrders.push_back(newOrder);
 }
 
 void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 {
 	if (gameObject->unitIsAvtive == true)
 	{
-
+		this->soundAction = 1;
 
 		DirectX::XMFLOAT3 current;
 		DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
@@ -223,7 +224,7 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 				
 				lerpValue = 0;
 				UnitOrders.erase(UnitOrders.begin());
-
+				this->soundAction = 0;
 			}
 			gameObject->transform.setPosition(DirectX::XMVectorLerp(previousPos, goal, lerpValue));
 
@@ -269,7 +270,6 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		else
 		{
 			lerpValue = 0;
-
 		}
 	}
 }
@@ -278,6 +278,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 {
 	if (gameObject->unitIsAvtive == true)
 	{
+		this->soundAction = 1;
 		DirectX::XMFLOAT3 current;
 		DirectX::XMStoreFloat3(&current, gameObject->transform.getPosition());
 
@@ -331,7 +332,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 				pathNodes.erase(pathNodes.begin());
 				lerpValue = 0;
 				//UnitOrders.erase(UnitOrders.begin() + 1);
-				
+				this->soundAction = 0;
 
 			}
 			if (pathNodes.size() == 0 && this->getType() == Worker && worker_has_path && this->getUnitCommand() == Gather || this->getUnitCommand() == Drop )
@@ -382,7 +383,6 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		else
 		{
 			lerpValue = 0;
-
 		}
 	}
 	//Debug.Log("Moving");
@@ -408,6 +408,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 					targetedUnit->takeDamage(this->getAttackPoints(), gameObject->getComponent<Unit>());
 					//Debug.Log("Enemy Hit!");
 					actionTime = 0;
+					this->soundAction = 2;
 				}
 			}
 			else
@@ -421,6 +422,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 	}
 	else {
 		UnitOrders.erase(UnitOrders.begin());
+		this->soundAction = 0;
 	}
 
 }
@@ -438,6 +440,8 @@ void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 {
 	if(attackPoints > this->getDefencePoints())
 		this->setHealthPoints(this->getHealthPoints() - (attackPoints - this->getDefencePoints()));
+
+	this->soundAction = 3;
 
 	if (this->UnitOrders.size() == 0)
 	{
@@ -461,6 +465,7 @@ void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 
 void Unit::takeFireDamage(float attackPoints)
 {
+	this->soundAction = 4;
 	this->setHealthPoints(this->getHealthPoints() - attackPoints);
 	if (healthPoints <= 0)
 	{
@@ -534,33 +539,55 @@ void Unit::FollowCommand()
 
 void Unit::gatherCommand(Unit* targetedUnit)
 {
-	unitPos = gameObject->transform.getPosition();
-	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true && targetedUnit->gameObject->unitIsAvtive == true)
+	if (targetedUnit->gameObject != nullptr) //&& this->homePos != nullptr && this->homePos->gameObject != nullptr)
 	{
-		if (this->Resources < 100 && e == 0 && targetedUnit->gameObject->unitIsAvtive == true) // worker is not full
+		unitPos = gameObject->transform.getPosition();
+		if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == false || targetedUnit->gameObject->unitIsAvtive == false)
 		{
-			if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
-			{
-				gatherResources();
-			}
-			else
-			{
-				SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
-			}
+			UnitOrders.erase(UnitOrders.begin());
 		}
-		else if (this->Resources > 0 && e == 1 && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
-		{
-			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+		else {
+			if (this->Resources < 100 && e == 0 && targetedUnit->gameObject->unitIsAvtive == true) // worker is not full
 			{
-				dropResources();
+				if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance)
+				{
+					gatherResources();
+				}
+				else
+				{
+					SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
+				}
 			}
-			else
+			else if (this->Resources > 0 && e == 1) //&& this->homePos->gameObject != nullptr && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
 			{
-				SecondMoveCommand(&this->homePos->getPosition());
+				float tempDistance = 100000;
+				float len = 100000.0;
+				Transform* dropPos = &this->gameObject->transform;
+				for (int i = 0; i < gamemanager.buildingLists[this->gameObject->tag].size(); i++)
+				{
+					if (gamemanager.buildingLists[this->gameObject->tag][i]->getType() == Bank)
+					{
+						len = getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[this->gameObject->tag][i]->gameObject->transform.getPosition());
+						if(len < tempDistance)
+						{
+							dropPos = &gamemanager.buildingLists[this->gameObject->tag][i]->gameObject->transform;
+						}
+
+					}
+				}
+				if (len < this->attackDistance)
+				{
+					dropResources(dropPos);
+				}
+				else if(dropPos != &this->gameObject->transform)
+				{
+					SecondMoveCommand(&dropPos->getPosition());
+				}
 			}
 		}
 	}
-	else {
+	else
+	{
 		UnitOrders.erase(UnitOrders.begin());
 	}
 }
@@ -598,6 +625,7 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 
 void Unit::gatherResources()
 {
+	this->soundAction = 5;
 	actionTime += Time.getDeltaTime();
 	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true)
 	{
@@ -622,15 +650,16 @@ void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
 	findClosest = 10000;//////////////
+	
+	this->homePos = &targetedUnit->gameObject->transform;
 
 	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
-		this->homePos = &targetedUnit->gameObject->transform;
 		if (this->Resources > 0)
 		{
 			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
 			{
-				dropResources();
+				dropResources(this->homePos);
 			}
 			else
 			{
@@ -673,18 +702,21 @@ void Unit::dropCommand(Unit* targetedUnit)
 	}
 }
 
-void Unit::dropResources()
+void Unit::dropResources(Transform* dropPos)
 {
+	this->soundAction = 6;
 	actionTime += Time.getDeltaTime();
-	if (this->homePos->gameObject->unitIsAvtive == true)
+	if (dropPos->gameObject->unitIsAvtive == true)
 	{
 		if (actionTime > 1)
 		{
 			int resourcesInUnit = this->getResources();
 			this->setResources(resourcesInUnit - 20);
 			//Debug.Log("Resources dropped! In worker: ", this->getResources());
-			int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
-			this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+			//int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
+			int resourcesInTarget = gamemanager.unitLists[this->gameObject->tag][0]->getResources();
+			//this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+			gamemanager.unitLists[this->gameObject->tag][0]->setResources(resourcesInTarget + 20);
 			//Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
 			if (this->Resources == 0)
 				e = 0;
@@ -717,19 +749,19 @@ void Unit::summonWorkerCommand()
 			GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 			worker->name = "worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 			worker->tag = gameObject->tag;
-			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker_Worker_Mesh"));
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker"));
 			worker->addComponent(meshFilter);
 			worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 			Unit *unitworker = new Unit(Worker);
-			unitworker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
-			worker->addComponent(unitworker);
+			unitworker->setHomePos(&this->gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+			worker->addComponent(unitworker );
 			//playerScript->friendlyUnits.push_back(unitworker);
 			unitworker->setPlayerScript(playerScript);
 			gamemanager.unitLists[gameObject->tag].push_back(unitworker);
 
 			Order tempOrder;
 			tempOrder.command = Move;
-			tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+			tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(-7.0, 0.0, 0.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
 			unitworker->getUnitOrdersPointer()->push_back(tempOrder);
 
 			temp2->setResources(temp - 60);
@@ -820,6 +852,8 @@ void Unit::takeBuildingCommand(Unit * targetedUnit)
 				{
 					if (gamemanager.buildingLists[targetedUnit->gameObject->tag][i] == targetedUnit)
 					{
+						this->soundAction = 8;
+
 						gamemanager.buildingLists[targetedUnit->gameObject->tag].erase(gamemanager.buildingLists[targetedUnit->gameObject->tag].begin() + i);
 						targetedUnit->gameObject->tag = gameObject->tag;
 						gamemanager.buildingLists[gameObject->tag].push_back(targetedUnit);
@@ -842,6 +876,7 @@ void Unit::dieCommand()
 {
 	dieTime += Time.getDeltaTime();
 	gameObject->unitIsAvtive = false;
+	this->soundAction = 9;
 	if(dieTime > 1)
 		gameObject->transform.setPosition(DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(0, dieTime*0.01, 0, 0)));
 	if (dieTime > 3)
@@ -850,11 +885,24 @@ void Unit::dieCommand()
 		//Debug.Log("Play death animation here");
 		dieTime = 0;
 		UnitOrders.erase(UnitOrders.begin());
-		for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
+		if (this->getType() == Soldier || this->getType() == Worker || this->getType() == Hero)
 		{
-			if (this == gamemanager.unitLists[gameObject->tag][i])
+			for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
 			{
-				gamemanager.unitLists[gameObject->tag].erase(gamemanager.unitLists[gameObject->tag].begin() + i);
+				if (this == gamemanager.unitLists[gameObject->tag][i])
+				{
+					gamemanager.unitLists[gameObject->tag].erase(gamemanager.unitLists[gameObject->tag].begin() + i);
+				}
+			}
+		}
+		if (this->getType() == Barrack || this->getType() == Bank || this->getType() == GoldMine)
+		{
+			for (int i = 0; i < gamemanager.buildingLists[gameObject->tag].size(); i++)
+			{
+				if (this == gamemanager.buildingLists[gameObject->tag][i])
+				{
+					gamemanager.buildingLists[gameObject->tag].erase(gamemanager.buildingLists[gameObject->tag].begin() + i);
+				}
 			}
 		}
 		destroyUnit();
@@ -1060,51 +1108,58 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 
 void Unit::ReceiveOrder(OPTIONS option)
 {
-	UnitOrders.clear();
-	pathNodes.clear();
-
-	Order tempOrder;
-	switch (type)
+	if (!UnitOrders.empty() && UnitOrders.at(0).command == Command::Die)
 	{
-	case Type::Bank:
-		if (option == Option0)
-		{
-			tempOrder.command = SummonWorker;
-			UnitOrders.push_back(tempOrder);
-		}
-		else if (option == Option1)
-		{
 
-		}
-		else if (option == Option2)
-		{
+	}
+	else
+	{
+		UnitOrders.clear();
+		pathNodes.clear();
 
-		}
-		else if (option == Option3)
+		Order tempOrder;
+		switch (type)
 		{
+		case Type::Bank:
+			if (option == Option0)
+			{
+				tempOrder.command = SummonWorker;
+				UnitOrders.push_back(tempOrder);
+			}
+			else if (option == Option1)
+			{
 
-		}
-		break;
+			}
+			else if (option == Option2)
+			{
 
-	case Type::Barrack:
-		if (option == Option0)
-		{
-			tempOrder.command = SummonSoldier;
-			UnitOrders.push_back(tempOrder);
-		}
-		else if (option == Option1)
-		{
+			}
+			else if (option == Option3)
+			{
 
-		}
-		else if (option == Option2)
-		{
+			}
+			break;
 
-		}
-		else if (option == Option3)
-		{
+		case Type::Barrack:
+			if (option == Option0)
+			{
+				tempOrder.command = SummonSoldier;
+				UnitOrders.push_back(tempOrder);
+			}
+			else if (option == Option1)
+			{
 
+			}
+			else if (option == Option2)
+			{
+
+			}
+			else if (option == Option3)
+			{
+
+			}
+			break;
 		}
-		break;
 	}
 }
 
@@ -1128,8 +1183,8 @@ void Unit::update()
 
 		case Command::Gather: //GATHER
 		{
-			Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
-			gatherCommand(targetedUnit);
+				Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+				gatherCommand(targetedUnit);
 		}
 		break;
 
@@ -1177,8 +1232,10 @@ void Unit::update()
 			break;
 		}
 		
-		
+		//if ((this->getType() == Worker || this->getType() == Soldier) && this->homePos->gameObject->unitIsAvtive == false || this->homePos != nullptr)
+		//{
+		//	this->setHomePos(nullptr);
+		//}
 		
 	}
-
 }

@@ -83,7 +83,7 @@ HRESULT GameManager::createBuffer(ID3D11Device* gDevice, ID3D11DeviceContext* gD
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = &Manager_BufferData;
-	gDevice->CreateBuffer(&ManagerDesc, &InitData, &GameManagerBuffer);
+	HRESULT res= gDevice->CreateBuffer(&ManagerDesc, &InitData, &GameManagerBuffer);
 	gDeviceContext->PSSetConstantBuffers(1, 1, &GameManagerBuffer);
 	return hr;
 }
@@ -133,7 +133,7 @@ void GameManager::update()
 		dmgRing();
 		break;
 	case MEDIUM_CIRCLE_STATE:
-		if (gameTime >= 180)
+		if (gameTime >= 18)
 		{
 			//Debug.Log(ringOfFire);  
 			//devCon->UpdateSubresource(GameManagerBuffer, 0, nullptr, &ringOfFire, 0, 0);
@@ -396,9 +396,9 @@ void GameManager::addBuildings()
 
 	//-------------------------------------------
 
-	i = 125;
-	j = 235;
-	barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	i = 135;
+	j = 215;
+	barrackGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y+ 1, j, 0));
 	barrackGameObject->name = "Barrack";
 	barrackGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("CryptBarracksFinale1"));
@@ -491,10 +491,10 @@ void GameManager::addBuildings()
 
 	//-------------------------------------------
 
-	i = 110;
-	j = 235;
+	i = 120;
+	j = 215;
 
-	bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
+	bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y + 1, j, 0));
 	bankGameObject->name = "Bank";
 	bankGameObject->tag = 0;
 	meshFilter2 = new MeshFilter(AssetManager.getMesh("FinalSilo1OBJ"));
@@ -918,7 +918,7 @@ void GameManager::addBuildings()
 	j = (300 - j);
 	GameObject* ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	Prop* ruinedPillarProp1 = new Prop();
-	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->addComponent(ruinedPillarProp1);
 	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
 	ruinedPillar1->name = "ruinedPillar1";
 	ruinedPillar1->tag = 0;
@@ -933,9 +933,9 @@ void GameManager::addBuildings()
 	j = (300 - j);
 	ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	ruinedPillarProp1 = new Prop();
-	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->addComponent(ruinedPillarProp1);
 	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
-	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->name = "ruinedPillar2";
 	ruinedPillar1->tag = 0;
 	ruinedPillar1->raycastOption = RayCastOptions::NONE;
 	meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));
@@ -948,9 +948,9 @@ void GameManager::addBuildings()
 	j = (300 - j);
 	ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	ruinedPillarProp1 = new Prop();
-	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->addComponent(ruinedPillarProp1);
 	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
-	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->name = "ruinedPillar3";
 	ruinedPillar1->tag = 0;
 	ruinedPillar1->raycastOption = RayCastOptions::NONE;
 	meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));
@@ -963,9 +963,9 @@ void GameManager::addBuildings()
 	j = (300 - j);
 	ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	ruinedPillarProp1 = new Prop();
-	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->addComponent(ruinedPillarProp1);
 	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
-	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->name = "ruinedPillar4";
 	ruinedPillar1->tag = 0;
 	ruinedPillar1->raycastOption = RayCastOptions::NONE;
 	meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));
@@ -978,9 +978,9 @@ void GameManager::addBuildings()
 	j = (300 - j);
 	ruinedPillar1 = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y, j, 0));
 	ruinedPillarProp1 = new Prop();
-	ruinedPillar1->addComponent(lionPillarProp1);
+	ruinedPillar1->addComponent(ruinedPillarProp1);
 	ruinedPillar1->transform.setRotation(DirectX::XMVectorSet(0, -90, 0, 0));
-	ruinedPillar1->name = "ruinedPillar1";
+	ruinedPillar1->name = "ruinedPillar5";
 	ruinedPillar1->tag = 0;
 	ruinedPillar1->raycastOption = RayCastOptions::NONE;
 	meshFilterRuinedPillar1 = new MeshFilter(AssetManager.getMesh("RuinedPillar"));

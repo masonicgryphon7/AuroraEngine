@@ -50,7 +50,6 @@ CoreEngine::~CoreEngine()
 		if (!FreeConsole())
 			MessageBox(0, L"Couldn't turn off debug console!", 0, 0);
 	}
-
 	SAFE_RELEASE(m_alphaDisabledBlendState);
 	SAFE_RELEASE(m_alphaEnableBlendState);
 	SAFE_RELEASE(m_depthStencilBuffer);
@@ -70,6 +69,7 @@ CoreEngine::~CoreEngine()
 
 	Input.~InputHandler();
 	gScene.~Scene();
+	gamemanager.~GameManager();
 	AssetManager.~cAssetManager();
 	SAFE_RELEASE(gDeviceContext);
 	SAFE_RELEASE(gDevice);
@@ -150,7 +150,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//----------------
 		GameManager gameManager = GameManager(gDevice, gDeviceContext);
-
+		PathCreator = cPathCreator(300, 300);
 		if (!PLAYER_BUILD)
 			createTerrain();
 
@@ -167,7 +167,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMesh("Assets/FlowersAndBushes4.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Fern.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/LionPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
-		AssetManager.addMeshFromBinary("Assets/Worker_Worker_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Worker/Worker.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/RuinedPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Pillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Brazier.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
@@ -324,6 +324,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		if (player != nullptr)
 			delete player;
 
+		gameManager.~GameManager();
 		delete renderManager;
 		DestroyWindow(wndHandle);
 	}
@@ -406,10 +407,10 @@ void CoreEngine::addMaterials()
 	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic.png");
 
 	//ResourseCenterTex
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Diffuse.png");
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Normal.png");
-	assetManager.AddTexture("Assets/ResourceCenter/Resource-RoughMetalAo.png");
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo_flag.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_BaseColor.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_Normal.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_OcclusionRoughnessMetallic.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_Emissive.png");
 
 	//Goldmine
 	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_BaseColor.png");
@@ -480,10 +481,10 @@ void CoreEngine::addMaterials()
 
 	//ResourceMaterial
 	assetManager.AddMaterial("ResourceMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("ResourceMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setAlbedo(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_BaseColor")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setNormal(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_Normal")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_Emissive")->getTexture());
 
 	//RuinedPillarMaterial
 	assetManager.AddMaterial("RuinedPillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -693,8 +694,7 @@ int CoreEngine::createTerrain()
 	//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
 
 
-	cPathCreator* PathCreator1 = new cPathCreator(300, 300); // 200x200
-	PathCreator1->addTerrain(Terrain->getRealVertArr(), 0, 0);
+	PathCreator.addTerrain(Terrain->getRealVertArr(), 0, 0);
 	//PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 0, 198);
 	//PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 99, 0);
 	//PathCreator1->addTerrain(terrainGenerator5->getRealVertArr(), 99, 99);
@@ -704,7 +704,7 @@ int CoreEngine::createTerrain()
 	//PathCreator1->addTerrain(terrainGenerator7->getRealVertArr(), 198, 0);
 
 	PathCreator.trumpTheBorders();
-
+	delete Terrain;
 	//PathCreator.createNodes();
 	return 1;
 }

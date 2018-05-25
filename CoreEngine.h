@@ -70,7 +70,7 @@ protected:
 	bool consoleInitialized = false;
 
 private:
-	
+
 
 	HINSTANCE hInstance;
 	HWND wnd;
@@ -130,7 +130,7 @@ public:
 	GameObject* camera;
 	cAssetManager assetManager;
 	RenderManager *renderManager;
-
+	cPathCreator PathCreator;
 	bool IS_RUNNING = true;
 
 	void CreateUITextures();

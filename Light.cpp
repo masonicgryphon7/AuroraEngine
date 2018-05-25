@@ -21,6 +21,9 @@ Light::~Light()
 	m_depthStencilView->Release();
 	m_depthStencilBuffer->Release();
 	m_shadowMapView->Release();
+	m_renderTargetTexture -> Release();
+	m_renderTargetView->Release();
+	
 }
 
 void Light::setShadowMapSize(TEXTURE_RESOLUTIONS shadowMapSize)
