@@ -301,12 +301,11 @@ void PlayerScript::SelectUnits()
 				DirectX::XMVECTOR test = DirectX::XMVectorAdd(Player->transform.getPosition(), DirectX::XMVectorScale(ray.direction, hit.distance));
 				//Debug.Log("Hit", DirectX::XMVectorGetX(test), ",", DirectX::XMVectorGetY(test), ",", DirectX::XMVectorGetZ(test));
 
-				if (hit.transform->gameObject->tag == 1 || hit.transform->gameObject->tag == 3)
-				{
+
 					//Debug.Log("Hit", hit.transform->gameObject->name, ": An Player Unit");
 					if (hit.transform->gameObject->getComponent<Unit>() != nullptr)
 						SelectedUnits.push_back(hit.transform->gameObject);
-				}
+				
 			}
 			else
 			{
@@ -335,7 +334,8 @@ void PlayerScript::SelectUnits()
 
 			for (int i = 0; i < SelectedUnits.size(); i++)
 			{
-				SelectedUnits.at(i)->getComponent<Unit>()->ReceiveOrder(hit, SelectedUnits.at(i)->tag);
+				if (SelectedUnits.at(i)->tag == 1)
+					SelectedUnits.at(i)->getComponent<Unit>()->ReceiveOrder(hit, SelectedUnits.at(i)->tag);
 			}
 		}
 		else
