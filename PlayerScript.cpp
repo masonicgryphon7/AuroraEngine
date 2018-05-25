@@ -334,7 +334,7 @@ void PlayerScript::SelectUnits()
 
 			for (int i = 0; i < SelectedUnits.size(); i++)
 			{
-				if (hit.transform->gameObject->tag == 1)
+				if (SelectedUnits.at(i)->tag == 1)
 					SelectedUnits.at(i)->getComponent<Unit>()->ReceiveOrder(hit, SelectedUnits.at(i)->tag);
 			}
 		}
