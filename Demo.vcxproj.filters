@@ -112,7 +112,6 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="AudioListener.h" />
     <ClInclude Include="SoundEmitter.h" />
     <ClInclude Include="SoundEngine.h" />
     <ClInclude Include="stb_rect_pack.h" />
@@ -135,6 +134,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Prop.h" />
     <ClInclude Include="CoreEngine.h" />
+    <ClInclude Include="AudioListener.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
