@@ -181,7 +181,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 100, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
 		cam = new Camera(HEIGHT, WIDTH, 30, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
@@ -406,10 +406,10 @@ void CoreEngine::addMaterials()
 	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic.png");
 
 	//ResourseCenterTex
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Diffuse.png");
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Normal.png");
-	assetManager.AddTexture("Assets/ResourceCenter/Resource-RoughMetalAo.png");
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo_flag.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_BaseColor.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_Normal.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_OcclusionRoughnessMetallic.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_Emissive.png");
 
 	//Goldmine
 	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_BaseColor.png");
@@ -480,10 +480,10 @@ void CoreEngine::addMaterials()
 
 	//ResourceMaterial
 	assetManager.AddMaterial("ResourceMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("ResourceMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setAlbedo(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_BaseColor")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setNormal(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_Normal")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_Emissive")->getTexture());
 
 	//RuinedPillarMaterial
 	assetManager.AddMaterial("RuinedPillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
