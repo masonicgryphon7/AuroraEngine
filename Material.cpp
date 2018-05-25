@@ -18,8 +18,8 @@ Material::Material(std::string name, ID3D11DeviceContext* gDeviceContext, ID3D11
 
 Material::~Material()
 {
-	//m_sampleState->Release();
-
+	m_sampleState->Release();
+	m_sampleStateIDMAP->Release();
 }
 
 bool Material::isTerrain()

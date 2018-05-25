@@ -50,7 +50,6 @@ CoreEngine::~CoreEngine()
 		if (!FreeConsole())
 			MessageBox(0, L"Couldn't turn off debug console!", 0, 0);
 	}
-
 	SAFE_RELEASE(m_alphaDisabledBlendState);
 	SAFE_RELEASE(m_alphaEnableBlendState);
 	SAFE_RELEASE(m_depthStencilBuffer);
@@ -70,6 +69,7 @@ CoreEngine::~CoreEngine()
 
 	Input.~InputHandler();
 	gScene.~Scene();
+	gamemanager.~GameManager();
 	AssetManager.~cAssetManager();
 	SAFE_RELEASE(gDeviceContext);
 	SAFE_RELEASE(gDevice);
@@ -150,7 +150,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//----------------
 		GameManager gameManager = GameManager(gDevice, gDeviceContext);
-
+		PathCreator = cPathCreator(300, 300);
 		if (!PLAYER_BUILD)
 			createTerrain();
 
@@ -167,7 +167,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMesh("Assets/FlowersAndBushes4.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Fern.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/LionPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
-		AssetManager.addMeshFromBinary("Assets/Worker_Worker_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Worker/Worker.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/RuinedPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Pillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Brazier.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
@@ -181,7 +181,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 100, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
 		cam = new Camera(HEIGHT, WIDTH, 30, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
@@ -323,6 +323,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		if (player != nullptr)
 			delete player;
 
+		gameManager.~GameManager();
 		delete renderManager;
 		DestroyWindow(wndHandle);
 	}
@@ -705,8 +706,7 @@ int CoreEngine::createTerrain()
 	//PathCreator.createNodes(terrainGenerator1->getRealVertArr());
 
 
-	cPathCreator* PathCreator1 = new cPathCreator(300, 300); // 200x200
-	PathCreator1->addTerrain(Terrain->getRealVertArr(), 0, 0);
+	PathCreator.addTerrain(Terrain->getRealVertArr(), 0, 0);
 	//PathCreator1->addTerrain(terrainGenerator3->getRealVertArr(), 0, 198);
 	//PathCreator1->addTerrain(terrainGenerator4->getRealVertArr(), 99, 0);
 	//PathCreator1->addTerrain(terrainGenerator5->getRealVertArr(), 99, 99);
@@ -716,7 +716,7 @@ int CoreEngine::createTerrain()
 	//PathCreator1->addTerrain(terrainGenerator7->getRealVertArr(), 198, 0);
 
 	PathCreator.trumpTheBorders();
-
+	delete Terrain;
 	//PathCreator.createNodes();
 	return 1;
 }

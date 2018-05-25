@@ -40,7 +40,7 @@ void NPC::update()
 					}
 				}
 
-				if (nrOfSoldiers >= 10 && nrOfSoldiers > gamemanager.unitLists[1].size())
+				if ((nrOfSoldiers >= 10 && nrOfSoldiers > gamemanager.unitLists[1].size()) || gamemanager.gameState == SMALL_CIRCLE_STATE)
 				{
 					attack(gamemanager.unitLists[2][0]);
 
@@ -115,21 +115,38 @@ void NPC::update()
 			for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
 			{
 				bool foundBank = false;
+				bool foundBarrack = false;
 				if (gamemanager.unitLists[2][i]->getType() == Worker && gamemanager.unitLists[2][i]->getUnitOrders().size() == 0)
 				{
-					if (gamemanager.unitLists[2][i]->getHomePos() == nullptr)
+					if (gamemanager.gameState == GAME_STATE::MEDIUM_CIRCLE_STATE)
 					{
-						for (int j = 0; j < gamemanager.buildingLists[2].size(); j++)
+						for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
 						{
-							if (gamemanager.buildingLists[2][j]->getType() == Bank)
+							if (gamemanager.buildingLists[2][i]->getType() == Barrack)
 							{
-								gamemanager.unitLists[2][i]->setHomePos(&gamemanager.buildingLists[2][j]->gameObject->transform);
-								foundBank = true;
+								RaycastHit hit;
+								hit.transform = &gamemanager.buildingLists[2][i]->gameObject->transform;
+								gamemanager.unitLists[2][i]->ReceiveOrder(hit, gamemanager.unitLists[2][i]->gameObject->tag);
+								foundBarrack = true;
 							}
 						}
 					}
-					if(gamemanager.unitLists[2][i]->getHomePos() != nullptr)
-						gather(gamemanager.unitLists[2][i]);
+					else if(foundBarrack == false)
+					{
+						if (gamemanager.unitLists[2][i]->getHomePos() == nullptr)
+						{
+							for (int j = 0; j < gamemanager.buildingLists[2].size(); j++)
+							{
+								if (gamemanager.buildingLists[2][j]->getType() == Bank)
+								{
+									gamemanager.unitLists[2][i]->setHomePos(&gamemanager.buildingLists[2][j]->gameObject->transform);
+									foundBank = true;
+								}
+							}
+						}
+						if (gamemanager.unitLists[2][i]->getHomePos() != nullptr)
+							gather(gamemanager.unitLists[2][i]);
+					}
 				}
 
 				if (foundBank == false)
@@ -156,27 +173,6 @@ void NPC::update()
 					}
 				}
 			}
-
-			//for (int i = 0; i < gamemanager.unitLists[2].size(); i++)
-			//{
-			//	float distanceToMiddle = gamemanager.unitLists[2][i]->getDistanceBetweenUnits(gamemanager.unitLists[2][i]->gameObject->transform.getPosition(), gamemanager.middlePoint);
-			//	
-
-			//	if (gamemanager.ringState == RING_STATE::FIRST_MOVE && distanceToMiddle > 80)
-			//	{
-			//		if (gamemanager.unitLists[2][i]->getType() == Worker)
-			//		{
-
-			//		}
-			//	}
-			//	if (gamemanager.ringState == RING_STATE::FIRST_MOVE && distanceToMiddle > 28)
-			//	{
-			//		if (gamemanager.unitLists[2][i]->getType() == Worker)
-			//		{
-
-			//		}
-			//	}
-			//}
 		}
 	}
 }
@@ -212,7 +208,8 @@ void NPC::gather(Unit* unitToUse)
 		if (gamemanager.buildingLists[0][i]->getType() == GoldMine && gamemanager.buildingLists[0][i]->gameObject->unitIsAvtive == true) // || gamemanager.buildingLists[2][i]->getType() == Bank && gamemanager.buildingLists[0][i]->getResources() > 100 && gamemanager.buildingLists[0][i]->gameObject->isActive == true)
 		{
 			int temp = unitToUse->getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[0][i]->gameObject->transform.getPosition());
-			if (temp < findClosest)
+			int ringToMine = unitToUse->getDistanceBetweenUnits(gamemanager.middlePoint, gamemanager.buildingLists[0][i]->gameObject->transform.getPosition());
+			if (temp < findClosest && gamemanager.ringOfFire - 10 > ringToMine)
 			{
 				findClosest = temp;
 				orderPoint = gamemanager.buildingLists[0][i]->gameObject->transform.getPosition();

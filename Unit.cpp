@@ -726,7 +726,7 @@ void Unit::summonWorkerCommand()
 			GameObject* worker = gScene.createEmptyGameObject(gameObject->transform.getPosition());//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
 			worker->name = "worker" + std::to_string(gamemanager.unitLists[gameObject->tag].size());
 			worker->tag = gameObject->tag;
-			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker_Worker_Mesh"));
+			MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Worker"));
 			worker->addComponent(meshFilter);
 			worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 			Unit *unitworker = new Unit(Worker);
@@ -738,7 +738,7 @@ void Unit::summonWorkerCommand()
 
 			Order tempOrder;
 			tempOrder.command = Move;
-			tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(1.0, 0.0, -8.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
+			tempOrder.point = DirectX::XMVectorSubtract(gameObject->transform.getPosition(), DirectX::XMVectorSet(-7.0, 0.0, 0.0, 0.0));//DirectX::XMVectorSet(1.0, 0.0, 3.0, 0.0);
 			unitworker->getUnitOrdersPointer()->push_back(tempOrder);
 
 			temp2->setResources(temp - 60);
@@ -862,11 +862,24 @@ void Unit::dieCommand()
 		//Debug.Log("Play death animation here");
 		dieTime = 0;
 		UnitOrders.erase(UnitOrders.begin());
-		for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
+		if (this->getType() == Soldier || this->getType() == Worker || this->getType() == Hero)
 		{
-			if (this == gamemanager.unitLists[gameObject->tag][i])
+			for (int i = 0; i < gamemanager.unitLists[gameObject->tag].size(); i++)
 			{
-				gamemanager.unitLists[gameObject->tag].erase(gamemanager.unitLists[gameObject->tag].begin() + i);
+				if (this == gamemanager.unitLists[gameObject->tag][i])
+				{
+					gamemanager.unitLists[gameObject->tag].erase(gamemanager.unitLists[gameObject->tag].begin() + i);
+				}
+			}
+		}
+		if (this->getType() == Barrack || this->getType() == Bank || this->getType() == GoldMine)
+		{
+			for (int i = 0; i < gamemanager.buildingLists[gameObject->tag].size(); i++)
+			{
+				if (this == gamemanager.buildingLists[gameObject->tag][i])
+				{
+					gamemanager.buildingLists[gameObject->tag].erase(gamemanager.buildingLists[gameObject->tag].begin() + i);
+				}
 			}
 		}
 		destroyUnit();
