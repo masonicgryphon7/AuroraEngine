@@ -118,7 +118,7 @@ void NPC::update()
 				bool foundBarrack = false;
 				if (gamemanager.unitLists[2][i]->getType() == Worker && gamemanager.unitLists[2][i]->getUnitOrders().size() == 0)
 				{
-					if (gamemanager.gameState == GAME_STATE::MEDIUM_CIRCLE_STATE)
+	/*				if (gamemanager.gameState == GAME_STATE::MEDIUM_CIRCLE_STATE)
 					{
 						for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
 						{
@@ -130,9 +130,9 @@ void NPC::update()
 								foundBarrack = true;
 							}
 						}
-					}
-					else if(foundBarrack == false)
-					{
+					}*/
+					//else if(foundBarrack == false)
+					//{
 						if (gamemanager.unitLists[2][i]->getHomePos() == nullptr)
 						{
 							for (int j = 0; j < gamemanager.buildingLists[2].size(); j++)
@@ -144,15 +144,26 @@ void NPC::update()
 								}
 							}
 						}
-						if (gamemanager.unitLists[2][i]->getHomePos() != nullptr)
+						if (foundBank == true)//gamemanager.unitLists[2][i]->getHomePos() != nullptr)
 							gather(gamemanager.unitLists[2][i]);
-					}
+					//}
+					//if (foundBank == false)
+					//{
+					//	gamemanager.unitLists[2][i]->setHomePos(nullptr);
+					//
+					//	for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
+					//	{
+					//		if (gamemanager.buildingLists[2][i]->getType() == Barrack)
+					//		{
+					//			RaycastHit hit;
+					//			hit.transform = &gamemanager.buildingLists[2][i]->gameObject->transform;
+					//			gamemanager.unitLists[2][i]->ReceiveOrder(hit, gamemanager.unitLists[2][i]->gameObject->tag);
+					//			//foundBarrack = true;
+					//		}
+					//	}
+					//}
 				}
 
-				if (foundBank == false)
-				{
-					gamemanager.unitLists[2][i]->setHomePos(nullptr);
-				}
 			}
 
 
@@ -295,11 +306,11 @@ void NPC::takeOverBuilding(Unit * unitToUse)
 	DirectX::XMVECTOR orderPoint = unitToUse->gameObject->transform.getPosition();
 	Transform *orderTransform = &unitToUse->gameObject->transform;
 
-	for (int j = 0; j < 1; j++)
+	for (int j = 0; j < 2; j++)
 	{
 		for (int i = 0; i < gamemanager.buildingLists[j].size(); i++)
 		{
-			if (gamemanager.buildingLists[j][i]->getType() != GoldMine)
+			if (gamemanager.buildingLists[j][i]->getType() != GoldMine && gamemanager.buildingLists[j][i]->gameObject != nullptr && gamemanager.buildingLists[j][i] != nullptr && gamemanager.buildingLists[j][i]->getHealthPoints() > 0)
 			{
 				int temp = unitToUse->getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[j][i]->gameObject->transform.getPosition());
 				if (temp < findClosest)

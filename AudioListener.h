@@ -17,7 +17,7 @@ public:
 	void playMain();
 	void playHurt();
 	void playAttack();
-	void playBuild();
+	void playHurtFire();
 	void playFollow();
 	void playGather();
 	void playMove(int m);
@@ -34,4 +34,3 @@ public:
 
 	void update();
 };
-

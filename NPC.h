@@ -33,7 +33,6 @@ private:
 
 
 	void gather(Unit* unitToUse);
-	void findNewSource();
 	void findNewEnemies(Unit* unit);
 	void attack(Unit* unit);
 	void standAbout(Unit* unit);

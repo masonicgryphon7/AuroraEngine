@@ -24,7 +24,7 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 	sBuffer[1] = alutCreateBufferFromFile("Assets/sound/Hurt.wav");
 	sBuffer[2] = alutCreateBufferFromFile("Assets/sound/Attack.wav");
 	sBuffer[3] = alutCreateBufferFromFile("Assets/sound/Gather.wav");
-	sBuffer[4] = alutCreateBufferFromFile("Assets/sound/Build.wav");
+	sBuffer[4] = alutCreateBufferFromFile("Assets/sound/HurtFire.wav");
 	sBuffer[5] = alutCreateBufferFromFile("Assets/sound/Move.wav");
 	sBuffer[6] = alutCreateBufferFromFile("Assets/sound/Summon.wav");
 	sBuffer[7] = alutCreateBufferFromFile("Assets/sound/Follow.wav");
@@ -40,7 +40,7 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 	}
 
 	alSourcei(source[0], AL_LOOPING, AL_TRUE);
-
+	playMain();
 }
 
 
@@ -78,7 +78,7 @@ void AudioListener::playAttack()
 		alSourcePlay(source[2]);
 }
 
-void AudioListener::playBuild()
+void AudioListener::playHurtFire()
 {
 	alGetSourcei(source[4], AL_SOURCE_STATE, &state);
 	if (state != AL_PLAYING)
@@ -125,23 +125,6 @@ void AudioListener::update()
 	
 	//alListener3f(AL_POSITION, DirectX::XMVectorGetX(pos), DirectX::XMVectorGetY(pos), DirectX::XMVectorGetZ(pos));
 
-	if (Input.GetKey(KeyCode::R))
-		playMain();
-	if (Input.GetKey(KeyCode::T))
-		playHurt();
-	if (Input.GetKey(KeyCode::Y))
-		playAttack();
-	if (Input.GetKey(KeyCode::U))
-		playBuild();
-	if (Input.GetKey(KeyCode::I))
-		playFollow();
-	if (Input.GetKey(KeyCode::O))
-		playMove(multiPlay);
-	if (Input.GetKey(KeyCode::P))
-		playSummon();
-	if (Input.GetKey(KeyCode::Q))
-		playGather();
-
 
 	for (int i = 0; i < sceneObjects[0].size(); i++)
 	{
@@ -171,7 +154,7 @@ void AudioListener::update()
 					break;
 
 				case 4:
-					//playFireDmg();
+					playHurtFire();
 					break;
 
 				case 5:

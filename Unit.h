@@ -139,7 +139,7 @@ public:
 	void HeroGatherCommand(Unit* targetedUnit);
 	void gatherResources();
 	void dropCommand(Unit* targetedUnit);
-	void dropResources();
+	void dropResources(Transform* dropPos);
 	void destroyUnit();
 	void summonWorkerCommand();
 	void convertToSoldierCommand(Unit* targetedUnit);
