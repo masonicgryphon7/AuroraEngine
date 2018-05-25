@@ -557,18 +557,37 @@ void Unit::gatherCommand(Unit* targetedUnit)
 					SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 				}
 			}
-			else if (this->Resources > 0 && e == 1 && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
+			else if (this->Resources > 0 && e == 1) //&& this->homePos->gameObject != nullptr && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
 			{
-				if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+				float tempDistance = 100000;
+				float len = 100000.0;
+				Transform* dropPos = &this->gameObject->transform;
+				for (int i = 0; i < gamemanager.buildingLists[this->gameObject->tag].size(); i++)
 				{
-					dropResources();
+					if (gamemanager.buildingLists[this->gameObject->tag][i]->getType() == Bank)
+					{
+						len = getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[this->gameObject->tag][i]->gameObject->transform.getPosition());
+						if(len < tempDistance)
+						{
+							dropPos = &gamemanager.buildingLists[this->gameObject->tag][i]->gameObject->transform;
+						}
+
+					}
 				}
-				else
+				if (len < this->attackDistance)
 				{
-					SecondMoveCommand(&this->homePos->getPosition());
+					dropResources(dropPos);
+				}
+				else if(dropPos != &this->gameObject->transform)
+				{
+					SecondMoveCommand(&dropPos->getPosition());
 				}
 			}
 		}
+	}
+	else
+	{
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
@@ -638,7 +657,7 @@ void Unit::dropCommand(Unit* targetedUnit)
 		{
 			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
 			{
-				dropResources();
+				dropResources(this->homePos);
 			}
 			else
 			{
@@ -681,19 +700,21 @@ void Unit::dropCommand(Unit* targetedUnit)
 	}
 }
 
-void Unit::dropResources()
+void Unit::dropResources(Transform* dropPos)
 {
 	this->soundAction = 6;
 	actionTime += Time.getDeltaTime();
-	if (this->homePos->gameObject->unitIsAvtive == true)
+	if (dropPos->gameObject->unitIsAvtive == true)
 	{
 		if (actionTime > 1)
 		{
 			int resourcesInUnit = this->getResources();
 			this->setResources(resourcesInUnit - 20);
 			//Debug.Log("Resources dropped! In worker: ", this->getResources());
-			int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
-			this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+			//int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
+			int resourcesInTarget = gamemanager.unitLists[this->gameObject->tag][0]->getResources();
+			//this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+			gamemanager.unitLists[this->gameObject->tag][0]->setResources(resourcesInTarget + 20);
 			//Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
 			if (this->Resources == 0)
 				e = 0;
@@ -1160,8 +1181,8 @@ void Unit::update()
 
 		case Command::Gather: //GATHER
 		{
-			Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
-			gatherCommand(targetedUnit);
+				Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+				gatherCommand(targetedUnit);
 		}
 		break;
 
