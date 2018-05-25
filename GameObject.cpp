@@ -44,11 +44,7 @@ GameObject::~GameObject()
 {
 	for (int i = 0; i < components.size(); i++)
 	{
-		if (dynamic_cast<Material*>(components[i]) != nullptr)
-		{
 			delete components[i];
-
-		}
 
 	}
 }

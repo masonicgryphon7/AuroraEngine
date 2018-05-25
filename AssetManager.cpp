@@ -446,14 +446,7 @@ Skeleton * cAssetManager::getSkeleton(const std::string & filePath)
 		}
 	}
 
-	if (!hasFound)
-	{
-		temp = new Skeleton();
-		temp->createSkeletonFromBinary(filePath);
-		//skeletons.push_back(temp);
-		//Ta bort deleten
-		delete temp;
-	}
+
 
 	return temp;
 }
@@ -473,11 +466,7 @@ AnimationClip * cAssetManager::getAnimationclip(Skeleton* skeleton, const std::s
 		}
 	}
 
-	if (!hasFound)
-	{
-		temp = new AnimationClip(skeleton, filePath);
-		animationClips.push_back(temp);
-	}
+
 
 	return temp;
 }
@@ -529,6 +518,7 @@ Material * cAssetManager::getMaterial(const std::string & name)
 			break;
 		}
 	}
+
 
 	return temp;
 }
