@@ -422,6 +422,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 	}
 	else {
 		UnitOrders.erase(UnitOrders.begin());
+		this->soundAction = 0;
 	}
 
 }
