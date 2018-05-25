@@ -306,7 +306,7 @@ void NPC::takeOverBuilding(Unit * unitToUse)
 	DirectX::XMVECTOR orderPoint = unitToUse->gameObject->transform.getPosition();
 	Transform *orderTransform = &unitToUse->gameObject->transform;
 
-	for (int j = 0; j < 1; j++)
+	for (int j = 0; j < 2; j++)
 	{
 		for (int i = 0; i < gamemanager.buildingLists[j].size(); i++)
 		{
