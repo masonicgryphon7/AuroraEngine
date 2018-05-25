@@ -539,7 +539,7 @@ void Unit::FollowCommand()
 
 void Unit::gatherCommand(Unit* targetedUnit)
 {
-	if (targetedUnit->gameObject != nullptr && this->homePos != nullptr && this->homePos->gameObject != nullptr)
+	if (targetedUnit->gameObject != nullptr) //&& this->homePos != nullptr && this->homePos->gameObject != nullptr)
 	{
 		unitPos = gameObject->transform.getPosition();
 		if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == false || targetedUnit->gameObject->unitIsAvtive == false)
@@ -650,10 +650,11 @@ void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
 	findClosest = 10000;//////////////
+	
+	this->homePos = &targetedUnit->gameObject->transform;
 
 	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
-		this->homePos = &targetedUnit->gameObject->transform;
 		if (this->Resources > 0)
 		{
 			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
@@ -752,8 +753,8 @@ void Unit::summonWorkerCommand()
 			worker->addComponent(meshFilter);
 			worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 			Unit *unitworker = new Unit(Worker);
-			unitworker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
-			worker->addComponent(unitworker);
+			unitworker->setHomePos(&this->gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+			worker->addComponent(unitworker );
 			//playerScript->friendlyUnits.push_back(unitworker);
 			unitworker->setPlayerScript(playerScript);
 			gamemanager.unitLists[gameObject->tag].push_back(unitworker);

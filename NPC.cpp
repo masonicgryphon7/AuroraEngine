@@ -144,24 +144,24 @@ void NPC::update()
 								}
 							}
 						}
-						if (gamemanager.unitLists[2][i]->getHomePos() != nullptr)
+						if (foundBank == true)//gamemanager.unitLists[2][i]->getHomePos() != nullptr)
 							gather(gamemanager.unitLists[2][i]);
 					//}
-					if (foundBank == false)
-					{
-						gamemanager.unitLists[2][i]->setHomePos(nullptr);
-					
-						for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
-						{
-							if (gamemanager.buildingLists[2][i]->getType() == Barrack)
-							{
-								RaycastHit hit;
-								hit.transform = &gamemanager.buildingLists[2][i]->gameObject->transform;
-								gamemanager.unitLists[2][i]->ReceiveOrder(hit, gamemanager.unitLists[2][i]->gameObject->tag);
-								//foundBarrack = true;
-							}
-						}
-					}
+					//if (foundBank == false)
+					//{
+					//	gamemanager.unitLists[2][i]->setHomePos(nullptr);
+					//
+					//	for (int i = 0; i < gamemanager.buildingLists[2].size(); i++)
+					//	{
+					//		if (gamemanager.buildingLists[2][i]->getType() == Barrack)
+					//		{
+					//			RaycastHit hit;
+					//			hit.transform = &gamemanager.buildingLists[2][i]->gameObject->transform;
+					//			gamemanager.unitLists[2][i]->ReceiveOrder(hit, gamemanager.unitLists[2][i]->gameObject->tag);
+					//			//foundBarrack = true;
+					//		}
+					//	}
+					//}
 				}
 
 			}
