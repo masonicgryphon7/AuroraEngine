@@ -28,6 +28,8 @@ private:
 	std::clock_t start;
 	float waitTime;
 	bool checkTime;
+
+	int harassUnits = 0;
 	
 	bool wantsToAttackHero;
 
