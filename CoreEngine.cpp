@@ -175,7 +175,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMeshFromBinary("Assets/Projektil_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		AssetManager.AddMesh("Assets/Hero1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
-		AssetManager.AddMesh("Assets/Soldier1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Soldier/Soldier1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 
 		//PathCreator.createNodes();
@@ -394,9 +394,10 @@ void CoreEngine::addMaterials()
 
 
 																//Unit & Tree textures
-	AssetManager.addTexture("Assets/STSP_ShadowTeam_BaseColor.png");
-	AssetManager.addTexture("Assets/STSP_ShadowTeam_Normal.png");
-	AssetManager.addTexture("Assets/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
+	AssetManager.addTexture("Assets/Soldier/STSP_ShadowTeam_BaseColor.png");
+	AssetManager.addTexture("Assets/Soldier/STSP_ShadowTeam_Normal.png");
+	AssetManager.addTexture("Assets/Soldier/Soldier1_Id.png");
+	AssetManager.addTexture("Assets/Soldier/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 	AssetManager.addTexture("Assets/troll_made_with_unity.png");
 
 	CreateUITextures();
@@ -521,6 +522,7 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("SoldierMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
 	assetManager.getMaterial("SoldierMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
 	assetManager.getMaterial("SoldierMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("SoldierMaterial")->setTeamIdMap(assetManager.getTexture("Soldier1_Id")->getTexture());
 
 	//Hero material
 	assetManager.AddMaterial("HeroMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
