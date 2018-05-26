@@ -16,8 +16,8 @@ public:
 	DirectX::XMMATRIX calculateViewMatrix();
 	DirectX::XMMATRIX calculatePerspectiveMatrix();
 	Ray calculateScreenPointToRay(DirectX::XMVECTOR postion);
-	float getWidth() { return width; };
-	float getHeight() { return height; };
+	int getWidth() { return width; };
+	int getHeight() { return height; };
 
 
 	int height; 

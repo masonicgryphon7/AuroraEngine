@@ -25,7 +25,7 @@ Unit::Unit() :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 20;
 		this->attackPoints = 4;
 		this->defencePoints = 8;
-		this->attackDistance = 1;
+		this->attackDistance = 6;
 		this->Resources = 0;
 		break;
 
@@ -80,7 +80,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 30;
 		this->attackPoints = 13;
 		this->defencePoints = 7;
-		this->attackDistance = 2;
+		this->attackDistance = 6;
 		this->Resources = 0;
 		this->type = Soldier;
 		break;
