@@ -167,7 +167,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMesh("Assets/FlowersAndBushes4.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Fern.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/LionPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
-		AssetManager.AddMesh("Assets/Worker/Worker.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.AddMesh("Assets/Worker/Worker1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/RuinedPillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Pillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Brazier.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
@@ -175,7 +175,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMeshFromBinary("Assets/Projektil_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		AssetManager.AddMesh("Assets/Hero1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
-		AssetManager.AddMesh("Assets/Soldier/Soldier1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMeshFromBinary("Assets/Soldier/Soldier1.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 
 		//PathCreator.createNodes();
@@ -458,19 +458,6 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/Hero1_Hero_OcclusionRoughnessMetallic.png");
 	AssetManager.addTexture("Assets/Hero1_Hero_Emissive.png");
 
-	//Worker
-	AssetManager.addTexture("Assets/Worker/Worker_BaseColor.png");
-	AssetManager.addTexture("Assets/Worker/Worker_Id.png");
-	AssetManager.addTexture("Assets/Worker/Worker_Normal.png");
-	AssetManager.addTexture("Assets/Worker/Worker_OcclusionRoughnessMetallic.png");
-
-	assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("Worker_BaseColor")->getTexture());
-	assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("Worker_Normal")->getTexture());
-	assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("Worker_OcclusionRoughnessMetallic")->getTexture());
-	assetManager.getMaterial("WorkerMaterial")->setTeamIdMap(assetManager.getTexture("Worker_Id")->getTexture());
-
-
 
 	//GoldmineMat
 	assetManager.AddMaterial("GoldMineMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -483,7 +470,7 @@ void CoreEngine::addMaterials()
 	assetManager.AddMaterial("BarracksMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("BarracksMaterial")->setAlbedo(assetManager.getTexture("CryptBarracksFinale1_Barracks_BaseColor")->getTexture());
 	assetManager.getMaterial("BarracksMaterial")->setNormal(assetManager.getTexture("CryptBarracksFinale1_Barracks_Normal")->getTexture());
-	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CrssdwwwssssyptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("BarracksMaterial")->setAORoughMet(assetManager.getTexture("CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic")->getTexture());
 	assetManager.getMaterial("BarracksMaterial")->setTeamIdMap(assetManager.getTexture("CryptBarracksFinale1_Barracks_Emissive")->getTexture());
 
 	//ResourceMaterial
@@ -512,10 +499,6 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("BrazierMaterial")->setAORoughMet(assetManager.getTexture("Brazier_Brazier_RoughMetalAo")->getTexture());
 
 	//Unit Material
-	//assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	//assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
-	//assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
-	//assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
 
 	//Soldier material
 	assetManager.AddMaterial("SoldierMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -531,6 +514,17 @@ void CoreEngine::addMaterials()
 	assetManager.getMaterial("HeroMaterial")->setAORoughMet(assetManager.getTexture("Hero1_Hero_OcclusionRoughnessMetallic")->getTexture());
 	assetManager.getMaterial("HeroMaterial")->setTeamIdMap(assetManager.getTexture("Hero1_Hero_Emissive")->getTexture());
 
+	//Worker
+	AssetManager.addTexture("Assets/Worker/WorkerShipFinale_WorkerShip_BaseColor.png");
+	AssetManager.addTexture("Assets/Worker/WorkerShipFinale_WorkerShip_Normal.png");
+	AssetManager.addTexture("Assets/Worker/WorkerShipFinale_WorkerShip_OcclusionRoughnessMetallic.png");
+	AssetManager.addTexture("Assets/Worker/WorkerShipFinale_WorkerShip_Emissive.png");
+
+	assetManager.AddMaterial("WorkerMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("WorkerMaterial")->setAlbedo(assetManager.getTexture("WorkerShipFinale_WorkerShip_BaseColor")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setNormal(assetManager.getTexture("WorkerShipFinale_WorkerShip_Normal")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setAORoughMet(assetManager.getTexture("WorkerShipFinale_WorkerShip_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("WorkerMaterial")->setTeamIdMap(assetManager.getTexture("WorkerShipFinale_WorkerShip_Emissive")->getTexture());
 
 	
 	//Bank material
