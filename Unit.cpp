@@ -54,8 +54,8 @@ Unit::Unit() :Component(-1, "Unit")
 		//	break;
 	}
 	srand(time(NULL));
-	float x = (rand() % 100) / 10.0f;
-	float z = (rand() % 100) / 10.0f;
+	float x = (rand() % 100) / 200.0f;
+	float z = (rand() % 100) / 200.0f;
 	offset = DirectX::XMVectorSet(x, 0.0f, z, 0.0f);
 
 }
@@ -125,8 +125,8 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	}
 	srand(time(NULL));
-	float x = (rand() % 200) / 100.0f;
-	float z = (rand() % 200) / 100.0f;
+	float x = (rand() % 100) / 200.0f;
+	float z = (rand() % 100) / 200.0f;
 	offset = DirectX::XMVectorSet(x, 0.0f, z, 0.0f);
 
 }
