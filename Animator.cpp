@@ -24,7 +24,7 @@ void Animator::update()
 	if (isPlaying) {
 		playTime += Time.getDeltaTime()*playRate;
 
-		if (!loop && playTime>=animationclips[currentClipIndex]->getClipTimeLength()) {
+		if (!loop && playTime >= animationclips[currentClipIndex]->getClipTimeLength()) {
 			isPlaying = false;
 		}
 	}

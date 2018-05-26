@@ -181,7 +181,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 70, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 75, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
 		cam = new Camera(HEIGHT, WIDTH, 30, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
@@ -219,25 +219,26 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 
+		//KOMMENTERA IN FÖR ATT VISA ANIMATION
 
 		//
-		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(150, 10, 130, 0));
-		animatedGO->name = "Animator";
-		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
-		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
-		MeshFilter* animMeshFilter = new MeshFilter(animMesh);
-		animatedGO->addComponent(animMeshFilter);
-
-		AssetManager.addSkeletonFromBinary("Assets/joint1_Skeleton.bin");
-		Animator* animator = new Animator(assetManager.getSkeleton("joint1_Skeleton"));
-		animatedGO->addComponent(animator);
-
-		AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("joint1_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
-		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("joint1_Skeleton"), "ANIMATION_ANIMATION"));
-		animator->Play(0, true);
-
-		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
-
+	//	GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(150, 30, 130, 0));
+	//	animatedGO->name = "Animator";
+	//	AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
+	//	Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
+	//	MeshFilter* animMeshFilter = new MeshFilter(animMesh);
+	//	animatedGO->addComponent(animMeshFilter);
+	//
+	//	AssetManager.addSkeletonFromBinary("Assets/joint1_Skeleton.bin");
+	//	Animator* animator = new Animator(assetManager.getSkeleton("joint1_Skeleton"));
+	//	animatedGO->addComponent(animator);
+	//
+	//	AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("joint1_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
+	//	animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("joint1_Skeleton"), "ANIMATION_ANIMATION"));
+	//	animator->Play(0, true);
+	//
+	//	animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+	
 		//
 
 

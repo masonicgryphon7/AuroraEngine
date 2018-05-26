@@ -443,7 +443,7 @@ void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 
 	this->soundAction = 3;
 
-	if (this->UnitOrders.size() == 0)
+	if (this->UnitOrders.size() == 0 && this->getType() == Soldier && this->getType() == Hero && this->getType() == Worker)
 	{
 		Order temporder;
 		temporder.point = attackedBy->gameObject->transform.getPosition();

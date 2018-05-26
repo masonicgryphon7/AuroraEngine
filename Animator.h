@@ -19,7 +19,8 @@ public:
 	void addAnimationClipAt(AnimationClip* animClip, int index);
 	std::vector<DirectX::XMMATRIX> getMatrixPalette() {
 		calculateMatrixPalette();
-		return matrixPalette; };
+		return matrixPalette;
+	};
 private:
 	bool isPlaying;
 	bool loop;
@@ -30,6 +31,6 @@ private:
 	std::vector<AnimationClip*> animationclips;
 	Skeleton* skeleton;
 	void calculateMatrixPalette();
-	void transformToWorldSpace(int jointChildIndex,int firstFrameIndex, int secondFrameIndex, float lerpValue, DirectX::XMMATRIX parentMatrix);
+	void transformToWorldSpace(int jointChildIndex, int firstFrameIndex, int secondFrameIndex, float lerpValue, DirectX::XMMATRIX parentMatrix);
 };
 
