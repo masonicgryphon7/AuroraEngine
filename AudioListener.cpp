@@ -104,9 +104,6 @@ void AudioListener::playMove(int m)
 	alGetSourcei(source[5], AL_SOURCE_STATE, &state);
 	if (state != AL_PLAYING)
 		alSourcePlay(source[5]);
-	if(m > 1)
-		alSourcePlay(source[13]);
-
 }
 
 void AudioListener::playSummon()

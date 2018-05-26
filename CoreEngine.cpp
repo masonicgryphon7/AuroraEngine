@@ -394,7 +394,7 @@ void CoreEngine::addMaterials()
 
 
 																//Unit & Tree textures
-	AssetManager.addTexture("Assets/Soldier/STSP_ShadowTeam_BaseColor.png");
+	AssetManager.addTexture("Assets/Soldier/STSP_ShadowTeam_BaseColor.png");  
 	AssetManager.addTexture("Assets/Soldier/STSP_ShadowTeam_Normal.png");
 	AssetManager.addTexture("Assets/Soldier/Soldier1_Id.png");
 	AssetManager.addTexture("Assets/Soldier/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
