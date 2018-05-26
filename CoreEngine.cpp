@@ -175,7 +175,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.addMeshFromBinary("Assets/Projektil_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		AssetManager.AddMesh("Assets/Hero1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
-		AssetManager.AddMesh("Assets/Soldier/Soldier1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
+		AssetManager.addMeshFromBinary("Assets/Soldier/Soldier1.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 
 		//PathCreator.createNodes();
