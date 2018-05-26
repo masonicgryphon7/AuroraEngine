@@ -145,12 +145,12 @@ float4 PS_main(VS_OUT input) : SV_Target
 	if (unitTag[input.instanceID].x == 1)
 	{
 		if (teamIdMap.x >= 0.5)
-			albedo = float4(0, 0, 0.8, 0);
+			albedo = float3(0, 0, 0.8);
 	}
 	if (unitTag[input.instanceID].x == 2)
 	{
 		if(teamIdMap.x >= 0.5)
-			albedo = float4(0.8, 0, 0, 0);
+			albedo = float3(0.8, 0, 0);
 	}
 
 
@@ -163,7 +163,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 		{
 			albedo = lerp(albedo, Grass.Sample(sampAni, adjustedUV).xyz, colorValue.x);
 			N = lerp(N, GrassNormal.Sample(sampAni, adjustedUV).xyz, colorValue.x);
-			float3 aoRoughMetX = GrassAORoughMetTexture.Sample(sampAni, adjustedUV);
+			float4 aoRoughMetX = GrassAORoughMetTexture.Sample(sampAni, adjustedUV);
 			ao = lerp(ao, aoRoughMetX.x, colorValue.x);
 			metallic = lerp(metallic, aoRoughMetX.z, colorValue.x);
 			roughness = lerp(roughness, aoRoughMetX.y, colorValue.x);
@@ -174,7 +174,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 		{
 			albedo = lerp(albedo, Mountain.Sample(sampAni, adjustedUV).xyz, colorValue.y);
 			N = lerp(N, MountainNormal.Sample(sampAni, adjustedUV).xyz, colorValue.y);
-			float3 aoRoughMetY = MountainAORoughMetTexture.Sample(sampAni, adjustedUV);
+			float4 aoRoughMetY = MountainAORoughMetTexture.Sample(sampAni, adjustedUV);
 			ao = lerp(ao, aoRoughMetY.x, colorValue.y);
 			metallic = lerp(metallic, aoRoughMetY.z, colorValue.y);
 			roughness = lerp(roughness, aoRoughMetY.y, colorValue.y);
@@ -185,7 +185,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 		{
 			albedo = lerp(albedo, Sand.Sample(sampAni, adjustedUV).xyz, colorValue.z);
 			N = lerp(N, SandNormal.Sample(sampAni, adjustedUV).xyz, colorValue.z);
-			float3 aoRoughMetZ = SandAORoughMetTexture.Sample(sampAni, adjustedUV);
+			float4 aoRoughMetZ = SandAORoughMetTexture.Sample(sampAni, adjustedUV);
 			ao = lerp(ao, aoRoughMetZ.x, colorValue.z);
 			metallic = lerp(metallic, aoRoughMetZ.z, colorValue.z);
 			roughness = lerp(roughness, aoRoughMetZ.y, colorValue.z);
@@ -230,7 +230,7 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 			albedo = lerp(albedo, Lava_Albedo.Sample(sampAni, adjustedUV).xyz,lavaLerp) ;
 			N = lerp(N, Lava_Normal.Sample(sampAni, adjustedUV).xyz, lavaLerp);
-			float3 aoRoughMetLava = Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV);
+			float4 aoRoughMetLava = Lava_OcclusionRoughnessMetallic.Sample(sampAni, adjustedUV);
 			ao = lerp(ao, aoRoughMetLava.x, lavaLerp);
 			metallic = lerp(metallic, aoRoughMetLava.z, lavaLerp);
 			roughness = lerp(roughness, aoRoughMetLava.y, lavaLerp);
