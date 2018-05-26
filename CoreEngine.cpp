@@ -400,6 +400,16 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/Soldier/STSP_ShadowTeam_OcclusionRoughnessMetallic.png");
 	AssetManager.addTexture("Assets/troll_made_with_unity.png");
 
+	AssetManager.addTexture("Assets/BulletOBJ_lambert2_BaseColor.png");
+	AssetManager.addTexture("Assets/BulletOBJ_lambert2_OcclusionRoughnessMetallic.png");
+	AssetManager.addTexture("Assets/BulletOBJ_lambert2_Normal.png");
+
+	assetManager.AddMaterial("Bullet", assetManager.getShaderProgram("Fragment.hlsl"));
+	assetManager.getMaterial("Bullet")->setAlbedo(assetManager.getTexture("BulletOBJ_lambert2_BaseColor")->getTexture());
+	assetManager.getMaterial("Bullet")->setNormal(assetManager.getTexture("BulletOBJ_lambert2_Normal")->getTexture());
+	assetManager.getMaterial("Bullet")->setAORoughMet(assetManager.getTexture("BulletOBJ_lambert2_OcclusionRoughnessMetallic")->getTexture());
+
+
 	CreateUITextures();
 
 	//barracksTex

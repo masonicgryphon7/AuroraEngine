@@ -414,7 +414,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 					MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Projektil_Mesh"));
 					projectile->addComponent(meshFilter);
 					projectile->addComponent(projectileComponent);
- 					projectile->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+ 					projectile->addComponent(new MaterialFilter(AssetManager.getMaterial("Bullet")));  
 					DirectX::XMVECTOR directionVector = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(targetPos, unitPos));
 					float zComponent = DirectX::XMVectorGetZ(directionVector);
 					float xComponent = DirectX::XMVectorGetX(directionVector);
