@@ -452,6 +452,11 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_ormal.png");
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_OcclusionRoughnessMetallic.png");
 
+	AssetManager.addTexture("Assets/Hero1_Hero_BaseColor.png");
+	AssetManager.addTexture("Assets/Hero1_Hero_Normal.png");
+	AssetManager.addTexture("Assets/Hero1_Hero_OcclusionRoughnessMetallic.png");
+	AssetManager.addTexture("Assets/Hero1_Hero_Emissive.png");
+
 	//Worker
 	AssetManager.addTexture("Assets/Worker/Worker_BaseColor.png");
 	AssetManager.addTexture("Assets/Worker/Worker_Id.png");
@@ -519,10 +524,13 @@ void CoreEngine::addMaterials()
 
 	//Hero material
 	assetManager.AddMaterial("HeroMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("HeroMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
-	assetManager.getMaterial("HeroMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
-	assetManager.getMaterial("HeroMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setAlbedo(assetManager.getTexture("Hero1_Hero_BaseColor")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setNormal(assetManager.getTexture("Hero1_Hero_Normal")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setAORoughMet(assetManager.getTexture("Hero1_Hero_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setTeamIdMap(assetManager.getTexture("Hero1_Hero_Emissive")->getTexture());
 
+
+	
 	//Bank material
 	assetManager.AddMaterial("BankMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("BankMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
