@@ -172,6 +172,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.AddMesh("Assets/Pillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Brazier.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
+		AssetManager.addMeshFromBinary("Assets/Projektil_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		AssetManager.AddMesh("Assets/Hero1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Soldier1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
