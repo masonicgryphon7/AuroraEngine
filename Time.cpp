@@ -2,6 +2,7 @@
 #include "Console.h"
 
 float cTime::deltaTime = 0.0f;
+float cTime::currentTime = 0.0f;
 
 cTime::cTime()
 {

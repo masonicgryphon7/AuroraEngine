@@ -16,7 +16,7 @@ public:
 private:
 	double PCFreq;
 	__int64  startTime = 0;
-	float currentTime = 0;
+	static float currentTime;
 	float lastTime = 0;
 
 	static float deltaTime;

@@ -196,7 +196,7 @@ void NPC::instantiate_NPC()
 
 	MeshFilter* enemy_unit_meshFilter = new MeshFilter(AssetManager.getMesh("Hero1"));
 	enemy_unit->addComponent(enemy_unit_meshFilter);
-	enemy_unit->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+	enemy_unit->addComponent(new MaterialFilter(AssetManager.getMaterial("HeroMaterial")));
 	Unit* enemy_unit_hero = new Unit(Hero);
 	enemy_unit->addComponent(enemy_unit_hero);
 	//npc_units.push_back(enemy_unit_hero);
