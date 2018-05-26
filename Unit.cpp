@@ -6,7 +6,7 @@
 #include "Debug.h"
 #include <DirectXMath.h>
 #include <math.h>
-
+#include "Projectile.h"
 Unit::Unit() :Component(-1, "Unit")
 {
 	actionTime = 10;
@@ -17,7 +17,7 @@ Unit::Unit() :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 15;
 		this->defencePoints = 5;
-		this->attackDistance = 2;
+		this->attackDistance = 10;
 		this->Resources = 10;
 		break;
 
@@ -54,8 +54,8 @@ Unit::Unit() :Component(-1, "Unit")
 		//	break;
 	}
 	srand(time(NULL));
-	float x = (rand() % 100) / 10.0f;
-	float z = (rand() % 100) / 10.0f;
+	float x = (rand() % 100) / 200.0f;
+	float z = (rand() % 100) / 200.0f;
 	offset = DirectX::XMVectorSet(x, 0.0f, z, 0.0f);
 
 }
@@ -71,7 +71,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 16;
 		this->defencePoints = 10; // 10
-		this->attackDistance = 3;
+		this->attackDistance = 10;
 		this->Resources = 0;
 		this->type = Hero;
 		break;
@@ -125,8 +125,8 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	}
 	srand(time(NULL));
-	float x = (rand() % 200) / 100.0f;
-	float z = (rand() % 200) / 100.0f;
+	float x = (rand() % 100) / 200.0f;
+	float z = (rand() % 100) / 200.0f;
 	offset = DirectX::XMVectorSet(x, 0.0f, z, 0.0f);
 
 }
@@ -409,6 +409,56 @@ void Unit::attackCommand(Unit* targetedUnit)
 					//Debug.Log("Enemy Hit!");
 					actionTime = 0;
 					this->soundAction = 2;
+					GameObject* projectile = gScene.createEmptyGameObject(unitPos);//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+					Projectile* projectileComponent = new Projectile(unitPos, targetPos, targetedUnit);
+					MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Projektil_Mesh"));
+					projectile->addComponent(meshFilter);
+					projectile->addComponent(projectileComponent);
+ 					projectile->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+					DirectX::XMVECTOR directionVector = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(targetPos, unitPos));
+					float zComponent = DirectX::XMVectorGetZ(directionVector);
+					float xComponent = DirectX::XMVectorGetX(directionVector);
+
+					if (zComponent< 0 && xComponent == 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+
+					}
+					else if (zComponent > 0 && xComponent == 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 270, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 270, 0, 0));
+
+					}
+					else if (xComponent> 0 && zComponent == 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
+
+					}
+					else if (xComponent < 0 && zComponent == 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
+
+					}
+					else if (xComponent < 0 && zComponent < 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 135, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 135, 0, 0));
+
+					}
+					else if (xComponent < 0 && zComponent > 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 225, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 225, 0, 0));
+
+					}
+					else if (xComponent > 0 && zComponent > 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 315, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 315, 0, 0));
+
+					}
+					else if (xComponent > 0 && zComponent < 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 45, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 45, 0, 0));
+
+					}
 				}
 			}
 			else
@@ -443,7 +493,7 @@ void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 
 	this->soundAction = 3;
 
-	if (this->UnitOrders.size() == 0)
+	if (this->UnitOrders.size() == 0 && this->getType() == Soldier && this->getType() == Hero && this->getType() == Worker)
 	{
 		Order temporder;
 		temporder.point = attackedBy->gameObject->transform.getPosition();

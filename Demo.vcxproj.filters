@@ -66,6 +66,7 @@
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Prop.cpp" />
+    <ClCompile Include="Projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="Prop.h" />
     <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="AudioListener.h" />
+    <ClInclude Include="Projectile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

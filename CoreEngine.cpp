@@ -172,6 +172,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AssetManager.AddMesh("Assets/Pillar.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Brazier.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 
+		AssetManager.addMeshFromBinary("Assets/Projektil_Mesh.bin", AssetManager.getShaderProgram("Vertex.hlsl"));
 
 		AssetManager.AddMesh("Assets/Hero1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
 		AssetManager.AddMesh("Assets/Soldier1.obj", AssetManager.getShaderProgram("Vertex.hlsl"));
@@ -181,7 +182,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		// Create a Main Camera
 		Camera* cam = nullptr;
-		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 100, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
+		camera = gScene.createEmptyGameObject(DirectX::XMVectorSet(0, 75, 0, 0)); //(DirectX::XMVectorSet(0, 25, 0, 0));
 		camera->name = "Main Camera";
 		cam = new Camera(HEIGHT, WIDTH, 30, 0.01f, 1000.0f);
 		camera->transform.setRotation(DirectX::XMVectorSet(0, 0, 70, 0)); //(DirectX::XMVectorSet(0, 0, 70, 0));
@@ -219,25 +220,26 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 
+		//KOMMENTERA IN FÖR ATT VISA ANIMATION
 
 		//
-		GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(150, 10, 130, 0));
-		animatedGO->name = "Animator";
-		AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
-		Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
-		MeshFilter* animMeshFilter = new MeshFilter(animMesh);
-		animatedGO->addComponent(animMeshFilter);
-
-		AssetManager.addSkeletonFromBinary("Assets/joint1_Skeleton.bin");
-		Animator* animator = new Animator(assetManager.getSkeleton("joint1_Skeleton"));
-		animatedGO->addComponent(animator);
-
-		AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("joint1_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
-		animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("joint1_Skeleton"), "ANIMATION_ANIMATION"));
-		animator->Play(0, true);
-
-		animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
-
+	//	GameObject* animatedGO = gScene.createEmptyGameObject(DirectX::XMVectorSet(150, 30, 130, 0));
+	//	animatedGO->name = "Animator";
+	//	AssetManager.addAnimatedMeshFromBinary("Assets/pCube1_ANIMATION_Mesh.bin", AssetManager.getShaderProgram("VertexAnimation.hlsl"));
+	//	Mesh* animMesh = AssetManager.getMesh("pCube1_ANIMATION_Mesh");
+	//	MeshFilter* animMeshFilter = new MeshFilter(animMesh);
+	//	animatedGO->addComponent(animMeshFilter);
+	//
+	//	AssetManager.addSkeletonFromBinary("Assets/joint1_Skeleton.bin");
+	//	Animator* animator = new Animator(assetManager.getSkeleton("joint1_Skeleton"));
+	//	animatedGO->addComponent(animator);
+	//
+	//	AssetManager.addAnimationClipFromBinary(assetManager.getSkeleton("joint1_Skeleton"), "Assets/ANIMATION_ANIMATION.bin");
+	//	animator->addAnimationClip(AssetManager.getAnimationclip(assetManager.getSkeleton("joint1_Skeleton"), "ANIMATION_ANIMATION"));
+	//	animator->Play(0, true);
+	//
+	//	animatedGO->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+	
 		//
 
 
@@ -406,10 +408,10 @@ void CoreEngine::addMaterials()
 	assetManager.AddTexture("Assets/Barracks/CryptBarracksFinale1_Barracks_OcclusionRoughnessMetallic.png");
 
 	//ResourseCenterTex
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Diffuse.png");
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo-Normal.png");
-	assetManager.AddTexture("Assets/ResourceCenter/Resource-RoughMetalAo.png");
-	assetManager.AddTexture("Assets/ResourceCenter/ResourceSilo_flag.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_BaseColor.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_Normal.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_OcclusionRoughnessMetallic.png");
+	assetManager.AddTexture("Assets/ResourceCenter/FinalSilo1OBJ_ResourceSilo_Emissive.png");
 
 	//Goldmine
 	assetManager.AddTexture("Assets/Goldmine/GoldMineResource_BaseColor.png");
@@ -450,6 +452,11 @@ void CoreEngine::addMaterials()
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_ormal.png");
 	AssetManager.addTexture("Assets/LionPillar_LionPillar_OcclusionRoughnessMetallic.png");
 
+	AssetManager.addTexture("Assets/Hero1_Hero_BaseColor.png");
+	AssetManager.addTexture("Assets/Hero1_Hero_Normal.png");
+	AssetManager.addTexture("Assets/Hero1_Hero_OcclusionRoughnessMetallic.png");
+	AssetManager.addTexture("Assets/Hero1_Hero_Emissive.png");
+
 	//Worker
 	AssetManager.addTexture("Assets/Worker/Worker_BaseColor.png");
 	AssetManager.addTexture("Assets/Worker/Worker_Id.png");
@@ -480,10 +487,10 @@ void CoreEngine::addMaterials()
 
 	//ResourceMaterial
 	assetManager.AddMaterial("ResourceMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("ResourceMaterial")->setAlbedo(assetManager.getTexture("ResourceSilo-Diffuse")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setNormal(assetManager.getTexture("ResourceSilo-Normal")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("Resource-RoughMetalAo")->getTexture());
-	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("ResourceSilo_flag")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setAlbedo(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_BaseColor")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setNormal(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_Normal")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setAORoughMet(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("ResourceMaterial")->setTeamIdMap(assetManager.getTexture("FinalSilo1OBJ_ResourceSilo_Emissive")->getTexture());
 
 	//RuinedPillarMaterial
 	assetManager.AddMaterial("RuinedPillarMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
@@ -517,10 +524,13 @@ void CoreEngine::addMaterials()
 
 	//Hero material
 	assetManager.AddMaterial("HeroMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
-	assetManager.getMaterial("HeroMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
-	assetManager.getMaterial("HeroMaterial")->setNormal(assetManager.getTexture("STSP_ShadowTeam_Normal")->getTexture());
-	assetManager.getMaterial("HeroMaterial")->setAORoughMet(assetManager.getTexture("STSP_ShadowTeam_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setAlbedo(assetManager.getTexture("Hero1_Hero_BaseColor")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setNormal(assetManager.getTexture("Hero1_Hero_Normal")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setAORoughMet(assetManager.getTexture("Hero1_Hero_OcclusionRoughnessMetallic")->getTexture());
+	assetManager.getMaterial("HeroMaterial")->setTeamIdMap(assetManager.getTexture("Hero1_Hero_Emissive")->getTexture());
 
+
+	
 	//Bank material
 	assetManager.AddMaterial("BankMaterial", assetManager.getShaderProgram("Fragment.hlsl"));
 	assetManager.getMaterial("BankMaterial")->setAlbedo(assetManager.getTexture("STSP_ShadowTeam_BaseColor")->getTexture());
