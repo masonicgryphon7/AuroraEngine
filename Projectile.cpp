@@ -16,6 +16,9 @@ Projectile::~Projectile()
 }
 void Projectile::update()
 {
+	if (gamemanager.gameState == GAME_STATE::MAIN_MENU) return;
+	if (targetUnit == nullptr) return;
+
 	lerpTime += Time.getDeltaTime();
 	
 	gameObject->transform.setPosition(DirectX::XMVectorLerp(startPos, targetUnit->gameObject->transform.getPosition(), lerpTime));

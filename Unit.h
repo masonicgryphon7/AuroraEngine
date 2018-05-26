@@ -96,6 +96,9 @@ public:
 	Unit(Type UnitTypeSet);
 	~Unit();
 
+	bool isCollectingGold;
+	GameObject* goldMineCollecting = nullptr;
+
 	Type getType() { return this->type; };
 	std::vector<Order> getUnitOrders() { return this->UnitOrders; };
 

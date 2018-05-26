@@ -25,7 +25,7 @@ GameManager::GameManager(ID3D11Device* gDevice, ID3D11DeviceContext* gDeviceCont
 	unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 	buildingLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 
-	gameState = GAME_STATE::START_STATE;
+	gameState = GAME_STATE::MAIN_MENU;
 }
 
 
@@ -113,6 +113,33 @@ void GameManager::update()
 	switch (gameState)
 	{
 	case MAIN_MENU:
+		ringOfFire = 220;
+		gameTime = 0;
+		for (auto i : gamemanager.unitLists)
+		{
+			for (auto j : i)
+			{
+				if (j == nullptr) continue;
+
+				GameObject* temp = j->gameObject;
+				temp->Destroy();
+			}
+		}
+		gamemanager.unitLists.shrink_to_fit();
+		gamemanager.unitLists.clear();
+
+		for (auto i : gamemanager.buildingLists)
+		{
+			for (auto j : i)
+			{
+				if (j == nullptr) continue;
+
+				GameObject* temp = j->gameObject;
+				temp->Destroy();
+			}
+		}
+		gamemanager.buildingLists.shrink_to_fit();
+		gamemanager.buildingLists.clear();
 		break;
 	case START_STATE:
 		gameState = LARGE_CIRCLE_STATE;

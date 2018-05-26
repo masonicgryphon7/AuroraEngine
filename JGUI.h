@@ -117,12 +117,14 @@ public:
 
 
 	JGUI();
+	~JGUI();
 
 	// HAS TO BE CALLED TO DRAW GUI
 	void SetDrawList(ImDrawList* dl);
 	void ClearRenderer();
 	void UpdateRuntimeEditor(bool showEditor = false);
 
+	void CloseJGUI();
 	void DrawEditor();
 
 	//BEGIN GUI

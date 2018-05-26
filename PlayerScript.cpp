@@ -66,6 +66,7 @@ void PlayerScript::instantiate_Player()
 
 void PlayerScript::update()
 {
+	if (gamemanager.gameState == GAME_STATE::MAIN_MENU) return;
 	//SelectUnits();
 	for (int i = 0; i < gamemanager.unitLists[1].size(); i++)
 	{

@@ -14,6 +14,8 @@ NPC::~NPC()
 
 void NPC::update()
 {
+	if (gamemanager.gameState == GAME_STATE::MAIN_MENU) return;
+
 	if (checkTime == true)
 	{
 		waitTime = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);

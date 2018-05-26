@@ -659,6 +659,8 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 
 		if (targetedUnit->type == GoldMine && actionTime > 1)
 		{
+			this->goldMineCollecting = targetedUnit->gameObject;
+
 			gatherResources();
 			actionTime = 0;
 			//Debug.Log("Resources: ", this->getResources());
@@ -681,6 +683,7 @@ void Unit::gatherResources()
 	{
 		if (actionTime > 1)
 		{
+			this->isCollectingGold = true;
 			int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
 			UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
 			int workersAmount = this->getResources();

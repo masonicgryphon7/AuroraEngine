@@ -10,6 +10,13 @@ JGUI::JGUI()
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("Assets/Fonts/LiberationSans-Regular.ttf", 50.0f);
 }
 
+JGUI::~JGUI()
+{
+	CloseJGUI();
+	delete drawList;
+	delete jg;
+}
+
 void JGUI::SetDrawList(ImDrawList * dl)
 {
 	this->drawList = dl;
@@ -533,6 +540,15 @@ void JGUI::UpdateRuntimeEditor(bool showEditor)
 		DrawRect();
 		ImGui::End();
 	}
+}
+
+void JGUI::CloseJGUI()
+{
+	for (int i = 0; i < _editor.size(); ++i)
+	{
+		delete _editor[i];
+	}
+	_editor.clear();
 }
 
 bool alignLines = true;

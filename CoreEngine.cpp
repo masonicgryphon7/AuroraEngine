@@ -203,7 +203,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		AudioListener* audioListener = new AudioListener();
 		camera->addComponent(audioListener);
 
-		playerscript->instantiate_Player();
+		//playerscript->instantiate_Player();
 
 		//GameObject* cube = gScene.createEmptyGameObject(DirectX::XMVectorSet(1, 0, 1, 0));
 		//cube->name = "Worker";
@@ -243,10 +243,10 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		//
 
 
-		GameObject* enemy_player = gScene.createEmptyGameObject();
+		/*GameObject* enemy_player = gScene.createEmptyGameObject();
 		NPC* enemy_NPC = new NPC();
 		enemy_NPC->instantiate_NPC();
-		enemy_player->addComponent(enemy_NPC);
+		enemy_player->addComponent(enemy_NPC);*/
 
 
 
