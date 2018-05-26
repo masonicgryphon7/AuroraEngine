@@ -28,12 +28,13 @@ private:
 	std::clock_t start;
 	float waitTime;
 	bool checkTime;
+
+	int harassUnits = 0;
 	
 	bool wantsToAttackHero;
 
 
 	void gather(Unit* unitToUse);
-	void findNewSource();
 	void findNewEnemies(Unit* unit);
 	void attack(Unit* unit);
 	void standAbout(Unit* unit);

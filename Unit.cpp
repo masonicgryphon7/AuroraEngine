@@ -6,7 +6,7 @@
 #include "Debug.h"
 #include <DirectXMath.h>
 #include <math.h>
-
+#include "Projectile.h"
 Unit::Unit() :Component(-1, "Unit")
 {
 	actionTime = 10;
@@ -17,7 +17,7 @@ Unit::Unit() :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 15;
 		this->defencePoints = 5;
-		this->attackDistance = 2;
+		this->attackDistance = 10;
 		this->Resources = 10;
 		break;
 
@@ -54,8 +54,8 @@ Unit::Unit() :Component(-1, "Unit")
 		//	break;
 	}
 	srand(time(NULL));
-	float x = (rand() % 100) / 10.0f;
-	float z = (rand() % 100) / 10.0f;
+	float x = (rand() % 100) / 200.0f;
+	float z = (rand() % 100) / 200.0f;
 	offset = DirectX::XMVectorSet(x, 0.0f, z, 0.0f);
 
 }
@@ -71,7 +71,7 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 		this->healthPoints = this->maxHealthPoints = 100;
 		this->attackPoints = 16;
 		this->defencePoints = 10; // 10
-		this->attackDistance = 3;
+		this->attackDistance = 10;
 		this->Resources = 0;
 		this->type = Hero;
 		break;
@@ -125,8 +125,8 @@ Unit::Unit(Type UnitTypeSet) :Component(-1, "Unit")
 
 	}
 	srand(time(NULL));
-	float x = (rand() % 200) / 100.0f;
-	float z = (rand() % 200) / 100.0f;
+	float x = (rand() % 100) / 200.0f;
+	float z = (rand() % 100) / 200.0f;
 	offset = DirectX::XMVectorSet(x, 0.0f, z, 0.0f);
 
 }
@@ -409,6 +409,56 @@ void Unit::attackCommand(Unit* targetedUnit)
 					//Debug.Log("Enemy Hit!");
 					actionTime = 0;
 					this->soundAction = 2;
+					GameObject* projectile = gScene.createEmptyGameObject(unitPos);//playerScript->friendlyBuildings.at(0)->gameObject->transform.getPosition());
+					Projectile* projectileComponent = new Projectile(unitPos, targetPos, targetedUnit);
+					MeshFilter* meshFilter = new MeshFilter(AssetManager.getMesh("Projektil_Mesh"));
+					projectile->addComponent(meshFilter);
+					projectile->addComponent(projectileComponent);
+ 					projectile->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
+					DirectX::XMVECTOR directionVector = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(targetPos, unitPos));
+					float zComponent = DirectX::XMVectorGetZ(directionVector);
+					float xComponent = DirectX::XMVectorGetX(directionVector);
+
+					if (zComponent< 0 && xComponent == 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 90, 0, 0));
+
+					}
+					else if (zComponent > 0 && xComponent == 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 270, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 270, 0, 0));
+
+					}
+					else if (xComponent> 0 && zComponent == 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 0, 0, 0));
+
+					}
+					else if (xComponent < 0 && zComponent == 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 180, 0, 0));
+
+					}
+					else if (xComponent < 0 && zComponent < 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 135, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 135, 0, 0));
+
+					}
+					else if (xComponent < 0 && zComponent > 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 225, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 225, 0, 0));
+
+					}
+					else if (xComponent > 0 && zComponent > 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 315, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 315, 0, 0));
+
+					}
+					else if (xComponent > 0 && zComponent < 0) {
+						gameObject->transform.setRotation(DirectX::XMVectorSet(0, 45, 0, 0));
+						projectileComponent->setRotation(DirectX::XMVectorSet(0, 45, 0, 0));
+
+					}
 				}
 			}
 			else
@@ -422,6 +472,7 @@ void Unit::attackCommand(Unit* targetedUnit)
 	}
 	else {
 		UnitOrders.erase(UnitOrders.begin());
+		this->soundAction = 0;
 	}
 
 }
@@ -442,7 +493,7 @@ void Unit::takeDamage(int attackPoints, Unit* attackedBy)
 
 	this->soundAction = 3;
 
-	if (this->UnitOrders.size() == 0)
+	if (this->UnitOrders.size() == 0 && this->getType() == Soldier && this->getType() == Hero && this->getType() == Worker)
 	{
 		Order temporder;
 		temporder.point = attackedBy->gameObject->transform.getPosition();
@@ -538,7 +589,7 @@ void Unit::FollowCommand()
 
 void Unit::gatherCommand(Unit* targetedUnit)
 {
-	if (targetedUnit->gameObject != nullptr && this->homePos != nullptr && this->homePos->gameObject != nullptr)
+	if (targetedUnit->gameObject != nullptr) //&& this->homePos != nullptr && this->homePos->gameObject != nullptr)
 	{
 		unitPos = gameObject->transform.getPosition();
 		if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == false || targetedUnit->gameObject->unitIsAvtive == false)
@@ -557,18 +608,37 @@ void Unit::gatherCommand(Unit* targetedUnit)
 					SecondMoveCommand(&targetedUnit->gameObject->transform.getPosition());
 				}
 			}
-			else if (this->Resources > 0 && e == 1 && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
+			else if (this->Resources > 0 && e == 1) //&& this->homePos->gameObject != nullptr && this->homePos->gameObject->unitIsAvtive == true) // worker has gold
 			{
-				if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
+				float tempDistance = 100000;
+				float len = 100000.0;
+				Transform* dropPos = &this->gameObject->transform;
+				for (int i = 0; i < gamemanager.buildingLists[this->gameObject->tag].size(); i++)
 				{
-					dropResources();
+					if (gamemanager.buildingLists[this->gameObject->tag][i]->getType() == Bank)
+					{
+						len = getDistanceBetweenUnits(unitPos, gamemanager.buildingLists[this->gameObject->tag][i]->gameObject->transform.getPosition());
+						if(len < tempDistance)
+						{
+							dropPos = &gamemanager.buildingLists[this->gameObject->tag][i]->gameObject->transform;
+						}
+
+					}
 				}
-				else
+				if (len < this->attackDistance)
 				{
-					SecondMoveCommand(&this->homePos->getPosition());
+					dropResources(dropPos);
+				}
+				else if(dropPos != &this->gameObject->transform)
+				{
+					SecondMoveCommand(&dropPos->getPosition());
 				}
 			}
 		}
+	}
+	else
+	{
+		UnitOrders.erase(UnitOrders.begin());
 	}
 }
 
@@ -630,15 +700,16 @@ void Unit::dropCommand(Unit* targetedUnit)
 {
 	unitPos = gameObject->transform.getPosition();
 	findClosest = 10000;//////////////
+	
+	this->homePos = &targetedUnit->gameObject->transform;
 
 	if (this->homePos->gameObject->unitIsAvtive == true)
 	{
-		this->homePos = &targetedUnit->gameObject->transform;
 		if (this->Resources > 0)
 		{
 			if (getDistanceBetweenUnits(unitPos, this->homePos->getPosition()) < this->attackDistance)
 			{
-				dropResources();
+				dropResources(this->homePos);
 			}
 			else
 			{
@@ -681,19 +752,21 @@ void Unit::dropCommand(Unit* targetedUnit)
 	}
 }
 
-void Unit::dropResources()
+void Unit::dropResources(Transform* dropPos)
 {
 	this->soundAction = 6;
 	actionTime += Time.getDeltaTime();
-	if (this->homePos->gameObject->unitIsAvtive == true)
+	if (dropPos->gameObject->unitIsAvtive == true)
 	{
 		if (actionTime > 1)
 		{
 			int resourcesInUnit = this->getResources();
 			this->setResources(resourcesInUnit - 20);
 			//Debug.Log("Resources dropped! In worker: ", this->getResources());
-			int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
-			this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+			//int resourcesInTarget = this->homePos->gameObject->getComponent<Unit>()->getResources();
+			int resourcesInTarget = gamemanager.unitLists[this->gameObject->tag][0]->getResources();
+			//this->homePos->gameObject->getComponent<Unit>()->setResources(resourcesInTarget + 20);
+			gamemanager.unitLists[this->gameObject->tag][0]->setResources(resourcesInTarget + 20);
 			//Debug.Log(this->homePos->gameObject->getComponent<Unit>()->getResources());
 			if (this->Resources == 0)
 				e = 0;
@@ -730,8 +803,8 @@ void Unit::summonWorkerCommand()
 			worker->addComponent(meshFilter);
 			worker->addComponent(new MaterialFilter(AssetManager.getMaterial("WorkerMaterial")));
 			Unit *unitworker = new Unit(Worker);
-			unitworker->setHomePos(&gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
-			worker->addComponent(unitworker);
+			unitworker->setHomePos(&this->gameObject->transform);//&playerScript->friendlyBuildings.at(0)->gameObject->transform);
+			worker->addComponent(unitworker );
 			//playerScript->friendlyUnits.push_back(unitworker);
 			unitworker->setPlayerScript(playerScript);
 			gamemanager.unitLists[gameObject->tag].push_back(unitworker);
@@ -1160,8 +1233,8 @@ void Unit::update()
 
 		case Command::Gather: //GATHER
 		{
-			Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
-			gatherCommand(targetedUnit);
+				Unit* targetedUnit = UnitOrders.at(0).transform->gameObject->getComponent<Unit>();
+				gatherCommand(targetedUnit);
 		}
 		break;
 

@@ -75,7 +75,7 @@ float distributionGGX(float3 normal, float3 halfV, float roughness)
 	float denom = (normDotHalfV_2 * (a2 - 1.0f) + 1.0f);
 	denom = pi * denom * denom;
 
-	return a2 / denom;
+	return a2 / max(denom,0.001f);
 }
 
 float geometrySchlickGGX(float normDotView, float roughness)
@@ -145,12 +145,12 @@ float4 PS_main(VS_OUT input) : SV_Target
 	if (unitTag[input.instanceID].x == 1)
 	{
 		if (teamIdMap.x >= 0.5)
-			albedo *= float4(0.5, 0.5, 1, 0);
+			albedo = float4(0, 0, 0.8, 0);
 	}
 	if (unitTag[input.instanceID].x == 2)
 	{
 		if(teamIdMap.x >= 0.5)
-			albedo *= float4(1, 0.5, 0.5, 0);
+			albedo = float4(0.8, 0, 0, 0);
 	}
 
 
@@ -244,7 +244,6 @@ float4 PS_main(VS_OUT input) : SV_Target
 	N = normalize(mul(N, input.TBNMatrix));
 
 	float3 V = normalize(input.cameraPosition.xyz - input.worldPosition.xyz);
-	normalize(input.cameraPosition.xyz - input.worldPosition.xyz);
 
 	//light value
 	float3 lightDirection = normalize(float3(-0.63, 0.77, 0));
@@ -257,11 +256,11 @@ float4 PS_main(VS_OUT input) : SV_Target
 
 	float NDF = distributionGGX(N, H, roughness);
 	float G = geometrySmith(N, V, lightDirection, roughness);
-	float3 F = fresnelSchlick(max(dot(H, V), 0.0), f0);
+	float3 F = fresnelSchlick(clamp(dot(H, V), 0.0,1.0f), f0);
 	
 	float3 nominator = NDF * G * F;
-	float denominator = 4 * max(dot(N, V), 0.0f) * max(dot(N, lightDirection), 0.0f)+ 0.001f;
-	float3 spec = nominator / denominator;
+	float denominator = 4 * max(dot(N, V), 0.0f) * max(dot(N, lightDirection), 0.0f);
+	float3 spec = nominator;// / max(denominator, 0.001f);
 
 	float3 kS = F;
 	float3 kD = float3(1.0f, 1.0f, 1.0f) - kS;

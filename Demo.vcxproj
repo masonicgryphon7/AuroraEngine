@@ -177,6 +177,7 @@
     <ClInclude Include="AnimationClip.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AssetManager.h" />
+    <ClInclude Include="AudioListener.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ClickToMove.h" />
     <ClInclude Include="Component.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="JGUI.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="PlayerScript.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="Prop.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="GameManager.h" />
@@ -226,9 +228,6 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="AudioListener.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="SoundEmitter.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
@@ -264,6 +263,7 @@
     <ClCompile Include="JGUI.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Prop.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="GameManager.cpp" />
