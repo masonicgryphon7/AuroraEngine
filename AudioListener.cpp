@@ -27,7 +27,7 @@ AudioListener::AudioListener() :Component(-1, "Audio Listener")
 	sBuffer[4] = alutCreateBufferFromFile("Assets/sound/HurtFire.wav");
 	sBuffer[5] = alutCreateBufferFromFile("Assets/sound/Move.wav");
 	sBuffer[6] = alutCreateBufferFromFile("Assets/sound/Summon.wav");
-	sBuffer[7] = alutCreateBufferFromFile("Assets/sound/Follow.wav");
+	sBuffer[7] = alutCreateBufferFromFile("Assets/sound/Drop.wav");
 	int j = 8;
 	for (int i = 0; i < 8; i++)
 	{
@@ -99,7 +99,7 @@ void AudioListener::playGather()
 		alSourcePlay(source[3]);
 }
 
-void AudioListener::playMove(int m)
+void AudioListener::playMove()
 {
 	alGetSourcei(source[5], AL_SOURCE_STATE, &state);
 	if (state != AL_PLAYING)
@@ -111,6 +111,13 @@ void AudioListener::playSummon()
 	alGetSourcei(source[6], AL_SOURCE_STATE, &state);
 	if (state != AL_PLAYING)
 		alSourcePlay(source[6]);
+}
+
+void AudioListener::playDrop()
+{
+	alGetSourcei(source[7], AL_SOURCE_STATE, &state);
+	if (state != AL_PLAYING)
+		alSourcePlay(source[7]);
 }
 
 void AudioListener::update()
@@ -138,7 +145,7 @@ void AudioListener::update()
 
 				case 1:
 					multiPlay++;
-					playMove(multiPlay);
+					playMove();
 					break;
 
 				case 2:
@@ -160,7 +167,7 @@ void AudioListener::update()
 					break;
 
 				case 6:
-					//playDrop();
+					playDrop();
 					break;
 
 				case 7:

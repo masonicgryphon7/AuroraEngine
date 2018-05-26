@@ -20,7 +20,8 @@ public:
 	void playHurtFire();
 	void playFollow();
 	void playGather();
-	void playMove(int m);
+	void playDrop();
+	void playMove();
 	void playSummon();
 
 	int nrOfBuffSou = 32;
