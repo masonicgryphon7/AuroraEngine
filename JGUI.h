@@ -176,6 +176,7 @@ public:
 	bool IsActive(std::string JGUIName);
 	bool HasClicked(std::string JGUIName);
 	float Lerp(float a, float b, float f);
+	void ForceReloadJGUI();
 
 	DirectX::XMVECTOR WorldToScreen(Camera* c, DirectX::XMVECTOR worldPos, DirectX::XMMATRIX worldMatrix);
 

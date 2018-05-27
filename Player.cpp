@@ -11,11 +11,11 @@ Player::~Player()
 	if (jGUI != nullptr)
 		delete jGUI;
 
-	if (enemyNPC != nullptr)
+	/*if (enemyNPC != nullptr)
 		delete enemyNPC;
 
 	if (enemyObject != nullptr)
-		delete enemyObject;
+		delete enemyObject;*/
 
 	ImGui_ImplDX11_Shutdown();
 	//ImGui::DestroyContext();
@@ -105,16 +105,19 @@ void Player::Update()
 	{
 		jGUI->SetActive("MainMenu", false, true);
 
-		if (gamemanager.unitLists[1][0] != nullptr && gamemanager.unitLists[2][0] != nullptr)
+		if (gamemanager.gameState != GAME_STATE::GAME_OVER_MENU || gamemanager.gameState != GAME_STATE::WIN_MENU)
 		{
-			if (gamemanager.unitLists[1][0]->getHealthPoints() <= 0)
+			if (gamemanager.unitLists[1][0] != nullptr && gamemanager.unitLists[2][0] != nullptr)
 			{
-				gamemanager.gameState = GAME_STATE::GAME_OVER_MENU;
-			}
+				if (gamemanager.unitLists[1][0]->getHealthPoints() <= 0)
+				{
+					gamemanager.gameState = GAME_STATE::GAME_OVER_MENU;
+				}
 
-			if (gamemanager.unitLists[2][0]->getHealthPoints() <= 0)
-			{
-				gamemanager.gameState = GAME_STATE::WIN_MENU;
+				if (gamemanager.unitLists[2][0]->getHealthPoints() <= 0)
+				{
+					gamemanager.gameState = GAME_STATE::WIN_MENU;
+				}
 			}
 		}
 
@@ -544,6 +547,10 @@ void Player::Update()
 		jGUI->SetActive("MainMenu", true, true);
 		if (jGUI->HasClicked("MainMenu_BeginGame"))
 		{
+			jGUI->ForceReloadJGUI();
+			playerScript->SelectedUnits.clear();
+			jGUI->SetActive("InGame_MiddleButton", false, true);
+			jGUI->SetActive("InGame_SelectedLabel", false);
 			gamemanager.unitLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 			gamemanager.buildingLists = std::vector<std::vector<Unit*>>(4, std::vector<Unit*>());
 

@@ -1062,6 +1062,12 @@ float JGUI::Lerp(float a, float b, float f)
 	return a + f * (b - a);
 }
 
+void JGUI::ForceReloadJGUI()
+{
+	CloseJGUI(); // remove all JGUI stuff...
+	ReadSave();
+}
+
 DirectX::XMVECTOR JGUI::WorldToScreen(Camera* c, DirectX::XMVECTOR worldPos, DirectX::XMMATRIX worldMatrix)//DirectX::XMVECTOR & vOrigin, DirectX::XMVECTOR & vScreen)
 {
 	auto screen = Input.GetDesktopResolution();

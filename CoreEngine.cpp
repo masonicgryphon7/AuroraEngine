@@ -270,7 +270,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		{
 			player = new Player();
 			player->Start(&wndHandle, gDevice, gDeviceContext, this);
-			gSwapChain->SetFullscreenState(TRUE, NULL);
+			//gSwapChain->SetFullscreenState(TRUE, NULL);
 		}
 
 		while (WM_QUIT != msg.message && IS_RUNNING)
@@ -283,13 +283,13 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			else
 			{
 				 //FULLSCREEN
-				{
-					BOOL bFullscreen;
-					gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
-					// If not full screen, enable fullscreen again.
-					if (!bFullscreen)
-						gSwapChain->SetFullscreenState(TRUE, NULL);
-				}
+				//{
+				//	BOOL bFullscreen;
+				//	gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
+				//	// If not full screen, enable fullscreen again.
+				//	if (!bFullscreen)
+				//		gSwapChain->SetFullscreenState(TRUE, NULL);
+				//}
 
 				inputHandler.updateInput();
 				Time.tick();

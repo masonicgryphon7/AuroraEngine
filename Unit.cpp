@@ -1218,6 +1218,8 @@ void Unit::ReceiveOrder(OPTIONS option)
 
 void Unit::update()
 {
+	if (gamemanager.gameState == GAME_STATE::MAIN_MENU) return;
+
 	if (UnitOrders.size() > 0) {
 
 
