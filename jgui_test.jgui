@@ -24,7 +24,7 @@
         "Rounding": "0.000000",
         "Start": "860.000000|-50.000000",
         "TCol": "0.000000|0.000000|0.000000|1.000000",
-        "Text": "8:4",
+        "Text": "",
         "Thickness": "1.000000",
         "Type": "Button"
     },
@@ -112,7 +112,7 @@
         "Rounding": "0.000000",
         "Start": "25.000000|920.000000",
         "TCol": "0.000000|0.000000|0.000000|1.000000",
-        "Text": "Atk: 16",
+        "Text": "6",
         "Thickness": "1.000000",
         "Type": "Button"
     },
@@ -127,7 +127,7 @@
         "Rounding": "0.000000",
         "Start": "25.000000|965.000000",
         "TCol": "0.000000|0.000000|0.000000|1.000000",
-        "Text": "Def: 10",
+        "Text": "0",
         "Thickness": "1.000000",
         "Type": "Button"
     },
@@ -145,7 +145,7 @@
         "Thickness": "1.000000",
         "Type": "BoxFilled"
     },
-	{
+    {
         "Color": "0.000001|0.000001|0.000001|0.000000",
         "End": "1060.000000|1060.000000",
         "Font_Scale": "1.000000",
@@ -215,7 +215,7 @@
         "Resolution": "1920.000000|1080.000000",
         "Rounding": "0.000000",
         "Start": "650.000000|200.000000",
-        "TCol": "0.000000|0.000000|0.000000|0.000000",
+        "TCol": "0.000000|0.000000|0.000000|1.000000",
         "Text": "NOT ENOUGH RESOURCES",
         "Thickness": "1.000000",
         "Type": "Button"
@@ -265,25 +265,10 @@
         "Type": "Box"
     },
     {
-        "Color": "0.643216|0.643210|0.643210|1.000000",
-        "End": "100.000000|50.000000",
-        "Font_Scale": "1.000000",
-        "Image_Path": "",
-        "Is_Active": "1",
-        "Name": "FPSCounter",
-        "Resolution": "1920.000000|1080.000000",
-        "Rounding": "0.000000",
-        "Start": "0.000000|0.000000",
-        "TCol": "0.000000|0.000000|0.000000|1.000000",
-        "Text": "FPS: 122",
-        "Thickness": "1.000000",
-        "Type": "Button"
-    },
-    {
         "Color": "0.849246|0.115224|0.115224|0.412060",
         "End": "1920.000000|1080.000000",
         "Font_Scale": "5.000000",
-        "Image_Path": "",
+        "Image_Path": "LoseScreen",
         "Is_Active": "0",
         "Name": "GameOverScreen",
         "Resolution": "1920.000000|1080.000000",
@@ -294,41 +279,42 @@
         "Thickness": "1.000000",
         "Type": "Button"
     },
-	{
+    {
         "Color": "0.190955|0.190953|0.190953|1.000000",
         "End": "1920.000000|1080.000000",
         "Font_Scale": "1.000000",
-        "Is_Active": "0",
+        "Image_Path": "MainMenu",
+        "Is_Active": "1",
         "Name": "MainMenu_Background",
         "Resolution": "1920.000000|1080.000000",
         "Rounding": "0.000000",
         "Start": "0.000000|0.000000",
         "TCol": "0.000000|0.000000|0.000000|1.000000",
-        "Text": "FPS: 200",
+        "Text": "",
         "Thickness": "1.000000",
-        "Type": "BoxFilled"
+        "Type": "Image"
     },
-	{
+    {
         "Color": "0.000001|0.000001|0.000001|0.000000",
         "End": "1060.000000|200.000000",
         "Font_Scale": "7.500000",
         "Image_Path": "",
-        "Is_Active": "0",
+        "Is_Active": "1",
         "Name": "MainMenu_Title",
         "Resolution": "1920.000000|1080.000000",
         "Rounding": "0.000000",
         "Start": "860.000000|0.000000",
         "TCol": "1.000000|0.999990|0.999990|1.000000",
-        "Text": "MAIN MENU",
+        "Text": "Royal Battle Tanks",
         "Thickness": "1.000000",
         "Type": "Button"
     },
-	{
+    {
         "Color": "1.000000|1.000000|1.000000|1.000000",
         "End": "1185.000000|600.000000",
         "Font_Scale": "2.000000",
         "Image_Path": "",
-        "Is_Active": "0",
+        "Is_Active": "1",
         "Name": "MainMenu_BeginGame",
         "Resolution": "1920.000000|1080.000000",
         "Rounding": "0.000000",
@@ -343,7 +329,7 @@
         "End": "1060.000000|1044.000000",
         "Font_Scale": "3.000000",
         "Image_Path": "",
-        "Is_Active": "0",
+        "Is_Active": "1",
         "Name": "MainMenu_ExitGame",
         "Resolution": "1920.000000|1080.000000",
         "Rounding": "0.000000",
