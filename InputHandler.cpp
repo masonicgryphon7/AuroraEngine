@@ -131,8 +131,8 @@ Vector2 InputHandler::GetEngineWindowResolution()
 		width = rect.right - rect.left;
 		height = rect.bottom - rect.top;
 
-		width -= 16;
-		height -= 39;
+		//width -= 16;
+		//height -= 39;
 	}
 	return Vector2(width, height);
 }

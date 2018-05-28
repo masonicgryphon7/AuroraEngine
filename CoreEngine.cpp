@@ -19,7 +19,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
-#define GRAPHICS_DEBUGGER_ENABLED 1
+#define GRAPHICS_DEBUGGER_ENABLED 0
 #define PLAYER_BUILD 1
 
 bool CoreEngine::hasResized = false;
@@ -270,7 +270,7 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		{
 			player = new Player();
 			player->Start(&wndHandle, gDevice, gDeviceContext, this);
-			//gSwapChain->SetFullscreenState(TRUE, NULL);
+			gSwapChain->SetFullscreenState(TRUE, NULL);
 		}
 
 		while (WM_QUIT != msg.message && IS_RUNNING)
@@ -282,14 +282,14 @@ MSG CoreEngine::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			}
 			else
 			{
-				 //FULLSCREEN
-				//{
-				//	BOOL bFullscreen;
-				//	gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
-				//	// If not full screen, enable fullscreen again.
-				//	if (!bFullscreen)
-				//		gSwapChain->SetFullscreenState(TRUE, NULL);
-				//}
+				//FULLSCREEN
+				{
+					BOOL bFullscreen;
+					gSwapChain->GetFullscreenState(&bFullscreen, nullptr);
+					// If not full screen, enable fullscreen again.
+					if (!bFullscreen)
+						gSwapChain->SetFullscreenState(TRUE, NULL);
+				}
 
 				inputHandler.updateInput();
 				Time.tick();
