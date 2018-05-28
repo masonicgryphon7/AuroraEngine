@@ -173,6 +173,7 @@ public:
 	void SetText(std::string JGUIName, std::string val, float fontSize = -1.0f);
 	void SetColour(std::string JGUIName, ImColor col, bool multiple = false);
 	void SetAlpha(std::string JGUIName, float alpha = 1.0f, bool textToo = false, bool multiple = false);
+	void SetImage(std::string JGUIName, std::string img);
 	bool IsActive(std::string JGUIName);
 	bool HasClicked(std::string JGUIName);
 	float Lerp(float a, float b, float f);

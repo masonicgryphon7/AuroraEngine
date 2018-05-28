@@ -105,7 +105,7 @@ void Player::Update()
 	{
 		jGUI->SetActive("MainMenu", false, true);
 
-		if (gamemanager.gameState != GAME_STATE::GAME_OVER_MENU || gamemanager.gameState != GAME_STATE::WIN_MENU)
+		if (gamemanager.gameState != GAME_STATE::GAME_OVER_MENU && gamemanager.gameState != GAME_STATE::WIN_MENU)
 		{
 			if (gamemanager.unitLists[1][0] != nullptr && gamemanager.unitLists[2][0] != nullptr)
 			{
@@ -178,7 +178,7 @@ void Player::Update()
 		jGUI->SetText("InGame_Timer", stGT.str());
 
 		// HERO
-		if (heroUnit != nullptr)
+		if (heroUnit != nullptr && gamemanager.gameState != GAME_STATE::GAME_OVER_MENU)
 		{
 			std::stringstream typeStream;
 
@@ -446,6 +446,12 @@ void Player::Update()
 			jGUI->SetAlpha("InGame_NotEnoughResource", notEnoughResourceLerp, true);
 		}
 
+		if (Input.GetKeyDown(KeyCode::Alpha1))
+			gamemanager.gameState = GAME_STATE::WIN_MENU;
+
+		if (Input.GetKeyDown(KeyCode::Alpha2))
+			gamemanager.gameState = GAME_STATE::GAME_OVER_MENU;
+
 		if (gamemanager.gameState == GAME_STATE::GAME_OVER_MENU)
 		{
 			if (gameOverLerp < 1.0f)
@@ -465,6 +471,7 @@ void Player::Update()
 			}
 
 			jGUI->SetText("GameOverScreen", "GAME OVER");
+			jGUI->SetImage("GameOverScreen", "LoseScreen");
 			jGUI->SetColour("GameOverScreen", ImColor(255, 0, 0));
 			jGUI->SetActive("GameOverScreen", true);
 			jGUI->SetAlpha("InGame", jGUI->Lerp(1, 0, gameOverLerp), true, true);
@@ -489,6 +496,7 @@ void Player::Update()
 			}
 
 			jGUI->SetText("GameOverScreen", "YOU WON");
+			jGUI->SetImage("GameOverScreen", "WinScreen");
 			jGUI->SetColour("GameOverScreen", ImColor(0, 255, 0));
 			jGUI->SetActive("GameOverScreen", true);
 			jGUI->SetAlpha("InGame", jGUI->Lerp(1, 0, gameOverLerp), true, true);
