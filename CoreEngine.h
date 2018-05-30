@@ -60,7 +60,7 @@
 class CoreEngine
 {
 public:
-	CoreEngine(bool includeDebugConsole = false);
+	CoreEngine(bool includeDebugConsole = true);
 	~CoreEngine();
 
 	MSG Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow);
