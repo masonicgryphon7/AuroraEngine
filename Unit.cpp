@@ -7,6 +7,7 @@
 #include <DirectXMath.h>
 #include <math.h>
 #include "Projectile.h"
+#include "Console.h"
 Unit::Unit() :Component(-1, "Unit")
 {
 	actionTime = 10;
@@ -178,15 +179,15 @@ void Unit::MoveCommand(DirectX::XMVECTOR *goalPos)
 		if (pathNodes.size() == 0)
 		{
 			lerpValue = 0;
-			std::clock_t start;
-			start = std::clock();
+			
+			
 
 			pathNodes = PathCreator.getPath(current, pointPosition); // Point position
 			previousPos = gameObject->transform.getPosition();
 
-
+			start = std::clock();
 			float time = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
-			//Debug.Log(" after astar time ", time);
+			Console.success("This is a time measurement", time);
 			lerpValue += Time.getDeltaTime() * 10;
 			if (lerpValue > 1) {
 				lerpValue = 0;
@@ -296,6 +297,10 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 		if (pathNodes.size() == 0)
 		{
 			lerpValue = 0;
+			if (this->getType() == Worker && this->gatherCollect == true)
+				worker_has_path = true;
+			else
+				worker_has_path = false;
 			pathNodes = PathCreator.getPath(current, pointPosition); // Point position
 			previousPos = gameObject->transform.getPosition();
 
@@ -308,8 +313,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 			if (lerpValue > 1) {
 				lerpValue = 1;
 			}
-			if (this->getUnitCommand() == Drop)
-				worker_has_path = true;
+	
 			DirectX::XMVECTOR goal = DirectX::XMVectorSet(pathNodes.at(0).position.x, pathNodes.at(0).position.y, pathNodes.at(0).position.z, 0);
 			DirectX::XMFLOAT3 goalVec;
 			DirectX::XMStoreFloat3(&goalVec, goal);
@@ -335,7 +339,7 @@ void Unit::SecondMoveCommand(DirectX::XMVECTOR * goalPos)
 				this->soundAction = 0;
 
 			}
-			if (pathNodes.size() == 0 && this->getType() == Worker && worker_has_path && this->getUnitCommand() == Gather || this->getUnitCommand() == Drop )
+			if (pathNodes.size() == 0 && this->getType() == Worker && worker_has_path && this->getUnitCommand() == Gather)
 			{
 				std::reverse(worker_return_path.begin(), worker_return_path.end());
 				pathNodes = worker_return_path;
@@ -683,6 +687,7 @@ void Unit::gatherResources()
 	{
 		if (actionTime > 1)
 		{
+			gatherCollect = true;
 			this->isCollectingGold = true;
 			int resourcesLeft = UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources();
 			UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->setResources(resourcesLeft - 20);
@@ -692,6 +697,10 @@ void Unit::gatherResources()
 			if (this->Resources == 100)
 				e = 1;
 			actionTime = 0;
+		}
+		else
+		{
+			gatherCollect = false;
 		}
 	}
 	else {
@@ -763,6 +772,7 @@ void Unit::dropResources(Transform* dropPos)
 	{
 		if (actionTime > 1)
 		{
+			gatherCollect = true;
 			int resourcesInUnit = this->getResources();
 			this->setResources(resourcesInUnit - 20);
 			//Debug.Log("Resources dropped! In worker: ", this->getResources());
@@ -774,6 +784,10 @@ void Unit::dropResources(Transform* dropPos)
 			if (this->Resources == 0)
 				e = 0;
 			actionTime = 0;
+		}
+		else
+		{
+			gatherCollect = false;
 		}
 	}
 	else {

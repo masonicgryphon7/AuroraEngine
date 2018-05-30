@@ -88,6 +88,8 @@ private:
 	bool worker_has_path;
 	int count = 0, count2 = 0, count3 = 0;
 	bool hasReached = false;
+	std::clock_t start;
+	bool gatherCollect = false;
 	DirectX::XMVECTOR lerpedPos;
 public:
 
