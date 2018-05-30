@@ -1013,6 +1013,24 @@ void JGUI::SetAlpha(std::string JGUIName, float alpha, bool textToo, bool multip
 	}
 }
 
+void JGUI::SetImage(std::string JGUIName, std::string img)
+{
+	RealtimeJGUIEditor* temp = nullptr;
+	for (size_t i = 0; i < _editor.size(); i++)
+	{
+		if (_editor.at(i)->guiName == JGUIName)
+		{
+			temp = _editor.at(i);
+			break;
+		}
+	}
+
+	if (temp == nullptr)
+		return;
+
+	temp->image = AssetManager.getTexture(img)->getTexture();;
+}
+
 bool JGUI::IsActive(std::string JGUIName)
 {
 	RealtimeJGUIEditor* temp = nullptr;
