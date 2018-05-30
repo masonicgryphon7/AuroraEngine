@@ -446,12 +446,6 @@ void Player::Update()
 			jGUI->SetAlpha("InGame_NotEnoughResource", notEnoughResourceLerp, true);
 		}
 
-		if (Input.GetKeyDown(KeyCode::Alpha1))
-			gamemanager.gameState = GAME_STATE::WIN_MENU;
-
-		if (Input.GetKeyDown(KeyCode::Alpha2))
-			gamemanager.gameState = GAME_STATE::GAME_OVER_MENU;
-
 		if (gamemanager.gameState == GAME_STATE::GAME_OVER_MENU)
 		{
 			if (gameOverLerp < 1.0f)

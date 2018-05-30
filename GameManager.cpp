@@ -146,7 +146,7 @@ void GameManager::update()
 		ringState = NO_MOVE;
 		break;
 	case LARGE_CIRCLE_STATE:
-		if (gameTime >= 120)
+		if (gameTime >= 12)
 		{
 			//Debug.Log(ringOfFire); 
 			ringState = RING_STATE::MOVE;
@@ -534,7 +534,7 @@ void GameManager::addBuildings()
 	bankGameObject->raycastOption = RayCastOptions::DETAILED;
 
 	i = 180;
-	j = 75;
+	j = 80;
 
 	bankGameObject = gScene.createEmptyGameObject(DirectX::XMVectorSet(i, HeightMapVariables.VertInfo[i][j].y + 2, j, 0));
 	bankGameObject->name = "Bank";

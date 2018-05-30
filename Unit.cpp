@@ -653,15 +653,9 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 	if (getDistanceBetweenUnits(unitPos, targetedUnit->gameObject->transform.getPosition()) < this->attackDistance && targetedUnit->getResources() > 0 && targetedUnit->gameObject->unitIsAvtive == true)
 	{
 		actionTime += Time.getDeltaTime();
-		if (targetedUnit->type == Bank && actionTime > 4)
-		{
-			int resourcesLeft = targetedUnit->getResources();
-			targetedUnit->setResources(0);
-			this->setResources(this->getResources() + resourcesLeft);
-			//Debug.Log("Resources: ", targetedUnit->getResources());
-		}
+	
 
-		if (targetedUnit->type == GoldMine && actionTime > 1)
+		if (targetedUnit->type == GoldMine && actionTime > 2)
 		{
 			this->goldMineCollecting = targetedUnit->gameObject;
 
@@ -682,7 +676,7 @@ void Unit::HeroGatherCommand(Unit * targetedUnit)
 void Unit::gatherResources()
 {
 	this->soundAction = 5;
-	actionTime += Time.getDeltaTime();
+	
 	if (UnitOrders.at(0).transform->gameObject->unitIsAvtive == true)
 	{
 		if (actionTime > 1)
@@ -696,7 +690,7 @@ void Unit::gatherResources()
 			//Debug.Log("Resource Gathered! Left: ", UnitOrders.at(0).transform->gameObject->getComponent<Unit>()->getResources());
 			if (this->Resources == 100)
 				e = 1;
-			actionTime = 0;
+			
 		}
 		else
 		{
@@ -1001,6 +995,8 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 		UnitOrders.clear();
 		pathNodes.clear();
 
+		
+
 		//Target is a unit
 		if (Values.transform->gameObject->getComponent<Unit>() != nullptr)
 		{
@@ -1018,15 +1014,7 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 						tempOrder.point = Values.point;
 						tempOrder.transform = Values.transform;
 						UnitOrders.push_back(tempOrder);
-						actionTime = 2;
-					}
-					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank)
-					{
-						tempOrder.command = HeroGather;
-						tempOrder.point = Values.point;
-						tempOrder.transform = Values.transform;
-						UnitOrders.push_back(tempOrder);
-						actionTime = 2;
+						
 					}
 					break;
 
@@ -1051,7 +1039,7 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 						tempOrder.point = Values.point;
 						tempOrder.transform = Values.transform;
 						UnitOrders.push_back(tempOrder);
-						actionTime = 2;
+						
 					}
 					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
 					{
@@ -1083,7 +1071,7 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 						tempOrder.point = Values.point;
 						tempOrder.transform = Values.transform;
 						UnitOrders.push_back(tempOrder);
-						actionTime = 2;
+					
 					}
 					break;
 
@@ -1114,7 +1102,7 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 						tempOrder.point = Values.point;
 						tempOrder.transform = Values.transform;
 						UnitOrders.push_back(tempOrder);
-						actionTime = 2;
+						
 					}
 					if (Values.transform->gameObject->getComponent<Unit>()->getType() == Bank || Values.transform->gameObject->getComponent<Unit>()->getType() == Barrack)
 					{
@@ -1134,7 +1122,7 @@ void Unit::ReceiveOrder(RaycastHit Values, int unitTag)
 						tempOrder.point = Values.point;
 						tempOrder.transform = Values.transform;
 						UnitOrders.push_back(tempOrder);
-						actionTime = 2;
+						
 					}
 
 					break;
@@ -1179,7 +1167,7 @@ void Unit::ReceiveOrder(OPTIONS option)
 	{
 
 	}
-	else
+	else 
 	{
 		UnitOrders.clear();
 		pathNodes.clear();

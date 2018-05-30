@@ -61,7 +61,7 @@ private:
 	int attackPoints;
 	int defencePoints;
 	float attackDistance;
-	float actionTime;
+	float actionTime = 0;
 	float dieTime;
 	int soundAction = 0;
 	Transform* homePos;
